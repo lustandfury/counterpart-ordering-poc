@@ -8,9 +8,7 @@
     "aliases": [
       "2x4x8",
       "2x4 8ft",
-      "2x4x8 spf",
-      "stud",
-      "2x4 stud"
+      "2x4x8 spf"
     ]
   },
   {
@@ -499,6 +497,32 @@
       "2x12x16 treated",
       "2x12 16ft pt",
       "2x12x16 green"
+    ]
+  },
+  {
+    "sku": "LBR-2X4-PRECUT-SPF",
+    "name": "2x4 x 92-5/8\" Precut SPF #2 Kiln-Dried Stud",
+    "category": "dimensional_lumber",
+    "unit": "each",
+    "price": 3.6,
+    "aliases": [
+      "stud",
+      "studs",
+      "2x4 stud",
+      "precut stud",
+      "2x4x92 5/8"
+    ]
+  },
+  {
+    "sku": "LBR-2X6-PRECUT-SPF",
+    "name": "2x6 x 92-5/8\" Precut SPF #2 Kiln-Dried Stud",
+    "category": "dimensional_lumber",
+    "unit": "each",
+    "price": 6.1,
+    "aliases": [
+      "2x6 stud",
+      "2x6 precut",
+      "2x6x92 5/8"
     ]
   },
   {
@@ -1068,13 +1092,14 @@
   },
   {
     "sku": "DRY-MUD-45",
-    "name": "All-Purpose Joint Compound 4.5 gal Bucket",
+    "name": "All-Purpose Joint Compound 17 L Pail",
     "category": "drywall",
     "unit": "bucket",
     "price": 17,
     "aliases": [
       "mud",
       "joint compound",
+      "4.5 gal",
       "5 gal mud"
     ]
   },
@@ -1678,76 +1703,81 @@
     ]
   },
   {
-    "sku": "CON-60",
-    "name": "Concrete Mix 60 lb Bag",
-    "category": "concrete_masonry",
-    "unit": "bag",
-    "price": 5.6,
-    "aliases": [
-      "60lb concrete",
-      "concrete mix"
-    ]
-  },
-  {
-    "sku": "CON-80",
-    "name": "Concrete Mix 80 lb Bag",
-    "category": "concrete_masonry",
-    "unit": "bag",
-    "price": 6.9,
-    "aliases": [
-      "80lb concrete",
-      "80 lb crete"
-    ]
-  },
-  {
-    "sku": "CON-FAST-50",
-    "name": "Fast-Setting Concrete Mix 50 lb Bag",
+    "sku": "CON-30KG",
+    "name": "Concrete Mix 30 kg Bag",
     "category": "concrete_masonry",
     "unit": "bag",
     "price": 8.5,
     "aliases": [
+      "30kg concrete",
+      "30 kg concrete",
+      "concrete mix",
+      "concrete"
+    ]
+  },
+  {
+    "sku": "CON-FAST-20KG",
+    "name": "Fast-Setting Concrete Mix 20 kg Bag",
+    "category": "concrete_masonry",
+    "unit": "bag",
+    "price": 11,
+    "aliases": [
       "fast set",
+      "fast-set concrete",
       "quikrete fast"
     ]
   },
   {
-    "sku": "MAS-MORT-60",
-    "name": "Type S Mortar Mix 60 lb Bag",
+    "sku": "MAS-CEM-GU-30KG",
+    "name": "Portland Cement Type GU 30 kg Bag",
     "category": "concrete_masonry",
     "unit": "bag",
-    "price": 9.5,
+    "price": 16,
     "aliases": [
-      "mortar",
-      "type s mortar"
+      "portland cement",
+      "gu cement",
+      "cement"
     ]
   },
   {
-    "sku": "MAS-MORT-80",
-    "name": "Type N Mortar Mix 80 lb Bag",
+    "sku": "MAS-MORT-S-30KG",
+    "name": "Type S Mortar Mix 30 kg Bag",
     "category": "concrete_masonry",
     "unit": "bag",
-    "price": 11,
+    "price": 11.5,
+    "aliases": [
+      "mortar",
+      "type s mortar",
+      "30kg mortar"
+    ]
+  },
+  {
+    "sku": "MAS-MORT-N-30KG",
+    "name": "Type N Mortar Mix 30 kg Bag",
+    "category": "concrete_masonry",
+    "unit": "bag",
+    "price": 10.5,
     "aliases": [
       "type n mortar"
     ]
   },
   {
-    "sku": "MAS-SAND-50",
-    "name": "All-Purpose Sand 50 lb Bag",
+    "sku": "MAS-SAND-30KG",
+    "name": "All-Purpose Sand 30 kg Bag",
     "category": "concrete_masonry",
     "unit": "bag",
-    "price": 5,
+    "price": 5.5,
     "aliases": [
       "sand",
       "play sand"
     ]
   },
   {
-    "sku": "MAS-GRAV-50",
-    "name": "Crushed Gravel 50 lb Bag",
+    "sku": "MAS-GRAV-30KG",
+    "name": "Crushed Gravel 30 kg Bag",
     "category": "concrete_masonry",
     "unit": "bag",
-    "price": 6,
+    "price": 6.5,
     "aliases": [
       "gravel",
       "stone bag"
@@ -1787,36 +1817,39 @@
     ]
   },
   {
-    "sku": "CON-REBAR-3-10",
-    "name": "#3 (3/8\") x 10' Rebar",
+    "sku": "CON-REBAR-10M-3M",
+    "name": "10M (approx. 3/8\") x 3 m Rebar",
     "category": "concrete_masonry",
     "unit": "each",
     "price": 5.2,
     "aliases": [
+      "10m rebar",
       "3 rebar",
       "#3 rebar",
       "3/8 rebar"
     ]
   },
   {
-    "sku": "CON-REBAR-4-10",
-    "name": "#4 (1/2\") x 10' Rebar",
+    "sku": "CON-REBAR-15M-3M",
+    "name": "15M (approx. 1/2\") x 3 m Rebar",
     "category": "concrete_masonry",
     "unit": "each",
     "price": 8.4,
     "aliases": [
+      "15m rebar",
       "4 rebar",
       "#4 rebar",
       "1/2 rebar"
     ]
   },
   {
-    "sku": "CON-REBAR-4-20",
-    "name": "#4 (1/2\") x 20' Rebar",
+    "sku": "CON-REBAR-15M-6M",
+    "name": "15M (approx. 1/2\") x 6 m Rebar",
     "category": "concrete_masonry",
     "unit": "each",
     "price": 16.5,
     "aliases": [
+      "6m 15m rebar",
       "20ft 4 rebar"
     ]
   },
@@ -1964,68 +1997,68 @@
     ]
   },
   {
-    "sku": "INS-R13-15",
-    "name": "R-13 Kraft-Faced Batt 3.5\" x 15\" x 93\" (Bag)",
+    "sku": "INS-R12-15",
+    "name": "R-12 Kraft-Faced Batt 3.5\" x 15\" x 93\" (Bag)",
     "category": "insulation",
     "unit": "bag",
     "price": 62,
     "aliases": [
-      "r13",
-      "r13 batts",
-      "r-13 15in"
+      "r12",
+      "r12 batts",
+      "r-12 15in"
     ]
   },
   {
-    "sku": "INS-R13-23",
-    "name": "R-13 Kraft-Faced Batt 3.5\" x 23\" x 93\" (Bag)",
+    "sku": "INS-R12-23",
+    "name": "R-12 Kraft-Faced Batt 3.5\" x 23\" x 93\" (Bag)",
     "category": "insulation",
     "unit": "bag",
     "price": 78,
     "aliases": [
-      "r13 23in"
+      "r12 23in"
     ]
   },
   {
-    "sku": "INS-R19-15",
-    "name": "R-19 Kraft-Faced Batt 6.25\" x 15\" x 93\" (Bag)",
+    "sku": "INS-R20-15",
+    "name": "R-20 Kraft-Faced Batt 5.5\" x 15\" x 93\" (Bag)",
     "category": "insulation",
     "unit": "bag",
     "price": 74,
     "aliases": [
-      "r19",
-      "r19 batts",
-      "r-19 15in"
+      "r20",
+      "r20 batts",
+      "r-20 15in"
     ]
   },
   {
-    "sku": "INS-R19-23",
-    "name": "R-19 Kraft-Faced Batt 6.25\" x 23\" x 93\" (Bag)",
+    "sku": "INS-R20-23",
+    "name": "R-20 Kraft-Faced Batt 5.5\" x 23\" x 93\" (Bag)",
     "category": "insulation",
     "unit": "bag",
     "price": 92,
     "aliases": [
-      "r19 23in"
+      "r20 23in"
     ]
   },
   {
-    "sku": "INS-R30-16",
-    "name": "R-30 Unfaced Batt 9.5\" x 16\" x 48\" (Bag)",
+    "sku": "INS-R31-16",
+    "name": "R-31 Unfaced Batt 9.5\" x 16\" x 48\" (Bag)",
     "category": "insulation",
     "unit": "bag",
     "price": 68,
     "aliases": [
-      "r30",
-      "r30 batts"
+      "r31",
+      "r31 batts"
     ]
   },
   {
-    "sku": "INS-R38-16",
-    "name": "R-38 Unfaced Batt 12\" x 16\" x 48\" (Bag)",
+    "sku": "INS-R40-16",
+    "name": "R-40 Unfaced Batt 12\" x 16\" x 48\" (Bag)",
     "category": "insulation",
     "unit": "bag",
     "price": 82,
     "aliases": [
-      "r38"
+      "r40"
     ]
   },
   {
@@ -2053,7 +2086,7 @@
   },
   {
     "sku": "INS-SPRAY-CAN",
-    "name": "Expanding Foam Sealant 12 oz Can",
+    "name": "Expanding Foam Sealant 340 g Can",
     "category": "insulation",
     "unit": "each",
     "price": 7,
@@ -2261,7 +2294,7 @@
   },
   {
     "sku": "SUP-ADH-CONST-10",
-    "name": "Heavy-Duty Construction Adhesive 10 oz Tube",
+    "name": "Heavy-Duty Construction Adhesive 295 mL Tube",
     "category": "adhesives_sealants",
     "unit": "each",
     "price": 5.5,
@@ -2273,7 +2306,7 @@
   },
   {
     "sku": "SUP-ADH-SUBFL-28",
-    "name": "Subfloor Construction Adhesive 28 oz Tube",
+    "name": "Subfloor Construction Adhesive 828 mL Tube",
     "category": "adhesives_sealants",
     "unit": "each",
     "price": 8,
@@ -2284,7 +2317,7 @@
   },
   {
     "sku": "SUP-CAULK-SIL-CLR",
-    "name": "100% Silicone Caulk 10 oz, Clear",
+    "name": "100% Silicone Caulk 300 mL, Clear",
     "category": "adhesives_sealants",
     "unit": "each",
     "price": 8.5,
@@ -2295,7 +2328,7 @@
   },
   {
     "sku": "SUP-CAULK-LAT-WHT",
-    "name": "Paintable Acrylic Latex Caulk 10 oz, White",
+    "name": "Paintable Acrylic Latex Caulk 300 mL, White",
     "category": "adhesives_sealants",
     "unit": "each",
     "price": 4,
@@ -2307,7 +2340,7 @@
   },
   {
     "sku": "SUP-GLUE-WOOD-16",
-    "name": "Wood Glue 16 oz",
+    "name": "Wood Glue 500 mL",
     "category": "adhesives_sealants",
     "unit": "each",
     "price": 6,
@@ -2318,12 +2351,13 @@
   },
   {
     "sku": "SUP-SEAL-EXT-5G",
-    "name": "Exterior Wood Stain and Sealer 5 gal",
+    "name": "Exterior Wood Stain and Sealer 18.9 L Pail",
     "category": "adhesives_sealants",
     "unit": "pail",
     "price": 120,
     "aliases": [
       "5 gal stain",
+      "5-gal",
       "deck stain"
     ]
   },
@@ -2351,7 +2385,7 @@
   },
   {
     "sku": "SUP-LINE-CHALK-BL",
-    "name": "Blue Chalk Refill 8 oz",
+    "name": "Blue Chalk Refill 227 g",
     "category": "tools_supplies",
     "unit": "each",
     "price": 5,

@@ -23,7 +23,7 @@ for (const [sz, base] of sizes) {
       sku: `LBR-${sz.toUpperCase()}-${String(len).padStart(2, "0")}-SPF`,
       name: `${sz} x ${len}' SPF #2 Kiln-Dried Framing Lumber`,
       category: "dimensional_lumber", unit: "each", price,
-      aliases: [`${sz}x${len}`, `${sz} ${len}ft`, `${sz}x${len} spf`, ...(sz === "2x4" && len === 8 ? ["stud", "2x4 stud"] : [])],
+      aliases: [`${sz}x${len}`, `${sz} ${len}ft`, `${sz}x${len} spf`],
     });
     add({
       sku: `LBR-${sz.toUpperCase()}-${String(len).padStart(2, "0")}-PT`,
@@ -33,6 +33,9 @@ for (const [sz, base] of sizes) {
     });
   }
 }
+// Precut studs (92-5/8"), the standard wall stud in Canada
+add({ sku: "LBR-2X4-PRECUT-SPF", name: `2x4 x 92-5/8" Precut SPF #2 Kiln-Dried Stud`, category: "dimensional_lumber", unit: "each", price: 3.6, aliases: ["stud", "studs", "2x4 stud", "precut stud", "2x4x92 5/8"] });
+add({ sku: "LBR-2X6-PRECUT-SPF", name: `2x6 x 92-5/8" Precut SPF #2 Kiln-Dried Stud`, category: "dimensional_lumber", unit: "each", price: 6.1, aliases: ["2x6 stud", "2x6 precut", "2x6x92 5/8"] });
 for (const len of [8, 10, 12]) {
   add({ sku: `LBR-4X4-${len}-SPF`, name: `4x4 x ${len}' SPF Post`, category: "dimensional_lumber", unit: "each", price: +(len * 1.55).toFixed(2), aliases: [`4x4x${len}`, `4x4 ${len}ft`, "post"] });
   add({ sku: `LBR-4X4-${len}-PT`, name: `4x4 x ${len}' Pressure-Treated Post`, category: "dimensional_lumber", unit: "each", price: +(len * 2.4).toFixed(2), aliases: [`4x4x${len} pt`, `4x4 ${len}ft treated`, "treated post"] });
@@ -74,7 +77,7 @@ for (const [k, name, price, aliases] of dw) {
     add({ sku: `DRY-${k}-4X${len}`, name: `${name} 4x${len}`, category: "drywall", unit: "sheet", price: +(price * (len / 8)).toFixed(2), aliases: aliases.map((a) => `${a} ${len}ft`).concat(len === 8 ? aliases : []) });
   }
 }
-add({ sku: "DRY-MUD-45", name: "All-Purpose Joint Compound 4.5 gal Bucket", category: "drywall", unit: "bucket", price: 17, aliases: ["mud", "joint compound", "5 gal mud"] });
+add({ sku: "DRY-MUD-45", name: "All-Purpose Joint Compound 17 L Pail", category: "drywall", unit: "bucket", price: 17, aliases: ["mud", "joint compound", "4.5 gal", "5 gal mud"] });
 add({ sku: "DRY-TAPE-250", name: "Paper Drywall Joint Tape 250 ft Roll", category: "drywall", unit: "roll", price: 4.5, aliases: ["tape", "paper tape"] });
 add({ sku: "DRY-TAPE-MESH", name: "Self-Adhesive Mesh Drywall Tape 300 ft Roll", category: "drywall", unit: "roll", price: 7, aliases: ["mesh tape"] });
 
@@ -127,19 +130,19 @@ add({ sku: "HDW-JH-2X6-BOX", name: "Face-Mount Joist Hanger for 2x6, Box of 25",
 
 // Concrete & masonry
 for (const [k, name, p, aliases] of [
-  ["CON-60", "Concrete Mix 60 lb Bag", 5.6, ["60lb concrete", "concrete mix"]],
-  ["CON-80", "Concrete Mix 80 lb Bag", 6.9, ["80lb concrete", "80 lb crete"]],
-  ["CON-FAST-50", "Fast-Setting Concrete Mix 50 lb Bag", 8.5, ["fast set", "quikrete fast"]],
-  ["MORT-60", "Type S Mortar Mix 60 lb Bag", 9.5, ["mortar", "type s mortar"]],
-  ["MORT-80", "Type N Mortar Mix 80 lb Bag", 11, ["type n mortar"]],
-  ["SAND-50", "All-Purpose Sand 50 lb Bag", 5, ["sand", "play sand"]],
-  ["GRAV-50", "Crushed Gravel 50 lb Bag", 6, ["gravel", "stone bag"]],
+  ["CON-30KG", "Concrete Mix 30 kg Bag", 8.5, ["30kg concrete", "30 kg concrete", "concrete mix", "concrete"]],
+  ["CON-FAST-20KG", "Fast-Setting Concrete Mix 20 kg Bag", 11, ["fast set", "fast-set concrete", "quikrete fast"]],
+  ["CEM-GU-30KG", "Portland Cement Type GU 30 kg Bag", 16, ["portland cement", "gu cement", "cement"]],
+  ["MORT-S-30KG", "Type S Mortar Mix 30 kg Bag", 11.5, ["mortar", "type s mortar", "30kg mortar"]],
+  ["MORT-N-30KG", "Type N Mortar Mix 30 kg Bag", 10.5, ["type n mortar"]],
+  ["SAND-30KG", "All-Purpose Sand 30 kg Bag", 5.5, ["sand", "play sand"]],
+  ["GRAV-30KG", "Crushed Gravel 30 kg Bag", 6.5, ["gravel", "stone bag"]],
   ["CMU-8", "8x8x16 Concrete Block", 2.4, ["cinder block", "8in block", "block"]],
   ["CMU-CAP", "4x8x16 Solid Concrete Cap Block", 2.1, ["cap block"]],
   ["MESH-5X10", "6x6 W1.4 Welded Wire Mesh 5x10 Sheet", 14, ["wire mesh", "6x6 mesh"]],
-  ["REBAR-3-10", "#3 (3/8\") x 10' Rebar", 5.2, ["3 rebar", "#3 rebar", "3/8 rebar"]],
-  ["REBAR-4-10", "#4 (1/2\") x 10' Rebar", 8.4, ["4 rebar", "#4 rebar", "1/2 rebar"]],
-  ["REBAR-4-20", "#4 (1/2\") x 20' Rebar", 16.5, ["20ft 4 rebar"]],
+  ["REBAR-10M-3M", "10M (approx. 3/8\") x 3 m Rebar", 5.2, ["10m rebar", "3 rebar", "#3 rebar", "3/8 rebar"]],
+  ["REBAR-15M-3M", "15M (approx. 1/2\") x 3 m Rebar", 8.4, ["15m rebar", "4 rebar", "#4 rebar", "1/2 rebar"]],
+  ["REBAR-15M-6M", "15M (approx. 1/2\") x 6 m Rebar", 16.5, ["6m 15m rebar", "20ft 4 rebar"]],
   ["FORM-SONO-8", "8\" x 4' Concrete Tube Form", 19, ["sonotube 8", "8in tube form"]],
   ["FORM-SONO-12", "12\" x 4' Concrete Tube Form", 28, ["sonotube 12", "12in tube form"]],
 ] as [string, string, number, string[]][]) add({ sku: k.startsWith("CMU") ? `MAS-${k}` : k.startsWith("MESH") || k.startsWith("REBAR") || k.startsWith("FORM") ? `CON-${k}` : k.startsWith("CON") ? k : `MAS-${k}`, name, category: "concrete_masonry", unit: k.startsWith("REBAR") || k.startsWith("CMU") || k.startsWith("FORM") ? "each" : k.startsWith("MESH") ? "sheet" : "bag", price: p, aliases });
@@ -161,15 +164,15 @@ for (const [k, name, p, unit, aliases] of [
 
 // Insulation
 for (const [k, name, p, unit, aliases] of [
-  ["R13-15", "R-13 Kraft-Faced Batt 3.5\" x 15\" x 93\" (Bag)", 62, "bag", ["r13", "r13 batts", "r-13 15in"]],
-  ["R13-23", "R-13 Kraft-Faced Batt 3.5\" x 23\" x 93\" (Bag)", 78, "bag", ["r13 23in"]],
-  ["R19-15", "R-19 Kraft-Faced Batt 6.25\" x 15\" x 93\" (Bag)", 74, "bag", ["r19", "r19 batts", "r-19 15in"]],
-  ["R19-23", "R-19 Kraft-Faced Batt 6.25\" x 23\" x 93\" (Bag)", 92, "bag", ["r19 23in"]],
-  ["R30-16", "R-30 Unfaced Batt 9.5\" x 16\" x 48\" (Bag)", 68, "bag", ["r30", "r30 batts"]],
-  ["R38-16", "R-38 Unfaced Batt 12\" x 16\" x 48\" (Bag)", 82, "bag", ["r38"]],
+  ["R12-15", "R-12 Kraft-Faced Batt 3.5\" x 15\" x 93\" (Bag)", 62, "bag", ["r12", "r12 batts", "r-12 15in"]],
+  ["R12-23", "R-12 Kraft-Faced Batt 3.5\" x 23\" x 93\" (Bag)", 78, "bag", ["r12 23in"]],
+  ["R20-15", "R-20 Kraft-Faced Batt 5.5\" x 15\" x 93\" (Bag)", 74, "bag", ["r20", "r20 batts", "r-20 15in"]],
+  ["R20-23", "R-20 Kraft-Faced Batt 5.5\" x 23\" x 93\" (Bag)", 92, "bag", ["r20 23in"]],
+  ["R31-16", "R-31 Unfaced Batt 9.5\" x 16\" x 48\" (Bag)", 68, "bag", ["r31", "r31 batts"]],
+  ["R40-16", "R-40 Unfaced Batt 12\" x 16\" x 48\" (Bag)", 82, "bag", ["r40"]],
   ["FOAM-1", "1\" x 4' x 8' Rigid Foam Board", 28, "sheet", ["1in foam", "foam board", "pink board 1in"]],
   ["FOAM-2", "2\" x 4' x 8' Rigid Foam Board", 48, "sheet", ["2in foam", "pink board 2in"]],
-  ["SPRAY-CAN", "Expanding Foam Sealant 12 oz Can", 7, "each", ["great stuff", "spray foam can"]],
+  ["SPRAY-CAN", "Expanding Foam Sealant 340 g Can", 7, "each", ["great stuff", "spray foam can"]],
 ] as [string, string, number, string, string[]][]) add({ sku: `INS-${k}`, name, category: "insulation", unit, price: p, aliases });
 
 // Weatherproofing / house wrap
@@ -194,15 +197,15 @@ add({ sku: "TRM-LAP-8", name: "8\" x 12' Fiber-Cement Lap Siding, Primed", categ
 
 // Adhesives & sealants, supplies
 for (const [k, name, p, unit, aliases] of [
-  ["ADH-CONST-10", "Heavy-Duty Construction Adhesive 10 oz Tube", 5.5, "each", ["liquid nails", "construction adhesive", "PL tube"]],
-  ["ADH-SUBFL-28", "Subfloor Construction Adhesive 28 oz Tube", 8, "each", ["subfloor glue", "subfloor adhesive"]],
-  ["CAULK-SIL-CLR", "100% Silicone Caulk 10 oz, Clear", 8.5, "each", ["silicone", "clear silicone"]],
-  ["CAULK-LAT-WHT", "Paintable Acrylic Latex Caulk 10 oz, White", 4, "each", ["caulk", "white caulk", "latex caulk"]],
-  ["GLUE-WOOD-16", "Wood Glue 16 oz", 6, "each", ["titebond", "wood glue"]],
-  ["SEAL-EXT-5G", "Exterior Wood Stain and Sealer 5 gal", 120, "pail", ["5 gal stain", "deck stain"]],
+  ["ADH-CONST-10", "Heavy-Duty Construction Adhesive 295 mL Tube", 5.5, "each", ["liquid nails", "construction adhesive", "PL tube"]],
+  ["ADH-SUBFL-28", "Subfloor Construction Adhesive 828 mL Tube", 8, "each", ["subfloor glue", "subfloor adhesive"]],
+  ["CAULK-SIL-CLR", "100% Silicone Caulk 300 mL, Clear", 8.5, "each", ["silicone", "clear silicone"]],
+  ["CAULK-LAT-WHT", "Paintable Acrylic Latex Caulk 300 mL, White", 4, "each", ["caulk", "white caulk", "latex caulk"]],
+  ["GLUE-WOOD-16", "Wood Glue 500 mL", 6, "each", ["titebond", "wood glue"]],
+  ["SEAL-EXT-5G", "Exterior Wood Stain and Sealer 18.9 L Pail", 120, "pail", ["5 gal stain", "5-gal", "deck stain"]],
   ["SHIM-42", "Cedar Wood Shims 42 ct Bundle", 4.5, "bundle", ["shims", "cedar shims"]],
   ["BLADE-712", "7-1/4\" 24T Framing Circular Saw Blade", 12, "each", ["saw blade", "circ blade"]],
-  ["LINE-CHALK-BL", "Blue Chalk Refill 8 oz", 5, "each", ["blue chalk", "chalk"]],
+  ["LINE-CHALK-BL", "Blue Chalk Refill 227 g", 5, "each", ["blue chalk", "chalk"]],
   ["STAKE-24", "24\" Wood Stakes, Bundle of 12", 11, "bundle", ["stakes", "grade stakes"]],
 ] as [string, string, number, string, string[]][]) add({ sku: `SUP-${k}`, name, category: k.startsWith("ADH") || k.startsWith("CAULK") || k.startsWith("GLUE") || k.startsWith("SEAL") ? "adhesives_sealants" : "tools_supplies", unit, price: p, aliases });
 

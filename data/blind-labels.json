@@ -1,0 +1,706 @@
+[
+ {
+  "id": "o01-1",
+  "sku": "LBR-2X4-08-SPF",
+  "qty": 12,
+  "unit": "each",
+  "shouldReview": false,
+  "reason": "Clear match."
+ },
+ {
+  "id": "o01-2",
+  "sku": "LBR-2X6-10-SPF",
+  "qty": 8,
+  "unit": "each",
+  "shouldReview": false,
+  "reason": "Clear match."
+ },
+ {
+  "id": "o01-3",
+  "sku": "LBR-2X4-12-SPF",
+  "qty": 10,
+  "unit": "each",
+  "shouldReview": false,
+  "reason": "Clear match."
+ },
+ {
+  "id": "o01-4",
+  "sku": "SHT-OSB-716",
+  "qty": 20,
+  "unit": "sheet",
+  "shouldReview": false,
+  "reason": "7/16 OSB sheets."
+ },
+ {
+  "id": "o01-5",
+  "sku": "FST-16D-COM-5LB",
+  "qty": 1,
+  "unit": "box",
+  "shouldReview": false,
+  "reason": "Clear match."
+ },
+ {
+  "id": "o02-1",
+  "sku": "DRY-12-REG-4X8",
+  "qty": 30,
+  "unit": "sheet",
+  "shouldReview": false,
+  "reason": "Clear match."
+ },
+ {
+  "id": "o02-2",
+  "sku": "DRY-58-X-4X12",
+  "qty": 10,
+  "unit": "sheet",
+  "shouldReview": false,
+  "reason": "Clear match."
+ },
+ {
+  "id": "o02-3",
+  "sku": "DRY-MUD-45",
+  "qty": 2,
+  "unit": "bucket",
+  "shouldReview": false,
+  "reason": "4.5 gal joint compound bucket."
+ },
+ {
+  "id": "o02-4",
+  "sku": "DRY-TAPE-250",
+  "qty": 3,
+  "unit": "roll",
+  "shouldReview": false,
+  "reason": "Paper tape rolls."
+ },
+ {
+  "id": "o02-5",
+  "sku": "FST-DRY-158-5LB",
+  "qty": 2,
+  "unit": "box",
+  "shouldReview": false,
+  "reason": "Standard coarse 1-5/8 drywall screws, 5 lb."
+ },
+ {
+  "id": "o03-1",
+  "sku": "CON-30KG",
+  "qty": 40,
+  "unit": "bag",
+  "shouldReview": false,
+  "reason": "Clear match."
+ },
+ {
+  "id": "o03-2",
+  "sku": "CON-REBAR-15M-3M",
+  "qty": 10,
+  "unit": "each",
+  "shouldReview": false,
+  "reason": "15M 3 m pieces."
+ },
+ {
+  "id": "o03-3",
+  "sku": "CON-MESH-5X10",
+  "qty": 2,
+  "unit": "sheet",
+  "shouldReview": false,
+  "reason": "6x6 mesh sheets."
+ },
+ {
+  "id": "o03-4",
+  "sku": "CON-FORM-SONO-12",
+  "qty": 4,
+  "unit": "each",
+  "shouldReview": false,
+  "reason": "12 in tube forms."
+ },
+ {
+  "id": "o04-1",
+  "sku": "ROF-SHG-ARCH-BLK",
+  "qty": 24,
+  "unit": "bundle",
+  "shouldReview": false,
+  "reason": "Architectural onyx black."
+ },
+ {
+  "id": "o04-2",
+  "sku": "ROF-UNDER-SYN",
+  "qty": 3,
+  "unit": "roll",
+  "shouldReview": false,
+  "reason": "Synthetic underlayment."
+ },
+ {
+  "id": "o04-3",
+  "sku": "ROF-DRIP-10",
+  "qty": 10,
+  "unit": "each",
+  "shouldReview": false,
+  "reason": "White drip edge 10 ft."
+ },
+ {
+  "id": "o04-4",
+  "sku": "ROF-ICE-36",
+  "qty": 2,
+  "unit": "roll",
+  "shouldReview": false,
+  "reason": "Ice and water 36 in."
+ },
+ {
+  "id": "o05-1",
+  "sku": "LBR-2X4-08-PT",
+  "qty": 15,
+  "unit": "each",
+  "shouldReview": false,
+  "reason": "Clear match."
+ },
+ {
+  "id": "o05-2",
+  "sku": "LBR-2X6-12-PT",
+  "qty": 10,
+  "unit": "each",
+  "shouldReview": false,
+  "reason": "Clear match."
+ },
+ {
+  "id": "o05-3",
+  "sku": "LBR-4X4-10-PT",
+  "qty": 6,
+  "unit": "each",
+  "shouldReview": false,
+  "reason": "Clear match."
+ },
+ {
+  "id": "o05-4",
+  "sku": "FST-DECK-3-TAN-5LB",
+  "qty": 2,
+  "unit": "box",
+  "shouldReview": false,
+  "reason": "3 in tan 5 lb box x2."
+ },
+ {
+  "id": "o05-5",
+  "sku": "DCK-54-16-PT",
+  "qty": 40,
+  "unit": "each",
+  "shouldReview": false,
+  "reason": "5/4 decking in deck order; PT 16 ft."
+ },
+ {
+  "id": "o06-1",
+  "sku": "DRY-58-X-4X8",
+  "qty": 20,
+  "unit": "sheet",
+  "shouldReview": false,
+  "reason": "Clear match."
+ },
+ {
+  "id": "o06-2",
+  "sku": "DRY-58-REG-4X8",
+  "qty": 10,
+  "unit": "sheet",
+  "shouldReview": false,
+  "reason": "Clear match."
+ },
+ {
+  "id": "o06-3",
+  "sku": "DRY-12-MR-4X8",
+  "qty": 6,
+  "unit": "sheet",
+  "shouldReview": false,
+  "reason": "Greenboard 1/2 4x8."
+ },
+ {
+  "id": "o06-4",
+  "sku": "DRY-MUD-45",
+  "qty": 3,
+  "unit": "bucket",
+  "shouldReview": false,
+  "reason": "Mud buckets."
+ },
+ {
+  "id": "o06-5",
+  "sku": "DRY-TAPE-MESH",
+  "qty": 2,
+  "unit": "roll",
+  "shouldReview": false,
+  "reason": "Mesh tape rolls."
+ },
+ {
+  "id": "o07-1",
+  "sku": "HDW-JH-2X6-BOX",
+  "qty": 2,
+  "unit": "box",
+  "shouldReview": false,
+  "reason": "Boxes of 2x6 hangers."
+ },
+ {
+  "id": "o07-2",
+  "sku": "HDW-HT-H2-5",
+  "qty": 50,
+  "unit": "each",
+  "shouldReview": false,
+  "reason": "Hurricane ties."
+ },
+ {
+  "id": "o07-3",
+  "sku": "FST-16D-SINK-50LB",
+  "qty": 1,
+  "unit": "box",
+  "shouldReview": false,
+  "reason": "50 lb sinkers = one 50 lb box."
+ },
+ {
+  "id": "o07-4",
+  "sku": "LBR-2X10-16-SPF",
+  "qty": 12,
+  "unit": "each",
+  "shouldReview": false,
+  "reason": "Clear match."
+ },
+ {
+  "id": "o07-5",
+  "sku": "HDW-JH-2X10",
+  "qty": 30,
+  "unit": "each",
+  "shouldReview": false,
+  "reason": "Clear match."
+ },
+ {
+  "id": "o08-1",
+  "sku": "SHT-PLY-CDX-12",
+  "qty": 12,
+  "unit": "sheet",
+  "shouldReview": false,
+  "reason": "Clear match."
+ },
+ {
+  "id": "o08-2",
+  "sku": "SHT-OSB-2332",
+  "qty": 30,
+  "unit": "sheet",
+  "shouldReview": false,
+  "reason": "3/4 T&G OSB maps to 23/32 T&G subfloor."
+ },
+ {
+  "id": "o08-3",
+  "sku": "SHT-PLY-PT-34",
+  "qty": 4,
+  "unit": "sheet",
+  "shouldReview": false,
+  "reason": "3/4 PT ply."
+ },
+ {
+  "id": "o08-4",
+  "sku": "SUP-ADH-CONST-10",
+  "qty": 12,
+  "unit": "each",
+  "shouldReview": false,
+  "reason": "Liquid nails alias."
+ },
+ {
+  "id": "o08-5",
+  "sku": "SUP-ADH-SUBFL-28",
+  "qty": 12,
+  "unit": "each",
+  "shouldReview": false,
+  "reason": "Subfloor glue."
+ },
+ {
+  "id": "o09-1",
+  "sku": "INS-R20-15",
+  "qty": 8,
+  "unit": "bag",
+  "shouldReview": false,
+  "reason": "Clear match."
+ },
+ {
+  "id": "o09-2",
+  "sku": "INS-R12-23",
+  "qty": 4,
+  "unit": "bag",
+  "shouldReview": false,
+  "reason": "Clear match."
+ },
+ {
+  "id": "o09-3",
+  "sku": "WTH-WRAP-9",
+  "qty": 2,
+  "unit": "roll",
+  "shouldReview": false,
+  "reason": "Tyvek 9 ft."
+ },
+ {
+  "id": "o09-4",
+  "sku": "WTH-FLASH-6",
+  "qty": 3,
+  "unit": "roll",
+  "shouldReview": false,
+  "reason": "Flashing tape 6 in."
+ },
+ {
+  "id": "o09-5",
+  "sku": "WTH-CAP-1",
+  "qty": 2,
+  "unit": "box",
+  "shouldReview": false,
+  "reason": "Cap nails boxes."
+ },
+ {
+  "id": "o09-6",
+  "sku": "WTH-POLY-6",
+  "qty": 1,
+  "unit": "roll",
+  "shouldReview": false,
+  "reason": "6 mil poly."
+ },
+ {
+  "id": "o10-1",
+  "sku": "LBR-6X6-10-PT",
+  "qty": 8,
+  "unit": "each",
+  "shouldReview": false,
+  "reason": "Clear match."
+ },
+ {
+  "id": "o10-2",
+  "sku": "LBR-4X4-8-PT",
+  "qty": 10,
+  "unit": "each",
+  "shouldReview": false,
+  "reason": "Clear match."
+ },
+ {
+  "id": "o10-3",
+  "sku": "CON-FORM-SONO-12",
+  "qty": 8,
+  "unit": "each",
+  "shouldReview": false,
+  "reason": "Sonotube 12."
+ },
+ {
+  "id": "o10-4",
+  "sku": "CON-30KG",
+  "qty": 30,
+  "unit": "bag",
+  "shouldReview": false,
+  "reason": "Clear match."
+ },
+ {
+  "id": "o10-5",
+  "sku": "FST-ATROD-12-8",
+  "qty": 20,
+  "unit": "each",
+  "shouldReview": false,
+  "reason": "1/2 x 8 anchor bolts."
+ },
+ {
+  "id": "o10-6",
+  "sku": "FST-ANCH-12-50",
+  "qty": 1,
+  "unit": "box",
+  "shouldReview": false,
+  "reason": "1/2 wedge anchors, one box."
+ },
+ {
+  "id": "o11-1",
+  "sku": "LBR-2X6-08-SPF",
+  "qty": 20,
+  "unit": "each",
+  "shouldReview": true,
+  "reason": "Species/treatment not stated (SPF vs PT); assumed SPF."
+ },
+ {
+  "id": "o11-2",
+  "sku": null,
+  "qty": 15,
+  "unit": "each",
+  "shouldReview": true,
+  "reason": "2x4 length and treatment not specified."
+ },
+ {
+  "id": "o11-3",
+  "sku": null,
+  "qty": 2,
+  "unit": "each",
+  "shouldReview": true,
+  "reason": "4x4 length and SPF/PT not specified."
+ },
+ {
+  "id": "o12-1",
+  "sku": "ROF-SHG-3TAB-GRY",
+  "qty": 1,
+  "unit": "bundle",
+  "shouldReview": true,
+  "reason": "Shingle type/colour not specified (3-tab vs architectural)."
+ },
+ {
+  "id": "o12-2",
+  "sku": "ROF-UNDER-15",
+  "qty": 2,
+  "unit": "roll",
+  "shouldReview": true,
+  "reason": "Felt weight (#15 vs #30) not specified."
+ },
+ {
+  "id": "o12-3",
+  "sku": null,
+  "qty": 1,
+  "unit": "box",
+  "shouldReview": true,
+  "reason": "Screw type/size/length unspecified."
+ },
+ {
+  "id": "o12-4",
+  "sku": "MAS-CMU-8",
+  "qty": null,
+  "unit": "each",
+  "shouldReview": true,
+  "reason": "Half pallet: block per pallet unknown, block type unspecified."
+ },
+ {
+  "id": "o13-1",
+  "sku": "LBR-2X4-PRECUT-SPF",
+  "qty": 50,
+  "unit": "each",
+  "shouldReview": false,
+  "reason": "Studs default to 2x4 precut."
+ },
+ {
+  "id": "o13-2",
+  "sku": "SHT-PLY-CDX-12",
+  "qty": 3,
+  "unit": "sheet",
+  "shouldReview": false,
+  "reason": "1/2 plywood maps to 1/2 CDX."
+ },
+ {
+  "id": "o13-3",
+  "sku": "DRY-MUD-45",
+  "qty": 6,
+  "unit": "bucket",
+  "shouldReview": false,
+  "reason": "Mud buckets."
+ },
+ {
+  "id": "o13-4",
+  "sku": "DRY-TAPE-250",
+  "qty": 1,
+  "unit": "roll",
+  "shouldReview": true,
+  "reason": "Paper vs mesh tape unspecified; 100 ft is less than one roll."
+ },
+ {
+  "id": "o14-1",
+  "sku": "FST-16D-COM-5LB",
+  "qty": 2,
+  "unit": "box",
+  "shouldReview": true,
+  "reason": "Common vs sinker unspecified; 10 lb = 2 x 5 lb boxes if common."
+ },
+ {
+  "id": "o14-2",
+  "sku": "SUP-CAULK-LAT-WHT",
+  "qty": 4,
+  "unit": "each",
+  "shouldReview": true,
+  "reason": "Caulk type (latex vs silicone) unspecified."
+ },
+ {
+  "id": "o14-3",
+  "sku": "MAS-CEM-GU-30KG",
+  "qty": 2,
+  "unit": "bag",
+  "shouldReview": false,
+  "reason": "Cement alias to GU 30 kg."
+ },
+ {
+  "id": "o14-4",
+  "sku": "CON-REBAR-15M-3M",
+  "qty": 10,
+  "unit": "each",
+  "shouldReview": true,
+  "reason": "30 m could be 10x3 m or 5x6 m; unit is metres not pieces."
+ },
+ {
+  "id": "o15-1",
+  "sku": "LBR-2X4-08-SPF",
+  "qty": 30,
+  "unit": "each",
+  "shouldReview": false,
+  "reason": "Order says regular SPF, not treated."
+ },
+ {
+  "id": "o15-2",
+  "sku": "LBR-2X6-08-SPF",
+  "qty": 12,
+  "unit": "each",
+  "shouldReview": false,
+  "reason": "Order says regular SPF, not treated."
+ },
+ {
+  "id": "o15-3",
+  "sku": "SHT-PLY-CDX-34",
+  "qty": 4,
+  "unit": "sheet",
+  "shouldReview": false,
+  "reason": "3/4 CDX."
+ },
+ {
+  "id": "o16-1",
+  "sku": null,
+  "qty": null,
+  "unit": null,
+  "shouldReview": true,
+  "reason": "Refers to a prior order not provided; unresolvable."
+ },
+ {
+  "id": "o17-1",
+  "sku": "LBR-2X8-12-PT",
+  "qty": 14,
+  "unit": "each",
+  "shouldReview": false,
+  "reason": "Clear match."
+ },
+ {
+  "id": "o17-2",
+  "sku": "LBR-2X10-12-PT",
+  "qty": 2,
+  "unit": "each",
+  "shouldReview": false,
+  "reason": "Clear match."
+ },
+ {
+  "id": "o17-3",
+  "sku": "LBR-4X4-8-PT",
+  "qty": 9,
+  "unit": "each",
+  "shouldReview": false,
+  "reason": "Clear match."
+ },
+ {
+  "id": "o17-4",
+  "sku": "FST-DECK-3-TAN-25LB",
+  "qty": 1,
+  "unit": "box",
+  "shouldReview": false,
+  "reason": "3 in tan 25 lb box."
+ },
+ {
+  "id": "o17-5",
+  "sku": "HDW-JH-2X8",
+  "qty": 28,
+  "unit": "each",
+  "shouldReview": false,
+  "reason": "Hangers for 2x8."
+ },
+ {
+  "id": "o18-1",
+  "sku": "ROF-SHG-ARCH-BRN",
+  "qty": 18,
+  "unit": "bundle",
+  "shouldReview": false,
+  "reason": "Weathered wood architectural."
+ },
+ {
+  "id": "o18-2",
+  "sku": "ROF-UNDER-30",
+  "qty": 2,
+  "unit": "roll",
+  "shouldReview": false,
+  "reason": "#30 felt."
+ },
+ {
+  "id": "o18-3",
+  "sku": "ROF-DRIP-10-BRN",
+  "qty": 6,
+  "unit": "each",
+  "shouldReview": false,
+  "reason": "Brown drip edge."
+ },
+ {
+  "id": "o18-4",
+  "sku": "ROF-SHG-RIDGE",
+  "qty": 2,
+  "unit": "bundle",
+  "shouldReview": false,
+  "reason": "Hip and ridge bundles."
+ },
+ {
+  "id": "o18-5",
+  "sku": "ROF-VENT-RIDGE",
+  "qty": 5,
+  "unit": "each",
+  "shouldReview": false,
+  "reason": "Ridge vent."
+ },
+ {
+  "id": "o18-6",
+  "sku": null,
+  "qty": null,
+  "unit": null,
+  "shouldReview": true,
+  "reason": "Question about dumpster rental, not a catalog product."
+ },
+ {
+  "id": "o19-1",
+  "sku": "LBR-2X4-08-SPF",
+  "qty": 200,
+  "unit": "each",
+  "shouldReview": false,
+  "reason": "Large but plausible for a yard order."
+ },
+ {
+  "id": "o19-2",
+  "sku": "DRY-12-REG-4X8",
+  "qty": 5000,
+  "unit": "sheet",
+  "shouldReview": true,
+  "reason": "Absurd quantity; also length/type unspecified."
+ },
+ {
+  "id": "o19-3",
+  "sku": null,
+  "qty": 3,
+  "unit": "each",
+  "shouldReview": true,
+  "reason": "Equipment rental not in catalog."
+ },
+ {
+  "id": "o19-4",
+  "sku": null,
+  "qty": 1,
+  "unit": "each",
+  "shouldReview": true,
+  "reason": "Tile saw not in catalog."
+ },
+ {
+  "id": "o20-1",
+  "sku": "LBR-2X6-10-SPF",
+  "qty": 9000,
+  "unit": "each",
+  "shouldReview": true,
+  "reason": "Absurd quantity, likely typo."
+ },
+ {
+  "id": "o20-2",
+  "sku": null,
+  "qty": 2,
+  "unit": "sq",
+  "shouldReview": true,
+  "reason": "Cedar shakes not in catalog."
+ },
+ {
+  "id": "o20-3",
+  "sku": null,
+  "qty": 60,
+  "unit": "sheet",
+  "shouldReview": true,
+  "reason": "Marine plywood not in catalog; 60 unit unclear."
+ },
+ {
+  "id": "o20-4",
+  "sku": "SUP-SEAL-EXT-5G",
+  "qty": 40,
+  "unit": "pail",
+  "shouldReview": true,
+  "reason": "Unusually large quantity; deck stain alias, confirm product."
+ }
+]

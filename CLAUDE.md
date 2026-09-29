@@ -39,6 +39,14 @@ alongside. All data is synthetic. Not affiliated with any company.
    catalog in one call, returning a sku plus confidence (high/medium/low)
 Every step records time (ms), tokens and cost (USD). Prices are constants in lib/pricing.ts.
 
+## House defaults
+`data/house-defaults.md` holds the business rules a counter person assumes (SPF #2 kiln-dried framing,
+precut studs, 1/2" regular drywall, 30 kg bags, and so on), the "no default: always review" list,
+and the large-quantity rule (100+ pieces or 50+ of other units). Units are Canadian. Both pipelines
+get the same rules via `lib/house-defaults.ts` (Claude prompt and Jev state), so the comparison
+stays fair. They are business rules, not answers: never pass `labels.json` or `blind-labels.json`
+to either pipeline (a test enforces this in `lib/`, `app/`, `components/`).
+
 ## Data (data/)
 - catalog.json: about 200 items {sku, name, category, unit, price, aliases[]}.
   Include look-alikes: lengths, PT vs SPF, drywall thicknesses, box sizes
