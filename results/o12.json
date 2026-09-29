@@ -1,0 +1,299 @@
+{
+  "orderId": "o12",
+  "text": "a bundle of shingles\n2 rolls felt\na box of screws\nhalf a pallet of block\n",
+  "model": "claude-sonnet-5-5",
+  "parse": {
+    "lines": [
+      {
+        "id": "1",
+        "raw": "a bundle of shingles",
+        "item": "shingles",
+        "qty": 1,
+        "unit": "bundle"
+      },
+      {
+        "id": "2",
+        "raw": "2 rolls felt",
+        "item": "felt",
+        "qty": 2,
+        "unit": "rolls"
+      },
+      {
+        "id": "3",
+        "raw": "a box of screws",
+        "item": "screws",
+        "qty": 1,
+        "unit": "box"
+      },
+      {
+        "id": "4",
+        "raw": "half a pallet of block",
+        "item": "block",
+        "qty": 0.5,
+        "unit": "pallet"
+      }
+    ],
+    "ms": 1562.000457999995,
+    "usage": {
+      "inputTokens": 3435,
+      "outputTokens": 190
+    },
+    "costUsd": 0.013155
+  },
+  "jev": {
+    "lines": [
+      {
+        "lineId": "1",
+        "shortlist": [
+          "ROF-SHG-3TAB-GRY",
+          "ROF-SHG-ARCH-BLK",
+          "ROF-SHG-ARCH-BRN",
+          "ROF-SHG-RIDGE",
+          "WTH-FLASH-6",
+          "HDW-JH-2X6",
+          "FST-16D-SINK-5LB",
+          "FST-16D-SINK-50LB",
+          "HDW-JH-2X4",
+          "HDW-JH-2X6-BOX",
+          "TRM-CASE-225",
+          "SUP-SHIM-42",
+          "WTH-FLASH-4",
+          "SHT-PLY-ZIP-716",
+          "HDW-JH-2X8",
+          "HDW-JH-2X10",
+          "SHT-OSB-716",
+          "SHT-OSB-12",
+          "SHT-OSB-58",
+          "ROF-ICE-36"
+        ],
+        "category": {
+          "choice": "roofing",
+          "confidence": 1
+        },
+        "sku": {
+          "choice": "NONE",
+          "confidence": 0.81,
+          "top": [
+            {
+              "sku": "NONE",
+              "probability": 0.81
+            },
+            {
+              "sku": "ROF-SHG-3TAB-GRY",
+              "probability": 0.14
+            },
+            {
+              "sku": "ROF-SHG-ARCH-BLK",
+              "probability": 0.04
+            }
+          ]
+        },
+        "unitOk": 0.88,
+        "ms": 215.567375000006,
+        "usage": {
+          "inputTokens": 3439,
+          "outputTokens": 461
+        },
+        "costUsd": 0.000144438
+      },
+      {
+        "lineId": "2",
+        "shortlist": [
+          "ROF-UNDER-15",
+          "ROF-UNDER-30",
+          "ROF-UNDER-SYN",
+          "FST-DRY-158-FINE-1LB",
+          "FST-DRY-158-FINE-5LB",
+          "FST-DRY-158-FINE-25LB",
+          "CON-30KG",
+          "DRY-12-REG-4X8",
+          "DRY-58-X-4X8",
+          "DRY-58-X-4X10",
+          "DRY-58-X-4X12",
+          "DRY-14-FLEX-4X8",
+          "FST-ATROD-12-6",
+          "FST-ATROD-12-8",
+          "FST-ATROD-58-10",
+          "CON-FAST-20KG",
+          "MAS-CEM-GU-30KG",
+          "LBR-2X4-08-PT",
+          "LBR-2X4-10-PT",
+          "LBR-2X4-12-PT"
+        ],
+        "category": {
+          "choice": "roofing",
+          "confidence": 0.99
+        },
+        "sku": {
+          "choice": "NONE",
+          "confidence": 0.81,
+          "top": [
+            {
+              "sku": "NONE",
+              "probability": 0.8099999999999999
+            },
+            {
+              "sku": "ROF-UNDER-15",
+              "probability": 0.12
+            },
+            {
+              "sku": "ROF-UNDER-30",
+              "probability": 0.06
+            }
+          ]
+        },
+        "unitOk": 0.87,
+        "ms": 245.19850000000588,
+        "usage": {
+          "inputTokens": 3472,
+          "outputTokens": 501
+        },
+        "costUsd": 0.000145824
+      },
+      {
+        "lineId": "3",
+        "shortlist": [
+          "FST-DECK-3-TAN-1LB",
+          "FST-DECK-3-TAN-5LB",
+          "FST-DECK-3-TAN-25LB",
+          "FST-DRY-158-1LB",
+          "FST-DRY-158-5LB",
+          "FST-DRY-158-25LB",
+          "FST-DECK-25-TAN-1LB",
+          "FST-DECK-25-TAN-5LB",
+          "FST-DECK-25-TAN-25LB",
+          "FST-DRY-158-FINE-1LB",
+          "FST-DRY-158-FINE-5LB",
+          "FST-DRY-158-FINE-25LB",
+          "FST-DECK-3-GRAY-1LB",
+          "FST-DECK-3-GRAY-5LB",
+          "FST-DECK-3-GRAY-25LB",
+          "FST-DECK-25-BRN-1LB",
+          "FST-DECK-25-BRN-5LB",
+          "FST-DECK-25-BRN-25LB",
+          "FST-STRC-3-1LB",
+          "FST-STRC-3-5LB"
+        ],
+        "category": {
+          "choice": "fasteners",
+          "confidence": 1
+        },
+        "sku": {
+          "choice": "NONE",
+          "confidence": 0.97,
+          "top": [
+            {
+              "sku": "NONE",
+              "probability": 0.98
+            },
+            {
+              "sku": "FST-DRY-158-1LB",
+              "probability": 0.01
+            },
+            {
+              "sku": "FST-STRC-3-1LB",
+              "probability": 0.01
+            }
+          ]
+        },
+        "unitOk": 0.74,
+        "ms": 234.97191700000258,
+        "usage": {
+          "inputTokens": 3610,
+          "outputTokens": 536
+        },
+        "costUsd": 0.00015162
+      },
+      {
+        "lineId": "4",
+        "shortlist": [
+          "MAS-CMU-8",
+          "MAS-CMU-CAP",
+          "DRY-14-FLEX-4X8",
+          "FST-DRY-158-1LB",
+          "FST-DRY-158-5LB",
+          "FST-DRY-158-25LB",
+          "DRY-12-REG-4X8",
+          "DRY-58-REG-4X8",
+          "FST-DECK-3-TAN-1LB",
+          "FST-DECK-3-TAN-5LB",
+          "FST-DECK-3-TAN-25LB",
+          "ROF-SHG-ARCH-BLK",
+          "DRY-12-MR-4X8",
+          "FST-DECK-25-TAN-1LB",
+          "FST-DECK-25-TAN-5LB",
+          "FST-DECK-25-TAN-25LB",
+          "DRY-14-FLEX-4X10",
+          "DRY-14-FLEX-4X12",
+          "FST-STRC-3-1LB",
+          "FST-STRC-3-5LB"
+        ],
+        "category": {
+          "choice": "concrete_masonry",
+          "confidence": 1
+        },
+        "sku": {
+          "choice": "NONE",
+          "confidence": 0.74,
+          "top": [
+            {
+              "sku": "NONE",
+              "probability": 0.75
+            },
+            {
+              "sku": "MAS-CMU-8",
+              "probability": 0.23
+            },
+            {
+              "sku": "MAS-CMU-CAP",
+              "probability": 0.02
+            }
+          ]
+        },
+        "unitOk": 0.19,
+        "ms": 288.3712500000038,
+        "usage": {
+          "inputTokens": 3499,
+          "outputTokens": 508
+        },
+        "costUsd": 0.00014695799999999998
+      }
+    ],
+    "ms": 304.69949999999517,
+    "usage": {
+      "inputTokens": 14020,
+      "outputTokens": 2006
+    },
+    "costUsd": 0.00058884
+  },
+  "claudeOnly": {
+    "lines": [
+      {
+        "lineId": "1",
+        "sku": null,
+        "confidence": "low"
+      },
+      {
+        "lineId": "2",
+        "sku": null,
+        "confidence": "low"
+      },
+      {
+        "lineId": "3",
+        "sku": null,
+        "confidence": "low"
+      },
+      {
+        "lineId": "4",
+        "sku": "MAS-CMU-8",
+        "confidence": "low"
+      }
+    ],
+    "ms": 1600.4285830000008,
+    "usage": {
+      "inputTokens": 17106,
+      "outputTokens": 143
+    },
+    "costUsd": 0.053463000000000004
+  }
+}

@@ -1,0 +1,286 @@
+{
+  "orderId": "o20",
+  "text": "9000 pcs 2x6x10 SPF\ncedar shakes 2 sq\nmarine plywood 3/4 x 60\n40 5-gal pails deck stain\n",
+  "model": "claude-sonnet-5-5",
+  "parse": {
+    "lines": [
+      {
+        "id": "1",
+        "raw": "9000 pcs 2x6x10 SPF",
+        "item": "2x6x10 SPF",
+        "qty": 9000,
+        "unit": "pcs"
+      },
+      {
+        "id": "2",
+        "raw": "cedar shakes 2 sq",
+        "item": "cedar shakes",
+        "qty": 2,
+        "unit": "sq"
+      },
+      {
+        "id": "3",
+        "raw": "marine plywood 3/4 x 60",
+        "item": "marine plywood 3/4",
+        "qty": 60,
+        "unit": null
+      },
+      {
+        "id": "4",
+        "raw": "40 5-gal pails deck stain",
+        "item": "5-gal deck stain",
+        "qty": 40,
+        "unit": "pails"
+      }
+    ],
+    "ms": 1861.6790829999954,
+    "usage": {
+      "inputTokens": 3460,
+      "outputTokens": 234
+    },
+    "costUsd": 0.01389
+  },
+  "jev": {
+    "lines": [
+      {
+        "lineId": "1",
+        "shortlist": [
+          "LBR-2X6-10-SPF",
+          "LBR-2X6-10-PT",
+          "LBR-2X4-10-SPF",
+          "LBR-2X6-12-SPF",
+          "LBR-2X6-16-SPF",
+          "LBR-2X8-10-SPF",
+          "LBR-2X4-10-PT",
+          "LBR-2X6-12-PT",
+          "LBR-2X6-16-PT",
+          "LBR-2X8-10-PT",
+          "LBR-2X10-10-SPF",
+          "LBR-2X10-10-PT",
+          "LBR-2X6-08-SPF",
+          "LBR-2X12-10-SPF",
+          "LBR-2X6-08-PT",
+          "LBR-2X12-10-PT",
+          "LBR-2X4-12-SPF",
+          "LBR-2X4-16-SPF",
+          "LBR-2X8-12-SPF",
+          "LBR-2X8-16-SPF"
+        ],
+        "category": {
+          "choice": "dimensional_lumber",
+          "confidence": 1
+        },
+        "sku": {
+          "choice": "LBR-2X6-10-SPF",
+          "confidence": 0.97,
+          "top": [
+            {
+              "sku": "LBR-2X6-10-SPF",
+              "probability": 0.97
+            },
+            {
+              "sku": "NONE",
+              "probability": 0.03
+            },
+            {
+              "sku": "LBR-2X6-16-PT",
+              "probability": 0
+            }
+          ]
+        },
+        "unitOk": 0.81,
+        "ms": 336.86708300000464,
+        "usage": {
+          "inputTokens": 3580,
+          "outputTokens": 529
+        },
+        "costUsd": 0.00015036
+      },
+      {
+        "lineId": "2",
+        "shortlist": [
+          "SUP-STAKE-24",
+          "SUP-SHIM-42",
+          "FST-DRY-158-FINE-1LB",
+          "FST-DRY-158-FINE-5LB",
+          "FST-DRY-158-FINE-25LB",
+          "ROF-ICE-36",
+          "FST-16D-SINK-5LB",
+          "FST-16D-SINK-50LB",
+          "WTH-CAP-1",
+          "WTH-POLY-6",
+          "SUP-BLADE-712",
+          "DRY-TAPE-250",
+          "FST-DRY-158-1LB",
+          "FST-DRY-158-5LB",
+          "FST-DRY-158-25LB",
+          "FST-DRY-214-1LB",
+          "FST-DRY-214-5LB",
+          "FST-DRY-214-25LB",
+          "FST-10D-GALV-5LB",
+          "FST-10D-GALV-50LB"
+        ],
+        "category": {
+          "choice": "roofing",
+          "confidence": 0.86
+        },
+        "sku": {
+          "choice": "NONE",
+          "confidence": 1,
+          "top": [
+            {
+              "sku": "NONE",
+              "probability": 1
+            },
+            {
+              "sku": "FST-16D-SINK-5LB",
+              "probability": 0
+            },
+            {
+              "sku": "FST-10D-GALV-5LB",
+              "probability": 0
+            }
+          ]
+        },
+        "unitOk": 0.34,
+        "ms": 422.4302080000052,
+        "usage": {
+          "inputTokens": 3582,
+          "outputTokens": 507
+        },
+        "costUsd": 0.00015044399999999998
+      },
+      {
+        "lineId": "3",
+        "shortlist": [
+          "SHT-PLY-PT-34",
+          "SHT-PLY-BIRCH-34",
+          "SHT-PLY-CDX-12",
+          "SHT-PLY-CDX-58",
+          "SHT-PLY-CDX-34",
+          "SUP-SEAL-EXT-5G",
+          "SUP-SHIM-42"
+        ],
+        "category": {
+          "choice": "sheet_goods",
+          "confidence": 1
+        },
+        "sku": {
+          "choice": "NONE",
+          "confidence": 0.94,
+          "top": [
+            {
+              "sku": "NONE",
+              "probability": 0.95
+            },
+            {
+              "sku": "SHT-PLY-CDX-34",
+              "probability": 0.05
+            },
+            {
+              "sku": "SHT-PLY-PT-34",
+              "probability": 0
+            }
+          ]
+        },
+        "unitOk": 0.32,
+        "ms": 267.0093749999942,
+        "usage": {
+          "inputTokens": 2931,
+          "outputTokens": 274
+        },
+        "costUsd": 0.000123102
+      },
+      {
+        "lineId": "4",
+        "shortlist": [
+          "FST-DECK-3-TAN-1LB",
+          "FST-DECK-3-TAN-5LB",
+          "FST-DECK-3-TAN-25LB",
+          "FST-DECK-25-TAN-1LB",
+          "FST-DECK-25-TAN-5LB",
+          "FST-DECK-25-TAN-25LB",
+          "SUP-SEAL-EXT-5G",
+          "FST-DECK-3-GRAY-1LB",
+          "FST-DECK-3-GRAY-5LB",
+          "FST-DECK-3-GRAY-25LB",
+          "FST-DECK-25-BRN-1LB",
+          "FST-DECK-25-BRN-5LB",
+          "FST-DECK-25-BRN-25LB",
+          "DCK-54-8-PT",
+          "DCK-54-12-PT",
+          "DCK-54-16-PT",
+          "DCK-COMP-8",
+          "DCK-COMP-12",
+          "DCK-COMP-16",
+          "ROF-SHG-ARCH-BLK"
+        ],
+        "category": {
+          "choice": "adhesives_sealants",
+          "confidence": 1
+        },
+        "sku": {
+          "choice": "SUP-SEAL-EXT-5G",
+          "confidence": 0.92,
+          "top": [
+            {
+              "sku": "SUP-SEAL-EXT-5G",
+              "probability": 0.92
+            },
+            {
+              "sku": "NONE",
+              "probability": 0.08
+            },
+            {
+              "sku": "FST-DECK-3-TAN-1LB",
+              "probability": 0
+            }
+          ]
+        },
+        "unitOk": 0.7,
+        "ms": 260.0159580000036,
+        "usage": {
+          "inputTokens": 3560,
+          "outputTokens": 512
+        },
+        "costUsd": 0.00014952
+      }
+    ],
+    "ms": 437.5971669999999,
+    "usage": {
+      "inputTokens": 13653,
+      "outputTokens": 1822
+    },
+    "costUsd": 0.0005734259999999999
+  },
+  "claudeOnly": {
+    "lines": [
+      {
+        "lineId": "1",
+        "sku": "LBR-2X6-10-SPF",
+        "confidence": "low"
+      },
+      {
+        "lineId": "2",
+        "sku": null,
+        "confidence": "high"
+      },
+      {
+        "lineId": "3",
+        "sku": null,
+        "confidence": "high"
+      },
+      {
+        "lineId": "4",
+        "sku": "SUP-SEAL-EXT-5G",
+        "confidence": "medium"
+      }
+    ],
+    "ms": 2156.607958000008,
+    "usage": {
+      "inputTokens": 17180,
+      "outputTokens": 162
+    },
+    "costUsd": 0.053970000000000004
+  }
+}

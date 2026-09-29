@@ -1,0 +1,365 @@
+{
+  "orderId": "o05",
+  "text": "deck order\n2x4x8 PT x 15\n2x6x12 PT x 10\n4x4x10 PT x 6\n3in deck screws 5lb tan x2\n5/4 decking 16ft x 40\n",
+  "model": "claude-sonnet-5-5",
+  "parse": {
+    "lines": [
+      {
+        "id": "1",
+        "raw": "2x4x8 PT x 15",
+        "item": "2x4x8 PT",
+        "qty": 15,
+        "unit": null
+      },
+      {
+        "id": "2",
+        "raw": "2x6x12 PT x 10",
+        "item": "2x6x12 PT",
+        "qty": 10,
+        "unit": null
+      },
+      {
+        "id": "3",
+        "raw": "4x4x10 PT x 6",
+        "item": "4x4x10 PT",
+        "qty": 6,
+        "unit": null
+      },
+      {
+        "id": "4",
+        "raw": "3in deck screws 5lb tan x2",
+        "item": "3in deck screws 5lb tan",
+        "qty": 2,
+        "unit": null
+      },
+      {
+        "id": "5",
+        "raw": "5/4 decking 16ft x 40",
+        "item": "5/4 decking 16ft",
+        "qty": 40,
+        "unit": null
+      }
+    ],
+    "ms": 2071.0470000000023,
+    "usage": {
+      "inputTokens": 3473,
+      "outputTokens": 267
+    },
+    "costUsd": 0.014424
+  },
+  "jev": {
+    "lines": [
+      {
+        "lineId": "1",
+        "shortlist": [
+          "LBR-2X4-08-PT",
+          "LBR-2X8-08-PT",
+          "LBR-2X6-08-PT",
+          "LBR-2X4-10-PT",
+          "LBR-2X4-12-PT",
+          "LBR-2X4-16-PT",
+          "LBR-2X4-08-SPF",
+          "LBR-2X12-08-PT",
+          "LBR-2X10-08-PT",
+          "LBR-2X8-08-SPF",
+          "LBR-2X8-10-PT",
+          "LBR-2X8-12-PT",
+          "LBR-2X8-16-PT",
+          "LBR-2X4-10-SPF",
+          "LBR-2X4-12-SPF",
+          "LBR-2X4-16-SPF",
+          "LBR-4X4-8-PT",
+          "LBR-2X6-08-SPF",
+          "LBR-2X6-12-PT",
+          "LBR-2X12-12-PT"
+        ],
+        "category": {
+          "choice": "dimensional_lumber",
+          "confidence": 1
+        },
+        "sku": {
+          "choice": "LBR-2X4-08-PT",
+          "confidence": 0.99,
+          "top": [
+            {
+              "sku": "LBR-2X4-08-PT",
+              "probability": 1
+            },
+            {
+              "sku": "LBR-2X4-16-PT",
+              "probability": 0
+            },
+            {
+              "sku": "LBR-2X8-08-SPF",
+              "probability": 0
+            }
+          ]
+        },
+        "unitOk": 0.93,
+        "ms": 214.9342910000014,
+        "usage": {
+          "inputTokens": 3569,
+          "outputTokens": 527
+        },
+        "costUsd": 0.000149898
+      },
+      {
+        "lineId": "2",
+        "shortlist": [
+          "LBR-2X6-12-PT",
+          "LBR-2X4-12-PT",
+          "LBR-2X6-10-PT",
+          "LBR-2X6-16-PT",
+          "LBR-2X8-12-PT",
+          "LBR-2X12-12-PT",
+          "LBR-2X6-08-PT",
+          "LBR-2X10-12-PT",
+          "LBR-2X6-12-SPF",
+          "LBR-2X12-10-PT",
+          "LBR-2X12-16-PT",
+          "LBR-2X4-10-PT",
+          "LBR-2X4-16-PT",
+          "LBR-2X8-10-PT",
+          "LBR-2X8-16-PT",
+          "LBR-2X10-10-PT",
+          "LBR-2X10-16-PT",
+          "LBR-2X12-08-PT",
+          "LBR-6X6-12-PT",
+          "LBR-2X6-10-SPF"
+        ],
+        "category": {
+          "choice": "dimensional_lumber",
+          "confidence": 1
+        },
+        "sku": {
+          "choice": "LBR-2X6-12-PT",
+          "confidence": 1,
+          "top": [
+            {
+              "sku": "LBR-2X6-12-PT",
+              "probability": 1
+            },
+            {
+              "sku": "LBR-2X4-10-PT",
+              "probability": 0
+            },
+            {
+              "sku": "NONE",
+              "probability": 0
+            }
+          ]
+        },
+        "unitOk": 0.91,
+        "ms": 208.5264590000006,
+        "usage": {
+          "inputTokens": 3583,
+          "outputTokens": 532
+        },
+        "costUsd": 0.000150486
+      },
+      {
+        "lineId": "3",
+        "shortlist": [
+          "LBR-4X4-10-PT",
+          "LBR-2X4-10-PT",
+          "LBR-2X6-10-PT",
+          "LBR-2X8-10-PT",
+          "LBR-2X4-12-PT",
+          "LBR-2X4-16-PT",
+          "LBR-2X10-10-PT",
+          "LBR-4X4-12-PT",
+          "LBR-2X4-08-PT",
+          "LBR-2X12-10-PT",
+          "LBR-4X4-10-SPF",
+          "LBR-2X4-10-SPF",
+          "LBR-4X4-8-PT",
+          "LBR-2X10-12-PT",
+          "LBR-2X10-16-PT",
+          "LBR-2X6-12-PT",
+          "LBR-2X6-16-PT",
+          "LBR-2X8-12-PT",
+          "LBR-2X8-16-PT",
+          "DRY-58-X-4X10"
+        ],
+        "category": {
+          "choice": "dimensional_lumber",
+          "confidence": 1
+        },
+        "sku": {
+          "choice": "LBR-4X4-10-PT",
+          "confidence": 0.99,
+          "top": [
+            {
+              "sku": "LBR-4X4-10-PT",
+              "probability": 0.99
+            },
+            {
+              "sku": "NONE",
+              "probability": 0.01
+            },
+            {
+              "sku": "LBR-2X4-10-PT",
+              "probability": 0
+            }
+          ]
+        },
+        "unitOk": 0.92,
+        "ms": 203.4275830000006,
+        "usage": {
+          "inputTokens": 3553,
+          "outputTokens": 528
+        },
+        "costUsd": 0.000149226
+      },
+      {
+        "lineId": "4",
+        "shortlist": [
+          "FST-DECK-3-TAN-5LB",
+          "FST-DECK-3-TAN-1LB",
+          "FST-DECK-3-TAN-25LB",
+          "FST-DECK-25-TAN-5LB",
+          "FST-DECK-25-TAN-1LB",
+          "FST-DECK-25-TAN-25LB",
+          "FST-DRY-158-5LB",
+          "FST-DECK-25-BRN-5LB",
+          "FST-DRY-158-1LB",
+          "FST-DRY-158-25LB",
+          "FST-DECK-25-BRN-1LB",
+          "FST-DECK-25-BRN-25LB",
+          "FST-DRY-158-FINE-5LB",
+          "FST-DECK-3-GRAY-5LB",
+          "FST-DECK-3-GRAY-1LB",
+          "FST-DECK-3-GRAY-25LB",
+          "FST-DRY-158-FINE-1LB",
+          "FST-DRY-158-FINE-25LB",
+          "FST-STRC-3-5LB",
+          "FST-DRY-214-5LB"
+        ],
+        "category": {
+          "choice": "fasteners",
+          "confidence": 1
+        },
+        "sku": {
+          "choice": "FST-DECK-3-TAN-5LB",
+          "confidence": 0.88,
+          "top": [
+            {
+              "sku": "FST-DECK-3-TAN-5LB",
+              "probability": 0.89
+            },
+            {
+              "sku": "NONE",
+              "probability": 0.11
+            },
+            {
+              "sku": "FST-DRY-158-1LB",
+              "probability": 0
+            }
+          ]
+        },
+        "unitOk": 0.57,
+        "ms": 220.08937499999956,
+        "usage": {
+          "inputTokens": 3668,
+          "outputTokens": 548
+        },
+        "costUsd": 0.000154056
+      },
+      {
+        "lineId": "5",
+        "shortlist": [
+          "FST-DECK-25-TAN-1LB",
+          "FST-DECK-25-TAN-5LB",
+          "FST-DECK-25-TAN-25LB",
+          "DCK-54-16-PT",
+          "DRY-58-X-4X10",
+          "DRY-58-X-4X12",
+          "DRY-14-FLEX-4X10",
+          "DRY-14-FLEX-4X12",
+          "DCK-54-8-PT",
+          "DCK-54-12-PT",
+          "DRY-12-LITE-4X10",
+          "DRY-12-LITE-4X12",
+          "DRY-58-REG-4X10",
+          "DRY-58-REG-4X12",
+          "DRY-12-REG-4X10",
+          "DRY-12-REG-4X12",
+          "DRY-58-REG-4X8",
+          "DRY-14-FLEX-4X8",
+          "DCK-COMP-8",
+          "DCK-COMP-12"
+        ],
+        "category": {
+          "choice": "decking_trim",
+          "confidence": 0.99
+        },
+        "sku": {
+          "choice": "DCK-54-16-PT",
+          "confidence": 1,
+          "top": [
+            {
+              "sku": "DCK-54-16-PT",
+              "probability": 1
+            },
+            {
+              "sku": "FST-DECK-25-TAN-1LB",
+              "probability": 0
+            },
+            {
+              "sku": "FST-DECK-25-TAN-5LB",
+              "probability": 0
+            }
+          ]
+        },
+        "unitOk": 0.85,
+        "ms": 219.35616599999776,
+        "usage": {
+          "inputTokens": 3509,
+          "outputTokens": 520
+        },
+        "costUsd": 0.00014737799999999998
+      }
+    ],
+    "ms": 256.01891700000124,
+    "usage": {
+      "inputTokens": 17882,
+      "outputTokens": 2655
+    },
+    "costUsd": 0.000751044
+  },
+  "claudeOnly": {
+    "lines": [
+      {
+        "lineId": "1",
+        "sku": "LBR-2X4-08-PT",
+        "confidence": "high"
+      },
+      {
+        "lineId": "2",
+        "sku": "LBR-2X6-12-PT",
+        "confidence": "high"
+      },
+      {
+        "lineId": "3",
+        "sku": "LBR-4X4-10-PT",
+        "confidence": "high"
+      },
+      {
+        "lineId": "4",
+        "sku": "FST-DECK-3-TAN-5LB",
+        "confidence": "high"
+      },
+      {
+        "lineId": "5",
+        "sku": "DCK-54-16-PT",
+        "confidence": "high"
+      }
+    ],
+    "ms": 1689.400292000002,
+    "usage": {
+      "inputTokens": 17235,
+      "outputTokens": 213
+    },
+    "costUsd": 0.054900000000000004
+  }
+}

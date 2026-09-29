@@ -1,0 +1,406 @@
+{
+  "orderId": "o09",
+  "text": "r20 15in x 8 bags\nr12 23in x 4\ntyvek 9ft x 2\nflashing tape 6in x 3\ncap nails 2 boxes\n6 mil poly x1\n",
+  "model": "claude-sonnet-5-5",
+  "parse": {
+    "lines": [
+      {
+        "id": "1",
+        "raw": "r20 15in x 8 bags",
+        "item": "r20 15in",
+        "qty": 8,
+        "unit": "bags"
+      },
+      {
+        "id": "2",
+        "raw": "r12 23in x 4",
+        "item": "r12 23in",
+        "qty": 4,
+        "unit": null
+      },
+      {
+        "id": "3",
+        "raw": "tyvek 9ft x 2",
+        "item": "tyvek 9ft",
+        "qty": 2,
+        "unit": null
+      },
+      {
+        "id": "4",
+        "raw": "flashing tape 6in x 3",
+        "item": "flashing tape 6in",
+        "qty": 3,
+        "unit": null
+      },
+      {
+        "id": "5",
+        "raw": "cap nails 2 boxes",
+        "item": "cap nails",
+        "qty": 2,
+        "unit": "boxes"
+      },
+      {
+        "id": "6",
+        "raw": "6 mil poly x1",
+        "item": "6 mil poly",
+        "qty": 1,
+        "unit": null
+      }
+    ],
+    "ms": 2144.415000000001,
+    "usage": {
+      "inputTokens": 3469,
+      "outputTokens": 285
+    },
+    "costUsd": 0.014682
+  },
+  "jev": {
+    "lines": [
+      {
+        "lineId": "1",
+        "shortlist": [
+          "INS-R20-15",
+          "INS-R12-15",
+          "INS-R20-23",
+          "INS-FOAM-1",
+          "ROF-SHG-ARCH-BLK",
+          "INS-R12-23",
+          "INS-FOAM-2"
+        ],
+        "category": {
+          "choice": "insulation",
+          "confidence": 0.97
+        },
+        "sku": {
+          "choice": "INS-R20-15",
+          "confidence": 0.89,
+          "top": [
+            {
+              "sku": "INS-R20-15",
+              "probability": 0.91
+            },
+            {
+              "sku": "NONE",
+              "probability": 0.09
+            },
+            {
+              "sku": "INS-FOAM-1",
+              "probability": 0
+            }
+          ]
+        },
+        "unitOk": 0.9,
+        "ms": 247.59741599999688,
+        "usage": {
+          "inputTokens": 2995,
+          "outputTokens": 268
+        },
+        "costUsd": 0.00012579
+      },
+      {
+        "lineId": "2",
+        "shortlist": [
+          "INS-R12-23",
+          "INS-R12-15",
+          "INS-R20-23",
+          "INS-FOAM-2",
+          "CON-FORM-SONO-12",
+          "ROF-SHG-ARCH-BLK",
+          "INS-R20-15",
+          "INS-FOAM-1"
+        ],
+        "category": {
+          "choice": "insulation",
+          "confidence": 0.99
+        },
+        "sku": {
+          "choice": "INS-R12-23",
+          "confidence": 0.97,
+          "top": [
+            {
+              "sku": "INS-R12-23",
+              "probability": 0.98
+            },
+            {
+              "sku": "NONE",
+              "probability": 0.02
+            },
+            {
+              "sku": "ROF-SHG-ARCH-BLK",
+              "probability": 0
+            }
+          ]
+        },
+        "unitOk": 0.6,
+        "ms": 183.06950000000506,
+        "usage": {
+          "inputTokens": 3026,
+          "outputTokens": 283
+        },
+        "costUsd": 0.000127092
+      },
+      {
+        "lineId": "3",
+        "shortlist": [
+          "DRY-58-X-4X8",
+          "DRY-58-X-4X10",
+          "DRY-58-X-4X12",
+          "DRY-12-REG-4X8",
+          "DRY-12-LITE-4X8",
+          "DRY-58-REG-4X8",
+          "DRY-14-FLEX-4X8",
+          "MAS-MORT-S-30KG",
+          "MAS-MORT-N-30KG",
+          "CON-FORM-SONO-8",
+          "CON-FORM-SONO-12",
+          "WTH-WRAP-9",
+          "WTH-WRAP-3",
+          "DCK-COMP-8",
+          "LBR-6X6-8-PT",
+          "LBR-6X6-10-PT",
+          "LBR-6X6-12-PT",
+          "DRY-12-REG-4X10",
+          "DRY-12-REG-4X12",
+          "DRY-12-LITE-4X10"
+        ],
+        "category": {
+          "choice": "weatherproofing",
+          "confidence": 1
+        },
+        "sku": {
+          "choice": "WTH-WRAP-9",
+          "confidence": 0.93,
+          "top": [
+            {
+              "sku": "WTH-WRAP-9",
+              "probability": 0.94
+            },
+            {
+              "sku": "NONE",
+              "probability": 0.06
+            },
+            {
+              "sku": "DRY-14-FLEX-4X8",
+              "probability": 0
+            }
+          ]
+        },
+        "unitOk": 0.6,
+        "ms": 219.825499999999,
+        "usage": {
+          "inputTokens": 3420,
+          "outputTokens": 497
+        },
+        "costUsd": 0.00014364
+      },
+      {
+        "lineId": "4",
+        "shortlist": [
+          "WTH-FLASH-6",
+          "WTH-FLASH-4",
+          "FST-FRM-3-PAPER-5LB",
+          "FST-FRM-3-PAPER-50LB",
+          "WTH-CAP-1",
+          "DRY-TAPE-MESH",
+          "FST-ROOF-118-5LB",
+          "FST-ROOF-114-1LB",
+          "ROF-SHG-ARCH-BLK",
+          "DRY-TAPE-250",
+          "SHT-PLY-ZIP-716",
+          "WTH-POLY-6",
+          "DRY-58-MR-4X8",
+          "DRY-58-MR-4X10",
+          "DRY-58-MR-4X12",
+          "HDW-STRAP-12",
+          "CON-FAST-20KG",
+          "ROF-SHG-3TAB-GRY",
+          "ROF-ICE-36",
+          "TRM-LAP-8"
+        ],
+        "category": {
+          "choice": "weatherproofing",
+          "confidence": 1
+        },
+        "sku": {
+          "choice": "WTH-FLASH-6",
+          "confidence": 0.75,
+          "top": [
+            {
+              "sku": "WTH-FLASH-6",
+              "probability": 0.77
+            },
+            {
+              "sku": "NONE",
+              "probability": 0.23
+            },
+            {
+              "sku": "FST-ROOF-114-1LB",
+              "probability": 0
+            }
+          ]
+        },
+        "unitOk": 0.43,
+        "ms": 193.60691699999734,
+        "usage": {
+          "inputTokens": 3499,
+          "outputTokens": 479
+        },
+        "costUsd": 0.00014695799999999998
+      },
+      {
+        "lineId": "5",
+        "shortlist": [
+          "WTH-CAP-1",
+          "FST-FRM-3-PAPER-5LB",
+          "FST-FRM-3-PAPER-50LB",
+          "FST-ROOF-118-5LB",
+          "FST-10D-GALV-5LB",
+          "FST-10D-GALV-50LB",
+          "FST-ROOF-114-1LB",
+          "MAS-CMU-CAP",
+          "HDW-STRAP-12",
+          "TRM-LAP-8",
+          "FST-16D-COM-5LB",
+          "FST-16D-COM-50LB",
+          "FST-16D-SINK-5LB",
+          "FST-16D-SINK-50LB",
+          "FST-8D-COM-5LB",
+          "FST-8D-COM-50LB",
+          "SUP-ADH-CONST-10",
+          "ROF-SHG-RIDGE",
+          "DRY-MUD-45",
+          "HDW-HT-H2-5"
+        ],
+        "category": {
+          "choice": "weatherproofing",
+          "confidence": 0.59
+        },
+        "sku": {
+          "choice": "WTH-CAP-1",
+          "confidence": 0.83,
+          "top": [
+            {
+              "sku": "WTH-CAP-1",
+              "probability": 0.85
+            },
+            {
+              "sku": "NONE",
+              "probability": 0.15
+            },
+            {
+              "sku": "FST-FRM-3-PAPER-5LB",
+              "probability": 0
+            }
+          ]
+        },
+        "unitOk": 0.74,
+        "ms": 195.69112499999756,
+        "usage": {
+          "inputTokens": 3514,
+          "outputTokens": 495
+        },
+        "costUsd": 0.00014758799999999998
+      },
+      {
+        "lineId": "6",
+        "shortlist": [
+          "WTH-POLY-6",
+          "SHT-PLY-CDX-12",
+          "SHT-PLY-CDX-34",
+          "SHT-PLY-PT-34",
+          "SHT-PLY-CDX-58",
+          "SHT-PLY-BIRCH-34",
+          "WTH-FLASH-6",
+          "SUP-CAULK-SIL-CLR",
+          "LBR-2X6-08-PT",
+          "LBR-4X4-8-SPF",
+          "LBR-4X4-10-SPF",
+          "LBR-4X4-12-SPF",
+          "LBR-6X6-8-PT",
+          "LBR-6X6-10-PT",
+          "LBR-6X6-12-PT",
+          "SHT-MDF-34",
+          "SHT-MDF-12",
+          "DRY-MUD-45",
+          "DRY-TAPE-250",
+          "DRY-TAPE-MESH"
+        ],
+        "category": {
+          "choice": "weatherproofing",
+          "confidence": 1
+        },
+        "sku": {
+          "choice": "WTH-POLY-6",
+          "confidence": 0.8,
+          "top": [
+            {
+              "sku": "WTH-POLY-6",
+              "probability": 0.8200000000000001
+            },
+            {
+              "sku": "NONE",
+              "probability": 0.18
+            },
+            {
+              "sku": "DRY-TAPE-MESH",
+              "probability": 0
+            }
+          ]
+        },
+        "unitOk": 0.47,
+        "ms": 169.3648749999993,
+        "usage": {
+          "inputTokens": 3408,
+          "outputTokens": 479
+        },
+        "costUsd": 0.000143136
+      }
+    ],
+    "ms": 365.02900000000227,
+    "usage": {
+      "inputTokens": 19862,
+      "outputTokens": 2501
+    },
+    "costUsd": 0.000834204
+  },
+  "claudeOnly": {
+    "lines": [
+      {
+        "lineId": "1",
+        "sku": "INS-R20-15",
+        "confidence": "high"
+      },
+      {
+        "lineId": "2",
+        "sku": "INS-R12-23",
+        "confidence": "high"
+      },
+      {
+        "lineId": "3",
+        "sku": "WTH-WRAP-9",
+        "confidence": "high"
+      },
+      {
+        "lineId": "4",
+        "sku": "WTH-FLASH-6",
+        "confidence": "high"
+      },
+      {
+        "lineId": "5",
+        "sku": "WTH-CAP-1",
+        "confidence": "high"
+      },
+      {
+        "lineId": "6",
+        "sku": "WTH-POLY-6",
+        "confidence": "high"
+      }
+    ],
+    "ms": 1788.646541000002,
+    "usage": {
+      "inputTokens": 17234,
+      "outputTokens": 223
+    },
+    "costUsd": 0.055047
+  }
+}

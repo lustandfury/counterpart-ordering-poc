@@ -1,0 +1,345 @@
+{
+  "orderId": "o08",
+  "text": "1/2 cdx 12 sheets\n3/4 tg osb 30\n3/4 pt ply x 4\nliquid nails x 12\nsubfloor glue 12\n",
+  "model": "claude-sonnet-5-5",
+  "parse": {
+    "lines": [
+      {
+        "id": "1",
+        "raw": "1/2 cdx 12 sheets",
+        "item": "1/2 cdx",
+        "qty": 12,
+        "unit": "sheets"
+      },
+      {
+        "id": "2",
+        "raw": "3/4 tg osb 30",
+        "item": "3/4 tg osb",
+        "qty": 30,
+        "unit": null
+      },
+      {
+        "id": "3",
+        "raw": "3/4 pt ply x 4",
+        "item": "3/4 pt ply",
+        "qty": 4,
+        "unit": null
+      },
+      {
+        "id": "4",
+        "raw": "liquid nails x 12",
+        "item": "liquid nails",
+        "qty": 12,
+        "unit": null
+      },
+      {
+        "id": "5",
+        "raw": "subfloor glue 12",
+        "item": "subfloor glue",
+        "qty": 12,
+        "unit": null
+      }
+    ],
+    "ms": 1881.0653329999986,
+    "usage": {
+      "inputTokens": 3459,
+      "outputTokens": 249
+    },
+    "costUsd": 0.014112000000000001
+  },
+  "jev": {
+    "lines": [
+      {
+        "lineId": "1",
+        "shortlist": [
+          "SHT-PLY-CDX-12",
+          "DRY-12-REG-4X8",
+          "FST-DECK-25-TAN-1LB",
+          "FST-DECK-25-TAN-5LB",
+          "FST-DECK-25-TAN-25LB",
+          "LBR-2X12-08-PT",
+          "LBR-2X12-10-PT",
+          "LBR-2X12-12-PT",
+          "LBR-2X12-16-PT",
+          "LBR-2X12-08-SPF",
+          "LBR-2X12-10-SPF",
+          "LBR-2X12-12-SPF",
+          "LBR-2X12-16-SPF",
+          "DRY-12-REG-4X10",
+          "DRY-12-REG-4X12",
+          "DRY-12-MR-4X8",
+          "DRY-12-LITE-4X8",
+          "FST-DRY-214-1LB",
+          "FST-DRY-214-5LB",
+          "FST-DRY-214-25LB"
+        ],
+        "category": {
+          "choice": "sheet_goods",
+          "confidence": 0.81
+        },
+        "sku": {
+          "choice": "SHT-PLY-CDX-12",
+          "confidence": 0.97,
+          "top": [
+            {
+              "sku": "SHT-PLY-CDX-12",
+              "probability": 0.98
+            },
+            {
+              "sku": "DRY-12-REG-4X8",
+              "probability": 0.01
+            },
+            {
+              "sku": "NONE",
+              "probability": 0.01
+            }
+          ]
+        },
+        "unitOk": 0.91,
+        "ms": 359.62720799999806,
+        "usage": {
+          "inputTokens": 3582,
+          "outputTokens": 535
+        },
+        "costUsd": 0.00015044399999999998
+      },
+      {
+        "lineId": "2",
+        "shortlist": [
+          "SHT-OSB-2332",
+          "SHT-OSB-12",
+          "SHT-PLY-CDX-34",
+          "SHT-PLY-BIRCH-34",
+          "SHT-OSB-716",
+          "SHT-OSB-58",
+          "SHT-PLY-PT-34",
+          "CON-30KG",
+          "SHT-MDF-34",
+          "DRY-14-FLEX-4X8",
+          "CON-REBAR-10M-3M",
+          "MAS-CEM-GU-30KG",
+          "MAS-MORT-S-30KG",
+          "MAS-MORT-N-30KG",
+          "MAS-SAND-30KG",
+          "MAS-GRAV-30KG",
+          "DRY-14-FLEX-4X10",
+          "DRY-14-FLEX-4X12",
+          "FST-16D-SINK-5LB",
+          "FST-16D-SINK-50LB"
+        ],
+        "category": {
+          "choice": "sheet_goods",
+          "confidence": 1
+        },
+        "sku": {
+          "choice": "SHT-OSB-2332",
+          "confidence": 1,
+          "top": [
+            {
+              "sku": "SHT-OSB-2332",
+              "probability": 1
+            },
+            {
+              "sku": "SHT-OSB-58",
+              "probability": 0
+            },
+            {
+              "sku": "MAS-GRAV-30KG",
+              "probability": 0
+            }
+          ]
+        },
+        "unitOk": 0.88,
+        "ms": 324.65899999999965,
+        "usage": {
+          "inputTokens": 3424,
+          "outputTokens": 484
+        },
+        "costUsd": 0.000143808
+      },
+      {
+        "lineId": "3",
+        "shortlist": [
+          "SHT-PLY-PT-34",
+          "SHT-PLY-CDX-34",
+          "SHT-PLY-CDX-12",
+          "SHT-PLY-BIRCH-34",
+          "SHT-PLY-CDX-58",
+          "SHT-MDF-34",
+          "DRY-58-X-4X8",
+          "FST-DRY-214-1LB",
+          "FST-DRY-214-5LB",
+          "FST-DRY-214-25LB",
+          "WTH-POLY-6",
+          "LBR-2X4-08-PT",
+          "DRY-58-X-4X10",
+          "DRY-58-X-4X12",
+          "DRY-14-FLEX-4X8",
+          "DRY-14-FLEX-4X10",
+          "DRY-14-FLEX-4X12",
+          "DRY-TAPE-MESH",
+          "FST-FRM-3-PAPER-5LB",
+          "FST-FRM-3-PAPER-50LB"
+        ],
+        "category": {
+          "choice": "sheet_goods",
+          "confidence": 1
+        },
+        "sku": {
+          "choice": "SHT-PLY-PT-34",
+          "confidence": 0.69,
+          "top": [
+            {
+              "sku": "SHT-PLY-PT-34",
+              "probability": 0.71
+            },
+            {
+              "sku": "NONE",
+              "probability": 0.26
+            },
+            {
+              "sku": "SHT-PLY-CDX-34",
+              "probability": 0.03
+            }
+          ]
+        },
+        "unitOk": 0.73,
+        "ms": 320.8377079999991,
+        "usage": {
+          "inputTokens": 3487,
+          "outputTokens": 503
+        },
+        "costUsd": 0.000146454
+      },
+      {
+        "lineId": "4",
+        "shortlist": [
+          "SUP-ADH-CONST-10",
+          "FST-FRM-3-PAPER-5LB",
+          "FST-FRM-3-PAPER-50LB",
+          "FST-ROOF-118-5LB",
+          "FST-10D-GALV-5LB",
+          "FST-10D-GALV-50LB",
+          "WTH-CAP-1",
+          "FST-ROOF-114-1LB",
+          "FST-16D-SINK-5LB",
+          "FST-16D-SINK-50LB",
+          "FST-16D-COM-5LB",
+          "FST-16D-COM-50LB",
+          "FST-8D-COM-5LB",
+          "FST-8D-COM-50LB",
+          "DRY-MUD-45",
+          "SUP-CAULK-SIL-CLR",
+          "SUP-SEAL-EXT-5G"
+        ],
+        "category": {
+          "choice": "adhesives_sealants",
+          "confidence": 1
+        },
+        "sku": {
+          "choice": "SUP-ADH-CONST-10",
+          "confidence": 0.78,
+          "top": [
+            {
+              "sku": "SUP-ADH-CONST-10",
+              "probability": 0.79
+            },
+            {
+              "sku": "NONE",
+              "probability": 0.21
+            },
+            {
+              "sku": "SUP-SEAL-EXT-5G",
+              "probability": 0
+            }
+          ]
+        },
+        "unitOk": 0.39,
+        "ms": 313.6182090000002,
+        "usage": {
+          "inputTokens": 3425,
+          "outputTokens": 465
+        },
+        "costUsd": 0.00014385
+      },
+      {
+        "lineId": "5",
+        "shortlist": [
+          "SUP-ADH-SUBFL-28",
+          "SHT-OSB-2332",
+          "SUP-GLUE-WOOD-16"
+        ],
+        "category": {
+          "choice": "adhesives_sealants",
+          "confidence": 1
+        },
+        "sku": {
+          "choice": "SUP-ADH-SUBFL-28",
+          "confidence": 0.71,
+          "top": [
+            {
+              "sku": "SUP-ADH-SUBFL-28",
+              "probability": 0.78
+            },
+            {
+              "sku": "NONE",
+              "probability": 0.22
+            },
+            {
+              "sku": "SHT-OSB-2332",
+              "probability": 0
+            }
+          ]
+        },
+        "unitOk": 0.37,
+        "ms": 345.9699999999939,
+        "usage": {
+          "inputTokens": 2788,
+          "outputTokens": 231
+        },
+        "costUsd": 0.00011709599999999999
+      }
+    ],
+    "ms": 375.4525419999991,
+    "usage": {
+      "inputTokens": 16706,
+      "outputTokens": 2218
+    },
+    "costUsd": 0.000701652
+  },
+  "claudeOnly": {
+    "lines": [
+      {
+        "lineId": "1",
+        "sku": "SHT-PLY-CDX-12",
+        "confidence": "high"
+      },
+      {
+        "lineId": "2",
+        "sku": "SHT-OSB-2332",
+        "confidence": "high"
+      },
+      {
+        "lineId": "3",
+        "sku": "SHT-PLY-PT-34",
+        "confidence": "high"
+      },
+      {
+        "lineId": "4",
+        "sku": "SUP-ADH-CONST-10",
+        "confidence": "high"
+      },
+      {
+        "lineId": "5",
+        "sku": "SUP-ADH-SUBFL-28",
+        "confidence": "high"
+      }
+    ],
+    "ms": 2016.7289579999997,
+    "usage": {
+      "inputTokens": 17197,
+      "outputTokens": 214
+    },
+    "costUsd": 0.054800999999999996
+  }
+}

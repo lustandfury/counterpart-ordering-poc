@@ -1,0 +1,86 @@
+{
+  "orderId": "o16",
+  "text": "Morning! Same as last time but double the drywall and skip the mud. Thanks\n",
+  "model": "claude-sonnet-5-5",
+  "parse": {
+    "lines": [
+      {
+        "id": "1",
+        "raw": "Same as last time but double the drywall and skip the mud.",
+        "item": "Same as last time but double the drywall and skip the mud",
+        "qty": null,
+        "unit": null
+      }
+    ],
+    "ms": 1603.2160000000003,
+    "usage": {
+      "inputTokens": 3431,
+      "outputTokens": 108
+    },
+    "costUsd": 0.011913
+  },
+  "jev": {
+    "lines": [
+      {
+        "lineId": "1",
+        "shortlist": [
+          "DRY-TAPE-MESH",
+          "DRY-TAPE-250",
+          "FST-DRY-158-FINE-1LB",
+          "FST-DRY-158-FINE-5LB",
+          "FST-DRY-158-FINE-25LB"
+        ],
+        "category": {
+          "choice": "drywall",
+          "confidence": 1
+        },
+        "sku": {
+          "choice": "NONE",
+          "confidence": 1,
+          "top": [
+            {
+              "sku": "NONE",
+              "probability": 1
+            },
+            {
+              "sku": "FST-DRY-158-FINE-1LB",
+              "probability": 0
+            },
+            {
+              "sku": "DRY-TAPE-250",
+              "probability": 0
+            }
+          ]
+        },
+        "unitOk": 0.13,
+        "ms": 199.3495419999963,
+        "usage": {
+          "inputTokens": 2892,
+          "outputTokens": 258
+        },
+        "costUsd": 0.000121464
+      }
+    ],
+    "ms": 245.85712500000227,
+    "usage": {
+      "inputTokens": 2892,
+      "outputTokens": 258
+    },
+    "costUsd": 0.000121464
+  },
+  "claudeOnly": {
+    "lines": [
+      {
+        "lineId": "1",
+        "sku": null,
+        "confidence": "high"
+      }
+    ],
+    "ms": 1590.6259170000048,
+    "usage": {
+      "inputTokens": 17035,
+      "outputTokens": 72
+    },
+    "costUsd": 0.052185
+  }
+}

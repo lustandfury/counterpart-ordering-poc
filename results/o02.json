@@ -1,0 +1,349 @@
+{
+  "orderId": "o02",
+  "text": "Drywall for the Patel basement\n30 sheets 1/2 regular drywall 4x8\n10 sheets 5/8 type X drywall 4x12\n2 buckets joint compound 4.5 gal\n3 rolls paper drywall tape\n2 boxes 5lb 1-5/8 drywall screws\n",
+  "model": "claude-sonnet-5-5",
+  "parse": {
+    "lines": [
+      {
+        "id": "1",
+        "raw": "30 sheets 1/2 regular drywall 4x8",
+        "item": "1/2 regular drywall 4x8",
+        "qty": 30,
+        "unit": "sheets"
+      },
+      {
+        "id": "2",
+        "raw": "10 sheets 5/8 type X drywall 4x12",
+        "item": "5/8 type X drywall 4x12",
+        "qty": 10,
+        "unit": "sheets"
+      },
+      {
+        "id": "3",
+        "raw": "2 buckets joint compound 4.5 gal",
+        "item": "joint compound 4.5 gal",
+        "qty": 2,
+        "unit": "buckets"
+      },
+      {
+        "id": "4",
+        "raw": "3 rolls paper drywall tape",
+        "item": "paper drywall tape",
+        "qty": 3,
+        "unit": "rolls"
+      },
+      {
+        "id": "5",
+        "raw": "2 boxes 5lb 1-5/8 drywall screws",
+        "item": "5lb 1-5/8 drywall screws",
+        "qty": 2,
+        "unit": "boxes"
+      }
+    ],
+    "ms": 2141.176291,
+    "usage": {
+      "inputTokens": 3508,
+      "outputTokens": 327
+    },
+    "costUsd": 0.015429000000000002
+  },
+  "jev": {
+    "lines": [
+      {
+        "lineId": "1",
+        "shortlist": [
+          "DRY-12-REG-4X8",
+          "DRY-12-REG-4X10",
+          "DRY-12-REG-4X12",
+          "FST-DRY-158-1LB",
+          "FST-DRY-158-5LB",
+          "FST-DRY-158-25LB",
+          "FST-DRY-214-1LB",
+          "FST-DRY-214-5LB",
+          "FST-DRY-214-25LB",
+          "DRY-58-REG-4X8",
+          "DRY-58-REG-4X10",
+          "DRY-58-REG-4X12",
+          "DRY-14-FLEX-4X8",
+          "DRY-12-LITE-4X8",
+          "DRY-58-X-4X8",
+          "DRY-58-MR-4X8",
+          "DRY-14-FLEX-4X10",
+          "DRY-14-FLEX-4X12",
+          "DRY-12-LITE-4X10",
+          "DRY-12-LITE-4X12"
+        ],
+        "category": {
+          "choice": "drywall",
+          "confidence": 1
+        },
+        "sku": {
+          "choice": "DRY-12-REG-4X8",
+          "confidence": 1,
+          "top": [
+            {
+              "sku": "DRY-12-REG-4X8",
+              "probability": 1
+            },
+            {
+              "sku": "DRY-12-REG-4X10",
+              "probability": 0
+            },
+            {
+              "sku": "DRY-12-REG-4X12",
+              "probability": 0
+            }
+          ]
+        },
+        "unitOk": 0.96,
+        "ms": 193.97145799999998,
+        "usage": {
+          "inputTokens": 3561,
+          "outputTokens": 536
+        },
+        "costUsd": 0.000149562
+      },
+      {
+        "lineId": "2",
+        "shortlist": [
+          "DRY-58-MR-4X12",
+          "FST-DRY-158-1LB",
+          "FST-DRY-158-5LB",
+          "FST-DRY-158-25LB",
+          "DRY-58-X-4X8",
+          "DRY-58-X-4X12",
+          "FST-DRY-214-1LB",
+          "FST-DRY-214-5LB",
+          "FST-DRY-214-25LB",
+          "DRY-58-MR-4X10",
+          "DRY-58-X-4X10",
+          "DRY-12-REG-4X12",
+          "DRY-58-MR-4X8",
+          "DRY-12-REG-4X10",
+          "DRY-12-REG-4X8",
+          "DRY-58-REG-4X12",
+          "DRY-12-LITE-4X12",
+          "DRY-58-REG-4X10",
+          "DRY-14-FLEX-4X12",
+          "DRY-12-LITE-4X10"
+        ],
+        "category": {
+          "choice": "drywall",
+          "confidence": 1
+        },
+        "sku": {
+          "choice": "DRY-58-X-4X12",
+          "confidence": 1,
+          "top": [
+            {
+              "sku": "DRY-58-X-4X12",
+              "probability": 1
+            },
+            {
+              "sku": "FST-DRY-158-1LB",
+              "probability": 0
+            },
+            {
+              "sku": "DRY-58-X-4X8",
+              "probability": 0
+            }
+          ]
+        },
+        "unitOk": 0.96,
+        "ms": 199.73133299999972,
+        "usage": {
+          "inputTokens": 3591,
+          "outputTokens": 537
+        },
+        "costUsd": 0.000150822
+      },
+      {
+        "lineId": "3",
+        "shortlist": [
+          "DRY-MUD-45",
+          "DRY-TAPE-250",
+          "FST-16D-COM-5LB",
+          "FST-16D-COM-50LB"
+        ],
+        "category": {
+          "choice": "drywall",
+          "confidence": 1
+        },
+        "sku": {
+          "choice": "DRY-MUD-45",
+          "confidence": 0.92,
+          "top": [
+            {
+              "sku": "DRY-MUD-45",
+              "probability": 0.9400000000000001
+            },
+            {
+              "sku": "NONE",
+              "probability": 0.06
+            },
+            {
+              "sku": "FST-16D-COM-50LB",
+              "probability": 0
+            }
+          ]
+        },
+        "unitOk": 0.72,
+        "ms": 189.13058400000045,
+        "usage": {
+          "inputTokens": 2867,
+          "outputTokens": 239
+        },
+        "costUsd": 0.000120414
+      },
+      {
+        "lineId": "4",
+        "shortlist": [
+          "FST-DRY-158-1LB",
+          "FST-DRY-158-5LB",
+          "FST-DRY-158-25LB",
+          "FST-DRY-214-1LB",
+          "FST-DRY-214-5LB",
+          "FST-DRY-214-25LB",
+          "DRY-TAPE-250",
+          "DRY-12-REG-4X8",
+          "DRY-12-REG-4X10",
+          "DRY-12-REG-4X12",
+          "DRY-TAPE-MESH",
+          "DRY-12-MR-4X8",
+          "DRY-12-MR-4X10",
+          "DRY-12-MR-4X12",
+          "DRY-58-REG-4X8",
+          "DRY-58-REG-4X10",
+          "DRY-58-REG-4X12",
+          "DRY-58-X-4X8",
+          "DRY-58-X-4X10",
+          "DRY-58-X-4X12"
+        ],
+        "category": {
+          "choice": "drywall",
+          "confidence": 1
+        },
+        "sku": {
+          "choice": "DRY-TAPE-250",
+          "confidence": 0.96,
+          "top": [
+            {
+              "sku": "DRY-TAPE-250",
+              "probability": 0.96
+            },
+            {
+              "sku": "NONE",
+              "probability": 0.03
+            },
+            {
+              "sku": "FST-DRY-158-5LB",
+              "probability": 0.01
+            }
+          ]
+        },
+        "unitOk": 0.94,
+        "ms": 214.6615410000004,
+        "usage": {
+          "inputTokens": 3567,
+          "outputTokens": 523
+        },
+        "costUsd": 0.00014981399999999999
+      },
+      {
+        "lineId": "5",
+        "shortlist": [
+          "FST-DRY-158-1LB",
+          "FST-DRY-158-5LB",
+          "FST-DRY-158-25LB",
+          "FST-DRY-214-1LB",
+          "FST-DRY-214-5LB",
+          "FST-DRY-214-25LB",
+          "FST-DECK-25-TAN-1LB",
+          "FST-DECK-25-TAN-5LB",
+          "FST-DECK-25-TAN-25LB",
+          "FST-DRY-158-FINE-1LB",
+          "FST-DRY-158-FINE-5LB",
+          "FST-DRY-158-FINE-25LB",
+          "FST-STRC-3-1LB",
+          "FST-STRC-3-5LB",
+          "DRY-12-REG-4X8",
+          "DRY-12-REG-4X10",
+          "DRY-12-REG-4X12",
+          "FST-DECK-3-TAN-1LB",
+          "FST-DECK-3-TAN-5LB",
+          "FST-DECK-3-TAN-25LB"
+        ],
+        "category": {
+          "choice": "fasteners",
+          "confidence": 1
+        },
+        "sku": {
+          "choice": "FST-DRY-158-5LB",
+          "confidence": 0.74,
+          "top": [
+            {
+              "sku": "FST-DRY-158-5LB",
+              "probability": 0.76
+            },
+            {
+              "sku": "NONE",
+              "probability": 0.24
+            },
+            {
+              "sku": "DRY-12-REG-4X12",
+              "probability": 0
+            }
+          ]
+        },
+        "unitOk": 0.89,
+        "ms": 332.3879999999999,
+        "usage": {
+          "inputTokens": 3658,
+          "outputTokens": 545
+        },
+        "costUsd": 0.000153636
+      }
+    ],
+    "ms": 370.0467499999995,
+    "usage": {
+      "inputTokens": 17244,
+      "outputTokens": 2380
+    },
+    "costUsd": 0.0007242479999999999
+  },
+  "claudeOnly": {
+    "lines": [
+      {
+        "lineId": "1",
+        "sku": "DRY-12-REG-4X8",
+        "confidence": "high"
+      },
+      {
+        "lineId": "2",
+        "sku": "DRY-58-X-4X12",
+        "confidence": "high"
+      },
+      {
+        "lineId": "3",
+        "sku": "DRY-MUD-45",
+        "confidence": "high"
+      },
+      {
+        "lineId": "4",
+        "sku": "DRY-TAPE-250",
+        "confidence": "high"
+      },
+      {
+        "lineId": "5",
+        "sku": "FST-DRY-158-5LB",
+        "confidence": "medium"
+      }
+    ],
+    "ms": 4234.554458999999,
+    "usage": {
+      "inputTokens": 17318,
+      "outputTokens": 464
+    },
+    "costUsd": 0.058914
+  }
+}

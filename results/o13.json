@@ -1,0 +1,292 @@
+{
+  "orderId": "o13",
+  "text": "50 studs\n3 sheets of 1/2 plywood\n6 buckets of mud\n100 feet of tape\n",
+  "model": "claude-sonnet-5-5",
+  "parse": {
+    "lines": [
+      {
+        "id": "1",
+        "raw": "50 studs",
+        "item": "studs",
+        "qty": 50,
+        "unit": null
+      },
+      {
+        "id": "2",
+        "raw": "3 sheets of 1/2 plywood",
+        "item": "1/2 plywood",
+        "qty": 3,
+        "unit": "sheets"
+      },
+      {
+        "id": "3",
+        "raw": "6 buckets of mud",
+        "item": "mud",
+        "qty": 6,
+        "unit": "buckets"
+      },
+      {
+        "id": "4",
+        "raw": "100 feet of tape",
+        "item": "tape",
+        "qty": 100,
+        "unit": "feet"
+      }
+    ],
+    "ms": 1692.333584,
+    "usage": {
+      "inputTokens": 3441,
+      "outputTokens": 196
+    },
+    "costUsd": 0.013263
+  },
+  "jev": {
+    "lines": [
+      {
+        "lineId": "1",
+        "shortlist": [
+          "LBR-2X4-PRECUT-SPF",
+          "FST-DRY-158-FINE-1LB",
+          "FST-DRY-158-FINE-5LB",
+          "FST-DRY-158-FINE-25LB",
+          "CON-FAST-20KG",
+          "LBR-2X6-PRECUT-SPF",
+          "LBR-4X4-8-PT",
+          "LBR-4X4-10-PT",
+          "LBR-4X4-12-PT",
+          "FST-STRC-3-1LB",
+          "FST-STRC-3-5LB",
+          "HDW-STRAP-12",
+          "MAS-SAND-30KG",
+          "CON-FORM-SONO-8",
+          "CON-FORM-SONO-12",
+          "TRM-LAP-8",
+          "SUP-ADH-CONST-10",
+          "SUP-ADH-SUBFL-28",
+          "SUP-SEAL-EXT-5G",
+          "SUP-SHIM-42"
+        ],
+        "category": {
+          "choice": "dimensional_lumber",
+          "confidence": 0.97
+        },
+        "sku": {
+          "choice": "LBR-2X4-PRECUT-SPF",
+          "confidence": 1,
+          "top": [
+            {
+              "sku": "LBR-2X4-PRECUT-SPF",
+              "probability": 1
+            },
+            {
+              "sku": "FST-STRC-3-1LB",
+              "probability": 0
+            },
+            {
+              "sku": "LBR-4X4-8-PT",
+              "probability": 0
+            }
+          ]
+        },
+        "unitOk": 0.82,
+        "ms": 211.04249999999593,
+        "usage": {
+          "inputTokens": 3449,
+          "outputTokens": 503
+        },
+        "costUsd": 0.000144858
+      },
+      {
+        "lineId": "2",
+        "shortlist": [
+          "SHT-PLY-CDX-12",
+          "SHT-PLY-CDX-58",
+          "SHT-PLY-CDX-34",
+          "SHT-PLY-PT-34",
+          "SHT-PLY-BIRCH-34",
+          "DRY-12-REG-4X8",
+          "DRY-12-LITE-4X8",
+          "FST-DECK-25-TAN-1LB",
+          "FST-DECK-25-TAN-5LB",
+          "FST-DECK-25-TAN-25LB",
+          "FST-DRY-214-1LB",
+          "FST-DRY-214-5LB",
+          "FST-DRY-214-25LB",
+          "ROF-SHG-ARCH-BRN",
+          "SHT-OSB-12",
+          "SHT-MDF-12",
+          "DRY-12-REG-4X10",
+          "DRY-12-REG-4X12",
+          "DRY-12-LITE-4X10",
+          "DRY-12-LITE-4X12"
+        ],
+        "category": {
+          "choice": "sheet_goods",
+          "confidence": 1
+        },
+        "sku": {
+          "choice": "SHT-PLY-CDX-12",
+          "confidence": 1,
+          "top": [
+            {
+              "sku": "SHT-PLY-CDX-12",
+              "probability": 1
+            },
+            {
+              "sku": "SHT-PLY-CDX-58",
+              "probability": 0
+            },
+            {
+              "sku": "SHT-PLY-CDX-34",
+              "probability": 0
+            }
+          ]
+        },
+        "unitOk": 0.95,
+        "ms": 199.685249999995,
+        "usage": {
+          "inputTokens": 3482,
+          "outputTokens": 512
+        },
+        "costUsd": 0.000146244
+      },
+      {
+        "lineId": "3",
+        "shortlist": [
+          "DRY-MUD-45",
+          "LBR-2X4-PRECUT-SPF",
+          "SHT-MDF-34",
+          "FST-DRY-158-FINE-1LB",
+          "FST-DRY-158-FINE-5LB",
+          "FST-DRY-158-FINE-25LB",
+          "LBR-2X6-PRECUT-SPF",
+          "SHT-MDF-12",
+          "TRM-BASE-314",
+          "ROF-DRIP-10",
+          "ROF-DRIP-10-BRN",
+          "TRM-CASE-225",
+          "TRM-LAP-8"
+        ],
+        "category": {
+          "choice": "concrete_masonry",
+          "confidence": 0.93
+        },
+        "sku": {
+          "choice": "NONE",
+          "confidence": 0.5,
+          "top": [
+            {
+              "sku": "NONE",
+              "probability": 0.54
+            },
+            {
+              "sku": "DRY-MUD-45",
+              "probability": 0.46
+            },
+            {
+              "sku": "TRM-CASE-225",
+              "probability": 0
+            }
+          ]
+        },
+        "unitOk": 0.38,
+        "ms": 197.5997919999936,
+        "usage": {
+          "inputTokens": 3191,
+          "outputTokens": 378
+        },
+        "costUsd": 0.000134022
+      },
+      {
+        "lineId": "4",
+        "shortlist": [
+          "DRY-TAPE-250",
+          "DRY-TAPE-MESH",
+          "WTH-FLASH-6",
+          "WTH-FLASH-4",
+          "DRY-58-X-4X8",
+          "DRY-58-X-4X10",
+          "DRY-58-X-4X12",
+          "SUP-STAKE-24",
+          "MAS-MORT-S-30KG",
+          "FST-DRY-158-FINE-1LB",
+          "FST-DRY-158-FINE-5LB",
+          "FST-DRY-158-FINE-25LB",
+          "CON-30KG",
+          "MAS-MORT-N-30KG",
+          "ROF-UNDER-15",
+          "FST-TAPCON-14-100",
+          "CON-FAST-20KG",
+          "WTH-WRAP-9",
+          "TRM-BASE-314",
+          "LBR-2X4-08-PT"
+        ],
+        "category": {
+          "choice": "drywall",
+          "confidence": 0.86
+        },
+        "sku": {
+          "choice": "NONE",
+          "confidence": 0.86,
+          "top": [
+            {
+              "sku": "NONE",
+              "probability": 0.88
+            },
+            {
+              "sku": "DRY-TAPE-250",
+              "probability": 0.08
+            },
+            {
+              "sku": "DRY-TAPE-MESH",
+              "probability": 0.04
+            }
+          ]
+        },
+        "unitOk": 0.35,
+        "ms": 195.1371250000011,
+        "usage": {
+          "inputTokens": 3452,
+          "outputTokens": 476
+        },
+        "costUsd": 0.000144984
+      }
+    ],
+    "ms": 214.86558399999922,
+    "usage": {
+      "inputTokens": 13574,
+      "outputTokens": 1869
+    },
+    "costUsd": 0.000570108
+  },
+  "claudeOnly": {
+    "lines": [
+      {
+        "lineId": "1",
+        "sku": "LBR-2X4-PRECUT-SPF",
+        "confidence": "high"
+      },
+      {
+        "lineId": "2",
+        "sku": "SHT-PLY-CDX-12",
+        "confidence": "high"
+      },
+      {
+        "lineId": "3",
+        "sku": "DRY-MUD-45",
+        "confidence": "high"
+      },
+      {
+        "lineId": "4",
+        "sku": null,
+        "confidence": "low"
+      }
+    ],
+    "ms": 1916.3848750000034,
+    "usage": {
+      "inputTokens": 17124,
+      "outputTokens": 171
+    },
+    "costUsd": 0.053937
+  }
+}

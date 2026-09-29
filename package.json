@@ -12,7 +12,8 @@
     "jev:test": "tsx scripts/jev-test.ts",
     "check": "npm run lint && npm run typecheck && npm test",
     "gen:catalog": "tsx scripts/gen-catalog.ts",
-    "export:review": "tsx scripts/export-review-sheet.ts"
+    "export:review": "tsx scripts/export-review-sheet.ts",
+    "pipeline": "tsx scripts/run-all.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.129.0",

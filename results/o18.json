@@ -1,0 +1,388 @@
+{
+  "orderId": "o18",
+  "text": "Sorry for the late text. Delivery to the back alley please, gate is locked so call me when you're close. Roofing: 18 bundles weathered wood shingles, 2 rolls of the 30# felt, 6 brown drip edge, 2 hip and ridge, and 5 ridge vent. Also do you guys rent a dumpster\n",
+  "model": "claude-sonnet-5-5",
+  "parse": {
+    "lines": [
+      {
+        "id": "1",
+        "raw": "18 bundles weathered wood shingles",
+        "item": "weathered wood shingles",
+        "qty": 18,
+        "unit": "bundles"
+      },
+      {
+        "id": "2",
+        "raw": "2 rolls of the 30# felt",
+        "item": "30# felt",
+        "qty": 2,
+        "unit": "rolls"
+      },
+      {
+        "id": "3",
+        "raw": "6 brown drip edge",
+        "item": "brown drip edge",
+        "qty": 6,
+        "unit": null
+      },
+      {
+        "id": "4",
+        "raw": "2 hip and ridge",
+        "item": "hip and ridge",
+        "qty": 2,
+        "unit": null
+      },
+      {
+        "id": "5",
+        "raw": "5 ridge vent",
+        "item": "ridge vent",
+        "qty": 5,
+        "unit": null
+      },
+      {
+        "id": "6",
+        "raw": "do you guys rent a dumpster",
+        "item": "dumpster rental",
+        "qty": null,
+        "unit": null
+      }
+    ],
+    "ms": 2387.2210420000047,
+    "usage": {
+      "inputTokens": 3515,
+      "outputTokens": 285
+    },
+    "costUsd": 0.01482
+  },
+  "jev": {
+    "lines": [
+      {
+        "lineId": "1",
+        "shortlist": [
+          "ROF-SHG-ARCH-BRN",
+          "ROF-SHG-ARCH-BLK",
+          "ROF-SHG-3TAB-GRY",
+          "FST-DRY-158-FINE-1LB",
+          "FST-DRY-158-FINE-5LB",
+          "FST-DRY-158-FINE-25LB",
+          "SUP-SHIM-42",
+          "ROF-SHG-RIDGE",
+          "SUP-SEAL-EXT-5G",
+          "SHT-PLY-ZIP-716",
+          "FST-STRC-3-1LB",
+          "FST-STRC-3-5LB",
+          "ROF-ICE-36"
+        ],
+        "category": {
+          "choice": "roofing",
+          "confidence": 1
+        },
+        "sku": {
+          "choice": "ROF-SHG-ARCH-BRN",
+          "confidence": 0.78,
+          "top": [
+            {
+              "sku": "ROF-SHG-ARCH-BRN",
+              "probability": 0.8
+            },
+            {
+              "sku": "NONE",
+              "probability": 0.2
+            },
+            {
+              "sku": "FST-STRC-3-1LB",
+              "probability": 0
+            }
+          ]
+        },
+        "unitOk": 0.85,
+        "ms": 273.71037500000966,
+        "usage": {
+          "inputTokens": 3278,
+          "outputTokens": 384
+        },
+        "costUsd": 0.000137676
+      },
+      {
+        "lineId": "2",
+        "shortlist": [
+          "ROF-UNDER-30",
+          "ROF-UNDER-15",
+          "DRY-TAPE-MESH",
+          "ROF-UNDER-SYN",
+          "DRY-TAPE-250",
+          "FST-DECK-3-TAN-1LB",
+          "FST-DECK-3-TAN-5LB",
+          "FST-DECK-3-TAN-25LB",
+          "FST-DECK-3-GRAY-1LB",
+          "FST-DECK-3-GRAY-5LB",
+          "FST-DECK-3-GRAY-25LB",
+          "SUP-CAULK-SIL-CLR",
+          "SUP-CAULK-LAT-WHT"
+        ],
+        "category": {
+          "choice": "roofing",
+          "confidence": 1
+        },
+        "sku": {
+          "choice": "ROF-UNDER-30",
+          "confidence": 0.99,
+          "top": [
+            {
+              "sku": "ROF-UNDER-30",
+              "probability": 0.99
+            },
+            {
+              "sku": "NONE",
+              "probability": 0.01
+            },
+            {
+              "sku": "FST-DECK-3-TAN-25LB",
+              "probability": 0
+            }
+          ]
+        },
+        "unitOk": 0.93,
+        "ms": 285.671417000005,
+        "usage": {
+          "inputTokens": 3249,
+          "outputTokens": 383
+        },
+        "costUsd": 0.000136458
+      },
+      {
+        "lineId": "3",
+        "shortlist": [
+          "ROF-DRIP-10-BRN",
+          "ROF-DRIP-10",
+          "FST-DECK-25-BRN-1LB",
+          "FST-DECK-25-BRN-5LB",
+          "FST-DECK-25-BRN-25LB",
+          "FST-DECK-3-GRAY-1LB",
+          "FST-DECK-3-GRAY-5LB",
+          "FST-DECK-3-GRAY-25LB",
+          "ROF-SHG-RIDGE",
+          "ROF-SHG-ARCH-BRN",
+          "LBR-2X4-08-SPF",
+          "LBR-2X4-10-SPF",
+          "LBR-2X4-12-SPF",
+          "LBR-2X4-16-SPF",
+          "LBR-2X6-08-SPF",
+          "LBR-2X6-10-SPF",
+          "LBR-2X6-12-SPF",
+          "LBR-2X6-16-SPF",
+          "LBR-2X8-08-SPF",
+          "LBR-2X8-10-SPF"
+        ],
+        "category": {
+          "choice": "roofing",
+          "confidence": 1
+        },
+        "sku": {
+          "choice": "ROF-DRIP-10-BRN",
+          "confidence": 0.99,
+          "top": [
+            {
+              "sku": "ROF-DRIP-10-BRN",
+              "probability": 0.99
+            },
+            {
+              "sku": "NONE",
+              "probability": 0.01
+            },
+            {
+              "sku": "LBR-2X6-10-SPF",
+              "probability": 0
+            }
+          ]
+        },
+        "unitOk": 0.79,
+        "ms": 276.26695800000743,
+        "usage": {
+          "inputTokens": 3581,
+          "outputTokens": 518
+        },
+        "costUsd": 0.000150402
+      },
+      {
+        "lineId": "4",
+        "shortlist": [
+          "ROF-SHG-RIDGE",
+          "ROF-DRIP-10",
+          "HDW-HT-H2-5",
+          "ROF-DRIP-10-BRN",
+          "SUP-SEAL-EXT-5G",
+          "ROF-ICE-36",
+          "INS-SPRAY-CAN"
+        ],
+        "category": {
+          "choice": "roofing",
+          "confidence": 1
+        },
+        "sku": {
+          "choice": "ROF-SHG-RIDGE",
+          "confidence": 0.96,
+          "top": [
+            {
+              "sku": "ROF-SHG-RIDGE",
+              "probability": 0.96
+            },
+            {
+              "sku": "NONE",
+              "probability": 0.04
+            },
+            {
+              "sku": "SUP-SEAL-EXT-5G",
+              "probability": 0
+            }
+          ]
+        },
+        "unitOk": 0.58,
+        "ms": 282.567584000004,
+        "usage": {
+          "inputTokens": 2947,
+          "outputTokens": 274
+        },
+        "costUsd": 0.000123774
+      },
+      {
+        "lineId": "5",
+        "shortlist": [
+          "ROF-VENT-RIDGE",
+          "DRY-12-MR-4X8",
+          "ROF-SHG-RIDGE",
+          "MAS-CEM-GU-30KG",
+          "TRM-LAP-8",
+          "DRY-12-MR-4X10",
+          "DRY-12-MR-4X12",
+          "ROF-UNDER-SYN",
+          "ROF-DRIP-10",
+          "FST-ANCH-12-50",
+          "LBR-2X4-08-PT",
+          "LBR-2X4-10-PT",
+          "LBR-2X4-12-PT",
+          "LBR-2X4-16-PT",
+          "LBR-2X6-08-PT",
+          "LBR-2X6-10-PT",
+          "LBR-2X6-12-PT",
+          "LBR-2X6-16-PT",
+          "LBR-2X8-08-PT",
+          "LBR-2X8-10-PT"
+        ],
+        "category": {
+          "choice": "roofing",
+          "confidence": 1
+        },
+        "sku": {
+          "choice": "ROF-VENT-RIDGE",
+          "confidence": 0.97,
+          "top": [
+            {
+              "sku": "ROF-VENT-RIDGE",
+              "probability": 0.97
+            },
+            {
+              "sku": "NONE",
+              "probability": 0.03
+            },
+            {
+              "sku": "LBR-2X6-10-PT",
+              "probability": 0
+            }
+          ]
+        },
+        "unitOk": 0.75,
+        "ms": 303.41658299999835,
+        "usage": {
+          "inputTokens": 3527,
+          "outputTokens": 497
+        },
+        "costUsd": 0.000148134
+      },
+      {
+        "lineId": "6",
+        "shortlist": [
+          "DRY-TAPE-250",
+          "ROF-VENT-RIDGE",
+          "SHT-PLY-CDX-34",
+          "ROF-SHG-ARCH-BLK"
+        ],
+        "category": {
+          "choice": "tools_supplies",
+          "confidence": 0.51
+        },
+        "sku": {
+          "choice": "NONE",
+          "confidence": 0.99,
+          "top": [
+            {
+              "sku": "NONE",
+              "probability": 1
+            },
+            {
+              "sku": "DRY-TAPE-250",
+              "probability": 0
+            },
+            {
+              "sku": "SHT-PLY-CDX-34",
+              "probability": 0
+            }
+          ]
+        },
+        "unitOk": 0.11,
+        "ms": 190.20520900000702,
+        "usage": {
+          "inputTokens": 2845,
+          "outputTokens": 229
+        },
+        "costUsd": 0.00011949
+      }
+    ],
+    "ms": 492.6214580000087,
+    "usage": {
+      "inputTokens": 19427,
+      "outputTokens": 2285
+    },
+    "costUsd": 0.0008159339999999999
+  },
+  "claudeOnly": {
+    "lines": [
+      {
+        "lineId": "1",
+        "sku": "ROF-SHG-ARCH-BRN",
+        "confidence": "high"
+      },
+      {
+        "lineId": "2",
+        "sku": "ROF-UNDER-30",
+        "confidence": "high"
+      },
+      {
+        "lineId": "3",
+        "sku": "ROF-DRIP-10-BRN",
+        "confidence": "high"
+      },
+      {
+        "lineId": "4",
+        "sku": "ROF-SHG-RIDGE",
+        "confidence": "high"
+      },
+      {
+        "lineId": "5",
+        "sku": "ROF-VENT-RIDGE",
+        "confidence": "high"
+      },
+      {
+        "lineId": "6",
+        "sku": null,
+        "confidence": "high"
+      }
+    ],
+    "ms": 1948.5786669999943,
+    "usage": {
+      "inputTokens": 17283,
+      "outputTokens": 238
+    },
+    "costUsd": 0.055418999999999996
+  }
+}

@@ -1,0 +1,251 @@
+{
+  "orderId": "o03",
+  "text": "Slab pour supplies\n40 bags 30 kg concrete mix\n10 pcs 15M rebar 3m\n2 sheets 6x6 welded wire mesh\n4 12 in tube forms\n",
+  "model": "claude-sonnet-5-5",
+  "parse": {
+    "lines": [
+      {
+        "id": "1",
+        "raw": "40 bags 30 kg concrete mix",
+        "item": "30 kg concrete mix",
+        "qty": 40,
+        "unit": "bags"
+      },
+      {
+        "id": "2",
+        "raw": "10 pcs 15M rebar 3m",
+        "item": "15M rebar 3m",
+        "qty": 10,
+        "unit": "pcs"
+      },
+      {
+        "id": "3",
+        "raw": "2 sheets 6x6 welded wire mesh",
+        "item": "6x6 welded wire mesh",
+        "qty": 2,
+        "unit": "sheets"
+      },
+      {
+        "id": "4",
+        "raw": "4 12 in tube forms",
+        "item": "12 in tube forms",
+        "qty": 4,
+        "unit": null
+      }
+    ],
+    "ms": 1784.5576249999995,
+    "usage": {
+      "inputTokens": 3471,
+      "outputTokens": 239
+    },
+    "costUsd": 0.013998
+  },
+  "jev": {
+    "lines": [
+      {
+        "lineId": "1",
+        "shortlist": [
+          "CON-30KG",
+          "CON-FAST-20KG",
+          "FST-TAPCON-14-100",
+          "MAS-MORT-S-30KG",
+          "CON-FORM-SONO-8",
+          "CON-FORM-SONO-12",
+          "MAS-CMU-8",
+          "MAS-CMU-CAP",
+          "MAS-MORT-N-30KG"
+        ],
+        "category": {
+          "choice": "concrete_masonry",
+          "confidence": 1
+        },
+        "sku": {
+          "choice": "CON-30KG",
+          "confidence": 1,
+          "top": [
+            {
+              "sku": "CON-30KG",
+              "probability": 1
+            },
+            {
+              "sku": "CON-FAST-20KG",
+              "probability": 0
+            },
+            {
+              "sku": "FST-TAPCON-14-100",
+              "probability": 0
+            }
+          ]
+        },
+        "unitOk": 0.95,
+        "ms": 274.9153749999987,
+        "usage": {
+          "inputTokens": 2976,
+          "outputTokens": 300
+        },
+        "costUsd": 0.00012499199999999999
+      },
+      {
+        "lineId": "2",
+        "shortlist": [
+          "CON-REBAR-15M-3M",
+          "CON-REBAR-10M-3M",
+          "CON-REBAR-15M-6M",
+          "MAS-MORT-S-30KG",
+          "MAS-MORT-N-30KG",
+          "DRY-MUD-45",
+          "ROF-UNDER-15"
+        ],
+        "category": {
+          "choice": "concrete_masonry",
+          "confidence": 1
+        },
+        "sku": {
+          "choice": "CON-REBAR-15M-3M",
+          "confidence": 1,
+          "top": [
+            {
+              "sku": "CON-REBAR-15M-3M",
+              "probability": 1
+            },
+            {
+              "sku": "NONE",
+              "probability": 0
+            },
+            {
+              "sku": "CON-REBAR-10M-3M",
+              "probability": 0
+            }
+          ]
+        },
+        "unitOk": 0.92,
+        "ms": 264.96149999999943,
+        "usage": {
+          "inputTokens": 2953,
+          "outputTokens": 290
+        },
+        "costUsd": 0.000124026
+      },
+      {
+        "lineId": "3",
+        "shortlist": [
+          "CON-MESH-5X10",
+          "SHT-PLY-ZIP-716",
+          "LBR-6X6-8-PT",
+          "LBR-6X6-10-PT",
+          "LBR-6X6-12-PT",
+          "DRY-TAPE-MESH",
+          "FST-ANCH-12-50",
+          "ROF-SHG-ARCH-BRN"
+        ],
+        "category": {
+          "choice": "concrete_masonry",
+          "confidence": 1
+        },
+        "sku": {
+          "choice": "CON-MESH-5X10",
+          "confidence": 0.81,
+          "top": [
+            {
+              "sku": "CON-MESH-5X10",
+              "probability": 0.84
+            },
+            {
+              "sku": "NONE",
+              "probability": 0.16
+            },
+            {
+              "sku": "FST-ANCH-12-50",
+              "probability": 0
+            }
+          ]
+        },
+        "unitOk": 0.93,
+        "ms": 248.3719170000004,
+        "usage": {
+          "inputTokens": 2996,
+          "outputTokens": 303
+        },
+        "costUsd": 0.00012583199999999998
+      },
+      {
+        "lineId": "4",
+        "shortlist": [
+          "CON-FORM-SONO-12",
+          "CON-FORM-SONO-8",
+          "LBR-2X12-08-PT",
+          "LBR-2X12-10-PT",
+          "LBR-2X12-12-PT",
+          "LBR-2X12-16-PT",
+          "INS-FOAM-1",
+          "INS-FOAM-2"
+        ],
+        "category": {
+          "choice": "concrete_masonry",
+          "confidence": 1
+        },
+        "sku": {
+          "choice": "CON-FORM-SONO-12",
+          "confidence": 0.95,
+          "top": [
+            {
+              "sku": "CON-FORM-SONO-12",
+              "probability": 0.96
+            },
+            {
+              "sku": "NONE",
+              "probability": 0.04
+            },
+            {
+              "sku": "CON-FORM-SONO-8",
+              "probability": 0
+            }
+          ]
+        },
+        "unitOk": 0.88,
+        "ms": 242.75320900000042,
+        "usage": {
+          "inputTokens": 2991,
+          "outputTokens": 307
+        },
+        "costUsd": 0.00012562199999999998
+      }
+    ],
+    "ms": 288.7758750000012,
+    "usage": {
+      "inputTokens": 11916,
+      "outputTokens": 1200
+    },
+    "costUsd": 0.000500472
+  },
+  "claudeOnly": {
+    "lines": [
+      {
+        "lineId": "1",
+        "sku": "CON-30KG",
+        "confidence": "high"
+      },
+      {
+        "lineId": "2",
+        "sku": "CON-REBAR-15M-3M",
+        "confidence": "high"
+      },
+      {
+        "lineId": "3",
+        "sku": "CON-MESH-5X10",
+        "confidence": "high"
+      },
+      {
+        "lineId": "4",
+        "sku": "CON-FORM-SONO-12",
+        "confidence": "high"
+      }
+    ],
+    "ms": 2055.769291999999,
+    "usage": {
+      "inputTokens": 17200,
+      "outputTokens": 172
+    },
+    "costUsd": 0.05418
+  }
+}

@@ -1,0 +1,299 @@
+{
+  "orderId": "o14",
+  "text": "10 lbs of 16d nails\n4 tubes of caulk\n2 bags cement\n30 m of 15M rebar\n",
+  "model": "claude-sonnet-5-5",
+  "parse": {
+    "lines": [
+      {
+        "id": "1",
+        "raw": "10 lbs of 16d nails",
+        "item": "16d nails",
+        "qty": 10,
+        "unit": "lbs"
+      },
+      {
+        "id": "2",
+        "raw": "4 tubes of caulk",
+        "item": "caulk",
+        "qty": 4,
+        "unit": "tubes"
+      },
+      {
+        "id": "3",
+        "raw": "2 bags cement",
+        "item": "cement",
+        "qty": 2,
+        "unit": "bags"
+      },
+      {
+        "id": "4",
+        "raw": "30 m of 15M rebar",
+        "item": "15M rebar",
+        "qty": 30,
+        "unit": "m"
+      }
+    ],
+    "ms": 1656.4117499999993,
+    "usage": {
+      "inputTokens": 3444,
+      "outputTokens": 202
+    },
+    "costUsd": 0.013362
+  },
+  "jev": {
+    "lines": [
+      {
+        "lineId": "1",
+        "shortlist": [
+          "FST-FRM-3-PAPER-5LB",
+          "FST-FRM-3-PAPER-50LB",
+          "FST-10D-GALV-5LB",
+          "FST-10D-GALV-50LB",
+          "FST-ROOF-118-5LB",
+          "FST-16D-COM-5LB",
+          "FST-16D-COM-50LB",
+          "FST-ROOF-114-1LB",
+          "WTH-CAP-1",
+          "FST-16D-SINK-5LB",
+          "FST-16D-SINK-50LB",
+          "SUP-ADH-CONST-10",
+          "LBR-2X4-16-SPF",
+          "LBR-2X6-16-SPF",
+          "LBR-2X8-16-SPF",
+          "LBR-2X10-16-SPF",
+          "LBR-2X12-16-SPF",
+          "SHT-OSB-716",
+          "WTH-POLY-6",
+          "FST-8D-COM-5LB"
+        ],
+        "category": {
+          "choice": "fasteners",
+          "confidence": 1
+        },
+        "sku": {
+          "choice": "NONE",
+          "confidence": 0.86,
+          "top": [
+            {
+              "sku": "NONE",
+              "probability": 0.87
+            },
+            {
+              "sku": "FST-16D-COM-5LB",
+              "probability": 0.12
+            },
+            {
+              "sku": "FST-16D-COM-50LB",
+              "probability": 0.01
+            }
+          ]
+        },
+        "unitOk": 0.28,
+        "ms": 213.63445800000045,
+        "usage": {
+          "inputTokens": 3561,
+          "outputTokens": 508
+        },
+        "costUsd": 0.000149562
+      },
+      {
+        "lineId": "2",
+        "shortlist": [
+          "SUP-CAULK-LAT-WHT",
+          "SUP-CAULK-SIL-CLR",
+          "DRY-12-REG-4X8",
+          "FST-DECK-3-TAN-1LB",
+          "FST-DECK-3-TAN-5LB",
+          "FST-DECK-3-TAN-25LB",
+          "FST-DRY-158-1LB",
+          "FST-DRY-158-5LB",
+          "FST-DRY-158-25LB",
+          "SUP-LINE-CHALK-BL",
+          "DRY-58-REG-4X8",
+          "DRY-14-FLEX-4X8",
+          "FST-DECK-25-TAN-1LB",
+          "FST-DECK-25-TAN-5LB",
+          "FST-DECK-25-TAN-25LB",
+          "FST-DRY-158-FINE-1LB",
+          "FST-DRY-158-FINE-5LB",
+          "FST-DRY-158-FINE-25LB",
+          "DRY-12-REG-4X10",
+          "DRY-12-REG-4X12"
+        ],
+        "category": {
+          "choice": "adhesives_sealants",
+          "confidence": 1
+        },
+        "sku": {
+          "choice": "NONE",
+          "confidence": 0.77,
+          "top": [
+            {
+              "sku": "NONE",
+              "probability": 0.79
+            },
+            {
+              "sku": "SUP-CAULK-LAT-WHT",
+              "probability": 0.15
+            },
+            {
+              "sku": "SUP-CAULK-SIL-CLR",
+              "probability": 0.06
+            }
+          ]
+        },
+        "unitOk": 0.91,
+        "ms": 201.98904200000106,
+        "usage": {
+          "inputTokens": 3556,
+          "outputTokens": 529
+        },
+        "costUsd": 0.000149352
+      },
+      {
+        "lineId": "3",
+        "shortlist": [
+          "MAS-CEM-GU-30KG",
+          "TRM-LAP-8",
+          "DRY-12-MR-4X8",
+          "CON-30KG",
+          "ROF-UNDER-SYN",
+          "DRY-12-MR-4X10",
+          "DRY-12-MR-4X12",
+          "WTH-POLY-6",
+          "LBR-2X4-08-PT",
+          "LBR-2X4-10-PT",
+          "LBR-2X4-12-PT",
+          "LBR-2X4-16-PT",
+          "LBR-2X6-08-PT",
+          "LBR-2X6-10-PT",
+          "LBR-2X6-12-PT",
+          "LBR-2X6-16-PT",
+          "LBR-2X8-08-PT",
+          "LBR-2X8-10-PT",
+          "LBR-2X8-12-PT",
+          "LBR-2X8-16-PT"
+        ],
+        "category": {
+          "choice": "concrete_masonry",
+          "confidence": 1
+        },
+        "sku": {
+          "choice": "NONE",
+          "confidence": 0.46,
+          "top": [
+            {
+              "sku": "NONE",
+              "probability": 0.49
+            },
+            {
+              "sku": "MAS-CEM-GU-30KG",
+              "probability": 0.43
+            },
+            {
+              "sku": "CON-30KG",
+              "probability": 0.08
+            }
+          ]
+        },
+        "unitOk": 0.89,
+        "ms": 198.76045899999735,
+        "usage": {
+          "inputTokens": 3494,
+          "outputTokens": 495
+        },
+        "costUsd": 0.00014674799999999998
+      },
+      {
+        "lineId": "4",
+        "shortlist": [
+          "CON-REBAR-15M-3M",
+          "CON-REBAR-15M-6M",
+          "CON-REBAR-10M-3M",
+          "MAS-MORT-S-30KG",
+          "MAS-MORT-N-30KG",
+          "ROF-UNDER-15",
+          "INS-FOAM-1",
+          "LBR-2X4-10-PT",
+          "LBR-2X4-12-PT",
+          "LBR-2X4-16-PT",
+          "LBR-2X6-10-PT",
+          "LBR-2X6-12-PT",
+          "LBR-2X6-16-PT",
+          "LBR-2X8-10-PT",
+          "LBR-2X8-12-PT",
+          "LBR-2X8-16-PT",
+          "LBR-2X10-10-PT",
+          "LBR-2X10-12-PT",
+          "LBR-2X10-16-PT",
+          "LBR-2X12-10-PT"
+        ],
+        "category": {
+          "choice": "concrete_masonry",
+          "confidence": 1
+        },
+        "sku": {
+          "choice": "NONE",
+          "confidence": 0.68,
+          "top": [
+            {
+              "sku": "NONE",
+              "probability": 0.7
+            },
+            {
+              "sku": "CON-REBAR-15M-6M",
+              "probability": 0.2
+            },
+            {
+              "sku": "CON-REBAR-15M-3M",
+              "probability": 0.1
+            }
+          ]
+        },
+        "unitOk": 0.81,
+        "ms": 193.8556249999965,
+        "usage": {
+          "inputTokens": 3514,
+          "outputTokens": 504
+        },
+        "costUsd": 0.00014758799999999998
+      }
+    ],
+    "ms": 219.78820799999812,
+    "usage": {
+      "inputTokens": 14125,
+      "outputTokens": 2036
+    },
+    "costUsd": 0.00059325
+  },
+  "claudeOnly": {
+    "lines": [
+      {
+        "lineId": "1",
+        "sku": null,
+        "confidence": "low"
+      },
+      {
+        "lineId": "2",
+        "sku": null,
+        "confidence": "low"
+      },
+      {
+        "lineId": "3",
+        "sku": null,
+        "confidence": "low"
+      },
+      {
+        "lineId": "4",
+        "sku": null,
+        "confidence": "low"
+      }
+    ],
+    "ms": 1431.1520410000012,
+    "usage": {
+      "inputTokens": 17132,
+      "outputTokens": 135
+    },
+    "costUsd": 0.053421
+  }
+}

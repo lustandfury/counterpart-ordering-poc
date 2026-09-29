@@ -1,0 +1,223 @@
+{
+  "orderId": "o15",
+  "text": "Hey its Dave from Ridgeline Homes. Site is 44 Alder Ct, gate code 1187, please deliver before 7am Thursday cuz the crew starts early. We need 30 2x4x8 and 12 2x6x8, all regular spf not treated. also 4 sheets of 3/4 ply cdx. thx\n",
+  "model": "claude-sonnet-5-5",
+  "parse": {
+    "lines": [
+      {
+        "id": "1",
+        "raw": "30 2x4x8",
+        "item": "2x4x8 regular spf not treated",
+        "qty": 30,
+        "unit": null
+      },
+      {
+        "id": "2",
+        "raw": "12 2x6x8",
+        "item": "2x6x8 regular spf not treated",
+        "qty": 12,
+        "unit": null
+      },
+      {
+        "id": "3",
+        "raw": "4 sheets of 3/4 ply cdx",
+        "item": "3/4 ply cdx",
+        "qty": 4,
+        "unit": "sheets"
+      }
+    ],
+    "ms": 1859.9139589999977,
+    "usage": {
+      "inputTokens": 3516,
+      "outputTokens": 186
+    },
+    "costUsd": 0.013338
+  },
+  "jev": {
+    "lines": [
+      {
+        "lineId": "1",
+        "shortlist": [
+          "LBR-2X4-08-PT",
+          "LBR-2X4-10-PT",
+          "LBR-2X4-12-PT",
+          "LBR-2X4-16-PT",
+          "LBR-2X8-08-PT",
+          "LBR-4X4-8-PT",
+          "LBR-4X4-10-PT",
+          "LBR-4X4-12-PT",
+          "LBR-2X6-08-PT",
+          "LBR-2X6-10-PT",
+          "LBR-2X6-12-PT",
+          "LBR-2X6-16-PT",
+          "LBR-2X8-10-PT",
+          "LBR-2X8-12-PT",
+          "LBR-2X8-16-PT",
+          "LBR-2X10-08-PT",
+          "LBR-2X12-08-PT",
+          "LBR-2X12-10-PT",
+          "LBR-2X12-12-PT",
+          "LBR-2X12-16-PT"
+        ],
+        "category": {
+          "choice": "dimensional_lumber",
+          "confidence": 1
+        },
+        "sku": {
+          "choice": "NONE",
+          "confidence": 0.94,
+          "top": [
+            {
+              "sku": "NONE",
+              "probability": 0.94
+            },
+            {
+              "sku": "LBR-2X4-08-PT",
+              "probability": 0.06
+            },
+            {
+              "sku": "LBR-2X8-08-PT",
+              "probability": 0
+            }
+          ]
+        },
+        "unitOk": 0.93,
+        "ms": 245.43554199999926,
+        "usage": {
+          "inputTokens": 3586,
+          "outputTokens": 519
+        },
+        "costUsd": 0.000150612
+      },
+      {
+        "lineId": "2",
+        "shortlist": [
+          "LBR-2X6-08-PT",
+          "LBR-2X6-10-PT",
+          "LBR-2X6-12-PT",
+          "LBR-2X6-16-PT",
+          "LBR-2X8-08-PT",
+          "LBR-2X4-08-PT",
+          "LBR-2X4-10-PT",
+          "LBR-2X4-12-PT",
+          "LBR-2X4-16-PT",
+          "LBR-2X8-10-PT",
+          "LBR-2X8-12-PT",
+          "LBR-2X8-16-PT",
+          "LBR-2X10-08-PT",
+          "LBR-2X12-08-PT",
+          "LBR-2X12-10-PT",
+          "LBR-2X12-12-PT",
+          "LBR-2X12-16-PT",
+          "LBR-4X4-8-PT",
+          "LBR-4X4-10-PT",
+          "LBR-4X4-12-PT"
+        ],
+        "category": {
+          "choice": "dimensional_lumber",
+          "confidence": 1
+        },
+        "sku": {
+          "choice": "NONE",
+          "confidence": 0.92,
+          "top": [
+            {
+              "sku": "NONE",
+              "probability": 0.93
+            },
+            {
+              "sku": "LBR-2X6-08-PT",
+              "probability": 0.07
+            },
+            {
+              "sku": "LBR-2X6-10-PT",
+              "probability": 0
+            }
+          ]
+        },
+        "unitOk": 0.94,
+        "ms": 169.95262500000536,
+        "usage": {
+          "inputTokens": 3586,
+          "outputTokens": 519
+        },
+        "costUsd": 0.000150612
+      },
+      {
+        "lineId": "3",
+        "shortlist": [
+          "SHT-PLY-CDX-34",
+          "SHT-PLY-CDX-12",
+          "SHT-PLY-CDX-58",
+          "SHT-MDF-34",
+          "SHT-PLY-PT-34",
+          "SHT-PLY-BIRCH-34",
+          "DCK-54-8-PT",
+          "DCK-54-12-PT",
+          "DCK-54-16-PT",
+          "SUP-CAULK-SIL-CLR"
+        ],
+        "category": {
+          "choice": "sheet_goods",
+          "confidence": 1
+        },
+        "sku": {
+          "choice": "SHT-PLY-CDX-34",
+          "confidence": 0.75,
+          "top": [
+            {
+              "sku": "SHT-PLY-CDX-34",
+              "probability": 0.77
+            },
+            {
+              "sku": "NONE",
+              "probability": 0.23
+            },
+            {
+              "sku": "DCK-54-16-PT",
+              "probability": 0
+            }
+          ]
+        },
+        "unitOk": 0.95,
+        "ms": 195.65320800000336,
+        "usage": {
+          "inputTokens": 3097,
+          "outputTokens": 330
+        },
+        "costUsd": 0.000130074
+      }
+    ],
+    "ms": 263.9588750000039,
+    "usage": {
+      "inputTokens": 10269,
+      "outputTokens": 1368
+    },
+    "costUsd": 0.000431298
+  },
+  "claudeOnly": {
+    "lines": [
+      {
+        "lineId": "1",
+        "sku": "LBR-2X4-08-SPF",
+        "confidence": "high"
+      },
+      {
+        "lineId": "2",
+        "sku": "LBR-2X6-08-SPF",
+        "confidence": "high"
+      },
+      {
+        "lineId": "3",
+        "sku": "SHT-PLY-CDX-34",
+        "confidence": "high"
+      }
+    ],
+    "ms": 1526.1922080000004,
+    "usage": {
+      "inputTokens": 17197,
+      "outputTokens": 150
+    },
+    "costUsd": 0.053841
+  }
+}

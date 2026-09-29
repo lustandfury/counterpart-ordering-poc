@@ -1,0 +1,351 @@
+{
+  "orderId": "o07",
+  "text": "2x6 hangers box x2\nhurricane ties 50\n16d sinkers 50lb\n2x10x16 spf x 12\n2x10 hangers 30\n",
+  "model": "claude-sonnet-5-5",
+  "parse": {
+    "lines": [
+      {
+        "id": "1",
+        "raw": "2x6 hangers box x2",
+        "item": "2x6 hangers box",
+        "qty": 2,
+        "unit": null
+      },
+      {
+        "id": "2",
+        "raw": "hurricane ties 50",
+        "item": "hurricane ties",
+        "qty": 50,
+        "unit": null
+      },
+      {
+        "id": "3",
+        "raw": "16d sinkers 50lb",
+        "item": "16d sinkers",
+        "qty": 50,
+        "unit": "lb"
+      },
+      {
+        "id": "4",
+        "raw": "2x10x16 spf x 12",
+        "item": "2x10x16 spf",
+        "qty": 12,
+        "unit": null
+      },
+      {
+        "id": "5",
+        "raw": "2x10 hangers 30",
+        "item": "2x10 hangers",
+        "qty": 30,
+        "unit": null
+      }
+    ],
+    "ms": 1929.28125,
+    "usage": {
+      "inputTokens": 3457,
+      "outputTokens": 247
+    },
+    "costUsd": 0.014076
+  },
+  "jev": {
+    "lines": [
+      {
+        "lineId": "1",
+        "shortlist": [
+          "HDW-JH-2X6-BOX",
+          "HDW-JH-2X6",
+          "HDW-JH-2X4",
+          "HDW-JH-2X8",
+          "HDW-JH-2X10",
+          "FST-ATROD-12-6",
+          "FST-ATROD-12-8",
+          "DRY-12-MR-4X8",
+          "FST-ATROD-58-10",
+          "LBR-1X4-8-PINE",
+          "LBR-1X4-12-PINE",
+          "LBR-1X6-8-PINE",
+          "LBR-1X6-12-PINE",
+          "LBR-1X8-8-PINE",
+          "LBR-1X8-12-PINE",
+          "SHT-MDF-34",
+          "SHT-MDF-12",
+          "SHT-PLY-ZIP-716",
+          "DRY-12-MR-4X10",
+          "DRY-12-MR-4X12"
+        ],
+        "category": {
+          "choice": "hardware",
+          "confidence": 0.99
+        },
+        "sku": {
+          "choice": "HDW-JH-2X6-BOX",
+          "confidence": 0.99,
+          "top": [
+            {
+              "sku": "HDW-JH-2X6-BOX",
+              "probability": 0.99
+            },
+            {
+              "sku": "NONE",
+              "probability": 0.01
+            },
+            {
+              "sku": "DRY-12-MR-4X12",
+              "probability": 0
+            }
+          ]
+        },
+        "unitOk": 0.81,
+        "ms": 206.83912500000224,
+        "usage": {
+          "inputTokens": 3446,
+          "outputTokens": 498
+        },
+        "costUsd": 0.000144732
+      },
+      {
+        "lineId": "2",
+        "shortlist": [
+          "HDW-HT-H2-5",
+          "HDW-STRAP-12",
+          "DRY-TAPE-MESH",
+          "ROF-ICE-36",
+          "WTH-FLASH-6",
+          "WTH-FLASH-4"
+        ],
+        "category": {
+          "choice": "hardware",
+          "confidence": 1
+        },
+        "sku": {
+          "choice": "HDW-HT-H2-5",
+          "confidence": 0.91,
+          "top": [
+            {
+              "sku": "HDW-HT-H2-5",
+              "probability": 0.92
+            },
+            {
+              "sku": "NONE",
+              "probability": 0.08
+            },
+            {
+              "sku": "ROF-ICE-36",
+              "probability": 0
+            }
+          ]
+        },
+        "unitOk": 0.57,
+        "ms": 201.42583399999785,
+        "usage": {
+          "inputTokens": 2889,
+          "outputTokens": 256
+        },
+        "costUsd": 0.000121338
+      },
+      {
+        "lineId": "3",
+        "shortlist": [
+          "FST-16D-SINK-5LB",
+          "FST-16D-SINK-50LB",
+          "HDW-JH-2X6-BOX",
+          "HDW-JH-2X6",
+          "SUP-STAKE-24",
+          "FST-DRY-158-FINE-1LB",
+          "FST-DRY-158-FINE-5LB",
+          "FST-DRY-158-FINE-25LB",
+          "LBR-2X4-16-PT",
+          "LBR-2X6-16-PT",
+          "LBR-2X8-16-PT",
+          "LBR-2X10-16-PT",
+          "LBR-2X12-16-PT",
+          "LBR-6X6-8-PT",
+          "LBR-6X6-10-PT",
+          "LBR-6X6-12-PT",
+          "FST-STRC-3-1LB",
+          "FST-STRC-3-5LB",
+          "FST-16D-COM-5LB",
+          "FST-16D-COM-50LB"
+        ],
+        "category": {
+          "choice": "fasteners",
+          "confidence": 0.96
+        },
+        "sku": {
+          "choice": "FST-16D-SINK-50LB",
+          "confidence": 0.95,
+          "top": [
+            {
+              "sku": "FST-16D-SINK-50LB",
+              "probability": 0.96
+            },
+            {
+              "sku": "NONE",
+              "probability": 0.04
+            },
+            {
+              "sku": "FST-16D-SINK-5LB",
+              "probability": 0
+            }
+          ]
+        },
+        "unitOk": 0.59,
+        "ms": 188.6420419999995,
+        "usage": {
+          "inputTokens": 3571,
+          "outputTokens": 525
+        },
+        "costUsd": 0.000149982
+      },
+      {
+        "lineId": "4",
+        "shortlist": [
+          "LBR-2X10-16-SPF",
+          "LBR-2X10-16-PT",
+          "LBR-2X10-10-SPF",
+          "LBR-2X10-12-SPF",
+          "LBR-2X12-16-SPF",
+          "LBR-2X10-10-PT",
+          "LBR-2X10-12-PT",
+          "LBR-2X12-16-PT",
+          "LBR-2X10-08-SPF",
+          "LBR-2X10-08-PT",
+          "LBR-2X4-16-SPF",
+          "LBR-2X6-16-SPF",
+          "LBR-2X8-16-SPF",
+          "LBR-2X4-16-PT",
+          "LBR-2X6-16-PT",
+          "LBR-2X8-16-PT",
+          "LBR-2X12-10-SPF",
+          "LBR-2X12-12-SPF",
+          "LBR-2X12-10-PT",
+          "LBR-2X12-12-PT"
+        ],
+        "category": {
+          "choice": "dimensional_lumber",
+          "confidence": 1
+        },
+        "sku": {
+          "choice": "LBR-2X10-16-SPF",
+          "confidence": 1,
+          "top": [
+            {
+              "sku": "LBR-2X10-16-SPF",
+              "probability": 1
+            },
+            {
+              "sku": "LBR-2X6-16-PT",
+              "probability": 0
+            },
+            {
+              "sku": "LBR-2X12-16-PT",
+              "probability": 0
+            }
+          ]
+        },
+        "unitOk": 0.91,
+        "ms": 218.48233299999993,
+        "usage": {
+          "inputTokens": 3604,
+          "outputTokens": 540
+        },
+        "costUsd": 0.000151368
+      },
+      {
+        "lineId": "5",
+        "shortlist": [
+          "HDW-JH-2X6",
+          "HDW-JH-2X6-BOX",
+          "HDW-JH-2X10",
+          "HDW-JH-2X4",
+          "LBR-2X10-08-PT",
+          "LBR-2X10-10-PT",
+          "LBR-2X10-12-PT",
+          "LBR-2X10-16-PT",
+          "HDW-JH-2X8",
+          "LBR-2X12-10-PT",
+          "LBR-2X10-08-SPF",
+          "LBR-2X10-10-SPF",
+          "LBR-2X10-12-SPF",
+          "LBR-2X10-16-SPF",
+          "LBR-2X4-10-PT",
+          "LBR-2X6-10-PT",
+          "LBR-2X8-10-PT",
+          "LBR-2X12-10-SPF",
+          "LBR-2X12-12-PT",
+          "LBR-2X12-16-PT"
+        ],
+        "category": {
+          "choice": "hardware",
+          "confidence": 0.99
+        },
+        "sku": {
+          "choice": "HDW-JH-2X10",
+          "confidence": 0.79,
+          "top": [
+            {
+              "sku": "HDW-JH-2X10",
+              "probability": 0.81
+            },
+            {
+              "sku": "NONE",
+              "probability": 0.14
+            },
+            {
+              "sku": "LBR-2X10-10-SPF",
+              "probability": 0.02
+            }
+          ]
+        },
+        "unitOk": 0.65,
+        "ms": 222.95795799999905,
+        "usage": {
+          "inputTokens": 3553,
+          "outputTokens": 518
+        },
+        "costUsd": 0.000149226
+      }
+    ],
+    "ms": 256.8255420000023,
+    "usage": {
+      "inputTokens": 17063,
+      "outputTokens": 2337
+    },
+    "costUsd": 0.000716646
+  },
+  "claudeOnly": {
+    "lines": [
+      {
+        "lineId": "1",
+        "sku": "HDW-JH-2X6-BOX",
+        "confidence": "high"
+      },
+      {
+        "lineId": "2",
+        "sku": "HDW-HT-H2-5",
+        "confidence": "high"
+      },
+      {
+        "lineId": "3",
+        "sku": "FST-16D-SINK-50LB",
+        "confidence": "medium"
+      },
+      {
+        "lineId": "4",
+        "sku": "LBR-2X10-16-SPF",
+        "confidence": "high"
+      },
+      {
+        "lineId": "5",
+        "sku": "HDW-JH-2X10",
+        "confidence": "high"
+      }
+    ],
+    "ms": 4294.6029579999995,
+    "usage": {
+      "inputTokens": 17195,
+      "outputTokens": 567
+    },
+    "costUsd": 0.06009
+  }
+}

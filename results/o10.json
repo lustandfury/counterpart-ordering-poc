@@ -1,0 +1,389 @@
+{
+  "orderId": "o10",
+  "text": "6x6x10 pt post x 8\n4x4x8 treated x 10\nsonotube 12 x 8\n30kg concrete x 30\nanchor bolts 1/2 x 8 x 20\nwedge anchors 1/2 x 1 box\n",
+  "model": "claude-sonnet-5-5",
+  "parse": {
+    "lines": [
+      {
+        "id": "1",
+        "raw": "6x6x10 pt post x 8",
+        "item": "6x6x10 pt post",
+        "qty": 8,
+        "unit": null
+      },
+      {
+        "id": "2",
+        "raw": "4x4x8 treated x 10",
+        "item": "4x4x8 treated",
+        "qty": 10,
+        "unit": null
+      },
+      {
+        "id": "3",
+        "raw": "sonotube 12 x 8",
+        "item": "sonotube 12",
+        "qty": 8,
+        "unit": null
+      },
+      {
+        "id": "4",
+        "raw": "30kg concrete x 30",
+        "item": "30kg concrete",
+        "qty": 30,
+        "unit": null
+      },
+      {
+        "id": "5",
+        "raw": "anchor bolts 1/2 x 8 x 20",
+        "item": "anchor bolts 1/2 x 8",
+        "qty": 20,
+        "unit": null
+      },
+      {
+        "id": "6",
+        "raw": "wedge anchors 1/2 x 1 box",
+        "item": "wedge anchors 1/2",
+        "qty": 1,
+        "unit": "box"
+      }
+    ],
+    "ms": 2238.186042000001,
+    "usage": {
+      "inputTokens": 3486,
+      "outputTokens": 314
+    },
+    "costUsd": 0.015168000000000001
+  },
+  "jev": {
+    "lines": [
+      {
+        "lineId": "1",
+        "shortlist": [
+          "LBR-2X6-10-PT",
+          "LBR-6X6-10-PT",
+          "LBR-6X6-8-PT",
+          "LBR-2X4-10-PT",
+          "LBR-2X6-12-PT",
+          "LBR-2X6-16-PT",
+          "LBR-2X8-10-PT",
+          "LBR-6X6-12-PT",
+          "LBR-2X4-12-PT",
+          "LBR-2X4-16-PT",
+          "LBR-2X6-08-PT",
+          "LBR-2X8-12-PT",
+          "LBR-2X8-16-PT",
+          "LBR-2X10-10-PT",
+          "LBR-2X12-10-PT",
+          "LBR-2X10-08-PT",
+          "LBR-4X4-10-PT",
+          "LBR-2X10-12-PT",
+          "LBR-2X10-16-PT",
+          "LBR-4X4-10-SPF"
+        ],
+        "category": {
+          "choice": "dimensional_lumber",
+          "confidence": 1
+        },
+        "sku": {
+          "choice": "LBR-6X6-10-PT",
+          "confidence": 0.99,
+          "top": [
+            {
+              "sku": "LBR-6X6-10-PT",
+              "probability": 0.98
+            },
+            {
+              "sku": "LBR-2X6-10-PT",
+              "probability": 0.01
+            },
+            {
+              "sku": "NONE",
+              "probability": 0.01
+            }
+          ]
+        },
+        "unitOk": 0.91,
+        "ms": 230.88241700000071,
+        "usage": {
+          "inputTokens": 3559,
+          "outputTokens": 529
+        },
+        "costUsd": 0.000149478
+      },
+      {
+        "lineId": "2",
+        "shortlist": [
+          "LBR-2X4-08-PT",
+          "LBR-4X4-8-PT",
+          "LBR-2X6-08-PT",
+          "LBR-2X8-08-PT",
+          "LBR-2X4-10-PT",
+          "LBR-2X4-12-PT",
+          "LBR-2X4-16-PT",
+          "LBR-2X10-08-PT",
+          "LBR-2X12-08-PT",
+          "LBR-4X4-10-PT",
+          "LBR-4X4-12-PT",
+          "LBR-2X6-10-PT",
+          "LBR-2X6-12-PT",
+          "LBR-2X6-16-PT",
+          "LBR-2X8-10-PT",
+          "LBR-2X8-12-PT",
+          "LBR-2X8-16-PT",
+          "LBR-2X10-10-PT",
+          "LBR-2X10-12-PT",
+          "LBR-2X10-16-PT"
+        ],
+        "category": {
+          "choice": "dimensional_lumber",
+          "confidence": 1
+        },
+        "sku": {
+          "choice": "LBR-4X4-8-PT",
+          "confidence": 0.96,
+          "top": [
+            {
+              "sku": "LBR-4X4-8-PT",
+              "probability": 0.97
+            },
+            {
+              "sku": "NONE",
+              "probability": 0.02
+            },
+            {
+              "sku": "LBR-2X4-08-PT",
+              "probability": 0.01
+            }
+          ]
+        },
+        "unitOk": 0.86,
+        "ms": 211.57737500000076,
+        "usage": {
+          "inputTokens": 3567,
+          "outputTokens": 528
+        },
+        "costUsd": 0.00014981399999999999
+      },
+      {
+        "lineId": "3",
+        "shortlist": [
+          "CON-FORM-SONO-12",
+          "CON-FORM-SONO-8",
+          "DCK-COMP-12",
+          "SHT-OSB-2332",
+          "DRY-12-LITE-4X12",
+          "DCK-COMP-16"
+        ],
+        "category": {
+          "choice": "concrete_masonry",
+          "confidence": 1
+        },
+        "sku": {
+          "choice": "CON-FORM-SONO-12",
+          "confidence": 0.75,
+          "top": [
+            {
+              "sku": "CON-FORM-SONO-12",
+              "probability": 0.78
+            },
+            {
+              "sku": "NONE",
+              "probability": 0.2
+            },
+            {
+              "sku": "CON-FORM-SONO-8",
+              "probability": 0.02
+            }
+          ]
+        },
+        "unitOk": 0.64,
+        "ms": 219.00308400000358,
+        "usage": {
+          "inputTokens": 2919,
+          "outputTokens": 271
+        },
+        "costUsd": 0.000122598
+      },
+      {
+        "lineId": "4",
+        "shortlist": [
+          "CON-30KG",
+          "CON-FAST-20KG",
+          "FST-TAPCON-14-100",
+          "MAS-CMU-8",
+          "MAS-CMU-CAP",
+          "CON-FORM-SONO-8",
+          "CON-FORM-SONO-12",
+          "MAS-MORT-S-30KG"
+        ],
+        "category": {
+          "choice": "concrete_masonry",
+          "confidence": 1
+        },
+        "sku": {
+          "choice": "CON-30KG",
+          "confidence": 1,
+          "top": [
+            {
+              "sku": "CON-30KG",
+              "probability": 1
+            },
+            {
+              "sku": "CON-FORM-SONO-12",
+              "probability": 0
+            },
+            {
+              "sku": "CON-FAST-20KG",
+              "probability": 0
+            }
+          ]
+        },
+        "unitOk": 0.84,
+        "ms": 206.72950000000128,
+        "usage": {
+          "inputTokens": 2961,
+          "outputTokens": 286
+        },
+        "costUsd": 0.00012436199999999999
+      },
+      {
+        "lineId": "5",
+        "shortlist": [
+          "FST-ATROD-12-8",
+          "FST-ATROD-58-10",
+          "FST-ATROD-12-6",
+          "INS-R40-16",
+          "HDW-JH-2X8",
+          "FST-ANCH-12-50",
+          "HDW-JH-2X4",
+          "HDW-JH-2X6",
+          "HDW-JH-2X10",
+          "HDW-JH-2X6-BOX",
+          "CON-REBAR-15M-3M",
+          "CON-REBAR-15M-6M",
+          "INS-R12-15",
+          "INS-R12-23",
+          "INS-R20-15",
+          "INS-R20-23",
+          "INS-R31-16"
+        ],
+        "category": {
+          "choice": "fasteners",
+          "confidence": 1
+        },
+        "sku": {
+          "choice": "FST-ATROD-12-8",
+          "confidence": 0.87,
+          "top": [
+            {
+              "sku": "FST-ATROD-12-8",
+              "probability": 0.88
+            },
+            {
+              "sku": "NONE",
+              "probability": 0.11
+            },
+            {
+              "sku": "FST-ATROD-12-6",
+              "probability": 0.01
+            }
+          ]
+        },
+        "unitOk": 0.63,
+        "ms": 175.75991700000304,
+        "usage": {
+          "inputTokens": 3424,
+          "outputTokens": 434
+        },
+        "costUsd": 0.000143808
+      },
+      {
+        "lineId": "6",
+        "shortlist": [
+          "FST-ANCH-12-50",
+          "FST-ATROD-12-6",
+          "FST-ATROD-12-8",
+          "FST-ATROD-58-10",
+          "DRY-12-MR-4X12",
+          "DRY-58-MR-4X12",
+          "SUP-STAKE-24"
+        ],
+        "category": {
+          "choice": "fasteners",
+          "confidence": 1
+        },
+        "sku": {
+          "choice": "FST-ANCH-12-50",
+          "confidence": 0.82,
+          "top": [
+            {
+              "sku": "FST-ANCH-12-50",
+              "probability": 0.84
+            },
+            {
+              "sku": "NONE",
+              "probability": 0.16
+            },
+            {
+              "sku": "FST-ATROD-12-6",
+              "probability": 0
+            }
+          ]
+        },
+        "unitOk": 0.77,
+        "ms": 138.41516599999886,
+        "usage": {
+          "inputTokens": 2991,
+          "outputTokens": 297
+        },
+        "costUsd": 0.00012562199999999998
+      }
+    ],
+    "ms": 364.34266699999716,
+    "usage": {
+      "inputTokens": 19421,
+      "outputTokens": 2345
+    },
+    "costUsd": 0.0008156819999999999
+  },
+  "claudeOnly": {
+    "lines": [
+      {
+        "lineId": "1",
+        "sku": "LBR-6X6-10-PT",
+        "confidence": "high"
+      },
+      {
+        "lineId": "2",
+        "sku": "LBR-4X4-8-PT",
+        "confidence": "high"
+      },
+      {
+        "lineId": "3",
+        "sku": "CON-FORM-SONO-12",
+        "confidence": "high"
+      },
+      {
+        "lineId": "4",
+        "sku": "CON-30KG",
+        "confidence": "high"
+      },
+      {
+        "lineId": "5",
+        "sku": "FST-ATROD-12-8",
+        "confidence": "high"
+      },
+      {
+        "lineId": "6",
+        "sku": "FST-ANCH-12-50",
+        "confidence": "high"
+      }
+    ],
+    "ms": 1950.8630829999965,
+    "usage": {
+      "inputTokens": 17286,
+      "outputTokens": 235
+    },
+    "costUsd": 0.055383
+  }
+}

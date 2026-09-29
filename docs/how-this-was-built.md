@@ -16,3 +16,9 @@ Built with Claude Code from a written plan (`AI Ordering POC Build Plan.md`) and
 
 ## House defaults
 The first blind-labeler pass disagreed with my labels wherever a line depended on an unstated assumption (species, length, thread type). Rather than bury those guesses in the answer key, the assumptions became explicit rules in `data/house-defaults.md`, checked against the catalog for collisions, and given identically to both pipelines. Lines with no rule are labeled `sku: null` and always go to review. **Decided by me:** the Canadian units, the large-quantity rule, and the five judgment calls on the final review list. The blind labeler (`data/blind-labels.json`) is a second opinion for label review only and is never used in the pipelines.
+
+## Milestone 3: pipeline
+- `lib/pipeline/`: `parse` (Claude structured output, shared), `shortlist` (Fuse.js, top 20), `decide` (one Jev call per line, 5 at a time), `route` (threshold T, `unit_ok` >= 0.8, large-quantity rule), `claude-only` (comparison), `index` (runs both side by side). `npm run pipeline` saves raw scores per order to `results/`, so thresholds are applied afterwards and can be re-tuned without new API calls.
+- Two things the plan did not anticipate: the configured model ID (`claude-3-5-sonnet-20260920`) returned a 404, so it is now `claude-sonnet-5-5`; and this model rejects forced `tool_choice`, so the prompt asks for the tool call instead. I also added a `NONE` option to Jev's `sku` question so lines with no catalog match have somewhere to go.
+- Claude prices in `lib/pricing.ts` are assumed, not verified.
+- First informal look (not the evaluation): at T = 0.85 neither pipeline approved a wrong line, but Claude-only auto-approved far more lines than Jev (65 vs 38 of 88) and matched more products (88 vs 84). Jev does not win on this small, house-rules-assisted set. That is a finding to report honestly, and to test properly in milestone 4.

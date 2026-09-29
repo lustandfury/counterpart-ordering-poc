@@ -1,0 +1,233 @@
+{
+  "orderId": "o11",
+  "text": "20 of the 2x6 (8ft)\n15 of the 2x4\n2 of the 4x4 posts\n",
+  "model": "claude-sonnet-5-5",
+  "parse": {
+    "lines": [
+      {
+        "id": "1",
+        "raw": "20 of the 2x6 (8ft)",
+        "item": "2x6 (8ft)",
+        "qty": 20,
+        "unit": null
+      },
+      {
+        "id": "2",
+        "raw": "15 of the 2x4",
+        "item": "2x4",
+        "qty": 15,
+        "unit": null
+      },
+      {
+        "id": "3",
+        "raw": "2 of the 4x4 posts",
+        "item": "4x4 posts",
+        "qty": 2,
+        "unit": null
+      }
+    ],
+    "ms": 1473.8704579999976,
+    "usage": {
+      "inputTokens": 3440,
+      "outputTokens": 168
+    },
+    "costUsd": 0.01284
+  },
+  "jev": {
+    "lines": [
+      {
+        "lineId": "1",
+        "shortlist": [
+          "LBR-2X6-08-PT",
+          "LBR-2X6-08-SPF",
+          "DRY-58-X-4X8",
+          "LBR-2X4-08-PT",
+          "LBR-2X6-10-PT",
+          "LBR-2X6-12-PT",
+          "LBR-2X6-16-PT",
+          "LBR-2X8-08-PT",
+          "LBR-2X12-08-PT",
+          "LBR-2X6-PRECUT-SPF",
+          "LBR-2X4-08-SPF",
+          "LBR-2X6-10-SPF",
+          "LBR-2X6-12-SPF",
+          "LBR-2X6-16-SPF",
+          "LBR-2X8-08-SPF",
+          "LBR-2X10-08-PT",
+          "LBR-2X12-08-SPF",
+          "LBR-2X12-10-PT",
+          "LBR-2X12-12-PT",
+          "LBR-2X12-16-PT"
+        ],
+        "category": {
+          "choice": "dimensional_lumber",
+          "confidence": 1
+        },
+        "sku": {
+          "choice": "LBR-2X6-08-SPF",
+          "confidence": 1,
+          "top": [
+            {
+              "sku": "LBR-2X6-08-SPF",
+              "probability": 1
+            },
+            {
+              "sku": "LBR-2X12-16-PT",
+              "probability": 0
+            },
+            {
+              "sku": "LBR-2X6-08-PT",
+              "probability": 0
+            }
+          ]
+        },
+        "unitOk": 0.94,
+        "ms": 222.23795899999823,
+        "usage": {
+          "inputTokens": 3554,
+          "outputTokens": 530
+        },
+        "costUsd": 0.000149268
+      },
+      {
+        "lineId": "2",
+        "shortlist": [
+          "LBR-2X4-08-PT",
+          "LBR-2X4-10-PT",
+          "LBR-2X4-12-PT",
+          "LBR-2X4-16-PT",
+          "LBR-2X4-08-SPF",
+          "LBR-2X4-10-SPF",
+          "LBR-2X4-12-SPF",
+          "LBR-2X4-16-SPF",
+          "LBR-2X4-PRECUT-SPF",
+          "HDW-JH-2X4",
+          "LBR-2X6-08-PT",
+          "LBR-2X6-10-PT",
+          "LBR-2X6-12-PT",
+          "LBR-2X6-16-PT",
+          "LBR-2X8-08-PT",
+          "LBR-2X8-10-PT",
+          "LBR-2X8-12-PT",
+          "LBR-2X8-16-PT",
+          "LBR-2X10-08-PT",
+          "LBR-2X10-10-PT"
+        ],
+        "category": {
+          "choice": "dimensional_lumber",
+          "confidence": 1
+        },
+        "sku": {
+          "choice": "NONE",
+          "confidence": 0.52,
+          "top": [
+            {
+              "sku": "NONE",
+              "probability": 0.55
+            },
+            {
+              "sku": "LBR-2X4-08-SPF",
+              "probability": 0.45
+            },
+            {
+              "sku": "LBR-2X4-16-SPF",
+              "probability": 0
+            }
+          ]
+        },
+        "unitOk": 0.84,
+        "ms": 204.05808300000353,
+        "usage": {
+          "inputTokens": 3534,
+          "outputTokens": 514
+        },
+        "costUsd": 0.000148428
+      },
+      {
+        "lineId": "3",
+        "shortlist": [
+          "LBR-4X4-8-PT",
+          "LBR-4X4-10-PT",
+          "LBR-4X4-12-PT",
+          "HDW-POST-4X4",
+          "LBR-4X4-8-SPF",
+          "LBR-4X4-10-SPF",
+          "LBR-4X4-12-SPF",
+          "LBR-2X4-08-PT",
+          "LBR-6X6-8-PT",
+          "LBR-2X4-08-SPF",
+          "LBR-2X4-10-PT",
+          "LBR-2X4-12-PT",
+          "LBR-2X4-16-PT",
+          "SHT-PLY-PT-34",
+          "FST-ATROD-12-6",
+          "FST-ATROD-12-8",
+          "FST-ATROD-58-10",
+          "LBR-6X6-10-PT",
+          "LBR-6X6-12-PT",
+          "LBR-2X4-PRECUT-SPF"
+        ],
+        "category": {
+          "choice": "dimensional_lumber",
+          "confidence": 1
+        },
+        "sku": {
+          "choice": "NONE",
+          "confidence": 0.93,
+          "top": [
+            {
+              "sku": "NONE",
+              "probability": 0.93
+            },
+            {
+              "sku": "LBR-4X4-8-SPF",
+              "probability": 0.04
+            },
+            {
+              "sku": "LBR-4X4-8-PT",
+              "probability": 0.02
+            }
+          ]
+        },
+        "unitOk": 0.78,
+        "ms": 200.75466700000106,
+        "usage": {
+          "inputTokens": 3449,
+          "outputTokens": 508
+        },
+        "costUsd": 0.000144858
+      }
+    ],
+    "ms": 228.66362500000105,
+    "usage": {
+      "inputTokens": 10537,
+      "outputTokens": 1552
+    },
+    "costUsd": 0.000442554
+  },
+  "claudeOnly": {
+    "lines": [
+      {
+        "lineId": "1",
+        "sku": "LBR-2X6-08-SPF",
+        "confidence": "high"
+      },
+      {
+        "lineId": "2",
+        "sku": null,
+        "confidence": "low"
+      },
+      {
+        "lineId": "3",
+        "sku": null,
+        "confidence": "low"
+      }
+    ],
+    "ms": 1388.1907090000022,
+    "usage": {
+      "inputTokens": 17104,
+      "outputTokens": 126
+    },
+    "costUsd": 0.053202000000000006
+  }
+}

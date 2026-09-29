@@ -1,0 +1,357 @@
+{
+  "orderId": "o01",
+  "text": "Hendricks framing order\n12 - 2x4x8 SPF\n8 - 2x6x10 SPF\n10 - 2x4x12 SPF\n20 sheets 7/16 OSB\n1 box 16d common nails 5lb\n",
+  "model": "claude-sonnet-5-5",
+  "parse": {
+    "lines": [
+      {
+        "id": "1",
+        "raw": "12 - 2x4x8 SPF",
+        "item": "2x4x8 SPF",
+        "qty": 12,
+        "unit": null
+      },
+      {
+        "id": "2",
+        "raw": "8 - 2x6x10 SPF",
+        "item": "2x6x10 SPF",
+        "qty": 8,
+        "unit": null
+      },
+      {
+        "id": "3",
+        "raw": "10 - 2x4x12 SPF",
+        "item": "2x4x12 SPF",
+        "qty": 10,
+        "unit": null
+      },
+      {
+        "id": "4",
+        "raw": "20 sheets 7/16 OSB",
+        "item": "7/16 OSB",
+        "qty": 20,
+        "unit": "sheets"
+      },
+      {
+        "id": "5",
+        "raw": "1 box 16d common nails 5lb",
+        "item": "16d common nails 5lb",
+        "qty": 1,
+        "unit": "box"
+      }
+    ],
+    "ms": 2098.1128750000003,
+    "usage": {
+      "inputTokens": 3483,
+      "outputTokens": 275
+    },
+    "costUsd": 0.014574
+  },
+  "jev": {
+    "lines": [
+      {
+        "lineId": "1",
+        "shortlist": [
+          "LBR-2X4-08-SPF",
+          "LBR-2X4-08-PT",
+          "LBR-2X8-08-SPF",
+          "LBR-2X6-08-SPF",
+          "LBR-2X8-08-PT",
+          "LBR-2X4-12-SPF",
+          "LBR-2X4-10-SPF",
+          "LBR-2X4-16-SPF",
+          "LBR-2X4-10-PT",
+          "LBR-2X4-12-PT",
+          "LBR-2X4-16-PT",
+          "LBR-2X6-08-PT",
+          "LBR-2X10-08-SPF",
+          "LBR-2X12-08-SPF",
+          "LBR-2X8-12-SPF",
+          "LBR-2X10-08-PT",
+          "LBR-2X12-08-PT",
+          "LBR-2X6-12-SPF",
+          "LBR-2X8-10-SPF",
+          "LBR-2X8-16-SPF"
+        ],
+        "category": {
+          "choice": "dimensional_lumber",
+          "confidence": 1
+        },
+        "sku": {
+          "choice": "LBR-2X4-08-SPF",
+          "confidence": 1,
+          "top": [
+            {
+              "sku": "LBR-2X4-08-SPF",
+              "probability": 1
+            },
+            {
+              "sku": "LBR-2X4-12-PT",
+              "probability": 0
+            },
+            {
+              "sku": "LBR-2X8-16-SPF",
+              "probability": 0
+            }
+          ]
+        },
+        "unitOk": 0.95,
+        "ms": 254.8229580000002,
+        "usage": {
+          "inputTokens": 3584,
+          "outputTokens": 529
+        },
+        "costUsd": 0.000150528
+      },
+      {
+        "lineId": "2",
+        "shortlist": [
+          "LBR-2X6-10-SPF",
+          "LBR-2X6-10-PT",
+          "LBR-2X4-10-SPF",
+          "LBR-2X6-12-SPF",
+          "LBR-2X6-16-SPF",
+          "LBR-2X8-10-SPF",
+          "LBR-2X4-10-PT",
+          "LBR-2X6-12-PT",
+          "LBR-2X6-16-PT",
+          "LBR-2X8-10-PT",
+          "LBR-2X10-10-SPF",
+          "LBR-2X10-10-PT",
+          "LBR-2X6-08-SPF",
+          "LBR-2X12-10-SPF",
+          "LBR-2X6-08-PT",
+          "LBR-2X12-10-PT",
+          "LBR-2X4-12-SPF",
+          "LBR-2X4-16-SPF",
+          "LBR-2X8-12-SPF",
+          "LBR-2X8-16-SPF"
+        ],
+        "category": {
+          "choice": "dimensional_lumber",
+          "confidence": 1
+        },
+        "sku": {
+          "choice": "LBR-2X6-10-SPF",
+          "confidence": 0.99,
+          "top": [
+            {
+              "sku": "LBR-2X6-10-SPF",
+              "probability": 1
+            },
+            {
+              "sku": "LBR-2X6-08-PT",
+              "probability": 0
+            },
+            {
+              "sku": "LBR-2X6-12-SPF",
+              "probability": 0
+            }
+          ]
+        },
+        "unitOk": 0.94,
+        "ms": 356.83304199999975,
+        "usage": {
+          "inputTokens": 3592,
+          "outputTokens": 529
+        },
+        "costUsd": 0.00015086399999999998
+      },
+      {
+        "lineId": "3",
+        "shortlist": [
+          "LBR-2X4-12-SPF",
+          "LBR-2X4-12-PT",
+          "LBR-2X4-10-SPF",
+          "LBR-2X4-16-SPF",
+          "LBR-2X6-12-SPF",
+          "LBR-2X8-12-SPF",
+          "LBR-2X4-10-PT",
+          "LBR-2X4-16-PT",
+          "LBR-2X6-12-PT",
+          "LBR-2X8-12-PT",
+          "LBR-2X12-12-SPF",
+          "LBR-2X12-12-PT",
+          "LBR-2X4-08-SPF",
+          "LBR-2X10-12-SPF",
+          "LBR-2X4-08-PT",
+          "LBR-2X10-12-PT",
+          "LBR-2X6-10-SPF",
+          "LBR-2X6-16-SPF",
+          "LBR-2X8-10-SPF",
+          "LBR-2X8-16-SPF"
+        ],
+        "category": {
+          "choice": "dimensional_lumber",
+          "confidence": 1
+        },
+        "sku": {
+          "choice": "LBR-2X4-12-SPF",
+          "confidence": 1,
+          "top": [
+            {
+              "sku": "LBR-2X4-12-SPF",
+              "probability": 1
+            },
+            {
+              "sku": "LBR-2X4-10-PT",
+              "probability": 0
+            },
+            {
+              "sku": "LBR-2X4-08-PT",
+              "probability": 0
+            }
+          ]
+        },
+        "unitOk": 0.94,
+        "ms": 633.1787919999997,
+        "usage": {
+          "inputTokens": 3594,
+          "outputTokens": 529
+        },
+        "costUsd": 0.000150948
+      },
+      {
+        "lineId": "4",
+        "shortlist": [
+          "SHT-OSB-716",
+          "SHT-OSB-12",
+          "SHT-OSB-2332",
+          "SHT-OSB-58",
+          "LBR-2X4-16-SPF",
+          "LBR-2X6-16-SPF",
+          "LBR-2X8-16-SPF",
+          "LBR-2X10-16-SPF",
+          "LBR-2X12-16-SPF",
+          "SHT-PLY-ZIP-716",
+          "MAS-CMU-CAP",
+          "ROF-UNDER-30"
+        ],
+        "category": {
+          "choice": "sheet_goods",
+          "confidence": 1
+        },
+        "sku": {
+          "choice": "SHT-OSB-716",
+          "confidence": 0.98,
+          "top": [
+            {
+              "sku": "SHT-OSB-716",
+              "probability": 0.99
+            },
+            {
+              "sku": "NONE",
+              "probability": 0.01
+            },
+            {
+              "sku": "SHT-OSB-12",
+              "probability": 0
+            }
+          ]
+        },
+        "unitOk": 0.95,
+        "ms": 491.9647500000001,
+        "usage": {
+          "inputTokens": 3193,
+          "outputTokens": 366
+        },
+        "costUsd": 0.000134106
+      },
+      {
+        "lineId": "5",
+        "shortlist": [
+          "FST-FRM-3-PAPER-5LB",
+          "FST-16D-COM-5LB",
+          "FST-16D-COM-50LB",
+          "FST-FRM-3-PAPER-50LB",
+          "FST-10D-GALV-5LB",
+          "FST-ROOF-118-5LB",
+          "FST-10D-GALV-50LB",
+          "FST-ROOF-114-1LB",
+          "FST-8D-COM-5LB",
+          "FST-8D-COM-50LB",
+          "LBR-1X4-12-PINE",
+          "LBR-1X6-12-PINE",
+          "LBR-1X8-12-PINE",
+          "LBR-1X4-8-PINE",
+          "LBR-1X6-8-PINE",
+          "LBR-1X8-8-PINE",
+          "FST-16D-SINK-5LB",
+          "SHT-PLY-ZIP-716",
+          "FST-16D-SINK-50LB",
+          "DCK-COMP-16"
+        ],
+        "category": {
+          "choice": "fasteners",
+          "confidence": 1
+        },
+        "sku": {
+          "choice": "FST-16D-COM-5LB",
+          "confidence": 0.94,
+          "top": [
+            {
+              "sku": "FST-16D-COM-5LB",
+              "probability": 0.94
+            },
+            {
+              "sku": "NONE",
+              "probability": 0.06
+            },
+            {
+              "sku": "SHT-PLY-ZIP-716",
+              "probability": 0
+            }
+          ]
+        },
+        "unitOk": 0.84,
+        "ms": 246.45745899999974,
+        "usage": {
+          "inputTokens": 3557,
+          "outputTokens": 520
+        },
+        "costUsd": 0.00014939399999999999
+      }
+    ],
+    "ms": 663.4024170000002,
+    "usage": {
+      "inputTokens": 17520,
+      "outputTokens": 2473
+    },
+    "costUsd": 0.00073584
+  },
+  "claudeOnly": {
+    "lines": [
+      {
+        "lineId": "1",
+        "sku": "LBR-2X4-08-SPF",
+        "confidence": "high"
+      },
+      {
+        "lineId": "2",
+        "sku": "LBR-2X6-10-SPF",
+        "confidence": "high"
+      },
+      {
+        "lineId": "3",
+        "sku": "LBR-2X4-12-SPF",
+        "confidence": "high"
+      },
+      {
+        "lineId": "4",
+        "sku": "SHT-OSB-716",
+        "confidence": "high"
+      },
+      {
+        "lineId": "5",
+        "sku": "FST-16D-COM-5LB",
+        "confidence": "high"
+      }
+    ],
+    "ms": 1664.540333,
+    "usage": {
+      "inputTokens": 17249,
+      "outputTokens": 211
+    },
+    "costUsd": 0.054912
+  }
+}

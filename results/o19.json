@@ -1,0 +1,282 @@
+{
+  "orderId": "o19",
+  "text": "200 2x4x8 spf\n5000 sheets of 1/2 drywall\n3 bobcat rentals\n1 tile saw\n",
+  "model": "claude-sonnet-5-5",
+  "parse": {
+    "lines": [
+      {
+        "id": "1",
+        "raw": "200 2x4x8 spf",
+        "item": "2x4x8 spf",
+        "qty": 200,
+        "unit": null
+      },
+      {
+        "id": "2",
+        "raw": "5000 sheets of 1/2 drywall",
+        "item": "1/2 drywall",
+        "qty": 5000,
+        "unit": "sheets"
+      },
+      {
+        "id": "3",
+        "raw": "3 bobcat rentals",
+        "item": "bobcat rentals",
+        "qty": 3,
+        "unit": null
+      },
+      {
+        "id": "4",
+        "raw": "1 tile saw",
+        "item": "tile saw",
+        "qty": 1,
+        "unit": null
+      }
+    ],
+    "ms": 1935.4854999999952,
+    "usage": {
+      "inputTokens": 3448,
+      "outputTokens": 210
+    },
+    "costUsd": 0.013494
+  },
+  "jev": {
+    "lines": [
+      {
+        "lineId": "1",
+        "shortlist": [
+          "LBR-2X4-08-SPF",
+          "LBR-2X4-08-PT",
+          "LBR-2X8-08-SPF",
+          "LBR-2X6-08-SPF",
+          "LBR-2X8-08-PT",
+          "LBR-2X4-12-SPF",
+          "LBR-2X4-10-SPF",
+          "LBR-2X4-16-SPF",
+          "LBR-2X4-10-PT",
+          "LBR-2X4-12-PT",
+          "LBR-2X4-16-PT",
+          "LBR-2X6-08-PT",
+          "LBR-2X10-08-SPF",
+          "LBR-2X12-08-SPF",
+          "LBR-2X8-12-SPF",
+          "LBR-2X10-08-PT",
+          "LBR-2X12-08-PT",
+          "LBR-2X6-12-SPF",
+          "LBR-2X8-10-SPF",
+          "LBR-2X8-16-SPF"
+        ],
+        "category": {
+          "choice": "dimensional_lumber",
+          "confidence": 1
+        },
+        "sku": {
+          "choice": "LBR-2X4-08-SPF",
+          "confidence": 1,
+          "top": [
+            {
+              "sku": "LBR-2X4-08-SPF",
+              "probability": 1
+            },
+            {
+              "sku": "LBR-2X4-12-PT",
+              "probability": 0
+            },
+            {
+              "sku": "LBR-2X8-08-SPF",
+              "probability": 0
+            }
+          ]
+        },
+        "unitOk": 0.89,
+        "ms": 287.62145799999416,
+        "usage": {
+          "inputTokens": 3558,
+          "outputTokens": 529
+        },
+        "costUsd": 0.000149436
+      },
+      {
+        "lineId": "2",
+        "shortlist": [
+          "FST-DRY-214-1LB",
+          "FST-DRY-214-5LB",
+          "FST-DRY-214-25LB",
+          "DRY-12-REG-4X8",
+          "FST-DRY-158-1LB",
+          "FST-DRY-158-5LB",
+          "FST-DRY-158-25LB",
+          "DRY-12-REG-4X10",
+          "DRY-12-REG-4X12",
+          "DRY-12-MR-4X8",
+          "DRY-12-LITE-4X8",
+          "DRY-12-MR-4X10",
+          "DRY-12-MR-4X12",
+          "DRY-12-LITE-4X10",
+          "DRY-12-LITE-4X12",
+          "DRY-58-REG-4X8",
+          "DRY-58-REG-4X10",
+          "DRY-58-REG-4X12",
+          "DRY-58-X-4X8",
+          "DRY-58-X-4X10"
+        ],
+        "category": {
+          "choice": "drywall",
+          "confidence": 1
+        },
+        "sku": {
+          "choice": "DRY-12-REG-4X8",
+          "confidence": 0.98,
+          "top": [
+            {
+              "sku": "DRY-12-REG-4X8",
+              "probability": 0.99
+            },
+            {
+              "sku": "NONE",
+              "probability": 0.01
+            },
+            {
+              "sku": "DRY-12-LITE-4X10",
+              "probability": 0
+            }
+          ]
+        },
+        "unitOk": 0.88,
+        "ms": 251.21854099999473,
+        "usage": {
+          "inputTokens": 3544,
+          "outputTokens": 536
+        },
+        "costUsd": 0.000148848
+      },
+      {
+        "lineId": "3",
+        "shortlist": [
+          "FST-TAPCON-14-100",
+          "WTH-CAP-1",
+          "INS-SPRAY-CAN"
+        ],
+        "category": {
+          "choice": "tools_supplies",
+          "confidence": 0.97
+        },
+        "sku": {
+          "choice": "NONE",
+          "confidence": 1,
+          "top": [
+            {
+              "sku": "NONE",
+              "probability": 1
+            },
+            {
+              "sku": "INS-SPRAY-CAN",
+              "probability": 0
+            },
+            {
+              "sku": "WTH-CAP-1",
+              "probability": 0
+            }
+          ]
+        },
+        "unitOk": 0.39,
+        "ms": 247.58254099999613,
+        "usage": {
+          "inputTokens": 2772,
+          "outputTokens": 215
+        },
+        "costUsd": 0.000116424
+      },
+      {
+        "lineId": "4",
+        "shortlist": [
+          "ROF-ICE-36",
+          "FST-DRY-158-FINE-1LB",
+          "FST-DRY-158-FINE-5LB",
+          "FST-DRY-158-FINE-25LB",
+          "FST-TAPCON-14-100",
+          "MAS-MORT-S-30KG",
+          "WTH-CAP-1",
+          "SUP-ADH-CONST-10",
+          "SUP-CAULK-LAT-WHT",
+          "FST-FRM-3-PAPER-5LB",
+          "FST-FRM-3-PAPER-50LB",
+          "HDW-HT-H2-5",
+          "CON-FAST-20KG",
+          "MAS-SAND-30KG",
+          "MAS-GRAV-30KG",
+          "MAS-CMU-CAP",
+          "WTH-POLY-6",
+          "TRM-LAP-8",
+          "SUP-ADH-SUBFL-28",
+          "SUP-BLADE-712"
+        ],
+        "category": {
+          "choice": "tools_supplies",
+          "confidence": 1
+        },
+        "sku": {
+          "choice": "NONE",
+          "confidence": 1,
+          "top": [
+            {
+              "sku": "NONE",
+              "probability": 1
+            },
+            {
+              "sku": "FST-DRY-158-FINE-1LB",
+              "probability": 0
+            },
+            {
+              "sku": "FST-FRM-3-PAPER-5LB",
+              "probability": 0
+            }
+          ]
+        },
+        "unitOk": 0.58,
+        "ms": 257.35487499999,
+        "usage": {
+          "inputTokens": 3457,
+          "outputTokens": 478
+        },
+        "costUsd": 0.000145194
+      }
+    ],
+    "ms": 293.8977499999892,
+    "usage": {
+      "inputTokens": 13331,
+      "outputTokens": 1758
+    },
+    "costUsd": 0.000559902
+  },
+  "claudeOnly": {
+    "lines": [
+      {
+        "lineId": "1",
+        "sku": "LBR-2X4-08-SPF",
+        "confidence": "medium"
+      },
+      {
+        "lineId": "2",
+        "sku": "DRY-12-REG-4X8",
+        "confidence": "low"
+      },
+      {
+        "lineId": "3",
+        "sku": null,
+        "confidence": "high"
+      },
+      {
+        "lineId": "4",
+        "sku": null,
+        "confidence": "high"
+      }
+    ],
+    "ms": 4173.9122500000085,
+    "usage": {
+      "inputTokens": 17150,
+      "outputTokens": 426
+    },
+    "costUsd": 0.05784
+  }
+}

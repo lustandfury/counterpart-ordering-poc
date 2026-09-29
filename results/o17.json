@@ -1,0 +1,329 @@
+{
+  "orderId": "o17",
+  "text": "Hi, deck job in Maple Grove, homeowner changed the plan twice already lol. Going with pressure treated 2x8x12 for the joists, need 14. Also 2 of the 2x10x12 PT for the beam, and 9 4x4x8 PT for posts. Deck screws 3in tan one 25lb box, and joist hangers for the 2x8s, 28 of em\n",
+  "model": "claude-sonnet-5-5",
+  "parse": {
+    "lines": [
+      {
+        "id": "1",
+        "raw": "pressure treated 2x8x12 for the joists, need 14",
+        "item": "pressure treated 2x8x12 for the joists",
+        "qty": 14,
+        "unit": null
+      },
+      {
+        "id": "2",
+        "raw": "2 of the 2x10x12 PT for the beam",
+        "item": "2x10x12 PT for the beam",
+        "qty": 2,
+        "unit": null
+      },
+      {
+        "id": "3",
+        "raw": "9 4x4x8 PT for posts",
+        "item": "4x4x8 PT for posts",
+        "qty": 9,
+        "unit": null
+      },
+      {
+        "id": "4",
+        "raw": "Deck screws 3in tan one 25lb box",
+        "item": "Deck screws 3in tan",
+        "qty": 1,
+        "unit": "25lb box"
+      },
+      {
+        "id": "5",
+        "raw": "joist hangers for the 2x8s, 28 of em",
+        "item": "joist hangers for the 2x8s",
+        "qty": 28,
+        "unit": null
+      }
+    ],
+    "ms": 2205.94225,
+    "usage": {
+      "inputTokens": 3532,
+      "outputTokens": 311
+    },
+    "costUsd": 0.015261
+  },
+  "jev": {
+    "lines": [
+      {
+        "lineId": "1",
+        "shortlist": [
+          "LBR-2X4-08-PT",
+          "LBR-2X4-10-PT",
+          "LBR-2X4-12-PT",
+          "LBR-2X4-16-PT",
+          "LBR-2X6-08-PT",
+          "LBR-2X6-10-PT",
+          "LBR-2X6-12-PT",
+          "LBR-2X6-16-PT",
+          "LBR-2X8-08-PT",
+          "LBR-2X8-10-PT",
+          "LBR-2X8-12-PT",
+          "LBR-2X8-16-PT",
+          "LBR-2X10-08-PT",
+          "LBR-2X10-10-PT",
+          "LBR-2X10-12-PT",
+          "LBR-2X10-16-PT",
+          "LBR-2X12-08-PT",
+          "LBR-2X12-10-PT",
+          "LBR-2X12-12-PT",
+          "LBR-2X12-16-PT"
+        ],
+        "category": {
+          "choice": "dimensional_lumber",
+          "confidence": 1
+        },
+        "sku": {
+          "choice": "LBR-2X8-12-PT",
+          "confidence": 1,
+          "top": [
+            {
+              "sku": "LBR-2X8-12-PT",
+              "probability": 1
+            },
+            {
+              "sku": "LBR-2X8-10-PT",
+              "probability": 0
+            },
+            {
+              "sku": "LBR-2X8-08-PT",
+              "probability": 0
+            }
+          ]
+        },
+        "unitOk": 0.92,
+        "ms": 288.62416700000176,
+        "usage": {
+          "inputTokens": 3637,
+          "outputTokens": 533
+        },
+        "costUsd": 0.000152754
+      },
+      {
+        "lineId": "2",
+        "shortlist": [
+          "LBR-2X10-12-PT",
+          "LBR-2X10-10-PT",
+          "LBR-2X10-16-PT",
+          "LBR-2X12-12-PT",
+          "LBR-2X4-12-PT",
+          "LBR-2X6-12-PT",
+          "LBR-2X8-12-PT",
+          "LBR-2X10-08-PT",
+          "LBR-2X12-10-PT",
+          "LBR-2X12-16-PT"
+        ],
+        "category": {
+          "choice": "dimensional_lumber",
+          "confidence": 1
+        },
+        "sku": {
+          "choice": "LBR-2X10-12-PT",
+          "confidence": 0.99,
+          "top": [
+            {
+              "sku": "LBR-2X10-12-PT",
+              "probability": 0.99
+            },
+            {
+              "sku": "NONE",
+              "probability": 0.01
+            },
+            {
+              "sku": "LBR-2X12-16-PT",
+              "probability": 0
+            }
+          ]
+        },
+        "unitOk": 0.9,
+        "ms": 361.5638329999929,
+        "usage": {
+          "inputTokens": 3193,
+          "outputTokens": 363
+        },
+        "costUsd": 0.000134106
+      },
+      {
+        "lineId": "3",
+        "shortlist": [
+          "LBR-4X4-8-PT",
+          "LBR-4X4-8-SPF",
+          "LBR-4X4-10-SPF",
+          "LBR-4X4-12-SPF",
+          "LBR-2X4-08-PT",
+          "LBR-4X4-10-PT",
+          "LBR-4X4-12-PT",
+          "HDW-POST-4X4"
+        ],
+        "category": {
+          "choice": "dimensional_lumber",
+          "confidence": 1
+        },
+        "sku": {
+          "choice": "LBR-4X4-8-PT",
+          "confidence": 1,
+          "top": [
+            {
+              "sku": "LBR-4X4-8-PT",
+              "probability": 1
+            },
+            {
+              "sku": "LBR-4X4-8-SPF",
+              "probability": 0
+            },
+            {
+              "sku": "LBR-4X4-10-SPF",
+              "probability": 0
+            }
+          ]
+        },
+        "unitOk": 0.93,
+        "ms": 324.448458999992,
+        "usage": {
+          "inputTokens": 3029,
+          "outputTokens": 315
+        },
+        "costUsd": 0.000127218
+      },
+      {
+        "lineId": "4",
+        "shortlist": [
+          "FST-DECK-3-TAN-1LB",
+          "FST-DECK-3-TAN-5LB",
+          "FST-DECK-3-TAN-25LB",
+          "FST-DECK-25-TAN-1LB",
+          "FST-DECK-25-TAN-5LB",
+          "FST-DECK-25-TAN-25LB",
+          "FST-DRY-158-1LB",
+          "FST-DRY-158-5LB",
+          "FST-DRY-158-25LB",
+          "FST-DRY-158-FINE-1LB",
+          "FST-DRY-158-FINE-5LB",
+          "FST-DRY-158-FINE-25LB",
+          "FST-DECK-3-GRAY-1LB",
+          "FST-DECK-3-GRAY-5LB",
+          "FST-DECK-3-GRAY-25LB",
+          "FST-DECK-25-BRN-1LB",
+          "FST-DECK-25-BRN-5LB",
+          "FST-DECK-25-BRN-25LB",
+          "FST-STRC-3-1LB",
+          "FST-STRC-3-5LB"
+        ],
+        "category": {
+          "choice": "fasteners",
+          "confidence": 1
+        },
+        "sku": {
+          "choice": "FST-DECK-3-TAN-25LB",
+          "confidence": 0.97,
+          "top": [
+            {
+              "sku": "FST-DECK-3-TAN-25LB",
+              "probability": 0.98
+            },
+            {
+              "sku": "NONE",
+              "probability": 0.02
+            },
+            {
+              "sku": "FST-DRY-158-1LB",
+              "probability": 0
+            }
+          ]
+        },
+        "unitOk": 0.88,
+        "ms": 336.5042919999978,
+        "usage": {
+          "inputTokens": 3702,
+          "outputTokens": 547
+        },
+        "costUsd": 0.000155484
+      },
+      {
+        "lineId": "5",
+        "shortlist": [
+          "HDW-JH-2X4",
+          "HDW-JH-2X6",
+          "HDW-JH-2X6-BOX",
+          "HDW-JH-2X8",
+          "HDW-JH-2X10",
+          "HDW-POST-4X4"
+        ],
+        "category": {
+          "choice": "hardware",
+          "confidence": 1
+        },
+        "sku": {
+          "choice": "HDW-JH-2X8",
+          "confidence": 0.99,
+          "top": [
+            {
+              "sku": "HDW-JH-2X8",
+              "probability": 0.99
+            },
+            {
+              "sku": "NONE",
+              "probability": 0.01
+            },
+            {
+              "sku": "HDW-POST-4X4",
+              "probability": 0
+            }
+          ]
+        },
+        "unitOk": 0.72,
+        "ms": 348.4537500000006,
+        "usage": {
+          "inputTokens": 2961,
+          "outputTokens": 264
+        },
+        "costUsd": 0.00012436199999999999
+      }
+    ],
+    "ms": 422.3760420000035,
+    "usage": {
+      "inputTokens": 16522,
+      "outputTokens": 2022
+    },
+    "costUsd": 0.0006939240000000001
+  },
+  "claudeOnly": {
+    "lines": [
+      {
+        "lineId": "1",
+        "sku": "LBR-2X8-12-PT",
+        "confidence": "high"
+      },
+      {
+        "lineId": "2",
+        "sku": "LBR-2X10-12-PT",
+        "confidence": "high"
+      },
+      {
+        "lineId": "3",
+        "sku": "LBR-4X4-8-PT",
+        "confidence": "high"
+      },
+      {
+        "lineId": "4",
+        "sku": "FST-DECK-3-TAN-25LB",
+        "confidence": "high"
+      },
+      {
+        "lineId": "5",
+        "sku": "HDW-JH-2X8",
+        "confidence": "high"
+      }
+    ],
+    "ms": 2273.5337500000023,
+    "usage": {
+      "inputTokens": 17331,
+      "outputTokens": 213
+    },
+    "costUsd": 0.055188
+  }
+}
