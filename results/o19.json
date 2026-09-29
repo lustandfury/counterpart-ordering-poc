@@ -33,7 +33,7 @@
         "unit": null
       }
     ],
-    "ms": 1935.4854999999952,
+    "ms": 1605.435249999995,
     "usage": {
       "inputTokens": 3448,
       "outputTokens": 210
@@ -57,14 +57,14 @@
           "LBR-2X4-12-PT",
           "LBR-2X4-16-PT",
           "LBR-2X6-08-PT",
-          "LBR-2X10-08-SPF",
-          "LBR-2X12-08-SPF",
-          "LBR-2X8-12-SPF",
+          "LBR-2X8-10-PT",
+          "LBR-2X8-12-PT",
+          "LBR-2X8-16-PT",
+          "LBR-2X6-10-PT",
+          "LBR-2X6-12-PT",
+          "LBR-2X6-16-PT",
           "LBR-2X10-08-PT",
-          "LBR-2X12-08-PT",
-          "LBR-2X6-12-SPF",
-          "LBR-2X8-10-SPF",
-          "LBR-2X8-16-SPF"
+          "LBR-2X12-08-PT"
         ],
         "category": {
           "choice": "dimensional_lumber",
@@ -79,22 +79,22 @@
               "probability": 1
             },
             {
-              "sku": "LBR-2X4-12-PT",
+              "sku": "LBR-2X6-10-PT",
               "probability": 0
             },
             {
-              "sku": "LBR-2X8-08-SPF",
+              "sku": "LBR-2X8-12-PT",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.89,
-        "ms": 287.62145799999416,
+        "unitOk": 0.88,
+        "ms": 159.14333299999998,
         "usage": {
-          "inputTokens": 3558,
-          "outputTokens": 529
+          "inputTokens": 4249,
+          "outputTokens": 527
         },
-        "costUsd": 0.000149436
+        "costUsd": 0.000178458
       },
       {
         "lineId": "2",
@@ -126,7 +126,7 @@
         },
         "sku": {
           "choice": "DRY-12-REG-4X8",
-          "confidence": 0.98,
+          "confidence": 0.99,
           "top": [
             {
               "sku": "DRY-12-REG-4X8",
@@ -137,18 +137,18 @@
               "probability": 0.01
             },
             {
-              "sku": "DRY-12-LITE-4X10",
+              "sku": "DRY-58-REG-4X12",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.88,
-        "ms": 251.21854099999473,
+        "unitOk": 0.86,
+        "ms": 167.66787499999919,
         "usage": {
-          "inputTokens": 3544,
+          "inputTokens": 4268,
           "outputTokens": 536
         },
-        "costUsd": 0.000148848
+        "costUsd": 0.000179256
       },
       {
         "lineId": "3",
@@ -159,7 +159,7 @@
         ],
         "category": {
           "choice": "tools_supplies",
-          "confidence": 0.97
+          "confidence": 0.96
         },
         "sku": {
           "choice": "NONE",
@@ -170,22 +170,22 @@
               "probability": 1
             },
             {
-              "sku": "INS-SPRAY-CAN",
+              "sku": "WTH-CAP-1",
               "probability": 0
             },
             {
-              "sku": "WTH-CAP-1",
+              "sku": "INS-SPRAY-CAN",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.39,
-        "ms": 247.58254099999613,
+        "unitOk": 0.37,
+        "ms": 184.27704200000153,
         "usage": {
-          "inputTokens": 2772,
+          "inputTokens": 2797,
           "outputTokens": 215
         },
-        "costUsd": 0.000116424
+        "costUsd": 0.000117474
       },
       {
         "lineId": "4",
@@ -224,30 +224,30 @@
               "probability": 1
             },
             {
-              "sku": "FST-DRY-158-FINE-1LB",
+              "sku": "FST-DRY-158-FINE-5LB",
               "probability": 0
             },
             {
-              "sku": "FST-FRM-3-PAPER-5LB",
+              "sku": "FST-TAPCON-14-100",
               "probability": 0
             }
           ]
         },
         "unitOk": 0.58,
-        "ms": 257.35487499999,
+        "ms": 221.77733300000546,
         "usage": {
-          "inputTokens": 3457,
+          "inputTokens": 3764,
           "outputTokens": 478
         },
-        "costUsd": 0.000145194
+        "costUsd": 0.000158088
       }
     ],
-    "ms": 293.8977499999892,
+    "ms": 235.2163750000036,
     "usage": {
-      "inputTokens": 13331,
-      "outputTokens": 1758
+      "inputTokens": 15078,
+      "outputTokens": 1756
     },
-    "costUsd": 0.000559902
+    "costUsd": 0.000633276
   },
   "claudeOnly": {
     "lines": [
@@ -272,11 +272,11 @@
         "confidence": "high"
       }
     ],
-    "ms": 4173.9122500000085,
+    "ms": 4002.6933750000026,
     "usage": {
       "inputTokens": 17150,
-      "outputTokens": 426
+      "outputTokens": 407
     },
-    "costUsd": 0.05784
+    "costUsd": 0.057555
   }
 }

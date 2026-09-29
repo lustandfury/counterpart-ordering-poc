@@ -40,7 +40,7 @@
         "unit": null
       }
     ],
-    "ms": 1929.28125,
+    "ms": 1867.4547500000008,
     "usage": {
       "inputTokens": 3457,
       "outputTokens": 247
@@ -62,16 +62,16 @@
           "DRY-12-MR-4X8",
           "FST-ATROD-58-10",
           "LBR-1X4-8-PINE",
-          "LBR-1X4-12-PINE",
-          "LBR-1X6-8-PINE",
-          "LBR-1X6-12-PINE",
-          "LBR-1X8-8-PINE",
-          "LBR-1X8-12-PINE",
-          "SHT-MDF-34",
-          "SHT-MDF-12",
-          "SHT-PLY-ZIP-716",
-          "DRY-12-MR-4X10",
-          "DRY-12-MR-4X12"
+          "LBR-2X6-08-PT",
+          "LBR-2X6-10-PT",
+          "LBR-2X6-12-PT",
+          "LBR-2X6-16-PT",
+          "LBR-2X6-08-SPF",
+          "LBR-2X6-10-SPF",
+          "LBR-2X6-12-SPF",
+          "LBR-2X6-16-SPF",
+          "LBR-2X6-PRECUT-SPF",
+          "LBR-2X4-08-PT"
         ],
         "category": {
           "choice": "hardware",
@@ -79,29 +79,29 @@
         },
         "sku": {
           "choice": "HDW-JH-2X6-BOX",
-          "confidence": 0.99,
+          "confidence": 1,
           "top": [
             {
               "sku": "HDW-JH-2X6-BOX",
-              "probability": 0.99
+              "probability": 1
             },
             {
-              "sku": "NONE",
-              "probability": 0.01
+              "sku": "FST-ATROD-12-8",
+              "probability": 0
             },
             {
-              "sku": "DRY-12-MR-4X12",
+              "sku": "LBR-2X6-16-PT",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.81,
-        "ms": 206.83912500000224,
+        "unitOk": 0.82,
+        "ms": 213.28966599999694,
         "usage": {
-          "inputTokens": 3446,
-          "outputTokens": 498
+          "inputTokens": 4019,
+          "outputTokens": 507
         },
-        "costUsd": 0.000144732
+        "costUsd": 0.000168798
       },
       {
         "lineId": "2",
@@ -119,15 +119,15 @@
         },
         "sku": {
           "choice": "HDW-HT-H2-5",
-          "confidence": 0.91,
+          "confidence": 0.96,
           "top": [
             {
               "sku": "HDW-HT-H2-5",
-              "probability": 0.92
+              "probability": 0.97
             },
             {
               "sku": "NONE",
-              "probability": 0.08
+              "probability": 0.03
             },
             {
               "sku": "ROF-ICE-36",
@@ -135,13 +135,13 @@
             }
           ]
         },
-        "unitOk": 0.57,
-        "ms": 201.42583399999785,
+        "unitOk": 0.53,
+        "ms": 205.42216600000393,
         "usage": {
-          "inputTokens": 2889,
+          "inputTokens": 2940,
           "outputTokens": 256
         },
-        "costUsd": 0.000121338
+        "costUsd": 0.00012348
       },
       {
         "lineId": "3",
@@ -169,33 +169,33 @@
         ],
         "category": {
           "choice": "fasteners",
-          "confidence": 0.96
+          "confidence": 0.98
         },
         "sku": {
           "choice": "FST-16D-SINK-50LB",
-          "confidence": 0.95,
+          "confidence": 0.99,
           "top": [
             {
               "sku": "FST-16D-SINK-50LB",
-              "probability": 0.96
+              "probability": 0.99
             },
             {
               "sku": "NONE",
-              "probability": 0.04
+              "probability": 0.01
             },
             {
-              "sku": "FST-16D-SINK-5LB",
+              "sku": "FST-STRC-3-1LB",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.59,
-        "ms": 188.6420419999995,
+        "unitOk": 0.61,
+        "ms": 239.5585410000058,
         "usage": {
-          "inputTokens": 3571,
+          "inputTokens": 4162,
           "outputTokens": 525
         },
-        "costUsd": 0.000149982
+        "costUsd": 0.000174804
       },
       {
         "lineId": "4",
@@ -210,16 +210,16 @@
           "LBR-2X12-16-PT",
           "LBR-2X10-08-SPF",
           "LBR-2X10-08-PT",
-          "LBR-2X4-16-SPF",
-          "LBR-2X6-16-SPF",
-          "LBR-2X8-16-SPF",
           "LBR-2X4-16-PT",
           "LBR-2X6-16-PT",
           "LBR-2X8-16-PT",
-          "LBR-2X12-10-SPF",
-          "LBR-2X12-12-SPF",
           "LBR-2X12-10-PT",
-          "LBR-2X12-12-PT"
+          "LBR-2X12-12-PT",
+          "LBR-2X4-16-SPF",
+          "LBR-2X6-16-SPF",
+          "LBR-2X8-16-SPF",
+          "LBR-2X12-10-SPF",
+          "LBR-2X12-12-SPF"
         ],
         "category": {
           "choice": "dimensional_lumber",
@@ -234,22 +234,22 @@
               "probability": 1
             },
             {
-              "sku": "LBR-2X6-16-PT",
+              "sku": "LBR-2X10-16-PT",
               "probability": 0
             },
             {
-              "sku": "LBR-2X12-16-PT",
+              "sku": "LBR-2X10-10-SPF",
               "probability": 0
             }
           ]
         },
         "unitOk": 0.91,
-        "ms": 218.48233299999993,
+        "ms": 257.3518330000006,
         "usage": {
-          "inputTokens": 3604,
+          "inputTokens": 4326,
           "outputTokens": 540
         },
-        "costUsd": 0.000151368
+        "costUsd": 0.000181692
       },
       {
         "lineId": "5",
@@ -268,12 +268,12 @@
           "LBR-2X10-10-SPF",
           "LBR-2X10-12-SPF",
           "LBR-2X10-16-SPF",
-          "LBR-2X4-10-PT",
-          "LBR-2X6-10-PT",
-          "LBR-2X8-10-PT",
           "LBR-2X12-10-SPF",
+          "LBR-2X12-08-PT",
           "LBR-2X12-12-PT",
-          "LBR-2X12-16-PT"
+          "LBR-2X12-16-PT",
+          "LBR-2X12-08-SPF",
+          "LBR-2X12-12-SPF"
         ],
         "category": {
           "choice": "hardware",
@@ -281,37 +281,37 @@
         },
         "sku": {
           "choice": "HDW-JH-2X10",
-          "confidence": 0.79,
+          "confidence": 0.92,
           "top": [
             {
               "sku": "HDW-JH-2X10",
-              "probability": 0.81
+              "probability": 0.93
             },
             {
               "sku": "NONE",
-              "probability": 0.14
+              "probability": 0.03
             },
             {
-              "sku": "LBR-2X10-10-SPF",
+              "sku": "LBR-2X10-16-SPF",
               "probability": 0.02
             }
           ]
         },
-        "unitOk": 0.65,
-        "ms": 222.95795799999905,
+        "unitOk": 0.64,
+        "ms": 215.30912499999977,
         "usage": {
-          "inputTokens": 3553,
-          "outputTokens": 518
+          "inputTokens": 4194,
+          "outputTokens": 521
         },
-        "costUsd": 0.000149226
+        "costUsd": 0.000176148
       }
     ],
-    "ms": 256.8255420000023,
+    "ms": 275.87479200000234,
     "usage": {
-      "inputTokens": 17063,
-      "outputTokens": 2337
+      "inputTokens": 19641,
+      "outputTokens": 2349
     },
-    "costUsd": 0.000716646
+    "costUsd": 0.000824922
   },
   "claudeOnly": {
     "lines": [
@@ -328,7 +328,7 @@
       {
         "lineId": "3",
         "sku": "FST-16D-SINK-50LB",
-        "confidence": "medium"
+        "confidence": "low"
       },
       {
         "lineId": "4",
@@ -341,11 +341,11 @@
         "confidence": "high"
       }
     ],
-    "ms": 4294.6029579999995,
+    "ms": 4056.964458000002,
     "usage": {
       "inputTokens": 17195,
-      "outputTokens": 567
+      "outputTokens": 514
     },
-    "costUsd": 0.06009
+    "costUsd": 0.059295
   }
 }

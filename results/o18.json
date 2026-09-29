@@ -47,7 +47,7 @@
         "unit": null
       }
     ],
-    "ms": 2387.2210420000047,
+    "ms": 2215.0184169999993,
     "usage": {
       "inputTokens": 3515,
       "outputTokens": 285
@@ -79,29 +79,29 @@
         },
         "sku": {
           "choice": "ROF-SHG-ARCH-BRN",
-          "confidence": 0.78,
+          "confidence": 0.94,
           "top": [
             {
               "sku": "ROF-SHG-ARCH-BRN",
-              "probability": 0.8
+              "probability": 0.95
             },
             {
               "sku": "NONE",
-              "probability": 0.2
+              "probability": 0.05
             },
             {
-              "sku": "FST-STRC-3-1LB",
+              "sku": "ROF-SHG-3TAB-GRY",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.85,
-        "ms": 273.71037500000966,
+        "unitOk": 0.87,
+        "ms": 265.36612500000047,
         "usage": {
-          "inputTokens": 3278,
+          "inputTokens": 3573,
           "outputTokens": 384
         },
-        "costUsd": 0.000137676
+        "costUsd": 0.000150066
       },
       {
         "lineId": "2",
@@ -137,18 +137,18 @@
               "probability": 0.01
             },
             {
-              "sku": "FST-DECK-3-TAN-25LB",
+              "sku": "ROF-UNDER-15",
               "probability": 0
             }
           ]
         },
         "unitOk": 0.93,
-        "ms": 285.671417000005,
+        "ms": 289.56354199998896,
         "usage": {
-          "inputTokens": 3249,
+          "inputTokens": 3555,
           "outputTokens": 383
         },
-        "costUsd": 0.000136458
+        "costUsd": 0.00014931
       },
       {
         "lineId": "3",
@@ -180,29 +180,29 @@
         },
         "sku": {
           "choice": "ROF-DRIP-10-BRN",
-          "confidence": 0.99,
+          "confidence": 1,
           "top": [
             {
               "sku": "ROF-DRIP-10-BRN",
-              "probability": 0.99
+              "probability": 1
             },
             {
-              "sku": "NONE",
-              "probability": 0.01
+              "sku": "FST-DECK-3-GRAY-1LB",
+              "probability": 0
             },
             {
-              "sku": "LBR-2X6-10-SPF",
+              "sku": "FST-DECK-25-BRN-5LB",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.79,
-        "ms": 276.26695800000743,
+        "unitOk": 0.83,
+        "ms": 266.8475000000035,
         "usage": {
-          "inputTokens": 3581,
+          "inputTokens": 4019,
           "outputTokens": 518
         },
-        "costUsd": 0.000150402
+        "costUsd": 0.000168798
       },
       {
         "lineId": "4",
@@ -221,29 +221,29 @@
         },
         "sku": {
           "choice": "ROF-SHG-RIDGE",
-          "confidence": 0.96,
+          "confidence": 0.99,
           "top": [
             {
               "sku": "ROF-SHG-RIDGE",
-              "probability": 0.96
+              "probability": 0.99
             },
             {
               "sku": "NONE",
-              "probability": 0.04
+              "probability": 0.01
             },
             {
-              "sku": "SUP-SEAL-EXT-5G",
+              "sku": "ROF-DRIP-10",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.58,
-        "ms": 282.567584000004,
+        "unitOk": 0.61,
+        "ms": 242.61629199999152,
         "usage": {
-          "inputTokens": 2947,
+          "inputTokens": 3015,
           "outputTokens": 274
         },
-        "costUsd": 0.000123774
+        "costUsd": 0.00012663
       },
       {
         "lineId": "5",
@@ -275,29 +275,29 @@
         },
         "sku": {
           "choice": "ROF-VENT-RIDGE",
-          "confidence": 0.97,
+          "confidence": 0.99,
           "top": [
             {
               "sku": "ROF-VENT-RIDGE",
-              "probability": 0.97
+              "probability": 0.99
             },
             {
               "sku": "NONE",
-              "probability": 0.03
+              "probability": 0.01
             },
             {
-              "sku": "LBR-2X6-10-PT",
+              "sku": "LBR-2X8-08-PT",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.75,
-        "ms": 303.41658299999835,
+        "unitOk": 0.72,
+        "ms": 250.135832999993,
         "usage": {
-          "inputTokens": 3527,
+          "inputTokens": 4052,
           "outputTokens": 497
         },
-        "costUsd": 0.000148134
+        "costUsd": 0.00017018399999999998
       },
       {
         "lineId": "6",
@@ -309,11 +309,11 @@
         ],
         "category": {
           "choice": "tools_supplies",
-          "confidence": 0.51
+          "confidence": 0.45
         },
         "sku": {
           "choice": "NONE",
-          "confidence": 0.99,
+          "confidence": 1,
           "top": [
             {
               "sku": "NONE",
@@ -324,26 +324,26 @@
               "probability": 0
             },
             {
-              "sku": "SHT-PLY-CDX-34",
+              "sku": "ROF-SHG-ARCH-BLK",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.11,
-        "ms": 190.20520900000702,
+        "unitOk": 0.1,
+        "ms": 149.40379099998972,
         "usage": {
-          "inputTokens": 2845,
+          "inputTokens": 2893,
           "outputTokens": 229
         },
-        "costUsd": 0.00011949
+        "costUsd": 0.000121506
       }
     ],
-    "ms": 492.6214580000087,
+    "ms": 416.4502919999941,
     "usage": {
-      "inputTokens": 19427,
+      "inputTokens": 21107,
       "outputTokens": 2285
     },
-    "costUsd": 0.0008159339999999999
+    "costUsd": 0.0008864939999999999
   },
   "claudeOnly": {
     "lines": [
@@ -378,7 +378,7 @@
         "confidence": "high"
       }
     ],
-    "ms": 1948.5786669999943,
+    "ms": 1943.749582999997,
     "usage": {
       "inputTokens": 17283,
       "outputTokens": 238

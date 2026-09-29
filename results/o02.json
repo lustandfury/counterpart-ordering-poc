@@ -40,7 +40,7 @@
         "unit": "boxes"
       }
     ],
-    "ms": 2141.176291,
+    "ms": 2163.896708,
     "usage": {
       "inputTokens": 3508,
       "outputTokens": 327
@@ -62,16 +62,16 @@
           "FST-DRY-214-5LB",
           "FST-DRY-214-25LB",
           "DRY-58-REG-4X8",
-          "DRY-58-REG-4X10",
-          "DRY-58-REG-4X12",
-          "DRY-14-FLEX-4X8",
-          "DRY-12-LITE-4X8",
-          "DRY-58-X-4X8",
-          "DRY-58-MR-4X8",
-          "DRY-14-FLEX-4X10",
-          "DRY-14-FLEX-4X12",
-          "DRY-12-LITE-4X10",
-          "DRY-12-LITE-4X12"
+          "LBR-2X4-08-PT",
+          "LBR-2X4-08-SPF",
+          "LBR-4X4-8-SPF",
+          "LBR-4X4-8-PT",
+          "LBR-1X4-8-PINE",
+          "SHT-PLY-CDX-12",
+          "SHT-PLY-CDX-58",
+          "SHT-PLY-CDX-34",
+          "SHT-PLY-PT-34",
+          "SHT-PLY-BIRCH-34"
         ],
         "category": {
           "choice": "drywall",
@@ -86,22 +86,22 @@
               "probability": 1
             },
             {
-              "sku": "DRY-12-REG-4X10",
+              "sku": "FST-DRY-158-1LB",
               "probability": 0
             },
             {
-              "sku": "DRY-12-REG-4X12",
+              "sku": "SHT-PLY-PT-34",
               "probability": 0
             }
           ]
         },
         "unitOk": 0.96,
-        "ms": 193.97145799999998,
+        "ms": 347.85391700000037,
         "usage": {
-          "inputTokens": 3561,
-          "outputTokens": 536
+          "inputTokens": 4191,
+          "outputTokens": 519
         },
-        "costUsd": 0.000149562
+        "costUsd": 0.000176022
       },
       {
         "lineId": "2",
@@ -116,16 +116,16 @@
           "FST-DRY-214-5LB",
           "FST-DRY-214-25LB",
           "DRY-58-MR-4X10",
-          "DRY-58-X-4X10",
+          "LBR-2X4-12-PT",
+          "LBR-2X4-12-SPF",
+          "LBR-4X4-12-SPF",
+          "LBR-4X4-12-PT",
           "DRY-12-REG-4X12",
-          "DRY-58-MR-4X8",
-          "DRY-12-REG-4X10",
-          "DRY-12-REG-4X8",
-          "DRY-58-REG-4X12",
+          "DRY-12-MR-4X12",
           "DRY-12-LITE-4X12",
-          "DRY-58-REG-4X10",
+          "DRY-58-REG-4X12",
           "DRY-14-FLEX-4X12",
-          "DRY-12-LITE-4X10"
+          "LBR-1X4-12-PINE"
         ],
         "category": {
           "choice": "drywall",
@@ -140,22 +140,22 @@
               "probability": 1
             },
             {
-              "sku": "FST-DRY-158-1LB",
+              "sku": "LBR-2X4-12-SPF",
               "probability": 0
             },
             {
-              "sku": "DRY-58-X-4X8",
+              "sku": "FST-DRY-158-1LB",
               "probability": 0
             }
           ]
         },
         "unitOk": 0.96,
-        "ms": 199.73133299999972,
+        "ms": 239.81954199999927,
         "usage": {
-          "inputTokens": 3591,
-          "outputTokens": 537
+          "inputTokens": 4260,
+          "outputTokens": 535
         },
-        "costUsd": 0.000150822
+        "costUsd": 0.00017892
       },
       {
         "lineId": "3",
@@ -171,29 +171,29 @@
         },
         "sku": {
           "choice": "DRY-MUD-45",
-          "confidence": 0.92,
+          "confidence": 0.96,
           "top": [
             {
               "sku": "DRY-MUD-45",
-              "probability": 0.9400000000000001
+              "probability": 0.97
             },
             {
               "sku": "NONE",
-              "probability": 0.06
+              "probability": 0.03
             },
             {
-              "sku": "FST-16D-COM-50LB",
+              "sku": "DRY-TAPE-250",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.72,
-        "ms": 189.13058400000045,
+        "unitOk": 0.75,
+        "ms": 316.13145799999984,
         "usage": {
-          "inputTokens": 2867,
+          "inputTokens": 2949,
           "outputTokens": 239
         },
-        "costUsd": 0.000120414
+        "costUsd": 0.000123858
       },
       {
         "lineId": "4",
@@ -225,29 +225,29 @@
         },
         "sku": {
           "choice": "DRY-TAPE-250",
-          "confidence": 0.96,
+          "confidence": 0.97,
           "top": [
             {
               "sku": "DRY-TAPE-250",
-              "probability": 0.96
+              "probability": 0.98
             },
             {
               "sku": "NONE",
-              "probability": 0.03
+              "probability": 0.02
             },
             {
-              "sku": "FST-DRY-158-5LB",
-              "probability": 0.01
+              "sku": "DRY-TAPE-MESH",
+              "probability": 0
             }
           ]
         },
         "unitOk": 0.94,
-        "ms": 214.6615410000004,
+        "ms": 310.9255000000003,
         "usage": {
-          "inputTokens": 3567,
+          "inputTokens": 4276,
           "outputTokens": 523
         },
-        "costUsd": 0.00014981399999999999
+        "costUsd": 0.00017959199999999998
       },
       {
         "lineId": "5",
@@ -279,15 +279,15 @@
         },
         "sku": {
           "choice": "FST-DRY-158-5LB",
-          "confidence": 0.74,
+          "confidence": 0.8,
           "top": [
             {
               "sku": "FST-DRY-158-5LB",
-              "probability": 0.76
+              "probability": 0.8200000000000001
             },
             {
               "sku": "NONE",
-              "probability": 0.24
+              "probability": 0.18
             },
             {
               "sku": "DRY-12-REG-4X12",
@@ -296,20 +296,20 @@
           ]
         },
         "unitOk": 0.89,
-        "ms": 332.3879999999999,
+        "ms": 277.3959160000004,
         "usage": {
-          "inputTokens": 3658,
+          "inputTokens": 4577,
           "outputTokens": 545
         },
-        "costUsd": 0.000153636
+        "costUsd": 0.000192234
       }
     ],
-    "ms": 370.0467499999995,
+    "ms": 360.7325000000001,
     "usage": {
-      "inputTokens": 17244,
-      "outputTokens": 2380
+      "inputTokens": 20253,
+      "outputTokens": 2361
     },
-    "costUsd": 0.0007242479999999999
+    "costUsd": 0.000850626
   },
   "claudeOnly": {
     "lines": [
@@ -339,11 +339,11 @@
         "confidence": "medium"
       }
     ],
-    "ms": 4234.554458999999,
+    "ms": 4920.143167,
     "usage": {
       "inputTokens": 17318,
-      "outputTokens": 464
+      "outputTokens": 436
     },
-    "costUsd": 0.058914
+    "costUsd": 0.058494
   }
 }

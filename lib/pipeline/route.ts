@@ -16,12 +16,14 @@ export function route(a: {
   qty: number | null;
   productUnit: string | null; // catalog unit of the chosen product
   T?: number;
+  unitOkMin?: number;
 }): Decision {
   const T = a.T ?? DEFAULT_T;
+  const unitMin = a.unitOkMin ?? UNIT_OK_MIN;
   const reasons: string[] = [];
   if (a.skuChoice === "NONE") reasons.push("no catalog product fits");
   if (a.skuConfidence < T) reasons.push(`product confidence ${a.skuConfidence.toFixed(2)} below ${T}`);
-  if (a.unitOk < UNIT_OK_MIN) reasons.push(`quantity/unit check ${a.unitOk.toFixed(2)} below ${UNIT_OK_MIN}`);
+  if (a.unitOk < unitMin) reasons.push(`quantity/unit check ${a.unitOk.toFixed(2)} below ${unitMin}`);
   if (a.qty == null) reasons.push("quantity missing");
   if (isLargeQuantity(a.qty, a.productUnit)) reasons.push("large quantity");
   return { approved: reasons.length === 0, reasons };

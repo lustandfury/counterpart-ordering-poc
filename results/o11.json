@@ -26,7 +26,7 @@
         "unit": null
       }
     ],
-    "ms": 1473.8704579999976,
+    "ms": 1315.3042920000007,
     "usage": {
       "inputTokens": 3440,
       "outputTokens": 168
@@ -48,16 +48,16 @@
           "LBR-2X8-08-PT",
           "LBR-2X12-08-PT",
           "LBR-2X6-PRECUT-SPF",
-          "LBR-2X4-08-SPF",
           "LBR-2X6-10-SPF",
           "LBR-2X6-12-SPF",
           "LBR-2X6-16-SPF",
-          "LBR-2X8-08-SPF",
-          "LBR-2X10-08-PT",
-          "LBR-2X12-08-SPF",
-          "LBR-2X12-10-PT",
-          "LBR-2X12-12-PT",
-          "LBR-2X12-16-PT"
+          "HDW-JH-2X6",
+          "HDW-JH-2X6-BOX",
+          "LBR-2X4-10-PT",
+          "LBR-2X4-12-PT",
+          "LBR-2X4-16-PT",
+          "LBR-2X8-10-PT",
+          "LBR-2X8-12-PT"
         ],
         "category": {
           "choice": "dimensional_lumber",
@@ -72,22 +72,22 @@
               "probability": 1
             },
             {
-              "sku": "LBR-2X12-16-PT",
+              "sku": "LBR-2X6-08-PT",
               "probability": 0
             },
             {
-              "sku": "LBR-2X6-08-PT",
+              "sku": "LBR-2X6-10-PT",
               "probability": 0
             }
           ]
         },
         "unitOk": 0.94,
-        "ms": 222.23795899999823,
+        "ms": 245.083083000005,
         "usage": {
-          "inputTokens": 3554,
-          "outputTokens": 530
+          "inputTokens": 4227,
+          "outputTokens": 521
         },
-        "costUsd": 0.000149268
+        "costUsd": 0.000177534
       },
       {
         "lineId": "2",
@@ -119,29 +119,29 @@
         },
         "sku": {
           "choice": "NONE",
-          "confidence": 0.52,
+          "confidence": 0.51,
           "top": [
             {
               "sku": "NONE",
-              "probability": 0.55
+              "probability": 0.54
             },
             {
               "sku": "LBR-2X4-08-SPF",
-              "probability": 0.45
+              "probability": 0.46
             },
             {
-              "sku": "LBR-2X4-16-SPF",
+              "sku": "LBR-2X8-08-PT",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.84,
-        "ms": 204.05808300000353,
+        "unitOk": 0.79,
+        "ms": 266.0742909999972,
         "usage": {
-          "inputTokens": 3534,
+          "inputTokens": 4231,
           "outputTokens": 514
         },
-        "costUsd": 0.000148428
+        "costUsd": 0.000177702
       },
       {
         "lineId": "3",
@@ -159,13 +159,13 @@
           "LBR-2X4-10-PT",
           "LBR-2X4-12-PT",
           "LBR-2X4-16-PT",
-          "SHT-PLY-PT-34",
-          "FST-ATROD-12-6",
-          "FST-ATROD-12-8",
-          "FST-ATROD-58-10",
-          "LBR-6X6-10-PT",
-          "LBR-6X6-12-PT",
-          "LBR-2X4-PRECUT-SPF"
+          "LBR-2X4-10-SPF",
+          "LBR-2X4-12-SPF",
+          "LBR-2X4-16-SPF",
+          "LBR-2X4-PRECUT-SPF",
+          "LBR-1X4-8-PINE",
+          "LBR-1X4-12-PINE",
+          "HDW-JH-2X4"
         ],
         "category": {
           "choice": "dimensional_lumber",
@@ -173,11 +173,11 @@
         },
         "sku": {
           "choice": "NONE",
-          "confidence": 0.93,
+          "confidence": 0.94,
           "top": [
             {
               "sku": "NONE",
-              "probability": 0.93
+              "probability": 0.95
             },
             {
               "sku": "LBR-4X4-8-SPF",
@@ -185,25 +185,25 @@
             },
             {
               "sku": "LBR-4X4-8-PT",
-              "probability": 0.02
+              "probability": 0.01
             }
           ]
         },
         "unitOk": 0.78,
-        "ms": 200.75466700000106,
+        "ms": 277.3943750000035,
         "usage": {
-          "inputTokens": 3449,
-          "outputTokens": 508
+          "inputTokens": 3960,
+          "outputTokens": 505
         },
-        "costUsd": 0.000144858
+        "costUsd": 0.00016632
       }
     ],
-    "ms": 228.66362500000105,
+    "ms": 286.6786249999932,
     "usage": {
-      "inputTokens": 10537,
-      "outputTokens": 1552
+      "inputTokens": 12418,
+      "outputTokens": 1540
     },
-    "costUsd": 0.000442554
+    "costUsd": 0.000521556
   },
   "claudeOnly": {
     "lines": [
@@ -223,7 +223,7 @@
         "confidence": "low"
       }
     ],
-    "ms": 1388.1907090000022,
+    "ms": 1537.8528329999972,
     "usage": {
       "inputTokens": 17104,
       "outputTokens": 126

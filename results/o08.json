@@ -40,7 +40,7 @@
         "unit": null
       }
     ],
-    "ms": 1881.0653329999986,
+    "ms": 1838.5087080000012,
     "usage": {
       "inputTokens": 3459,
       "outputTokens": 249
@@ -75,33 +75,33 @@
         ],
         "category": {
           "choice": "sheet_goods",
-          "confidence": 0.81
+          "confidence": 0.77
         },
         "sku": {
           "choice": "SHT-PLY-CDX-12",
-          "confidence": 0.97,
+          "confidence": 1,
           "top": [
             {
               "sku": "SHT-PLY-CDX-12",
-              "probability": 0.98
+              "probability": 1
             },
             {
-              "sku": "DRY-12-REG-4X8",
-              "probability": 0.01
+              "sku": "DRY-12-REG-4X12",
+              "probability": 0
             },
             {
-              "sku": "NONE",
-              "probability": 0.01
+              "sku": "DRY-12-MR-4X8",
+              "probability": 0
             }
           ]
         },
         "unitOk": 0.91,
-        "ms": 359.62720799999806,
+        "ms": 289.67833399999654,
         "usage": {
-          "inputTokens": 3582,
+          "inputTokens": 4295,
           "outputTokens": 535
         },
-        "costUsd": 0.00015044399999999998
+        "costUsd": 0.00018039
       },
       {
         "lineId": "2",
@@ -140,22 +140,22 @@
               "probability": 1
             },
             {
-              "sku": "SHT-OSB-58",
+              "sku": "SHT-OSB-12",
               "probability": 0
             },
             {
-              "sku": "MAS-GRAV-30KG",
+              "sku": "SHT-PLY-BIRCH-34",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.88,
-        "ms": 324.65899999999965,
+        "unitOk": 0.89,
+        "ms": 294.9157919999998,
         "usage": {
-          "inputTokens": 3424,
+          "inputTokens": 3736,
           "outputTokens": 484
         },
-        "costUsd": 0.000143808
+        "costUsd": 0.000156912
       },
       {
         "lineId": "3",
@@ -187,29 +187,29 @@
         },
         "sku": {
           "choice": "SHT-PLY-PT-34",
-          "confidence": 0.69,
+          "confidence": 0.87,
           "top": [
             {
               "sku": "SHT-PLY-PT-34",
-              "probability": 0.71
+              "probability": 0.88
             },
             {
               "sku": "NONE",
-              "probability": 0.26
+              "probability": 0.11
             },
             {
               "sku": "SHT-PLY-CDX-34",
-              "probability": 0.03
+              "probability": 0.01
             }
           ]
         },
-        "unitOk": 0.73,
-        "ms": 320.8377079999991,
+        "unitOk": 0.76,
+        "ms": 266.6810419999965,
         "usage": {
-          "inputTokens": 3487,
+          "inputTokens": 3957,
           "outputTokens": 503
         },
-        "costUsd": 0.000146454
+        "costUsd": 0.000166194
       },
       {
         "lineId": "4",
@@ -238,29 +238,29 @@
         },
         "sku": {
           "choice": "SUP-ADH-CONST-10",
-          "confidence": 0.78,
+          "confidence": 0.99,
           "top": [
             {
               "sku": "SUP-ADH-CONST-10",
-              "probability": 0.79
+              "probability": 0.99
             },
             {
               "sku": "NONE",
-              "probability": 0.21
+              "probability": 0.01
             },
             {
-              "sku": "SUP-SEAL-EXT-5G",
+              "sku": "FST-8D-COM-50LB",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.39,
-        "ms": 313.6182090000002,
+        "unitOk": 0.44,
+        "ms": 284.74516700000095,
         "usage": {
-          "inputTokens": 3425,
+          "inputTokens": 3742,
           "outputTokens": 465
         },
-        "costUsd": 0.00014385
+        "costUsd": 0.000157164
       },
       {
         "lineId": "5",
@@ -275,15 +275,15 @@
         },
         "sku": {
           "choice": "SUP-ADH-SUBFL-28",
-          "confidence": 0.71,
+          "confidence": 0.93,
           "top": [
             {
               "sku": "SUP-ADH-SUBFL-28",
-              "probability": 0.78
+              "probability": 0.95
             },
             {
               "sku": "NONE",
-              "probability": 0.22
+              "probability": 0.05
             },
             {
               "sku": "SHT-OSB-2332",
@@ -291,21 +291,21 @@
             }
           ]
         },
-        "unitOk": 0.37,
-        "ms": 345.9699999999939,
+        "unitOk": 0.38,
+        "ms": 265.635666999995,
         "usage": {
-          "inputTokens": 2788,
+          "inputTokens": 2832,
           "outputTokens": 231
         },
-        "costUsd": 0.00011709599999999999
+        "costUsd": 0.00011894399999999999
       }
     ],
-    "ms": 375.4525419999991,
+    "ms": 301.2137500000026,
     "usage": {
-      "inputTokens": 16706,
+      "inputTokens": 18562,
       "outputTokens": 2218
     },
-    "costUsd": 0.000701652
+    "costUsd": 0.0007796039999999999
   },
   "claudeOnly": {
     "lines": [
@@ -335,7 +335,7 @@
         "confidence": "high"
       }
     ],
-    "ms": 2016.7289579999997,
+    "ms": 1944.9755829999995,
     "usage": {
       "inputTokens": 17197,
       "outputTokens": 214

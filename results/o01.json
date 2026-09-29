@@ -40,7 +40,7 @@
         "unit": "box"
       }
     ],
-    "ms": 2098.1128750000003,
+    "ms": 2753.812708,
     "usage": {
       "inputTokens": 3483,
       "outputTokens": 275
@@ -64,14 +64,14 @@
           "LBR-2X4-12-PT",
           "LBR-2X4-16-PT",
           "LBR-2X6-08-PT",
-          "LBR-2X10-08-SPF",
-          "LBR-2X12-08-SPF",
-          "LBR-2X8-12-SPF",
+          "LBR-2X8-10-PT",
+          "LBR-2X8-12-PT",
+          "LBR-2X8-16-PT",
+          "LBR-2X6-10-PT",
+          "LBR-2X6-12-PT",
+          "LBR-2X6-16-PT",
           "LBR-2X10-08-PT",
-          "LBR-2X12-08-PT",
-          "LBR-2X6-12-SPF",
-          "LBR-2X8-10-SPF",
-          "LBR-2X8-16-SPF"
+          "LBR-2X12-08-PT"
         ],
         "category": {
           "choice": "dimensional_lumber",
@@ -86,22 +86,22 @@
               "probability": 1
             },
             {
-              "sku": "LBR-2X4-12-PT",
+              "sku": "LBR-2X8-16-PT",
               "probability": 0
             },
             {
-              "sku": "LBR-2X8-16-SPF",
+              "sku": "LBR-2X12-08-PT",
               "probability": 0
             }
           ]
         },
         "unitOk": 0.95,
-        "ms": 254.8229580000002,
+        "ms": 362.3017500000001,
         "usage": {
-          "inputTokens": 3584,
-          "outputTokens": 529
+          "inputTokens": 4275,
+          "outputTokens": 527
         },
-        "costUsd": 0.000150528
+        "costUsd": 0.00017955
       },
       {
         "lineId": "2",
@@ -116,16 +116,16 @@
           "LBR-2X6-12-PT",
           "LBR-2X6-16-PT",
           "LBR-2X8-10-PT",
-          "LBR-2X10-10-SPF",
+          "LBR-2X10-08-PT",
           "LBR-2X10-10-PT",
-          "LBR-2X6-08-SPF",
-          "LBR-2X12-10-SPF",
+          "LBR-2X10-12-PT",
+          "LBR-2X10-16-PT",
           "LBR-2X6-08-PT",
           "LBR-2X12-10-PT",
-          "LBR-2X4-12-SPF",
-          "LBR-2X4-16-SPF",
-          "LBR-2X8-12-SPF",
-          "LBR-2X8-16-SPF"
+          "LBR-2X10-08-SPF",
+          "LBR-2X10-10-SPF",
+          "LBR-2X10-12-SPF",
+          "LBR-2X10-16-SPF"
         ],
         "category": {
           "choice": "dimensional_lumber",
@@ -133,29 +133,29 @@
         },
         "sku": {
           "choice": "LBR-2X6-10-SPF",
-          "confidence": 0.99,
+          "confidence": 1,
           "top": [
             {
               "sku": "LBR-2X6-10-SPF",
               "probability": 1
             },
             {
-              "sku": "LBR-2X6-08-PT",
+              "sku": "LBR-2X6-16-SPF",
               "probability": 0
             },
             {
-              "sku": "LBR-2X6-12-SPF",
+              "sku": "LBR-2X8-10-PT",
               "probability": 0
             }
           ]
         },
         "unitOk": 0.94,
-        "ms": 356.83304199999975,
+        "ms": 378.8167500000004,
         "usage": {
-          "inputTokens": 3592,
-          "outputTokens": 529
+          "inputTokens": 4309,
+          "outputTokens": 534
         },
-        "costUsd": 0.00015086399999999998
+        "costUsd": 0.000180978
       },
       {
         "lineId": "3",
@@ -170,16 +170,16 @@
           "LBR-2X4-16-PT",
           "LBR-2X6-12-PT",
           "LBR-2X8-12-PT",
-          "LBR-2X12-12-SPF",
+          "LBR-2X12-08-PT",
+          "LBR-2X12-10-PT",
           "LBR-2X12-12-PT",
-          "LBR-2X4-08-SPF",
-          "LBR-2X10-12-SPF",
+          "LBR-2X12-16-PT",
           "LBR-2X4-08-PT",
           "LBR-2X10-12-PT",
-          "LBR-2X6-10-SPF",
-          "LBR-2X6-16-SPF",
-          "LBR-2X8-10-SPF",
-          "LBR-2X8-16-SPF"
+          "LBR-2X12-08-SPF",
+          "LBR-2X12-10-SPF",
+          "LBR-2X12-12-SPF",
+          "LBR-2X12-16-SPF"
         ],
         "category": {
           "choice": "dimensional_lumber",
@@ -194,22 +194,22 @@
               "probability": 1
             },
             {
-              "sku": "LBR-2X4-10-PT",
+              "sku": "LBR-2X12-16-PT",
               "probability": 0
             },
             {
-              "sku": "LBR-2X4-08-PT",
+              "sku": "LBR-2X12-10-SPF",
               "probability": 0
             }
           ]
         },
         "unitOk": 0.94,
-        "ms": 633.1787919999997,
+        "ms": 373.57791700000007,
         "usage": {
-          "inputTokens": 3594,
-          "outputTokens": 529
+          "inputTokens": 4311,
+          "outputTokens": 534
         },
-        "costUsd": 0.000150948
+        "costUsd": 0.00018106199999999998
       },
       {
         "lineId": "4",
@@ -233,29 +233,29 @@
         },
         "sku": {
           "choice": "SHT-OSB-716",
-          "confidence": 0.98,
+          "confidence": 1,
           "top": [
             {
               "sku": "SHT-OSB-716",
-              "probability": 0.99
-            },
-            {
-              "sku": "NONE",
-              "probability": 0.01
+              "probability": 1
             },
             {
               "sku": "SHT-OSB-12",
+              "probability": 0
+            },
+            {
+              "sku": "SHT-PLY-ZIP-716",
               "probability": 0
             }
           ]
         },
         "unitOk": 0.95,
-        "ms": 491.9647500000001,
+        "ms": 369.9696250000002,
         "usage": {
-          "inputTokens": 3193,
+          "inputTokens": 3430,
           "outputTokens": 366
         },
-        "costUsd": 0.000134106
+        "costUsd": 0.00014406
       },
       {
         "lineId": "5",
@@ -287,37 +287,37 @@
         },
         "sku": {
           "choice": "FST-16D-COM-5LB",
-          "confidence": 0.94,
+          "confidence": 0.98,
           "top": [
             {
               "sku": "FST-16D-COM-5LB",
-              "probability": 0.94
+              "probability": 0.98
             },
             {
               "sku": "NONE",
-              "probability": 0.06
+              "probability": 0.02
             },
             {
-              "sku": "SHT-PLY-ZIP-716",
+              "sku": "FST-FRM-3-PAPER-5LB",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.84,
-        "ms": 246.45745899999974,
+        "unitOk": 0.85,
+        "ms": 396.9329160000002,
         "usage": {
-          "inputTokens": 3557,
+          "inputTokens": 3949,
           "outputTokens": 520
         },
-        "costUsd": 0.00014939399999999999
+        "costUsd": 0.00016585799999999998
       }
     ],
-    "ms": 663.4024170000002,
+    "ms": 439,
     "usage": {
-      "inputTokens": 17520,
-      "outputTokens": 2473
+      "inputTokens": 20274,
+      "outputTokens": 2481
     },
-    "costUsd": 0.00073584
+    "costUsd": 0.000851508
   },
   "claudeOnly": {
     "lines": [
@@ -347,7 +347,7 @@
         "confidence": "high"
       }
     ],
-    "ms": 1664.540333,
+    "ms": 1913.4793750000003,
     "usage": {
       "inputTokens": 17249,
       "outputTokens": 211

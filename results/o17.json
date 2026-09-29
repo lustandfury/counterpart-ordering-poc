@@ -40,7 +40,7 @@
         "unit": null
       }
     ],
-    "ms": 2205.94225,
+    "ms": 2174.3561670000054,
     "usage": {
       "inputTokens": 3532,
       "outputTokens": 311
@@ -62,16 +62,16 @@
           "LBR-2X6-16-PT",
           "LBR-2X8-08-PT",
           "LBR-2X8-10-PT",
+          "LBR-2X8-12-SPF",
           "LBR-2X8-12-PT",
           "LBR-2X8-16-PT",
-          "LBR-2X10-08-PT",
-          "LBR-2X10-10-PT",
-          "LBR-2X10-12-PT",
-          "LBR-2X10-16-PT",
           "LBR-2X12-08-PT",
           "LBR-2X12-10-PT",
           "LBR-2X12-12-PT",
-          "LBR-2X12-16-PT"
+          "LBR-2X12-16-PT",
+          "LBR-2X4-12-SPF",
+          "LBR-2X6-12-SPF",
+          "LBR-2X8-10-SPF"
         ],
         "category": {
           "choice": "dimensional_lumber",
@@ -86,22 +86,22 @@
               "probability": 1
             },
             {
-              "sku": "LBR-2X8-10-PT",
+              "sku": "LBR-2X8-16-PT",
               "probability": 0
             },
             {
-              "sku": "LBR-2X8-08-PT",
+              "sku": "LBR-2X6-16-PT",
               "probability": 0
             }
           ]
         },
         "unitOk": 0.92,
-        "ms": 288.62416700000176,
+        "ms": 246.57304200000362,
         "usage": {
-          "inputTokens": 3637,
-          "outputTokens": 533
+          "inputTokens": 4374,
+          "outputTokens": 529
         },
-        "costUsd": 0.000152754
+        "costUsd": 0.00018370799999999998
       },
       {
         "lineId": "2",
@@ -115,7 +115,17 @@
           "LBR-2X8-12-PT",
           "LBR-2X10-08-PT",
           "LBR-2X12-10-PT",
-          "LBR-2X12-16-PT"
+          "LBR-2X12-16-PT",
+          "LBR-2X10-12-SPF",
+          "LBR-2X10-10-SPF",
+          "LBR-2X10-16-SPF",
+          "LBR-2X12-12-SPF",
+          "LBR-2X12-08-PT",
+          "LBR-2X4-12-SPF",
+          "LBR-2X6-12-SPF",
+          "LBR-2X8-12-SPF",
+          "LBR-2X10-08-SPF",
+          "LBR-2X12-10-SPF"
         ],
         "category": {
           "choice": "dimensional_lumber",
@@ -123,29 +133,29 @@
         },
         "sku": {
           "choice": "LBR-2X10-12-PT",
-          "confidence": 0.99,
+          "confidence": 1,
           "top": [
             {
               "sku": "LBR-2X10-12-PT",
-              "probability": 0.99
+              "probability": 1
+            },
+            {
+              "sku": "LBR-2X6-12-SPF",
+              "probability": 0
             },
             {
               "sku": "NONE",
-              "probability": 0.01
-            },
-            {
-              "sku": "LBR-2X12-16-PT",
               "probability": 0
             }
           ]
         },
         "unitOk": 0.9,
-        "ms": 361.5638329999929,
+        "ms": 342.03770899999654,
         "usage": {
-          "inputTokens": 3193,
-          "outputTokens": 363
+          "inputTokens": 4383,
+          "outputTokens": 540
         },
-        "costUsd": 0.000134106
+        "costUsd": 0.000184086
       },
       {
         "lineId": "3",
@@ -157,7 +167,19 @@
           "LBR-2X4-08-PT",
           "LBR-4X4-10-PT",
           "LBR-4X4-12-PT",
-          "HDW-POST-4X4"
+          "HDW-POST-4X4",
+          "LBR-2X4-08-SPF",
+          "LBR-2X4-10-PT",
+          "LBR-2X4-12-PT",
+          "LBR-2X4-16-PT",
+          "LBR-2X6-08-PT",
+          "LBR-2X8-08-PT",
+          "LBR-2X4-10-SPF",
+          "LBR-2X4-12-SPF",
+          "LBR-2X4-16-SPF",
+          "LBR-2X6-08-SPF",
+          "LBR-2X8-08-SPF",
+          "LBR-1X4-8-PINE"
         ],
         "category": {
           "choice": "dimensional_lumber",
@@ -165,29 +187,29 @@
         },
         "sku": {
           "choice": "LBR-4X4-8-PT",
-          "confidence": 1,
+          "confidence": 0.99,
           "top": [
             {
               "sku": "LBR-4X4-8-PT",
               "probability": 1
             },
             {
-              "sku": "LBR-4X4-8-SPF",
+              "sku": "LBR-1X4-8-PINE",
               "probability": 0
             },
             {
-              "sku": "LBR-4X4-10-SPF",
+              "sku": "LBR-4X4-12-PT",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.93,
-        "ms": 324.448458999992,
+        "unitOk": 0.92,
+        "ms": 292.7171670000098,
         "usage": {
-          "inputTokens": 3029,
-          "outputTokens": 315
+          "inputTokens": 4094,
+          "outputTokens": 518
         },
-        "costUsd": 0.000127218
+        "costUsd": 0.000171948
       },
       {
         "lineId": "4",
@@ -219,7 +241,7 @@
         },
         "sku": {
           "choice": "FST-DECK-3-TAN-25LB",
-          "confidence": 0.97,
+          "confidence": 0.98,
           "top": [
             {
               "sku": "FST-DECK-3-TAN-25LB",
@@ -230,18 +252,18 @@
               "probability": 0.02
             },
             {
-              "sku": "FST-DRY-158-1LB",
+              "sku": "FST-DECK-25-TAN-5LB",
               "probability": 0
             }
           ]
         },
         "unitOk": 0.88,
-        "ms": 336.5042919999978,
+        "ms": 293.9784580000123,
         "usage": {
-          "inputTokens": 3702,
+          "inputTokens": 4538,
           "outputTokens": 547
         },
-        "costUsd": 0.000155484
+        "costUsd": 0.000190596
       },
       {
         "lineId": "5",
@@ -251,7 +273,21 @@
           "HDW-JH-2X6-BOX",
           "HDW-JH-2X8",
           "HDW-JH-2X10",
-          "HDW-POST-4X4"
+          "HDW-POST-4X4",
+          "LBR-2X8-08-PT",
+          "LBR-2X8-10-PT",
+          "LBR-2X8-12-PT",
+          "LBR-2X8-16-PT",
+          "LBR-2X8-08-SPF",
+          "LBR-2X8-10-SPF",
+          "LBR-2X8-12-SPF",
+          "LBR-2X8-16-SPF",
+          "LBR-2X12-08-PT",
+          "LBR-2X12-08-SPF",
+          "LBR-2X4-08-PT",
+          "LBR-2X4-10-PT",
+          "LBR-2X4-12-PT",
+          "LBR-2X4-16-PT"
         ],
         "category": {
           "choice": "hardware",
@@ -259,37 +295,37 @@
         },
         "sku": {
           "choice": "HDW-JH-2X8",
-          "confidence": 0.99,
+          "confidence": 0.98,
           "top": [
             {
               "sku": "HDW-JH-2X8",
-              "probability": 0.99
+              "probability": 0.98
             },
             {
               "sku": "NONE",
-              "probability": 0.01
+              "probability": 0.02
             },
             {
-              "sku": "HDW-POST-4X4",
+              "sku": "LBR-2X12-08-SPF",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.72,
-        "ms": 348.4537500000006,
+        "unitOk": 0.73,
+        "ms": 289.97775000000547,
         "usage": {
-          "inputTokens": 2961,
-          "outputTokens": 264
+          "inputTokens": 4156,
+          "outputTokens": 504
         },
-        "costUsd": 0.00012436199999999999
+        "costUsd": 0.000174552
       }
     ],
-    "ms": 422.3760420000035,
+    "ms": 396.921875,
     "usage": {
-      "inputTokens": 16522,
-      "outputTokens": 2022
+      "inputTokens": 21545,
+      "outputTokens": 2638
     },
-    "costUsd": 0.0006939240000000001
+    "costUsd": 0.00090489
   },
   "claudeOnly": {
     "lines": [
@@ -319,7 +355,7 @@
         "confidence": "high"
       }
     ],
-    "ms": 2273.5337500000023,
+    "ms": 2645.3847499999974,
     "usage": {
       "inputTokens": 17331,
       "outputTokens": 213

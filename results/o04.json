@@ -33,7 +33,7 @@
         "unit": "rolls"
       }
     ],
-    "ms": 1756.910749999999,
+    "ms": 1867.8352919999998,
     "usage": {
       "inputTokens": 3472,
       "outputTokens": 240
@@ -65,22 +65,22 @@
               "probability": 1
             },
             {
-              "sku": "FST-STRC-3-1LB",
+              "sku": "ROF-SHG-RIDGE",
               "probability": 0
             },
             {
-              "sku": "ROF-SHG-ARCH-BRN",
+              "sku": "FST-STRC-3-1LB",
               "probability": 0
             }
           ]
         },
         "unitOk": 0.92,
-        "ms": 191.8775829999995,
+        "ms": 250.85712500000227,
         "usage": {
-          "inputTokens": 2933,
+          "inputTokens": 3085,
           "outputTokens": 267
         },
-        "costUsd": 0.000123186
+        "costUsd": 0.00012957
       },
       {
         "lineId": "2",
@@ -106,18 +106,18 @@
               "probability": 0.03
             },
             {
-              "sku": "ROF-UNDER-30",
+              "sku": "ROF-UNDER-15",
               "probability": 0
             }
           ]
         },
         "unitOk": 0.92,
-        "ms": 170.2635420000006,
+        "ms": 210.62254200000098,
         "usage": {
-          "inputTokens": 2797,
+          "inputTokens": 2829,
           "outputTokens": 219
         },
-        "costUsd": 0.000117474
+        "costUsd": 0.000118818
       },
       {
         "lineId": "3",
@@ -149,29 +149,29 @@
         },
         "sku": {
           "choice": "ROF-DRIP-10",
-          "confidence": 0.98,
+          "confidence": 0.99,
           "top": [
             {
               "sku": "ROF-DRIP-10",
-              "probability": 0.98
+              "probability": 0.99
             },
             {
               "sku": "NONE",
-              "probability": 0.02
+              "probability": 0.01
             },
             {
-              "sku": "LBR-2X8-12-SPF",
+              "sku": "DRY-12-REG-4X10",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.85,
-        "ms": 171.3331249999992,
+        "unitOk": 0.84,
+        "ms": 233.42712500000198,
         "usage": {
-          "inputTokens": 3545,
+          "inputTokens": 4081,
           "outputTokens": 520
         },
-        "costUsd": 0.00014889
+        "costUsd": 0.000171402
       },
       {
         "lineId": "4",
@@ -189,37 +189,37 @@
         },
         "sku": {
           "choice": "ROF-ICE-36",
-          "confidence": 0.98,
+          "confidence": 1,
           "top": [
             {
               "sku": "ROF-ICE-36",
-              "probability": 0.99
+              "probability": 1
             },
             {
-              "sku": "NONE",
-              "probability": 0.01
+              "sku": "SHT-PLY-ZIP-716",
+              "probability": 0
             },
             {
-              "sku": "TRM-LAP-8",
+              "sku": "SUP-CAULK-LAT-WHT",
               "probability": 0
             }
           ]
         },
         "unitOk": 0.94,
-        "ms": 177.58574999999837,
+        "ms": 207.86270899999727,
         "usage": {
-          "inputTokens": 2914,
+          "inputTokens": 2986,
           "outputTokens": 261
         },
-        "costUsd": 0.000122388
+        "costUsd": 0.00012541199999999998
       }
     ],
-    "ms": 252.2770419999997,
+    "ms": 281.40200000000186,
     "usage": {
-      "inputTokens": 12189,
+      "inputTokens": 12981,
       "outputTokens": 1267
     },
-    "costUsd": 0.000511938
+    "costUsd": 0.000545202
   },
   "claudeOnly": {
     "lines": [
@@ -244,7 +244,7 @@
         "confidence": "high"
       }
     ],
-    "ms": 2068.0272080000013,
+    "ms": 3266.4221670000006,
     "usage": {
       "inputTokens": 17198,
       "outputTokens": 178

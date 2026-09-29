@@ -33,7 +33,7 @@
         "unit": "m"
       }
     ],
-    "ms": 1656.4117499999993,
+    "ms": 1696.5535410000011,
     "usage": {
       "inputTokens": 3444,
       "outputTokens": 202
@@ -72,15 +72,15 @@
         },
         "sku": {
           "choice": "NONE",
-          "confidence": 0.86,
+          "confidence": 0.84,
           "top": [
             {
               "sku": "NONE",
-              "probability": 0.87
+              "probability": 0.86
             },
             {
               "sku": "FST-16D-COM-5LB",
-              "probability": 0.12
+              "probability": 0.13
             },
             {
               "sku": "FST-16D-COM-50LB",
@@ -88,13 +88,13 @@
             }
           ]
         },
-        "unitOk": 0.28,
-        "ms": 213.63445800000045,
+        "unitOk": 0.26,
+        "ms": 224.11666600000171,
         "usage": {
-          "inputTokens": 3561,
+          "inputTokens": 4005,
           "outputTokens": 508
         },
-        "costUsd": 0.000149562
+        "costUsd": 0.00016821
       },
       {
         "lineId": "2",
@@ -126,29 +126,29 @@
         },
         "sku": {
           "choice": "NONE",
-          "confidence": 0.77,
+          "confidence": 0.84,
           "top": [
             {
               "sku": "NONE",
-              "probability": 0.79
+              "probability": 0.85
             },
             {
               "sku": "SUP-CAULK-LAT-WHT",
-              "probability": 0.15
+              "probability": 0.13
             },
             {
               "sku": "SUP-CAULK-SIL-CLR",
-              "probability": 0.06
+              "probability": 0.02
             }
           ]
         },
-        "unitOk": 0.91,
-        "ms": 201.98904200000106,
+        "unitOk": 0.9,
+        "ms": 223.58191600000282,
         "usage": {
-          "inputTokens": 3556,
+          "inputTokens": 4386,
           "outputTokens": 529
         },
-        "costUsd": 0.000149352
+        "costUsd": 0.000184212
       },
       {
         "lineId": "3",
@@ -179,30 +179,30 @@
           "confidence": 1
         },
         "sku": {
-          "choice": "NONE",
-          "confidence": 0.46,
+          "choice": "MAS-CEM-GU-30KG",
+          "confidence": 0.47,
           "top": [
             {
-              "sku": "NONE",
-              "probability": 0.49
+              "sku": "MAS-CEM-GU-30KG",
+              "probability": 0.5
             },
             {
-              "sku": "MAS-CEM-GU-30KG",
+              "sku": "NONE",
               "probability": 0.43
             },
             {
               "sku": "CON-30KG",
-              "probability": 0.08
+              "probability": 0.07
             }
           ]
         },
-        "unitOk": 0.89,
-        "ms": 198.76045899999735,
+        "unitOk": 0.88,
+        "ms": 228.8966670000009,
         "usage": {
-          "inputTokens": 3494,
-          "outputTokens": 495
+          "inputTokens": 4097,
+          "outputTokens": 503
         },
-        "costUsd": 0.00014674799999999998
+        "costUsd": 0.000172074
       },
       {
         "lineId": "4",
@@ -234,37 +234,37 @@
         },
         "sku": {
           "choice": "NONE",
-          "confidence": 0.68,
+          "confidence": 0.67,
           "top": [
             {
               "sku": "NONE",
               "probability": 0.7
             },
             {
-              "sku": "CON-REBAR-15M-6M",
-              "probability": 0.2
+              "sku": "CON-REBAR-15M-3M",
+              "probability": 0.16
             },
             {
-              "sku": "CON-REBAR-15M-3M",
-              "probability": 0.1
+              "sku": "CON-REBAR-15M-6M",
+              "probability": 0.14
             }
           ]
         },
-        "unitOk": 0.81,
-        "ms": 193.8556249999965,
+        "unitOk": 0.79,
+        "ms": 196.27666700000555,
         "usage": {
-          "inputTokens": 3514,
+          "inputTokens": 4160,
           "outputTokens": 504
         },
-        "costUsd": 0.00014758799999999998
+        "costUsd": 0.00017472
       }
     ],
-    "ms": 219.78820799999812,
+    "ms": 235.47591600000305,
     "usage": {
-      "inputTokens": 14125,
-      "outputTokens": 2036
+      "inputTokens": 16648,
+      "outputTokens": 2044
     },
-    "costUsd": 0.00059325
+    "costUsd": 0.0006992160000000001
   },
   "claudeOnly": {
     "lines": [
@@ -289,7 +289,7 @@
         "confidence": "low"
       }
     ],
-    "ms": 1431.1520410000012,
+    "ms": 1796.6154160000006,
     "usage": {
       "inputTokens": 17132,
       "outputTokens": 135

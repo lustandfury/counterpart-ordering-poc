@@ -33,7 +33,7 @@
         "unit": "pallet"
       }
     ],
-    "ms": 1562.000457999995,
+    "ms": 1610.9495830000014,
     "usage": {
       "inputTokens": 3435,
       "outputTokens": 190
@@ -72,29 +72,29 @@
         },
         "sku": {
           "choice": "NONE",
-          "confidence": 0.81,
+          "confidence": 0.63,
           "top": [
             {
               "sku": "NONE",
-              "probability": 0.81
+              "probability": 0.66
             },
             {
               "sku": "ROF-SHG-3TAB-GRY",
-              "probability": 0.14
+              "probability": 0.34
             },
             {
-              "sku": "ROF-SHG-ARCH-BLK",
-              "probability": 0.04
+              "sku": "HDW-JH-2X6",
+              "probability": 0
             }
           ]
         },
-        "unitOk": 0.88,
-        "ms": 215.567375000006,
+        "unitOk": 0.89,
+        "ms": 180.60050000000047,
         "usage": {
-          "inputTokens": 3439,
+          "inputTokens": 3712,
           "outputTokens": 461
         },
-        "costUsd": 0.000144438
+        "costUsd": 0.000155904
       },
       {
         "lineId": "2",
@@ -126,29 +126,29 @@
         },
         "sku": {
           "choice": "NONE",
-          "confidence": 0.81,
+          "confidence": 0.71,
           "top": [
             {
               "sku": "NONE",
-              "probability": 0.8099999999999999
+              "probability": 0.73
             },
             {
               "sku": "ROF-UNDER-15",
-              "probability": 0.12
+              "probability": 0.24
             },
             {
               "sku": "ROF-UNDER-30",
-              "probability": 0.06
+              "probability": 0.02
             }
           ]
         },
-        "unitOk": 0.87,
-        "ms": 245.19850000000588,
+        "unitOk": 0.89,
+        "ms": 188.48187500000495,
         "usage": {
-          "inputTokens": 3472,
+          "inputTokens": 4014,
           "outputTokens": 501
         },
-        "costUsd": 0.000145824
+        "costUsd": 0.000168588
       },
       {
         "lineId": "3",
@@ -184,25 +184,25 @@
           "top": [
             {
               "sku": "NONE",
-              "probability": 0.98
-            },
-            {
-              "sku": "FST-DRY-158-1LB",
-              "probability": 0.01
+              "probability": 0.99
             },
             {
               "sku": "FST-STRC-3-1LB",
               "probability": 0.01
+            },
+            {
+              "sku": "FST-DRY-158-25LB",
+              "probability": 0
             }
           ]
         },
-        "unitOk": 0.74,
-        "ms": 234.97191700000258,
+        "unitOk": 0.69,
+        "ms": 191.6645420000059,
         "usage": {
-          "inputTokens": 3610,
+          "inputTokens": 4446,
           "outputTokens": 536
         },
-        "costUsd": 0.00015162
+        "costUsd": 0.000186732
       },
       {
         "lineId": "4",
@@ -233,38 +233,38 @@
           "confidence": 1
         },
         "sku": {
-          "choice": "NONE",
-          "confidence": 0.74,
+          "choice": "MAS-CMU-8",
+          "confidence": 0.66,
           "top": [
             {
-              "sku": "NONE",
-              "probability": 0.75
-            },
-            {
               "sku": "MAS-CMU-8",
-              "probability": 0.23
+              "probability": 0.68
             },
             {
-              "sku": "MAS-CMU-CAP",
-              "probability": 0.02
+              "sku": "NONE",
+              "probability": 0.32
+            },
+            {
+              "sku": "FST-DECK-3-TAN-25LB",
+              "probability": 0
             }
           ]
         },
-        "unitOk": 0.19,
-        "ms": 288.3712500000038,
+        "unitOk": 0.18,
+        "ms": 238.12316699999792,
         "usage": {
-          "inputTokens": 3499,
-          "outputTokens": 508
+          "inputTokens": 4333,
+          "outputTokens": 512
         },
-        "costUsd": 0.00014695799999999998
+        "costUsd": 0.000181986
       }
     ],
-    "ms": 304.69949999999517,
+    "ms": 245.97999999999593,
     "usage": {
-      "inputTokens": 14020,
-      "outputTokens": 2006
+      "inputTokens": 16505,
+      "outputTokens": 2010
     },
-    "costUsd": 0.00058884
+    "costUsd": 0.00069321
   },
   "claudeOnly": {
     "lines": [
@@ -289,7 +289,7 @@
         "confidence": "low"
       }
     ],
-    "ms": 1600.4285830000008,
+    "ms": 1539.5768749999988,
     "usage": {
       "inputTokens": 17106,
       "outputTokens": 143

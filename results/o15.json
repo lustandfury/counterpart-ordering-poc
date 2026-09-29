@@ -26,7 +26,7 @@
         "unit": "sheets"
       }
     ],
-    "ms": 1859.9139589999977,
+    "ms": 2018.8866669999989,
     "usage": {
       "inputTokens": 3516,
       "outputTokens": 186
@@ -48,46 +48,46 @@
           "LBR-4X4-12-PT",
           "LBR-2X6-08-PT",
           "LBR-2X6-10-PT",
-          "LBR-2X6-12-PT",
-          "LBR-2X6-16-PT",
+          "LBR-2X4-08-SPF",
+          "LBR-2X4-10-SPF",
+          "LBR-2X4-12-SPF",
+          "LBR-2X4-16-SPF",
+          "LBR-2X8-08-SPF",
+          "LBR-2X6-08-SPF",
           "LBR-2X8-10-PT",
           "LBR-2X8-12-PT",
           "LBR-2X8-16-PT",
-          "LBR-2X10-08-PT",
-          "LBR-2X12-08-PT",
-          "LBR-2X12-10-PT",
-          "LBR-2X12-12-PT",
-          "LBR-2X12-16-PT"
+          "LBR-2X6-12-PT"
         ],
         "category": {
           "choice": "dimensional_lumber",
           "confidence": 1
         },
         "sku": {
-          "choice": "NONE",
-          "confidence": 0.94,
+          "choice": "LBR-2X4-08-SPF",
+          "confidence": 1,
           "top": [
             {
+              "sku": "LBR-2X4-08-SPF",
+              "probability": 1
+            },
+            {
               "sku": "NONE",
-              "probability": 0.94
+              "probability": 0
             },
             {
-              "sku": "LBR-2X4-08-PT",
-              "probability": 0.06
-            },
-            {
-              "sku": "LBR-2X8-08-PT",
+              "sku": "LBR-2X6-08-SPF",
               "probability": 0
             }
           ]
         },
         "unitOk": 0.93,
-        "ms": 245.43554199999926,
+        "ms": 297.8494589999973,
         "usage": {
-          "inputTokens": 3586,
-          "outputTokens": 519
+          "inputTokens": 4233,
+          "outputTokens": 524
         },
-        "costUsd": 0.000150612
+        "costUsd": 0.000177786
       },
       {
         "lineId": "2",
@@ -102,46 +102,46 @@
           "LBR-2X4-12-PT",
           "LBR-2X4-16-PT",
           "LBR-2X8-10-PT",
+          "LBR-2X6-08-SPF",
+          "LBR-2X6-10-SPF",
+          "LBR-2X6-12-SPF",
+          "LBR-2X6-16-SPF",
+          "LBR-2X8-08-SPF",
+          "LBR-2X4-08-SPF",
           "LBR-2X8-12-PT",
           "LBR-2X8-16-PT",
-          "LBR-2X10-08-PT",
-          "LBR-2X12-08-PT",
-          "LBR-2X12-10-PT",
-          "LBR-2X12-12-PT",
-          "LBR-2X12-16-PT",
-          "LBR-4X4-8-PT",
-          "LBR-4X4-10-PT",
-          "LBR-4X4-12-PT"
+          "LBR-2X6-PRECUT-SPF",
+          "LBR-2X10-08-PT"
         ],
         "category": {
           "choice": "dimensional_lumber",
           "confidence": 1
         },
         "sku": {
-          "choice": "NONE",
-          "confidence": 0.92,
+          "choice": "LBR-2X6-08-SPF",
+          "confidence": 1,
           "top": [
             {
-              "sku": "NONE",
-              "probability": 0.93
+              "sku": "LBR-2X6-08-SPF",
+              "probability": 1
             },
             {
-              "sku": "LBR-2X6-08-PT",
-              "probability": 0.07
+              "sku": "LBR-2X10-08-PT",
+              "probability": 0
             },
             {
-              "sku": "LBR-2X6-10-PT",
+              "sku": "LBR-2X8-12-PT",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.94,
-        "ms": 169.95262500000536,
+        "unitOk": 0.95,
+        "ms": 192.91616700000304,
         "usage": {
-          "inputTokens": 3586,
-          "outputTokens": 519
+          "inputTokens": 4290,
+          "outputTokens": 526
         },
-        "costUsd": 0.000150612
+        "costUsd": 0.00018018
       },
       {
         "lineId": "3",
@@ -163,37 +163,37 @@
         },
         "sku": {
           "choice": "SHT-PLY-CDX-34",
-          "confidence": 0.75,
+          "confidence": 0.88,
           "top": [
             {
               "sku": "SHT-PLY-CDX-34",
-              "probability": 0.77
+              "probability": 0.89
             },
             {
               "sku": "NONE",
-              "probability": 0.23
+              "probability": 0.11
             },
             {
-              "sku": "DCK-54-16-PT",
+              "sku": "SHT-PLY-CDX-58",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.95,
-        "ms": 195.65320800000336,
+        "unitOk": 0.96,
+        "ms": 178.67183400000067,
         "usage": {
-          "inputTokens": 3097,
+          "inputTokens": 3256,
           "outputTokens": 330
         },
-        "costUsd": 0.000130074
+        "costUsd": 0.000136752
       }
     ],
-    "ms": 263.9588750000039,
+    "ms": 310.55049999999756,
     "usage": {
-      "inputTokens": 10269,
-      "outputTokens": 1368
+      "inputTokens": 11779,
+      "outputTokens": 1380
     },
-    "costUsd": 0.000431298
+    "costUsd": 0.000494718
   },
   "claudeOnly": {
     "lines": [
@@ -213,7 +213,7 @@
         "confidence": "high"
       }
     ],
-    "ms": 1526.1922080000004,
+    "ms": 1631.433207999995,
     "usage": {
       "inputTokens": 17197,
       "outputTokens": 150

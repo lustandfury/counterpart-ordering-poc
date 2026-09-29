@@ -40,7 +40,7 @@
         "unit": null
       }
     ],
-    "ms": 1769.7757500000007,
+    "ms": 4128.213292,
     "usage": {
       "inputTokens": 3472,
       "outputTokens": 267
@@ -62,16 +62,16 @@
           "MAS-MORT-N-30KG",
           "DCK-54-8-PT",
           "SHT-MDF-34",
-          "SHT-MDF-12",
-          "SHT-PLY-ZIP-716",
-          "DRY-58-REG-4X8",
-          "FST-ATROD-58-10",
-          "MAS-CEM-GU-30KG",
-          "INS-R31-16",
-          "INS-R40-16",
-          "WTH-FLASH-6",
-          "WTH-FLASH-4",
-          "DCK-54-12-PT"
+          "LBR-2X4-08-PT",
+          "LBR-2X4-08-SPF",
+          "LBR-4X4-8-SPF",
+          "LBR-4X4-8-PT",
+          "LBR-1X4-8-PINE",
+          "SHT-PLY-CDX-12",
+          "SHT-PLY-CDX-58",
+          "SHT-PLY-CDX-34",
+          "SHT-PLY-PT-34",
+          "SHT-PLY-BIRCH-34"
         ],
         "category": {
           "choice": "drywall",
@@ -86,22 +86,22 @@
               "probability": 1
             },
             {
-              "sku": "INS-R31-16",
+              "sku": "DRY-58-MR-4X12",
               "probability": 0
             },
             {
-              "sku": "DRY-58-MR-4X10",
+              "sku": "MAS-MORT-N-30KG",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.89,
-        "ms": 210.46487500000148,
+        "unitOk": 0.91,
+        "ms": 260.2345830000013,
         "usage": {
-          "inputTokens": 3490,
-          "outputTokens": 486
+          "inputTokens": 3888,
+          "outputTokens": 497
         },
-        "costUsd": 0.00014658
+        "costUsd": 0.000163296
       },
       {
         "lineId": "2",
@@ -116,11 +116,16 @@
           "DRY-12-REG-4X12",
           "DRY-12-MR-4X8",
           "DRY-12-LITE-4X8",
-          "DRY-58-X-4X10",
-          "DRY-58-X-4X12",
-          "DRY-14-FLEX-4X10",
-          "DRY-14-FLEX-4X12",
-          "FST-ATROD-58-10"
+          "LBR-2X4-08-PT",
+          "LBR-2X4-08-SPF",
+          "LBR-4X4-8-SPF",
+          "LBR-4X4-8-PT",
+          "LBR-1X4-8-PINE",
+          "SHT-PLY-CDX-12",
+          "SHT-PLY-CDX-58",
+          "SHT-PLY-CDX-34",
+          "SHT-PLY-PT-34",
+          "SHT-PLY-BIRCH-34"
         ],
         "category": {
           "choice": "drywall",
@@ -128,29 +133,29 @@
         },
         "sku": {
           "choice": "DRY-58-REG-4X8",
-          "confidence": 0.92,
+          "confidence": 0.96,
           "top": [
             {
               "sku": "DRY-58-REG-4X8",
-              "probability": 0.93
+              "probability": 0.96
             },
             {
-              "sku": "DRY-58-X-4X8",
+              "sku": "NONE",
               "probability": 0.02
             },
             {
               "sku": "DRY-58-REG-4X10",
-              "probability": 0.02
+              "probability": 0.01
             }
           ]
         },
-        "unitOk": 0.88,
-        "ms": 195.98325000000114,
+        "unitOk": 0.91,
+        "ms": 258.4535419999993,
         "usage": {
-          "inputTokens": 3285,
-          "outputTokens": 442
+          "inputTokens": 3992,
+          "outputTokens": 512
         },
-        "costUsd": 0.00013797
+        "costUsd": 0.00016766399999999999
       },
       {
         "lineId": "3",
@@ -161,11 +166,24 @@
           "DRY-58-MR-4X8",
           "DRY-58-MR-4X12",
           "DRY-58-MR-4X10",
-          "HDW-JH-2X8"
+          "HDW-JH-2X8",
+          "LBR-2X4-08-PT",
+          "LBR-2X4-08-SPF",
+          "LBR-4X4-8-SPF",
+          "LBR-4X4-8-PT",
+          "LBR-1X4-8-PINE",
+          "SHT-PLY-CDX-12",
+          "SHT-PLY-CDX-58",
+          "SHT-PLY-CDX-34",
+          "SHT-PLY-PT-34",
+          "SHT-PLY-BIRCH-34",
+          "SHT-OSB-716",
+          "SHT-OSB-12",
+          "SHT-OSB-58"
         ],
         "category": {
           "choice": "drywall",
-          "confidence": 0.94
+          "confidence": 0.95
         },
         "sku": {
           "choice": "DRY-12-MR-4X8",
@@ -176,22 +194,22 @@
               "probability": 1
             },
             {
-              "sku": "DRY-12-MR-4X12",
+              "sku": "SHT-PLY-CDX-12",
               "probability": 0
             },
             {
-              "sku": "HDW-JH-2X8",
+              "sku": "DRY-58-MR-4X10",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.91,
-        "ms": 209.6927080000023,
+        "unitOk": 0.9,
+        "ms": 314.4121670000022,
         "usage": {
-          "inputTokens": 3007,
-          "outputTokens": 301
+          "inputTokens": 3863,
+          "outputTokens": 502
         },
-        "costUsd": 0.000126294
+        "costUsd": 0.000162246
       },
       {
         "lineId": "4",
@@ -216,29 +234,29 @@
         },
         "sku": {
           "choice": "DRY-MUD-45",
-          "confidence": 0.87,
+          "confidence": 0.95,
           "top": [
             {
               "sku": "DRY-MUD-45",
-              "probability": 0.89
+              "probability": 0.96
             },
             {
               "sku": "NONE",
-              "probability": 0.11
+              "probability": 0.04
             },
             {
-              "sku": "ROF-DRIP-10",
+              "sku": "ROF-DRIP-10-BRN",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.59,
-        "ms": 211.9830839999995,
+        "unitOk": 0.63,
+        "ms": 274.92812499999854,
         "usage": {
-          "inputTokens": 3221,
+          "inputTokens": 3465,
           "outputTokens": 381
         },
-        "costUsd": 0.000135282
+        "costUsd": 0.00014553
       },
       {
         "lineId": "5",
@@ -270,37 +288,37 @@
         },
         "sku": {
           "choice": "DRY-TAPE-MESH",
-          "confidence": 0.96,
+          "confidence": 0.97,
           "top": [
             {
               "sku": "DRY-TAPE-MESH",
-              "probability": 0.96
+              "probability": 0.97
             },
             {
               "sku": "NONE",
-              "probability": 0.04
+              "probability": 0.03
             },
             {
-              "sku": "WTH-FLASH-4",
+              "sku": "DRY-TAPE-250",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.68,
-        "ms": 187.09854199999972,
+        "unitOk": 0.69,
+        "ms": 307.50445899999977,
         "usage": {
-          "inputTokens": 3473,
+          "inputTokens": 3838,
           "outputTokens": 475
         },
-        "costUsd": 0.000145866
+        "costUsd": 0.000161196
       }
     ],
-    "ms": 229.12304099999892,
+    "ms": 334.1317080000008,
     "usage": {
-      "inputTokens": 16476,
-      "outputTokens": 2085
+      "inputTokens": 19046,
+      "outputTokens": 2367
     },
-    "costUsd": 0.000691992
+    "costUsd": 0.0007999319999999999
   },
   "claudeOnly": {
     "lines": [
@@ -330,7 +348,7 @@
         "confidence": "high"
       }
     ],
-    "ms": 1690.2755830000024,
+    "ms": 1787.6349579999987,
     "usage": {
       "inputTokens": 17226,
       "outputTokens": 207

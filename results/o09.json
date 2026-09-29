@@ -47,7 +47,7 @@
         "unit": null
       }
     ],
-    "ms": 2144.415000000001,
+    "ms": 1963.087959000004,
     "usage": {
       "inputTokens": 3469,
       "outputTokens": 285
@@ -69,33 +69,33 @@
         ],
         "category": {
           "choice": "insulation",
-          "confidence": 0.97
+          "confidence": 0.98
         },
         "sku": {
           "choice": "INS-R20-15",
-          "confidence": 0.89,
+          "confidence": 0.98,
           "top": [
             {
               "sku": "INS-R20-15",
-              "probability": 0.91
+              "probability": 0.98
             },
             {
               "sku": "NONE",
-              "probability": 0.09
+              "probability": 0.02
             },
             {
-              "sku": "INS-FOAM-1",
+              "sku": "INS-R12-23",
               "probability": 0
             }
           ]
         },
         "unitOk": 0.9,
-        "ms": 247.59741599999688,
+        "ms": 197.51716599999781,
         "usage": {
-          "inputTokens": 2995,
+          "inputTokens": 3103,
           "outputTokens": 268
         },
-        "costUsd": 0.00012579
+        "costUsd": 0.000130326
       },
       {
         "lineId": "2",
@@ -115,29 +115,29 @@
         },
         "sku": {
           "choice": "INS-R12-23",
-          "confidence": 0.97,
+          "confidence": 0.99,
           "top": [
             {
               "sku": "INS-R12-23",
-              "probability": 0.98
+              "probability": 0.99
             },
             {
               "sku": "NONE",
-              "probability": 0.02
+              "probability": 0.01
             },
             {
-              "sku": "ROF-SHG-ARCH-BLK",
+              "sku": "INS-R12-15",
               "probability": 0
             }
           ]
         },
         "unitOk": 0.6,
-        "ms": 183.06950000000506,
+        "ms": 190.72325000000274,
         "usage": {
-          "inputTokens": 3026,
+          "inputTokens": 3150,
           "outputTokens": 283
         },
-        "costUsd": 0.000127092
+        "costUsd": 0.0001323
       },
       {
         "lineId": "3",
@@ -169,29 +169,29 @@
         },
         "sku": {
           "choice": "WTH-WRAP-9",
-          "confidence": 0.93,
+          "confidence": 0.99,
           "top": [
             {
               "sku": "WTH-WRAP-9",
-              "probability": 0.94
+              "probability": 0.99
             },
             {
               "sku": "NONE",
-              "probability": 0.06
+              "probability": 0.01
             },
             {
-              "sku": "DRY-14-FLEX-4X8",
+              "sku": "MAS-MORT-S-30KG",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.6,
-        "ms": 219.825499999999,
+        "unitOk": 0.56,
+        "ms": 204.9994579999984,
         "usage": {
-          "inputTokens": 3420,
+          "inputTokens": 3902,
           "outputTokens": 497
         },
-        "costUsd": 0.00014364
+        "costUsd": 0.000163884
       },
       {
         "lineId": "4",
@@ -223,15 +223,15 @@
         },
         "sku": {
           "choice": "WTH-FLASH-6",
-          "confidence": 0.75,
+          "confidence": 0.88,
           "top": [
             {
               "sku": "WTH-FLASH-6",
-              "probability": 0.77
+              "probability": 0.89
             },
             {
               "sku": "NONE",
-              "probability": 0.23
+              "probability": 0.11
             },
             {
               "sku": "FST-ROOF-114-1LB",
@@ -239,13 +239,13 @@
             }
           ]
         },
-        "unitOk": 0.43,
-        "ms": 193.60691699999734,
+        "unitOk": 0.41,
+        "ms": 186.86645799999678,
         "usage": {
-          "inputTokens": 3499,
+          "inputTokens": 3758,
           "outputTokens": 479
         },
-        "costUsd": 0.00014695799999999998
+        "costUsd": 0.00015783599999999998
       },
       {
         "lineId": "5",
@@ -273,33 +273,33 @@
         ],
         "category": {
           "choice": "weatherproofing",
-          "confidence": 0.59
+          "confidence": 0.52
         },
         "sku": {
           "choice": "WTH-CAP-1",
-          "confidence": 0.83,
+          "confidence": 0.88,
           "top": [
             {
               "sku": "WTH-CAP-1",
-              "probability": 0.85
+              "probability": 0.89
             },
             {
               "sku": "NONE",
-              "probability": 0.15
+              "probability": 0.11
             },
             {
-              "sku": "FST-FRM-3-PAPER-5LB",
+              "sku": "ROF-SHG-RIDGE",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.74,
-        "ms": 195.69112499999756,
+        "unitOk": 0.77,
+        "ms": 284.64533400000073,
         "usage": {
-          "inputTokens": 3514,
+          "inputTokens": 3857,
           "outputTokens": 495
         },
-        "costUsd": 0.00014758799999999998
+        "costUsd": 0.000161994
       },
       {
         "lineId": "6",
@@ -331,37 +331,37 @@
         },
         "sku": {
           "choice": "WTH-POLY-6",
-          "confidence": 0.8,
+          "confidence": 0.94,
           "top": [
             {
               "sku": "WTH-POLY-6",
-              "probability": 0.8200000000000001
+              "probability": 0.95
             },
             {
               "sku": "NONE",
-              "probability": 0.18
+              "probability": 0.05
             },
             {
-              "sku": "DRY-TAPE-MESH",
+              "sku": "SHT-PLY-CDX-12",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.47,
-        "ms": 169.3648749999993,
+        "unitOk": 0.48,
+        "ms": 168.325499999999,
         "usage": {
-          "inputTokens": 3408,
+          "inputTokens": 3715,
           "outputTokens": 479
         },
-        "costUsd": 0.000143136
+        "costUsd": 0.00015603
       }
     ],
-    "ms": 365.02900000000227,
+    "ms": 367.1359169999996,
     "usage": {
-      "inputTokens": 19862,
+      "inputTokens": 21485,
       "outputTokens": 2501
     },
-    "costUsd": 0.000834204
+    "costUsd": 0.0009023699999999999
   },
   "claudeOnly": {
     "lines": [
@@ -396,7 +396,7 @@
         "confidence": "high"
       }
     ],
-    "ms": 1788.646541000002,
+    "ms": 2038.6230419999993,
     "usage": {
       "inputTokens": 17234,
       "outputTokens": 223

@@ -11,7 +11,7 @@ const NONE = "NONE";
 export async function decideLine(line: ParsedLine, orderText: string): Promise<JevLine> {
   const candidates = shortlist(line, 20);
   const skuCriteria: Record<string, string> = {};
-  for (const p of candidates) skuCriteria[p.sku] = `${p.name} (sold per ${p.unit})`;
+  for (const p of candidates) skuCriteria[p.sku] = `${p.name} (sold per ${p.unit}); also called: ${p.aliases.join(", ")}`;
   skuCriteria[NONE] = "None of the listed products is what the customer asked for";
 
   const t0 = performance.now();

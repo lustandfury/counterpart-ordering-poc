@@ -47,7 +47,7 @@
         "unit": "box"
       }
     ],
-    "ms": 2238.186042000001,
+    "ms": 2209.152750000001,
     "usage": {
       "inputTokens": 3486,
       "outputTokens": 314
@@ -69,16 +69,16 @@
           "LBR-6X6-12-PT",
           "LBR-2X4-12-PT",
           "LBR-2X4-16-PT",
-          "LBR-2X6-08-PT",
-          "LBR-2X8-12-PT",
-          "LBR-2X8-16-PT",
-          "LBR-2X10-10-PT",
-          "LBR-2X12-10-PT",
+          "LBR-2X6-10-SPF",
+          "LBR-2X4-10-SPF",
+          "LBR-2X8-10-SPF",
           "LBR-2X10-08-PT",
-          "LBR-4X4-10-PT",
+          "LBR-2X10-10-PT",
           "LBR-2X10-12-PT",
           "LBR-2X10-16-PT",
-          "LBR-4X4-10-SPF"
+          "LBR-2X6-12-SPF",
+          "LBR-2X6-16-SPF",
+          "LBR-2X10-08-SPF"
         ],
         "category": {
           "choice": "dimensional_lumber",
@@ -90,25 +90,25 @@
           "top": [
             {
               "sku": "LBR-6X6-10-PT",
-              "probability": 0.98
-            },
-            {
-              "sku": "LBR-2X6-10-PT",
-              "probability": 0.01
+              "probability": 1
             },
             {
               "sku": "NONE",
-              "probability": 0.01
+              "probability": 0
+            },
+            {
+              "sku": "LBR-2X10-16-PT",
+              "probability": 0
             }
           ]
         },
         "unitOk": 0.91,
-        "ms": 230.88241700000071,
+        "ms": 322.8817909999998,
         "usage": {
-          "inputTokens": 3559,
+          "inputTokens": 4243,
           "outputTokens": 529
         },
-        "costUsd": 0.000149478
+        "costUsd": 0.000178206
       },
       {
         "lineId": "2",
@@ -123,16 +123,16 @@
           "LBR-2X10-08-PT",
           "LBR-2X12-08-PT",
           "LBR-4X4-10-PT",
+          "LBR-4X4-8-SPF",
+          "LBR-2X4-08-SPF",
+          "LBR-4X4-10-SPF",
+          "LBR-4X4-12-SPF",
           "LBR-4X4-12-PT",
-          "LBR-2X6-10-PT",
-          "LBR-2X6-12-PT",
-          "LBR-2X6-16-PT",
-          "LBR-2X8-10-PT",
-          "LBR-2X8-12-PT",
-          "LBR-2X8-16-PT",
-          "LBR-2X10-10-PT",
-          "LBR-2X10-12-PT",
-          "LBR-2X10-16-PT"
+          "LBR-2X4-10-SPF",
+          "LBR-2X4-12-SPF",
+          "LBR-2X4-16-SPF",
+          "LBR-2X6-08-SPF",
+          "LBR-2X8-08-SPF"
         ],
         "category": {
           "choice": "dimensional_lumber",
@@ -140,29 +140,29 @@
         },
         "sku": {
           "choice": "LBR-4X4-8-PT",
-          "confidence": 0.96,
+          "confidence": 0.91,
           "top": [
             {
               "sku": "LBR-4X4-8-PT",
-              "probability": 0.97
+              "probability": 0.92
+            },
+            {
+              "sku": "LBR-2X4-08-PT",
+              "probability": 0.06
             },
             {
               "sku": "NONE",
               "probability": 0.02
-            },
-            {
-              "sku": "LBR-2X4-08-PT",
-              "probability": 0.01
             }
           ]
         },
-        "unitOk": 0.86,
-        "ms": 211.57737500000076,
+        "unitOk": 0.88,
+        "ms": 195.03395799999998,
         "usage": {
-          "inputTokens": 3567,
-          "outputTokens": 528
+          "inputTokens": 4134,
+          "outputTokens": 524
         },
-        "costUsd": 0.00014981399999999999
+        "costUsd": 0.000173628
       },
       {
         "lineId": "3",
@@ -180,29 +180,29 @@
         },
         "sku": {
           "choice": "CON-FORM-SONO-12",
-          "confidence": 0.75,
+          "confidence": 0.85,
           "top": [
             {
               "sku": "CON-FORM-SONO-12",
-              "probability": 0.78
+              "probability": 0.87
             },
             {
               "sku": "NONE",
-              "probability": 0.2
+              "probability": 0.12
             },
             {
               "sku": "CON-FORM-SONO-8",
-              "probability": 0.02
+              "probability": 0.01
             }
           ]
         },
-        "unitOk": 0.64,
-        "ms": 219.00308400000358,
+        "unitOk": 0.63,
+        "ms": 382.04462500000227,
         "usage": {
-          "inputTokens": 2919,
+          "inputTokens": 3019,
           "outputTokens": 271
         },
-        "costUsd": 0.000122598
+        "costUsd": 0.000126798
       },
       {
         "lineId": "4",
@@ -229,22 +229,22 @@
               "probability": 1
             },
             {
-              "sku": "CON-FORM-SONO-12",
+              "sku": "MAS-MORT-S-30KG",
               "probability": 0
             },
             {
-              "sku": "CON-FAST-20KG",
+              "sku": "MAS-CMU-8",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.84,
-        "ms": 206.72950000000128,
+        "unitOk": 0.87,
+        "ms": 308.33670800000255,
         "usage": {
-          "inputTokens": 2961,
+          "inputTokens": 3064,
           "outputTokens": 286
         },
-        "costUsd": 0.00012436199999999999
+        "costUsd": 0.00012868799999999998
       },
       {
         "lineId": "5",
@@ -273,29 +273,29 @@
         },
         "sku": {
           "choice": "FST-ATROD-12-8",
-          "confidence": 0.87,
+          "confidence": 0.91,
           "top": [
             {
               "sku": "FST-ATROD-12-8",
-              "probability": 0.88
+              "probability": 0.92
             },
             {
               "sku": "NONE",
-              "probability": 0.11
+              "probability": 0.07
             },
             {
-              "sku": "FST-ATROD-12-6",
+              "sku": "FST-ATROD-58-10",
               "probability": 0.01
             }
           ]
         },
-        "unitOk": 0.63,
-        "ms": 175.75991700000304,
+        "unitOk": 0.6,
+        "ms": 199.58566699999938,
         "usage": {
-          "inputTokens": 3424,
+          "inputTokens": 3695,
           "outputTokens": 434
         },
-        "costUsd": 0.000143808
+        "costUsd": 0.00015518999999999998
       },
       {
         "lineId": "6",
@@ -314,37 +314,37 @@
         },
         "sku": {
           "choice": "FST-ANCH-12-50",
-          "confidence": 0.82,
+          "confidence": 0.96,
           "top": [
             {
               "sku": "FST-ANCH-12-50",
-              "probability": 0.84
+              "probability": 0.96
             },
             {
               "sku": "NONE",
-              "probability": 0.16
+              "probability": 0.04
             },
             {
-              "sku": "FST-ATROD-12-6",
+              "sku": "DRY-58-MR-4X12",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.77,
-        "ms": 138.41516599999886,
+        "unitOk": 0.76,
+        "ms": 167.69962499999383,
         "usage": {
-          "inputTokens": 2991,
+          "inputTokens": 3096,
           "outputTokens": 297
         },
-        "costUsd": 0.00012562199999999998
+        "costUsd": 0.000130032
       }
     ],
-    "ms": 364.34266699999716,
+    "ms": 401.1640000000043,
     "usage": {
-      "inputTokens": 19421,
-      "outputTokens": 2345
+      "inputTokens": 21251,
+      "outputTokens": 2341
     },
-    "costUsd": 0.0008156819999999999
+    "costUsd": 0.0008925419999999999
   },
   "claudeOnly": {
     "lines": [
@@ -379,7 +379,7 @@
         "confidence": "high"
       }
     ],
-    "ms": 1950.8630829999965,
+    "ms": 1905.348791999997,
     "usage": {
       "inputTokens": 17286,
       "outputTokens": 235
