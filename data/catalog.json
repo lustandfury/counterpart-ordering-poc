@@ -1,0 +1,2374 @@
+[
+  {
+    "sku": "LBR-2X4-08-SPF",
+    "name": "2x4 x 8' SPF #2 Kiln-Dried Framing Lumber",
+    "category": "dimensional_lumber",
+    "unit": "each",
+    "price": 3.4,
+    "aliases": [
+      "2x4x8",
+      "2x4 8ft",
+      "2x4x8 spf",
+      "stud",
+      "2x4 stud"
+    ]
+  },
+  {
+    "sku": "LBR-2X4-08-PT",
+    "name": "2x4 x 8' Pressure-Treated #2 Ground Contact Lumber",
+    "category": "dimensional_lumber",
+    "unit": "each",
+    "price": 4.93,
+    "aliases": [
+      "2x4x8 pt",
+      "2x4x8 treated",
+      "2x4 8ft pt",
+      "2x4x8 green"
+    ]
+  },
+  {
+    "sku": "LBR-2X4-10-SPF",
+    "name": "2x4 x 10' SPF #2 Kiln-Dried Framing Lumber",
+    "category": "dimensional_lumber",
+    "unit": "each",
+    "price": 4.2,
+    "aliases": [
+      "2x4x10",
+      "2x4 10ft",
+      "2x4x10 spf"
+    ]
+  },
+  {
+    "sku": "LBR-2X4-10-PT",
+    "name": "2x4 x 10' Pressure-Treated #2 Ground Contact Lumber",
+    "category": "dimensional_lumber",
+    "unit": "each",
+    "price": 6.09,
+    "aliases": [
+      "2x4x10 pt",
+      "2x4x10 treated",
+      "2x4 10ft pt",
+      "2x4x10 green"
+    ]
+  },
+  {
+    "sku": "LBR-2X4-12-SPF",
+    "name": "2x4 x 12' SPF #2 Kiln-Dried Framing Lumber",
+    "category": "dimensional_lumber",
+    "unit": "each",
+    "price": 5,
+    "aliases": [
+      "2x4x12",
+      "2x4 12ft",
+      "2x4x12 spf"
+    ]
+  },
+  {
+    "sku": "LBR-2X4-12-PT",
+    "name": "2x4 x 12' Pressure-Treated #2 Ground Contact Lumber",
+    "category": "dimensional_lumber",
+    "unit": "each",
+    "price": 7.25,
+    "aliases": [
+      "2x4x12 pt",
+      "2x4x12 treated",
+      "2x4 12ft pt",
+      "2x4x12 green"
+    ]
+  },
+  {
+    "sku": "LBR-2X4-16-SPF",
+    "name": "2x4 x 16' SPF #2 Kiln-Dried Framing Lumber",
+    "category": "dimensional_lumber",
+    "unit": "each",
+    "price": 6.57,
+    "aliases": [
+      "2x4x16",
+      "2x4 16ft",
+      "2x4x16 spf"
+    ]
+  },
+  {
+    "sku": "LBR-2X4-16-PT",
+    "name": "2x4 x 16' Pressure-Treated #2 Ground Contact Lumber",
+    "category": "dimensional_lumber",
+    "unit": "each",
+    "price": 9.53,
+    "aliases": [
+      "2x4x16 pt",
+      "2x4x16 treated",
+      "2x4 16ft pt",
+      "2x4x16 green"
+    ]
+  },
+  {
+    "sku": "LBR-2X6-08-SPF",
+    "name": "2x6 x 8' SPF #2 Kiln-Dried Framing Lumber",
+    "category": "dimensional_lumber",
+    "unit": "each",
+    "price": 5.6,
+    "aliases": [
+      "2x6x8",
+      "2x6 8ft",
+      "2x6x8 spf"
+    ]
+  },
+  {
+    "sku": "LBR-2X6-08-PT",
+    "name": "2x6 x 8' Pressure-Treated #2 Ground Contact Lumber",
+    "category": "dimensional_lumber",
+    "unit": "each",
+    "price": 8.12,
+    "aliases": [
+      "2x6x8 pt",
+      "2x6x8 treated",
+      "2x6 8ft pt",
+      "2x6x8 green"
+    ]
+  },
+  {
+    "sku": "LBR-2X6-10-SPF",
+    "name": "2x6 x 10' SPF #2 Kiln-Dried Framing Lumber",
+    "category": "dimensional_lumber",
+    "unit": "each",
+    "price": 6.92,
+    "aliases": [
+      "2x6x10",
+      "2x6 10ft",
+      "2x6x10 spf"
+    ]
+  },
+  {
+    "sku": "LBR-2X6-10-PT",
+    "name": "2x6 x 10' Pressure-Treated #2 Ground Contact Lumber",
+    "category": "dimensional_lumber",
+    "unit": "each",
+    "price": 10.03,
+    "aliases": [
+      "2x6x10 pt",
+      "2x6x10 treated",
+      "2x6 10ft pt",
+      "2x6x10 green"
+    ]
+  },
+  {
+    "sku": "LBR-2X6-12-SPF",
+    "name": "2x6 x 12' SPF #2 Kiln-Dried Framing Lumber",
+    "category": "dimensional_lumber",
+    "unit": "each",
+    "price": 8.23,
+    "aliases": [
+      "2x6x12",
+      "2x6 12ft",
+      "2x6x12 spf"
+    ]
+  },
+  {
+    "sku": "LBR-2X6-12-PT",
+    "name": "2x6 x 12' Pressure-Treated #2 Ground Contact Lumber",
+    "category": "dimensional_lumber",
+    "unit": "each",
+    "price": 11.93,
+    "aliases": [
+      "2x6x12 pt",
+      "2x6x12 treated",
+      "2x6 12ft pt",
+      "2x6x12 green"
+    ]
+  },
+  {
+    "sku": "LBR-2X6-16-SPF",
+    "name": "2x6 x 16' SPF #2 Kiln-Dried Framing Lumber",
+    "category": "dimensional_lumber",
+    "unit": "each",
+    "price": 10.82,
+    "aliases": [
+      "2x6x16",
+      "2x6 16ft",
+      "2x6x16 spf"
+    ]
+  },
+  {
+    "sku": "LBR-2X6-16-PT",
+    "name": "2x6 x 16' Pressure-Treated #2 Ground Contact Lumber",
+    "category": "dimensional_lumber",
+    "unit": "each",
+    "price": 15.69,
+    "aliases": [
+      "2x6x16 pt",
+      "2x6x16 treated",
+      "2x6 16ft pt",
+      "2x6x16 green"
+    ]
+  },
+  {
+    "sku": "LBR-2X8-08-SPF",
+    "name": "2x8 x 8' SPF #2 Kiln-Dried Framing Lumber",
+    "category": "dimensional_lumber",
+    "unit": "each",
+    "price": 8.2,
+    "aliases": [
+      "2x8x8",
+      "2x8 8ft",
+      "2x8x8 spf"
+    ]
+  },
+  {
+    "sku": "LBR-2X8-08-PT",
+    "name": "2x8 x 8' Pressure-Treated #2 Ground Contact Lumber",
+    "category": "dimensional_lumber",
+    "unit": "each",
+    "price": 11.89,
+    "aliases": [
+      "2x8x8 pt",
+      "2x8x8 treated",
+      "2x8 8ft pt",
+      "2x8x8 green"
+    ]
+  },
+  {
+    "sku": "LBR-2X8-10-SPF",
+    "name": "2x8 x 10' SPF #2 Kiln-Dried Framing Lumber",
+    "category": "dimensional_lumber",
+    "unit": "each",
+    "price": 10.14,
+    "aliases": [
+      "2x8x10",
+      "2x8 10ft",
+      "2x8x10 spf"
+    ]
+  },
+  {
+    "sku": "LBR-2X8-10-PT",
+    "name": "2x8 x 10' Pressure-Treated #2 Ground Contact Lumber",
+    "category": "dimensional_lumber",
+    "unit": "each",
+    "price": 14.7,
+    "aliases": [
+      "2x8x10 pt",
+      "2x8x10 treated",
+      "2x8 10ft pt",
+      "2x8x10 green"
+    ]
+  },
+  {
+    "sku": "LBR-2X8-12-SPF",
+    "name": "2x8 x 12' SPF #2 Kiln-Dried Framing Lumber",
+    "category": "dimensional_lumber",
+    "unit": "each",
+    "price": 12.05,
+    "aliases": [
+      "2x8x12",
+      "2x8 12ft",
+      "2x8x12 spf"
+    ]
+  },
+  {
+    "sku": "LBR-2X8-12-PT",
+    "name": "2x8 x 12' Pressure-Treated #2 Ground Contact Lumber",
+    "category": "dimensional_lumber",
+    "unit": "each",
+    "price": 17.47,
+    "aliases": [
+      "2x8x12 pt",
+      "2x8x12 treated",
+      "2x8 12ft pt",
+      "2x8x12 green"
+    ]
+  },
+  {
+    "sku": "LBR-2X8-16-SPF",
+    "name": "2x8 x 16' SPF #2 Kiln-Dried Framing Lumber",
+    "category": "dimensional_lumber",
+    "unit": "each",
+    "price": 15.84,
+    "aliases": [
+      "2x8x16",
+      "2x8 16ft",
+      "2x8x16 spf"
+    ]
+  },
+  {
+    "sku": "LBR-2X8-16-PT",
+    "name": "2x8 x 16' Pressure-Treated #2 Ground Contact Lumber",
+    "category": "dimensional_lumber",
+    "unit": "each",
+    "price": 22.97,
+    "aliases": [
+      "2x8x16 pt",
+      "2x8x16 treated",
+      "2x8 16ft pt",
+      "2x8x16 green"
+    ]
+  },
+  {
+    "sku": "LBR-2X10-08-SPF",
+    "name": "2x10 x 8' SPF #2 Kiln-Dried Framing Lumber",
+    "category": "dimensional_lumber",
+    "unit": "each",
+    "price": 12.5,
+    "aliases": [
+      "2x10x8",
+      "2x10 8ft",
+      "2x10x8 spf"
+    ]
+  },
+  {
+    "sku": "LBR-2X10-08-PT",
+    "name": "2x10 x 8' Pressure-Treated #2 Ground Contact Lumber",
+    "category": "dimensional_lumber",
+    "unit": "each",
+    "price": 18.13,
+    "aliases": [
+      "2x10x8 pt",
+      "2x10x8 treated",
+      "2x10 8ft pt",
+      "2x10x8 green"
+    ]
+  },
+  {
+    "sku": "LBR-2X10-10-SPF",
+    "name": "2x10 x 10' SPF #2 Kiln-Dried Framing Lumber",
+    "category": "dimensional_lumber",
+    "unit": "each",
+    "price": 15.45,
+    "aliases": [
+      "2x10x10",
+      "2x10 10ft",
+      "2x10x10 spf"
+    ]
+  },
+  {
+    "sku": "LBR-2X10-10-PT",
+    "name": "2x10 x 10' Pressure-Treated #2 Ground Contact Lumber",
+    "category": "dimensional_lumber",
+    "unit": "each",
+    "price": 22.4,
+    "aliases": [
+      "2x10x10 pt",
+      "2x10x10 treated",
+      "2x10 10ft pt",
+      "2x10x10 green"
+    ]
+  },
+  {
+    "sku": "LBR-2X10-12-SPF",
+    "name": "2x10 x 12' SPF #2 Kiln-Dried Framing Lumber",
+    "category": "dimensional_lumber",
+    "unit": "each",
+    "price": 18.37,
+    "aliases": [
+      "2x10x12",
+      "2x10 12ft",
+      "2x10x12 spf"
+    ]
+  },
+  {
+    "sku": "LBR-2X10-12-PT",
+    "name": "2x10 x 12' Pressure-Treated #2 Ground Contact Lumber",
+    "category": "dimensional_lumber",
+    "unit": "each",
+    "price": 26.64,
+    "aliases": [
+      "2x10x12 pt",
+      "2x10x12 treated",
+      "2x10 12ft pt",
+      "2x10x12 green"
+    ]
+  },
+  {
+    "sku": "LBR-2X10-16-SPF",
+    "name": "2x10 x 16' SPF #2 Kiln-Dried Framing Lumber",
+    "category": "dimensional_lumber",
+    "unit": "each",
+    "price": 24.15,
+    "aliases": [
+      "2x10x16",
+      "2x10 16ft",
+      "2x10x16 spf"
+    ]
+  },
+  {
+    "sku": "LBR-2X10-16-PT",
+    "name": "2x10 x 16' Pressure-Treated #2 Ground Contact Lumber",
+    "category": "dimensional_lumber",
+    "unit": "each",
+    "price": 35.02,
+    "aliases": [
+      "2x10x16 pt",
+      "2x10x16 treated",
+      "2x10 16ft pt",
+      "2x10x16 green"
+    ]
+  },
+  {
+    "sku": "LBR-2X12-08-SPF",
+    "name": "2x12 x 8' SPF #2 Kiln-Dried Framing Lumber",
+    "category": "dimensional_lumber",
+    "unit": "each",
+    "price": 16.9,
+    "aliases": [
+      "2x12x8",
+      "2x12 8ft",
+      "2x12x8 spf"
+    ]
+  },
+  {
+    "sku": "LBR-2X12-08-PT",
+    "name": "2x12 x 8' Pressure-Treated #2 Ground Contact Lumber",
+    "category": "dimensional_lumber",
+    "unit": "each",
+    "price": 24.5,
+    "aliases": [
+      "2x12x8 pt",
+      "2x12x8 treated",
+      "2x12 8ft pt",
+      "2x12x8 green"
+    ]
+  },
+  {
+    "sku": "LBR-2X12-10-SPF",
+    "name": "2x12 x 10' SPF #2 Kiln-Dried Framing Lumber",
+    "category": "dimensional_lumber",
+    "unit": "each",
+    "price": 20.89,
+    "aliases": [
+      "2x12x10",
+      "2x12 10ft",
+      "2x12x10 spf"
+    ]
+  },
+  {
+    "sku": "LBR-2X12-10-PT",
+    "name": "2x12 x 10' Pressure-Treated #2 Ground Contact Lumber",
+    "category": "dimensional_lumber",
+    "unit": "each",
+    "price": 30.29,
+    "aliases": [
+      "2x12x10 pt",
+      "2x12x10 treated",
+      "2x12 10ft pt",
+      "2x12x10 green"
+    ]
+  },
+  {
+    "sku": "LBR-2X12-12-SPF",
+    "name": "2x12 x 12' SPF #2 Kiln-Dried Framing Lumber",
+    "category": "dimensional_lumber",
+    "unit": "each",
+    "price": 24.84,
+    "aliases": [
+      "2x12x12",
+      "2x12 12ft",
+      "2x12x12 spf"
+    ]
+  },
+  {
+    "sku": "LBR-2X12-12-PT",
+    "name": "2x12 x 12' Pressure-Treated #2 Ground Contact Lumber",
+    "category": "dimensional_lumber",
+    "unit": "each",
+    "price": 36.02,
+    "aliases": [
+      "2x12x12 pt",
+      "2x12x12 treated",
+      "2x12 12ft pt",
+      "2x12x12 green"
+    ]
+  },
+  {
+    "sku": "LBR-2X12-16-SPF",
+    "name": "2x12 x 16' SPF #2 Kiln-Dried Framing Lumber",
+    "category": "dimensional_lumber",
+    "unit": "each",
+    "price": 32.65,
+    "aliases": [
+      "2x12x16",
+      "2x12 16ft",
+      "2x12x16 spf"
+    ]
+  },
+  {
+    "sku": "LBR-2X12-16-PT",
+    "name": "2x12 x 16' Pressure-Treated #2 Ground Contact Lumber",
+    "category": "dimensional_lumber",
+    "unit": "each",
+    "price": 47.34,
+    "aliases": [
+      "2x12x16 pt",
+      "2x12x16 treated",
+      "2x12 16ft pt",
+      "2x12x16 green"
+    ]
+  },
+  {
+    "sku": "LBR-4X4-8-SPF",
+    "name": "4x4 x 8' SPF Post",
+    "category": "dimensional_lumber",
+    "unit": "each",
+    "price": 12.4,
+    "aliases": [
+      "4x4x8",
+      "4x4 8ft",
+      "post"
+    ]
+  },
+  {
+    "sku": "LBR-4X4-8-PT",
+    "name": "4x4 x 8' Pressure-Treated Post",
+    "category": "dimensional_lumber",
+    "unit": "each",
+    "price": 19.2,
+    "aliases": [
+      "4x4x8 pt",
+      "4x4 8ft treated",
+      "treated post"
+    ]
+  },
+  {
+    "sku": "LBR-4X4-10-SPF",
+    "name": "4x4 x 10' SPF Post",
+    "category": "dimensional_lumber",
+    "unit": "each",
+    "price": 15.5,
+    "aliases": [
+      "4x4x10",
+      "4x4 10ft",
+      "post"
+    ]
+  },
+  {
+    "sku": "LBR-4X4-10-PT",
+    "name": "4x4 x 10' Pressure-Treated Post",
+    "category": "dimensional_lumber",
+    "unit": "each",
+    "price": 24,
+    "aliases": [
+      "4x4x10 pt",
+      "4x4 10ft treated",
+      "treated post"
+    ]
+  },
+  {
+    "sku": "LBR-4X4-12-SPF",
+    "name": "4x4 x 12' SPF Post",
+    "category": "dimensional_lumber",
+    "unit": "each",
+    "price": 18.6,
+    "aliases": [
+      "4x4x12",
+      "4x4 12ft",
+      "post"
+    ]
+  },
+  {
+    "sku": "LBR-4X4-12-PT",
+    "name": "4x4 x 12' Pressure-Treated Post",
+    "category": "dimensional_lumber",
+    "unit": "each",
+    "price": 28.8,
+    "aliases": [
+      "4x4x12 pt",
+      "4x4 12ft treated",
+      "treated post"
+    ]
+  },
+  {
+    "sku": "LBR-6X6-8-PT",
+    "name": "6x6 x 8' Pressure-Treated Timber",
+    "category": "dimensional_lumber",
+    "unit": "each",
+    "price": 41.6,
+    "aliases": [
+      "6x6x8 pt",
+      "6x6 post"
+    ]
+  },
+  {
+    "sku": "LBR-6X6-10-PT",
+    "name": "6x6 x 10' Pressure-Treated Timber",
+    "category": "dimensional_lumber",
+    "unit": "each",
+    "price": 52,
+    "aliases": [
+      "6x6x10 pt",
+      "6x6 post"
+    ]
+  },
+  {
+    "sku": "LBR-6X6-12-PT",
+    "name": "6x6 x 12' Pressure-Treated Timber",
+    "category": "dimensional_lumber",
+    "unit": "each",
+    "price": 62.4,
+    "aliases": [
+      "6x6x12 pt",
+      "6x6 post"
+    ]
+  },
+  {
+    "sku": "LBR-1X4-8-PINE",
+    "name": "1x4 x 8' Common Pine Board",
+    "category": "dimensional_lumber",
+    "unit": "each",
+    "price": 7.6,
+    "aliases": [
+      "1x4x8",
+      "1x4 board",
+      "one by"
+    ]
+  },
+  {
+    "sku": "LBR-1X4-12-PINE",
+    "name": "1x4 x 12' Common Pine Board",
+    "category": "dimensional_lumber",
+    "unit": "each",
+    "price": 11.4,
+    "aliases": [
+      "1x4x12",
+      "1x4 board",
+      "one by"
+    ]
+  },
+  {
+    "sku": "LBR-1X6-8-PINE",
+    "name": "1x6 x 8' Common Pine Board",
+    "category": "dimensional_lumber",
+    "unit": "each",
+    "price": 12,
+    "aliases": [
+      "1x6x8",
+      "1x6 board",
+      "one by"
+    ]
+  },
+  {
+    "sku": "LBR-1X6-12-PINE",
+    "name": "1x6 x 12' Common Pine Board",
+    "category": "dimensional_lumber",
+    "unit": "each",
+    "price": 18,
+    "aliases": [
+      "1x6x12",
+      "1x6 board",
+      "one by"
+    ]
+  },
+  {
+    "sku": "LBR-1X8-8-PINE",
+    "name": "1x8 x 8' Common Pine Board",
+    "category": "dimensional_lumber",
+    "unit": "each",
+    "price": 16.8,
+    "aliases": [
+      "1x8x8",
+      "1x8 board",
+      "one by"
+    ]
+  },
+  {
+    "sku": "LBR-1X8-12-PINE",
+    "name": "1x8 x 12' Common Pine Board",
+    "category": "dimensional_lumber",
+    "unit": "each",
+    "price": 25.2,
+    "aliases": [
+      "1x8x12",
+      "1x8 board",
+      "one by"
+    ]
+  },
+  {
+    "sku": "SHT-PLY-CDX-12",
+    "name": "1/2\" CDX Plywood 4x8",
+    "category": "sheet_goods",
+    "unit": "sheet",
+    "price": 38,
+    "aliases": [
+      "1/2 ply",
+      "half inch ply",
+      "1/2 cdx"
+    ]
+  },
+  {
+    "sku": "SHT-PLY-CDX-58",
+    "name": "5/8\" CDX Plywood 4x8",
+    "category": "sheet_goods",
+    "unit": "sheet",
+    "price": 46,
+    "aliases": [
+      "5/8 ply",
+      "5/8 cdx"
+    ]
+  },
+  {
+    "sku": "SHT-PLY-CDX-34",
+    "name": "3/4\" CDX Plywood 4x8",
+    "category": "sheet_goods",
+    "unit": "sheet",
+    "price": 58,
+    "aliases": [
+      "3/4 ply",
+      "3/4 cdx",
+      "three quarter ply"
+    ]
+  },
+  {
+    "sku": "SHT-PLY-PT-34",
+    "name": "3/4\" Pressure-Treated Plywood 4x8",
+    "category": "sheet_goods",
+    "unit": "sheet",
+    "price": 84,
+    "aliases": [
+      "3/4 pt ply",
+      "treated ply"
+    ]
+  },
+  {
+    "sku": "SHT-PLY-BIRCH-34",
+    "name": "3/4\" Birch Sanded Plywood 4x8",
+    "category": "sheet_goods",
+    "unit": "sheet",
+    "price": 92,
+    "aliases": [
+      "birch ply",
+      "3/4 birch"
+    ]
+  },
+  {
+    "sku": "SHT-OSB-716",
+    "name": "7/16\" OSB Sheathing 4x8",
+    "category": "sheet_goods",
+    "unit": "sheet",
+    "price": 17.5,
+    "aliases": [
+      "7/16 osb",
+      "osb",
+      "7/16"
+    ]
+  },
+  {
+    "sku": "SHT-OSB-12",
+    "name": "1/2\" OSB Sheathing 4x8",
+    "category": "sheet_goods",
+    "unit": "sheet",
+    "price": 21,
+    "aliases": [
+      "1/2 osb",
+      "half osb"
+    ]
+  },
+  {
+    "sku": "SHT-OSB-58",
+    "name": "5/8\" OSB Sheathing 4x8",
+    "category": "sheet_goods",
+    "unit": "sheet",
+    "price": 27,
+    "aliases": [
+      "5/8 osb"
+    ]
+  },
+  {
+    "sku": "SHT-OSB-2332",
+    "name": "23/32\" Tongue & Groove OSB Subfloor 4x8",
+    "category": "sheet_goods",
+    "unit": "sheet",
+    "price": 39,
+    "aliases": [
+      "23/32 osb",
+      "subfloor",
+      "tg osb",
+      "advantech"
+    ]
+  },
+  {
+    "sku": "SHT-MDF-34",
+    "name": "3/4\" MDF Panel 4x8",
+    "category": "sheet_goods",
+    "unit": "sheet",
+    "price": 54,
+    "aliases": [
+      "3/4 mdf",
+      "mdf"
+    ]
+  },
+  {
+    "sku": "SHT-MDF-12",
+    "name": "1/2\" MDF Panel 4x8",
+    "category": "sheet_goods",
+    "unit": "sheet",
+    "price": 42,
+    "aliases": [
+      "1/2 mdf"
+    ]
+  },
+  {
+    "sku": "SHT-PLY-ZIP-716",
+    "name": "7/16\" Coated Wall Sheathing Panel 4x8",
+    "category": "sheet_goods",
+    "unit": "sheet",
+    "price": 33,
+    "aliases": [
+      "zip",
+      "zip sheathing"
+    ]
+  },
+  {
+    "sku": "DRY-12-REG-4X8",
+    "name": "1/2\" Regular Drywall 4x8",
+    "category": "drywall",
+    "unit": "sheet",
+    "price": 12.5,
+    "aliases": [
+      "1/2 rock 8ft",
+      "1/2 sheetrock 8ft",
+      "half inch drywall 8ft",
+      "1/2 rock",
+      "1/2 sheetrock",
+      "half inch drywall"
+    ]
+  },
+  {
+    "sku": "DRY-12-REG-4X10",
+    "name": "1/2\" Regular Drywall 4x10",
+    "category": "drywall",
+    "unit": "sheet",
+    "price": 15.63,
+    "aliases": [
+      "1/2 rock 10ft",
+      "1/2 sheetrock 10ft",
+      "half inch drywall 10ft"
+    ]
+  },
+  {
+    "sku": "DRY-12-REG-4X12",
+    "name": "1/2\" Regular Drywall 4x12",
+    "category": "drywall",
+    "unit": "sheet",
+    "price": 18.75,
+    "aliases": [
+      "1/2 rock 12ft",
+      "1/2 sheetrock 12ft",
+      "half inch drywall 12ft"
+    ]
+  },
+  {
+    "sku": "DRY-12-MR-4X8",
+    "name": "1/2\" Moisture-Resistant Drywall (Green Board) 4x8",
+    "category": "drywall",
+    "unit": "sheet",
+    "price": 17,
+    "aliases": [
+      "1/2 green board 8ft",
+      "greenboard 8ft",
+      "1/2 green board",
+      "greenboard"
+    ]
+  },
+  {
+    "sku": "DRY-12-MR-4X10",
+    "name": "1/2\" Moisture-Resistant Drywall (Green Board) 4x10",
+    "category": "drywall",
+    "unit": "sheet",
+    "price": 21.25,
+    "aliases": [
+      "1/2 green board 10ft",
+      "greenboard 10ft"
+    ]
+  },
+  {
+    "sku": "DRY-12-MR-4X12",
+    "name": "1/2\" Moisture-Resistant Drywall (Green Board) 4x12",
+    "category": "drywall",
+    "unit": "sheet",
+    "price": 25.5,
+    "aliases": [
+      "1/2 green board 12ft",
+      "greenboard 12ft"
+    ]
+  },
+  {
+    "sku": "DRY-12-LITE-4X8",
+    "name": "1/2\" Lightweight Drywall 4x8",
+    "category": "drywall",
+    "unit": "sheet",
+    "price": 14,
+    "aliases": [
+      "1/2 lite 8ft",
+      "light rock 8ft",
+      "1/2 lite",
+      "light rock"
+    ]
+  },
+  {
+    "sku": "DRY-12-LITE-4X10",
+    "name": "1/2\" Lightweight Drywall 4x10",
+    "category": "drywall",
+    "unit": "sheet",
+    "price": 17.5,
+    "aliases": [
+      "1/2 lite 10ft",
+      "light rock 10ft"
+    ]
+  },
+  {
+    "sku": "DRY-12-LITE-4X12",
+    "name": "1/2\" Lightweight Drywall 4x12",
+    "category": "drywall",
+    "unit": "sheet",
+    "price": 21,
+    "aliases": [
+      "1/2 lite 12ft",
+      "light rock 12ft"
+    ]
+  },
+  {
+    "sku": "DRY-58-REG-4X8",
+    "name": "5/8\" Regular Drywall 4x8",
+    "category": "drywall",
+    "unit": "sheet",
+    "price": 15,
+    "aliases": [
+      "5/8 rock 8ft",
+      "5/8 sheetrock 8ft",
+      "5/8 rock",
+      "5/8 sheetrock"
+    ]
+  },
+  {
+    "sku": "DRY-58-REG-4X10",
+    "name": "5/8\" Regular Drywall 4x10",
+    "category": "drywall",
+    "unit": "sheet",
+    "price": 18.75,
+    "aliases": [
+      "5/8 rock 10ft",
+      "5/8 sheetrock 10ft"
+    ]
+  },
+  {
+    "sku": "DRY-58-REG-4X12",
+    "name": "5/8\" Regular Drywall 4x12",
+    "category": "drywall",
+    "unit": "sheet",
+    "price": 22.5,
+    "aliases": [
+      "5/8 rock 12ft",
+      "5/8 sheetrock 12ft"
+    ]
+  },
+  {
+    "sku": "DRY-58-X-4X8",
+    "name": "5/8\" Type X Fire-Rated Drywall 4x8",
+    "category": "drywall",
+    "unit": "sheet",
+    "price": 17,
+    "aliases": [
+      "5/8 type x 8ft",
+      "5/8 x 8ft",
+      "fire rock 8ft",
+      "type x 8ft",
+      "5/8 type x",
+      "5/8 x",
+      "fire rock",
+      "type x"
+    ]
+  },
+  {
+    "sku": "DRY-58-X-4X10",
+    "name": "5/8\" Type X Fire-Rated Drywall 4x10",
+    "category": "drywall",
+    "unit": "sheet",
+    "price": 21.25,
+    "aliases": [
+      "5/8 type x 10ft",
+      "5/8 x 10ft",
+      "fire rock 10ft",
+      "type x 10ft"
+    ]
+  },
+  {
+    "sku": "DRY-58-X-4X12",
+    "name": "5/8\" Type X Fire-Rated Drywall 4x12",
+    "category": "drywall",
+    "unit": "sheet",
+    "price": 25.5,
+    "aliases": [
+      "5/8 type x 12ft",
+      "5/8 x 12ft",
+      "fire rock 12ft",
+      "type x 12ft"
+    ]
+  },
+  {
+    "sku": "DRY-58-MR-4X8",
+    "name": "5/8\" Moisture-Resistant Type X Drywall 4x8",
+    "category": "drywall",
+    "unit": "sheet",
+    "price": 21,
+    "aliases": [
+      "5/8 green board 8ft",
+      "5/8 green board"
+    ]
+  },
+  {
+    "sku": "DRY-58-MR-4X10",
+    "name": "5/8\" Moisture-Resistant Type X Drywall 4x10",
+    "category": "drywall",
+    "unit": "sheet",
+    "price": 26.25,
+    "aliases": [
+      "5/8 green board 10ft"
+    ]
+  },
+  {
+    "sku": "DRY-58-MR-4X12",
+    "name": "5/8\" Moisture-Resistant Type X Drywall 4x12",
+    "category": "drywall",
+    "unit": "sheet",
+    "price": 31.5,
+    "aliases": [
+      "5/8 green board 12ft"
+    ]
+  },
+  {
+    "sku": "DRY-14-FLEX-4X8",
+    "name": "1/4\" Flexible Drywall 4x8",
+    "category": "drywall",
+    "unit": "sheet",
+    "price": 15.5,
+    "aliases": [
+      "1/4 rock 8ft",
+      "flex rock 8ft",
+      "1/4 rock",
+      "flex rock"
+    ]
+  },
+  {
+    "sku": "DRY-14-FLEX-4X10",
+    "name": "1/4\" Flexible Drywall 4x10",
+    "category": "drywall",
+    "unit": "sheet",
+    "price": 19.38,
+    "aliases": [
+      "1/4 rock 10ft",
+      "flex rock 10ft"
+    ]
+  },
+  {
+    "sku": "DRY-14-FLEX-4X12",
+    "name": "1/4\" Flexible Drywall 4x12",
+    "category": "drywall",
+    "unit": "sheet",
+    "price": 23.25,
+    "aliases": [
+      "1/4 rock 12ft",
+      "flex rock 12ft"
+    ]
+  },
+  {
+    "sku": "DRY-MUD-45",
+    "name": "All-Purpose Joint Compound 4.5 gal Bucket",
+    "category": "drywall",
+    "unit": "bucket",
+    "price": 17,
+    "aliases": [
+      "mud",
+      "joint compound",
+      "5 gal mud"
+    ]
+  },
+  {
+    "sku": "DRY-TAPE-250",
+    "name": "Paper Drywall Joint Tape 250 ft Roll",
+    "category": "drywall",
+    "unit": "roll",
+    "price": 4.5,
+    "aliases": [
+      "tape",
+      "paper tape"
+    ]
+  },
+  {
+    "sku": "DRY-TAPE-MESH",
+    "name": "Self-Adhesive Mesh Drywall Tape 300 ft Roll",
+    "category": "drywall",
+    "unit": "roll",
+    "price": 7,
+    "aliases": [
+      "mesh tape"
+    ]
+  },
+  {
+    "sku": "FST-DECK-25-TAN-1LB",
+    "name": "#10 x 2-1/2\" Exterior Deck Screws, Tan, 1 lb Box",
+    "category": "fasteners",
+    "unit": "box",
+    "price": 10,
+    "aliases": [
+      "2.5 deck screws 1lb",
+      "2.5 deck screws 1 lb",
+      "2 1/2 deck screws 1lb",
+      "2 1/2 deck screws 1 lb"
+    ]
+  },
+  {
+    "sku": "FST-DECK-25-TAN-5LB",
+    "name": "#10 x 2-1/2\" Exterior Deck Screws, Tan, 5 lb Box",
+    "category": "fasteners",
+    "unit": "box",
+    "price": 37.5,
+    "aliases": [
+      "2.5 deck screws 5lb",
+      "2.5 deck screws 5 lb",
+      "2 1/2 deck screws 5lb",
+      "2 1/2 deck screws 5 lb"
+    ]
+  },
+  {
+    "sku": "FST-DECK-25-TAN-25LB",
+    "name": "#10 x 2-1/2\" Exterior Deck Screws, Tan, 25 lb Box",
+    "category": "fasteners",
+    "unit": "box",
+    "price": 137.5,
+    "aliases": [
+      "2.5 deck screws 25lb",
+      "2.5 deck screws 25 lb",
+      "2 1/2 deck screws 25lb",
+      "2 1/2 deck screws 25 lb"
+    ]
+  },
+  {
+    "sku": "FST-DECK-3-TAN-1LB",
+    "name": "#10 x 3\" Exterior Deck Screws, Tan, 1 lb Box",
+    "category": "fasteners",
+    "unit": "box",
+    "price": 10,
+    "aliases": [
+      "3in deck screws 1lb",
+      "3in deck screws 1 lb",
+      "3 inch deck screws 1lb",
+      "3 inch deck screws 1 lb",
+      "3\" deck screws 1lb",
+      "3\" deck screws 1 lb"
+    ]
+  },
+  {
+    "sku": "FST-DECK-3-TAN-5LB",
+    "name": "#10 x 3\" Exterior Deck Screws, Tan, 5 lb Box",
+    "category": "fasteners",
+    "unit": "box",
+    "price": 37.5,
+    "aliases": [
+      "3in deck screws 5lb",
+      "3in deck screws 5 lb",
+      "3 inch deck screws 5lb",
+      "3 inch deck screws 5 lb",
+      "3\" deck screws 5lb",
+      "3\" deck screws 5 lb"
+    ]
+  },
+  {
+    "sku": "FST-DECK-3-TAN-25LB",
+    "name": "#10 x 3\" Exterior Deck Screws, Tan, 25 lb Box",
+    "category": "fasteners",
+    "unit": "box",
+    "price": 137.5,
+    "aliases": [
+      "3in deck screws 25lb",
+      "3in deck screws 25 lb",
+      "3 inch deck screws 25lb",
+      "3 inch deck screws 25 lb",
+      "3\" deck screws 25lb",
+      "3\" deck screws 25 lb"
+    ]
+  },
+  {
+    "sku": "FST-DECK-3-GRAY-1LB",
+    "name": "#10 x 3\" Exterior Deck Screws, Gray, 1 lb Box",
+    "category": "fasteners",
+    "unit": "box",
+    "price": 10,
+    "aliases": [
+      "3in gray deck screws 1lb",
+      "3in gray deck screws 1 lb"
+    ]
+  },
+  {
+    "sku": "FST-DECK-3-GRAY-5LB",
+    "name": "#10 x 3\" Exterior Deck Screws, Gray, 5 lb Box",
+    "category": "fasteners",
+    "unit": "box",
+    "price": 37.5,
+    "aliases": [
+      "3in gray deck screws 5lb",
+      "3in gray deck screws 5 lb"
+    ]
+  },
+  {
+    "sku": "FST-DECK-3-GRAY-25LB",
+    "name": "#10 x 3\" Exterior Deck Screws, Gray, 25 lb Box",
+    "category": "fasteners",
+    "unit": "box",
+    "price": 137.5,
+    "aliases": [
+      "3in gray deck screws 25lb",
+      "3in gray deck screws 25 lb"
+    ]
+  },
+  {
+    "sku": "FST-DECK-25-BRN-1LB",
+    "name": "#10 x 2-1/2\" Exterior Deck Screws, Brown, 1 lb Box",
+    "category": "fasteners",
+    "unit": "box",
+    "price": 10,
+    "aliases": [
+      "brown deck screws 1lb",
+      "brown deck screws 1 lb"
+    ]
+  },
+  {
+    "sku": "FST-DECK-25-BRN-5LB",
+    "name": "#10 x 2-1/2\" Exterior Deck Screws, Brown, 5 lb Box",
+    "category": "fasteners",
+    "unit": "box",
+    "price": 37.5,
+    "aliases": [
+      "brown deck screws 5lb",
+      "brown deck screws 5 lb"
+    ]
+  },
+  {
+    "sku": "FST-DECK-25-BRN-25LB",
+    "name": "#10 x 2-1/2\" Exterior Deck Screws, Brown, 25 lb Box",
+    "category": "fasteners",
+    "unit": "box",
+    "price": 137.5,
+    "aliases": [
+      "brown deck screws 25lb",
+      "brown deck screws 25 lb"
+    ]
+  },
+  {
+    "sku": "FST-STRC-3-1LB",
+    "name": "#9 x 3\" Structural Wood Screws, 1 lb Box",
+    "category": "fasteners",
+    "unit": "box",
+    "price": 10,
+    "aliases": [
+      "3in structural screws 1lb",
+      "3in structural screws 1 lb",
+      "lags 1lb",
+      "lags 1 lb",
+      "timberlok 1lb",
+      "timberlok 1 lb"
+    ]
+  },
+  {
+    "sku": "FST-STRC-3-5LB",
+    "name": "#9 x 3\" Structural Wood Screws, 5 lb Box",
+    "category": "fasteners",
+    "unit": "box",
+    "price": 37.5,
+    "aliases": [
+      "3in structural screws 5lb",
+      "3in structural screws 5 lb",
+      "lags 5lb",
+      "lags 5 lb",
+      "timberlok 5lb",
+      "timberlok 5 lb"
+    ]
+  },
+  {
+    "sku": "FST-DRY-158-1LB",
+    "name": "#6 x 1-5/8\" Coarse-Thread Drywall Screws, 1 lb Box",
+    "category": "fasteners",
+    "unit": "box",
+    "price": 8,
+    "aliases": [
+      "1 5/8 drywall screws 1lb",
+      "1 5/8 drywall screws 1 lb",
+      "rock screws 1lb",
+      "rock screws 1 lb",
+      "1-5/8 sheetrock screws 1lb",
+      "1-5/8 sheetrock screws 1 lb"
+    ]
+  },
+  {
+    "sku": "FST-DRY-158-5LB",
+    "name": "#6 x 1-5/8\" Coarse-Thread Drywall Screws, 5 lb Box",
+    "category": "fasteners",
+    "unit": "box",
+    "price": 30,
+    "aliases": [
+      "1 5/8 drywall screws 5lb",
+      "1 5/8 drywall screws 5 lb",
+      "rock screws 5lb",
+      "rock screws 5 lb",
+      "1-5/8 sheetrock screws 5lb",
+      "1-5/8 sheetrock screws 5 lb"
+    ]
+  },
+  {
+    "sku": "FST-DRY-158-25LB",
+    "name": "#6 x 1-5/8\" Coarse-Thread Drywall Screws, 25 lb Box",
+    "category": "fasteners",
+    "unit": "box",
+    "price": 110,
+    "aliases": [
+      "1 5/8 drywall screws 25lb",
+      "1 5/8 drywall screws 25 lb",
+      "rock screws 25lb",
+      "rock screws 25 lb",
+      "1-5/8 sheetrock screws 25lb",
+      "1-5/8 sheetrock screws 25 lb"
+    ]
+  },
+  {
+    "sku": "FST-DRY-214-1LB",
+    "name": "#6 x 2-1/4\" Coarse-Thread Drywall Screws, 1 lb Box",
+    "category": "fasteners",
+    "unit": "box",
+    "price": 8,
+    "aliases": [
+      "2 1/4 drywall screws 1lb",
+      "2 1/4 drywall screws 1 lb"
+    ]
+  },
+  {
+    "sku": "FST-DRY-214-5LB",
+    "name": "#6 x 2-1/4\" Coarse-Thread Drywall Screws, 5 lb Box",
+    "category": "fasteners",
+    "unit": "box",
+    "price": 30,
+    "aliases": [
+      "2 1/4 drywall screws 5lb",
+      "2 1/4 drywall screws 5 lb"
+    ]
+  },
+  {
+    "sku": "FST-DRY-214-25LB",
+    "name": "#6 x 2-1/4\" Coarse-Thread Drywall Screws, 25 lb Box",
+    "category": "fasteners",
+    "unit": "box",
+    "price": 110,
+    "aliases": [
+      "2 1/4 drywall screws 25lb",
+      "2 1/4 drywall screws 25 lb"
+    ]
+  },
+  {
+    "sku": "FST-DRY-158-FINE-1LB",
+    "name": "#6 x 1-5/8\" Fine-Thread Drywall Screws (Steel Stud), 1 lb Box",
+    "category": "fasteners",
+    "unit": "box",
+    "price": 8,
+    "aliases": [
+      "fine thread rock screws 1lb",
+      "fine thread rock screws 1 lb",
+      "metal stud screws 1lb",
+      "metal stud screws 1 lb"
+    ]
+  },
+  {
+    "sku": "FST-DRY-158-FINE-5LB",
+    "name": "#6 x 1-5/8\" Fine-Thread Drywall Screws (Steel Stud), 5 lb Box",
+    "category": "fasteners",
+    "unit": "box",
+    "price": 30,
+    "aliases": [
+      "fine thread rock screws 5lb",
+      "fine thread rock screws 5 lb",
+      "metal stud screws 5lb",
+      "metal stud screws 5 lb"
+    ]
+  },
+  {
+    "sku": "FST-DRY-158-FINE-25LB",
+    "name": "#6 x 1-5/8\" Fine-Thread Drywall Screws (Steel Stud), 25 lb Box",
+    "category": "fasteners",
+    "unit": "box",
+    "price": 110,
+    "aliases": [
+      "fine thread rock screws 25lb",
+      "fine thread rock screws 25 lb",
+      "metal stud screws 25lb",
+      "metal stud screws 25 lb"
+    ]
+  },
+  {
+    "sku": "FST-16D-COM-5LB",
+    "name": "16d 3-1/2\" Common Nails, Bright, 5 lb Box",
+    "category": "fasteners",
+    "unit": "box",
+    "price": 14,
+    "aliases": [
+      "16d 5lb",
+      "16 penny 5lb",
+      "16d commons 5lb"
+    ]
+  },
+  {
+    "sku": "FST-16D-COM-50LB",
+    "name": "16d 3-1/2\" Common Nails, Bright, 50 lb Box",
+    "category": "fasteners",
+    "unit": "box",
+    "price": 85,
+    "aliases": [
+      "16d 50lb",
+      "16 penny 50lb",
+      "16d commons 50lb"
+    ]
+  },
+  {
+    "sku": "FST-16D-SINK-5LB",
+    "name": "16d 3-1/4\" Sinker Nails, Vinyl-Coated, 5 lb Box",
+    "category": "fasteners",
+    "unit": "box",
+    "price": 14,
+    "aliases": [
+      "16d sinkers 5lb",
+      "sinkers 5lb"
+    ]
+  },
+  {
+    "sku": "FST-16D-SINK-50LB",
+    "name": "16d 3-1/4\" Sinker Nails, Vinyl-Coated, 50 lb Box",
+    "category": "fasteners",
+    "unit": "box",
+    "price": 85,
+    "aliases": [
+      "16d sinkers 50lb",
+      "sinkers 50lb"
+    ]
+  },
+  {
+    "sku": "FST-8D-COM-5LB",
+    "name": "8d 2-1/2\" Common Nails, Bright, 5 lb Box",
+    "category": "fasteners",
+    "unit": "box",
+    "price": 14,
+    "aliases": [
+      "8d 5lb",
+      "8 penny 5lb"
+    ]
+  },
+  {
+    "sku": "FST-8D-COM-50LB",
+    "name": "8d 2-1/2\" Common Nails, Bright, 50 lb Box",
+    "category": "fasteners",
+    "unit": "box",
+    "price": 85,
+    "aliases": [
+      "8d 50lb",
+      "8 penny 50lb"
+    ]
+  },
+  {
+    "sku": "FST-10D-GALV-5LB",
+    "name": "10d 3\" Hot-Dip Galvanized Nails, 5 lb Box",
+    "category": "fasteners",
+    "unit": "box",
+    "price": 14,
+    "aliases": [
+      "10d galv 5lb",
+      "10d hdg 5lb",
+      "galvy nails 5lb"
+    ]
+  },
+  {
+    "sku": "FST-10D-GALV-50LB",
+    "name": "10d 3\" Hot-Dip Galvanized Nails, 50 lb Box",
+    "category": "fasteners",
+    "unit": "box",
+    "price": 85,
+    "aliases": [
+      "10d galv 50lb",
+      "10d hdg 50lb",
+      "galvy nails 50lb"
+    ]
+  },
+  {
+    "sku": "FST-FRM-3-PAPER-5LB",
+    "name": "3\" 30° Paper-Collated Framing Nails, 5 lb Box",
+    "category": "fasteners",
+    "unit": "box",
+    "price": 14,
+    "aliases": [
+      "framing nails 5lb",
+      "gun nails 5lb",
+      "3in stick nails 5lb"
+    ]
+  },
+  {
+    "sku": "FST-FRM-3-PAPER-50LB",
+    "name": "3\" 30° Paper-Collated Framing Nails, 50 lb Box",
+    "category": "fasteners",
+    "unit": "box",
+    "price": 85,
+    "aliases": [
+      "framing nails 50lb",
+      "gun nails 50lb",
+      "3in stick nails 50lb"
+    ]
+  },
+  {
+    "sku": "FST-ROOF-118-5LB",
+    "name": "1-1/8\" Electro-Galvanized Roofing Nails, 5 lb Box",
+    "category": "fasteners",
+    "unit": "box",
+    "price": 16,
+    "aliases": [
+      "roofing nails",
+      "roof nails 5lb"
+    ]
+  },
+  {
+    "sku": "FST-ROOF-114-1LB",
+    "name": "1-1/4\" Electro-Galvanized Roofing Nails, 1 lb Box",
+    "category": "fasteners",
+    "unit": "box",
+    "price": 6,
+    "aliases": [
+      "roofing nails 1lb"
+    ]
+  },
+  {
+    "sku": "FST-TAPCON-14-100",
+    "name": "1/4\" x 3-1/4\" Concrete Screws, 100 ct",
+    "category": "fasteners",
+    "unit": "box",
+    "price": 32,
+    "aliases": [
+      "tapcons",
+      "concrete screws"
+    ]
+  },
+  {
+    "sku": "FST-ANCH-12-50",
+    "name": "1/2\" x 6\" Wedge Anchors, 50 ct",
+    "category": "fasteners",
+    "unit": "box",
+    "price": 58,
+    "aliases": [
+      "wedge anchors",
+      "1/2 anchors"
+    ]
+  },
+  {
+    "sku": "FST-ATROD-12-6",
+    "name": "1/2\" x 6\" J-Bolt Anchor Bolt",
+    "category": "fasteners",
+    "unit": "each",
+    "price": 1.4,
+    "aliases": [
+      "1/2 anchor bolt 6",
+      "j bolts",
+      "anchor bolts"
+    ]
+  },
+  {
+    "sku": "FST-ATROD-12-8",
+    "name": "1/2\" x 8\" J-Bolt Anchor Bolt",
+    "category": "fasteners",
+    "unit": "each",
+    "price": 1.9,
+    "aliases": [
+      "1/2 anchor bolt 8",
+      "j bolts",
+      "anchor bolts"
+    ]
+  },
+  {
+    "sku": "FST-ATROD-58-10",
+    "name": "5/8\" x 10\" J-Bolt Anchor Bolt",
+    "category": "fasteners",
+    "unit": "each",
+    "price": 3.2,
+    "aliases": [
+      "5/8 anchor bolt 10",
+      "j bolts",
+      "anchor bolts"
+    ]
+  },
+  {
+    "sku": "HDW-JH-2X4",
+    "name": "Face-Mount Joist Hanger for 2x4",
+    "category": "hardware",
+    "unit": "each",
+    "price": 0.85,
+    "aliases": [
+      "2x4 hanger",
+      "2x4 joist hanger"
+    ]
+  },
+  {
+    "sku": "HDW-JH-2X6",
+    "name": "Face-Mount Joist Hanger for 2x6",
+    "category": "hardware",
+    "unit": "each",
+    "price": 1.05,
+    "aliases": [
+      "2x6 hanger",
+      "2x6 joist hanger",
+      "2x6 hangers"
+    ]
+  },
+  {
+    "sku": "HDW-JH-2X8",
+    "name": "Face-Mount Joist Hanger for 2x8",
+    "category": "hardware",
+    "unit": "each",
+    "price": 1.3,
+    "aliases": [
+      "2x8 hanger"
+    ]
+  },
+  {
+    "sku": "HDW-JH-2X10",
+    "name": "Face-Mount Joist Hanger for 2x10",
+    "category": "hardware",
+    "unit": "each",
+    "price": 1.6,
+    "aliases": [
+      "2x10 hanger"
+    ]
+  },
+  {
+    "sku": "HDW-HT-H2-5",
+    "name": "H2.5A Hurricane Tie",
+    "category": "hardware",
+    "unit": "each",
+    "price": 0.95,
+    "aliases": [
+      "hurricane ties",
+      "h2.5"
+    ]
+  },
+  {
+    "sku": "HDW-POST-4X4",
+    "name": "Adjustable Post Base for 4x4",
+    "category": "hardware",
+    "unit": "each",
+    "price": 12,
+    "aliases": [
+      "4x4 post base"
+    ]
+  },
+  {
+    "sku": "HDW-STRAP-12",
+    "name": "12\" Flat Strap Tie",
+    "category": "hardware",
+    "unit": "each",
+    "price": 1.75,
+    "aliases": [
+      "strap tie",
+      "flat strap"
+    ]
+  },
+  {
+    "sku": "HDW-JH-2X6-BOX",
+    "name": "Face-Mount Joist Hanger for 2x6, Box of 25",
+    "category": "hardware",
+    "unit": "box",
+    "price": 22,
+    "aliases": [
+      "2x6 hangers box",
+      "box of 2x6 hangers"
+    ]
+  },
+  {
+    "sku": "CON-60",
+    "name": "Concrete Mix 60 lb Bag",
+    "category": "concrete_masonry",
+    "unit": "bag",
+    "price": 5.6,
+    "aliases": [
+      "60lb concrete",
+      "concrete mix"
+    ]
+  },
+  {
+    "sku": "CON-80",
+    "name": "Concrete Mix 80 lb Bag",
+    "category": "concrete_masonry",
+    "unit": "bag",
+    "price": 6.9,
+    "aliases": [
+      "80lb concrete",
+      "80 lb crete"
+    ]
+  },
+  {
+    "sku": "CON-FAST-50",
+    "name": "Fast-Setting Concrete Mix 50 lb Bag",
+    "category": "concrete_masonry",
+    "unit": "bag",
+    "price": 8.5,
+    "aliases": [
+      "fast set",
+      "quikrete fast"
+    ]
+  },
+  {
+    "sku": "MAS-MORT-60",
+    "name": "Type S Mortar Mix 60 lb Bag",
+    "category": "concrete_masonry",
+    "unit": "bag",
+    "price": 9.5,
+    "aliases": [
+      "mortar",
+      "type s mortar"
+    ]
+  },
+  {
+    "sku": "MAS-MORT-80",
+    "name": "Type N Mortar Mix 80 lb Bag",
+    "category": "concrete_masonry",
+    "unit": "bag",
+    "price": 11,
+    "aliases": [
+      "type n mortar"
+    ]
+  },
+  {
+    "sku": "MAS-SAND-50",
+    "name": "All-Purpose Sand 50 lb Bag",
+    "category": "concrete_masonry",
+    "unit": "bag",
+    "price": 5,
+    "aliases": [
+      "sand",
+      "play sand"
+    ]
+  },
+  {
+    "sku": "MAS-GRAV-50",
+    "name": "Crushed Gravel 50 lb Bag",
+    "category": "concrete_masonry",
+    "unit": "bag",
+    "price": 6,
+    "aliases": [
+      "gravel",
+      "stone bag"
+    ]
+  },
+  {
+    "sku": "MAS-CMU-8",
+    "name": "8x8x16 Concrete Block",
+    "category": "concrete_masonry",
+    "unit": "each",
+    "price": 2.4,
+    "aliases": [
+      "cinder block",
+      "8in block",
+      "block"
+    ]
+  },
+  {
+    "sku": "MAS-CMU-CAP",
+    "name": "4x8x16 Solid Concrete Cap Block",
+    "category": "concrete_masonry",
+    "unit": "each",
+    "price": 2.1,
+    "aliases": [
+      "cap block"
+    ]
+  },
+  {
+    "sku": "CON-MESH-5X10",
+    "name": "6x6 W1.4 Welded Wire Mesh 5x10 Sheet",
+    "category": "concrete_masonry",
+    "unit": "sheet",
+    "price": 14,
+    "aliases": [
+      "wire mesh",
+      "6x6 mesh"
+    ]
+  },
+  {
+    "sku": "CON-REBAR-3-10",
+    "name": "#3 (3/8\") x 10' Rebar",
+    "category": "concrete_masonry",
+    "unit": "each",
+    "price": 5.2,
+    "aliases": [
+      "3 rebar",
+      "#3 rebar",
+      "3/8 rebar"
+    ]
+  },
+  {
+    "sku": "CON-REBAR-4-10",
+    "name": "#4 (1/2\") x 10' Rebar",
+    "category": "concrete_masonry",
+    "unit": "each",
+    "price": 8.4,
+    "aliases": [
+      "4 rebar",
+      "#4 rebar",
+      "1/2 rebar"
+    ]
+  },
+  {
+    "sku": "CON-REBAR-4-20",
+    "name": "#4 (1/2\") x 20' Rebar",
+    "category": "concrete_masonry",
+    "unit": "each",
+    "price": 16.5,
+    "aliases": [
+      "20ft 4 rebar"
+    ]
+  },
+  {
+    "sku": "CON-FORM-SONO-8",
+    "name": "8\" x 4' Concrete Tube Form",
+    "category": "concrete_masonry",
+    "unit": "each",
+    "price": 19,
+    "aliases": [
+      "sonotube 8",
+      "8in tube form"
+    ]
+  },
+  {
+    "sku": "CON-FORM-SONO-12",
+    "name": "12\" x 4' Concrete Tube Form",
+    "category": "concrete_masonry",
+    "unit": "each",
+    "price": 28,
+    "aliases": [
+      "sonotube 12",
+      "12in tube form"
+    ]
+  },
+  {
+    "sku": "ROF-SHG-3TAB-GRY",
+    "name": "3-Tab Asphalt Shingles, Charcoal, 33.3 sq ft Bundle",
+    "category": "roofing",
+    "unit": "bundle",
+    "price": 34,
+    "aliases": [
+      "shingles",
+      "3 tab shingles",
+      "bundle of shingles"
+    ]
+  },
+  {
+    "sku": "ROF-SHG-ARCH-BLK",
+    "name": "Architectural Asphalt Shingles, Onyx Black, 32.8 sq ft Bundle",
+    "category": "roofing",
+    "unit": "bundle",
+    "price": 44,
+    "aliases": [
+      "arch shingles",
+      "black shingles",
+      "dimensional shingles"
+    ]
+  },
+  {
+    "sku": "ROF-SHG-ARCH-BRN",
+    "name": "Architectural Asphalt Shingles, Weathered Wood, 32.8 sq ft Bundle",
+    "category": "roofing",
+    "unit": "bundle",
+    "price": 44,
+    "aliases": [
+      "brown shingles",
+      "weathered wood shingles"
+    ]
+  },
+  {
+    "sku": "ROF-SHG-RIDGE",
+    "name": "Hip & Ridge Cap Shingles, 20 lf Bundle",
+    "category": "roofing",
+    "unit": "bundle",
+    "price": 52,
+    "aliases": [
+      "ridge cap",
+      "hip and ridge"
+    ]
+  },
+  {
+    "sku": "ROF-UNDER-15",
+    "name": "#15 Felt Roofing Underlayment 432 sq ft Roll",
+    "category": "roofing",
+    "unit": "roll",
+    "price": 30,
+    "aliases": [
+      "15# felt",
+      "felt paper",
+      "tar paper"
+    ]
+  },
+  {
+    "sku": "ROF-UNDER-30",
+    "name": "#30 Felt Roofing Underlayment 216 sq ft Roll",
+    "category": "roofing",
+    "unit": "roll",
+    "price": 34,
+    "aliases": [
+      "30# felt"
+    ]
+  },
+  {
+    "sku": "ROF-UNDER-SYN",
+    "name": "Synthetic Roofing Underlayment 1000 sq ft Roll",
+    "category": "roofing",
+    "unit": "roll",
+    "price": 145,
+    "aliases": [
+      "synthetic felt",
+      "syn underlayment"
+    ]
+  },
+  {
+    "sku": "ROF-ICE-36",
+    "name": "Self-Adhering Ice & Water Shield 36\" x 66' Roll",
+    "category": "roofing",
+    "unit": "roll",
+    "price": 148,
+    "aliases": [
+      "ice and water",
+      "ice & water"
+    ]
+  },
+  {
+    "sku": "ROF-DRIP-10",
+    "name": "Aluminum Drip Edge 10' White",
+    "category": "roofing",
+    "unit": "each",
+    "price": 7.5,
+    "aliases": [
+      "drip edge",
+      "white drip edge"
+    ]
+  },
+  {
+    "sku": "ROF-DRIP-10-BRN",
+    "name": "Aluminum Drip Edge 10' Brown",
+    "category": "roofing",
+    "unit": "each",
+    "price": 7.5,
+    "aliases": [
+      "brown drip edge"
+    ]
+  },
+  {
+    "sku": "ROF-VENT-RIDGE",
+    "name": "Ridge Vent 4' Section",
+    "category": "roofing",
+    "unit": "each",
+    "price": 9,
+    "aliases": [
+      "ridge vent"
+    ]
+  },
+  {
+    "sku": "INS-R13-15",
+    "name": "R-13 Kraft-Faced Batt 3.5\" x 15\" x 93\" (Bag)",
+    "category": "insulation",
+    "unit": "bag",
+    "price": 62,
+    "aliases": [
+      "r13",
+      "r13 batts",
+      "r-13 15in"
+    ]
+  },
+  {
+    "sku": "INS-R13-23",
+    "name": "R-13 Kraft-Faced Batt 3.5\" x 23\" x 93\" (Bag)",
+    "category": "insulation",
+    "unit": "bag",
+    "price": 78,
+    "aliases": [
+      "r13 23in"
+    ]
+  },
+  {
+    "sku": "INS-R19-15",
+    "name": "R-19 Kraft-Faced Batt 6.25\" x 15\" x 93\" (Bag)",
+    "category": "insulation",
+    "unit": "bag",
+    "price": 74,
+    "aliases": [
+      "r19",
+      "r19 batts",
+      "r-19 15in"
+    ]
+  },
+  {
+    "sku": "INS-R19-23",
+    "name": "R-19 Kraft-Faced Batt 6.25\" x 23\" x 93\" (Bag)",
+    "category": "insulation",
+    "unit": "bag",
+    "price": 92,
+    "aliases": [
+      "r19 23in"
+    ]
+  },
+  {
+    "sku": "INS-R30-16",
+    "name": "R-30 Unfaced Batt 9.5\" x 16\" x 48\" (Bag)",
+    "category": "insulation",
+    "unit": "bag",
+    "price": 68,
+    "aliases": [
+      "r30",
+      "r30 batts"
+    ]
+  },
+  {
+    "sku": "INS-R38-16",
+    "name": "R-38 Unfaced Batt 12\" x 16\" x 48\" (Bag)",
+    "category": "insulation",
+    "unit": "bag",
+    "price": 82,
+    "aliases": [
+      "r38"
+    ]
+  },
+  {
+    "sku": "INS-FOAM-1",
+    "name": "1\" x 4' x 8' Rigid Foam Board",
+    "category": "insulation",
+    "unit": "sheet",
+    "price": 28,
+    "aliases": [
+      "1in foam",
+      "foam board",
+      "pink board 1in"
+    ]
+  },
+  {
+    "sku": "INS-FOAM-2",
+    "name": "2\" x 4' x 8' Rigid Foam Board",
+    "category": "insulation",
+    "unit": "sheet",
+    "price": 48,
+    "aliases": [
+      "2in foam",
+      "pink board 2in"
+    ]
+  },
+  {
+    "sku": "INS-SPRAY-CAN",
+    "name": "Expanding Foam Sealant 12 oz Can",
+    "category": "insulation",
+    "unit": "each",
+    "price": 7,
+    "aliases": [
+      "great stuff",
+      "spray foam can"
+    ]
+  },
+  {
+    "sku": "WTH-WRAP-9",
+    "name": "House Wrap 9' x 100' Roll",
+    "category": "weatherproofing",
+    "unit": "roll",
+    "price": 165,
+    "aliases": [
+      "tyvek",
+      "house wrap",
+      "9ft wrap"
+    ]
+  },
+  {
+    "sku": "WTH-WRAP-3",
+    "name": "House Wrap 3' x 100' Roll",
+    "category": "weatherproofing",
+    "unit": "roll",
+    "price": 62,
+    "aliases": [
+      "3ft tyvek"
+    ]
+  },
+  {
+    "sku": "WTH-FLASH-6",
+    "name": "Self-Adhering Flashing Tape 6\" x 75' Roll",
+    "category": "weatherproofing",
+    "unit": "roll",
+    "price": 42,
+    "aliases": [
+      "flashing tape",
+      "6in flashing"
+    ]
+  },
+  {
+    "sku": "WTH-FLASH-4",
+    "name": "Self-Adhering Flashing Tape 4\" x 75' Roll",
+    "category": "weatherproofing",
+    "unit": "roll",
+    "price": 32,
+    "aliases": [
+      "4in flashing tape"
+    ]
+  },
+  {
+    "sku": "WTH-CAP-1",
+    "name": "Cap Nails 1\" Plastic Cap, 1000 ct",
+    "category": "weatherproofing",
+    "unit": "box",
+    "price": 14,
+    "aliases": [
+      "cap nails",
+      "plastic caps"
+    ]
+  },
+  {
+    "sku": "WTH-POLY-6",
+    "name": "6 mil Clear Poly Sheeting 10' x 100'",
+    "category": "weatherproofing",
+    "unit": "roll",
+    "price": 68,
+    "aliases": [
+      "6 mil poly",
+      "visqueen",
+      "plastic sheeting"
+    ]
+  },
+  {
+    "sku": "DCK-54-8-PT",
+    "name": "5/4 x 6 x 8' Pressure-Treated Deck Board",
+    "category": "decking_trim",
+    "unit": "each",
+    "price": 9.6,
+    "aliases": [
+      "5/4x6x8",
+      "deck board",
+      "5/4 decking"
+    ]
+  },
+  {
+    "sku": "DCK-COMP-8",
+    "name": "1 x 6 x 8' Composite Deck Board, Gray",
+    "category": "decking_trim",
+    "unit": "each",
+    "price": 27.2,
+    "aliases": [
+      "composite 8ft",
+      "trex",
+      "comp decking"
+    ]
+  },
+  {
+    "sku": "DCK-54-12-PT",
+    "name": "5/4 x 6 x 12' Pressure-Treated Deck Board",
+    "category": "decking_trim",
+    "unit": "each",
+    "price": 14.4,
+    "aliases": [
+      "5/4x6x12",
+      "deck board",
+      "5/4 decking"
+    ]
+  },
+  {
+    "sku": "DCK-COMP-12",
+    "name": "1 x 6 x 12' Composite Deck Board, Gray",
+    "category": "decking_trim",
+    "unit": "each",
+    "price": 40.8,
+    "aliases": [
+      "composite 12ft",
+      "trex",
+      "comp decking"
+    ]
+  },
+  {
+    "sku": "DCK-54-16-PT",
+    "name": "5/4 x 6 x 16' Pressure-Treated Deck Board",
+    "category": "decking_trim",
+    "unit": "each",
+    "price": 19.2,
+    "aliases": [
+      "5/4x6x16",
+      "deck board",
+      "5/4 decking"
+    ]
+  },
+  {
+    "sku": "DCK-COMP-16",
+    "name": "1 x 6 x 16' Composite Deck Board, Gray",
+    "category": "decking_trim",
+    "unit": "each",
+    "price": 54.4,
+    "aliases": [
+      "composite 16ft",
+      "trex",
+      "comp decking"
+    ]
+  },
+  {
+    "sku": "TRM-1X4-12-PVC",
+    "name": "1x4 x 12' PVC Trim Board",
+    "category": "decking_trim",
+    "unit": "each",
+    "price": 19.2,
+    "aliases": [
+      "1x4 pvc 12",
+      "pvc trim",
+      "azek 1x4"
+    ]
+  },
+  {
+    "sku": "TRM-1X4-16-PVC",
+    "name": "1x4 x 16' PVC Trim Board",
+    "category": "decking_trim",
+    "unit": "each",
+    "price": 25.6,
+    "aliases": [
+      "1x4 pvc 16",
+      "pvc trim",
+      "azek 1x4"
+    ]
+  },
+  {
+    "sku": "TRM-BASE-314",
+    "name": "3-1/4\" x 8' Primed MDF Baseboard",
+    "category": "decking_trim",
+    "unit": "each",
+    "price": 9,
+    "aliases": [
+      "base",
+      "baseboard",
+      "mdf base"
+    ]
+  },
+  {
+    "sku": "TRM-CASE-225",
+    "name": "2-1/4\" x 7' Primed MDF Door Casing",
+    "category": "decking_trim",
+    "unit": "each",
+    "price": 8,
+    "aliases": [
+      "casing",
+      "door casing"
+    ]
+  },
+  {
+    "sku": "TRM-LAP-8",
+    "name": "8\" x 12' Fiber-Cement Lap Siding, Primed",
+    "category": "decking_trim",
+    "unit": "each",
+    "price": 19,
+    "aliases": [
+      "hardie lap",
+      "8in lap siding",
+      "fiber cement siding"
+    ]
+  },
+  {
+    "sku": "SUP-ADH-CONST-10",
+    "name": "Heavy-Duty Construction Adhesive 10 oz Tube",
+    "category": "adhesives_sealants",
+    "unit": "each",
+    "price": 5.5,
+    "aliases": [
+      "liquid nails",
+      "construction adhesive",
+      "PL tube"
+    ]
+  },
+  {
+    "sku": "SUP-ADH-SUBFL-28",
+    "name": "Subfloor Construction Adhesive 28 oz Tube",
+    "category": "adhesives_sealants",
+    "unit": "each",
+    "price": 8,
+    "aliases": [
+      "subfloor glue",
+      "subfloor adhesive"
+    ]
+  },
+  {
+    "sku": "SUP-CAULK-SIL-CLR",
+    "name": "100% Silicone Caulk 10 oz, Clear",
+    "category": "adhesives_sealants",
+    "unit": "each",
+    "price": 8.5,
+    "aliases": [
+      "silicone",
+      "clear silicone"
+    ]
+  },
+  {
+    "sku": "SUP-CAULK-LAT-WHT",
+    "name": "Paintable Acrylic Latex Caulk 10 oz, White",
+    "category": "adhesives_sealants",
+    "unit": "each",
+    "price": 4,
+    "aliases": [
+      "caulk",
+      "white caulk",
+      "latex caulk"
+    ]
+  },
+  {
+    "sku": "SUP-GLUE-WOOD-16",
+    "name": "Wood Glue 16 oz",
+    "category": "adhesives_sealants",
+    "unit": "each",
+    "price": 6,
+    "aliases": [
+      "titebond",
+      "wood glue"
+    ]
+  },
+  {
+    "sku": "SUP-SEAL-EXT-5G",
+    "name": "Exterior Wood Stain and Sealer 5 gal",
+    "category": "adhesives_sealants",
+    "unit": "pail",
+    "price": 120,
+    "aliases": [
+      "5 gal stain",
+      "deck stain"
+    ]
+  },
+  {
+    "sku": "SUP-SHIM-42",
+    "name": "Cedar Wood Shims 42 ct Bundle",
+    "category": "tools_supplies",
+    "unit": "bundle",
+    "price": 4.5,
+    "aliases": [
+      "shims",
+      "cedar shims"
+    ]
+  },
+  {
+    "sku": "SUP-BLADE-712",
+    "name": "7-1/4\" 24T Framing Circular Saw Blade",
+    "category": "tools_supplies",
+    "unit": "each",
+    "price": 12,
+    "aliases": [
+      "saw blade",
+      "circ blade"
+    ]
+  },
+  {
+    "sku": "SUP-LINE-CHALK-BL",
+    "name": "Blue Chalk Refill 8 oz",
+    "category": "tools_supplies",
+    "unit": "each",
+    "price": 5,
+    "aliases": [
+      "blue chalk",
+      "chalk"
+    ]
+  },
+  {
+    "sku": "SUP-STAKE-24",
+    "name": "24\" Wood Stakes, Bundle of 12",
+    "category": "tools_supplies",
+    "unit": "bundle",
+    "price": 11,
+    "aliases": [
+      "stakes",
+      "grade stakes"
+    ]
+  }
+]

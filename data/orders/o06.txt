@@ -1,0 +1,5 @@
+need 5/8 type X 4x8 x 20
+5/8 rock reg 4x8 x 10
+greenboard 1/2 4x8 x 6
+mud 3 buckets
+mesh tape x2
