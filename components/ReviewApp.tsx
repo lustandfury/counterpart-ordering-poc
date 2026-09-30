@@ -584,7 +584,7 @@ function CostPanel({ result, samples, mode, T, unitMin, catalog, onMode, setT, s
       {settingsOpen && <SettingsSection mode={mode} T={T} unitMin={unitMin} setT={setT} setUnitMin={setUnitMin} changed={changed} />}
 
       <div className="rounded-xl bg-okbg px-4 py-3 text-ok">
-        <p className="text-[12px] text-muted">Claude with Jev is</p>
+        <p className="text-[12px] text-muted">Claude with Jev&apos;s matching is</p>
         <p className="mt-0.5 font-mono text-[15px] font-semibold">{Math.round(cheaper)}× cheaper · {faster.toFixed(1)}× faster</p>
       </div>
 
