@@ -9,6 +9,9 @@ import { applyTheme, readTheme, THEMES, type Theme } from "@/lib/theme";
 import { CLAUDE_INPUT_PER_TOKEN, CLAUDE_OUTPUT_PER_TOKEN, JEV_INPUT_PER_TOKEN } from "@/lib/pricing";
 import { computeView, displayChoices, NONE, segmentText, totals, type Mode, type SlimCatalog, type ViewLine } from "@/lib/view";
 
+/** Confidence bar colour in three clean steps: green from 85% (the default threshold), orange from 50%, red below. */
+const confColor = (p: number) => (p >= 0.85 ? "var(--ok)" : p >= 0.5 ? "var(--warn-line)" : "var(--over)");
+
 const usd = (n: number) => (n < 0.01 ? `$${n.toFixed(4)}` : `$${n.toFixed(3)}`);
 const ms = (n: number) => (n >= 1000 ? `${(n / 1000).toFixed(1)} s` : `${Math.round(n)} ms`);
 
@@ -32,6 +35,9 @@ function fmtQty(qty: number | null, unit: string | null) {
   return `${qty} ${u}`;
 }
 
+// "lbs" = "lb", "tubes" = "tube", "pcs" = "each": the same unit written differently
+const unitKey = (u: string) => (/^(each|ea|pcs?|pieces?)$/i.test(u) ? "each" : u.toLowerCase().replace(/(es|s)$/, ""));
+
 type Run = OrderResult & { runId: number };
 
 const DEFAULT_SAMPLE = "o13";
@@ -43,7 +49,7 @@ export function ReviewApp({ samples, catalog, initialOrder }: { samples: OrderRe
   const [mode, setMode] = useState<Mode>("jev");
   const [T, setT] = useState(0.85);
   const [unitMin, setUnitMin] = useState(0.8);
-  // The orders sidebar is open by default on wide screens and closed on phones, where it overlays the page.
+  // The orders sidebar is open by default on wide screens and closed on phones, where it opens as a bottom sheet.
   const [desktopOpen, setDesktopOpen] = useState(true);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [pasteText, setPasteText] = useState("");
@@ -108,12 +114,14 @@ export function ReviewApp({ samples, catalog, initialOrder }: { samples: OrderRe
   return (
     <div className="flex h-dvh flex-col overflow-hidden">
       <div className="relative flex min-h-0 flex-1 max-lg:flex-col max-lg:overflow-y-auto">
-        {mobileOpen && <button aria-label="Close orders" tabIndex={-1} onClick={() => setMobileOpen(false)} className="fixed inset-0 z-20 bg-black/30 lg:hidden" />}
+        {mobileOpen && <button aria-label="Close orders" tabIndex={-1} onClick={() => setMobileOpen(false)} className="sheet-fade fixed inset-0 z-20 bg-black/40 lg:hidden" />}
+        {/* wide screens: a left sidebar; phones: a bottom sheet over the page */}
         <aside
           id="orders"
           aria-label="Orders"
-          className={`w-80 shrink-0 flex-col border-r border-line bg-panel max-lg:fixed max-lg:inset-y-0 max-lg:left-0 max-lg:z-30 max-lg:shadow-xl ${desktopOpen ? "lg:flex" : "lg:hidden"} ${mobileOpen ? "max-lg:flex" : "max-lg:hidden"}`}
+          className={`w-80 shrink-0 flex-col border-r border-line bg-panel max-lg:sheet-up max-lg:fixed max-lg:inset-x-0 max-lg:bottom-0 max-lg:z-30 max-lg:mx-auto max-lg:max-h-[85dvh] max-lg:w-full max-lg:max-w-xl max-lg:rounded-t-2xl max-lg:border-r-0 max-lg:pb-[env(safe-area-inset-bottom)] max-lg:shadow-[0_-8px_30px_rgb(0_0_0/0.18)] ${desktopOpen ? "lg:flex" : "lg:hidden"} ${mobileOpen ? "max-lg:flex" : "max-lg:hidden"}`}
         >
+              <div aria-hidden className="mx-auto mt-2 h-1 w-9 shrink-0 rounded-full bg-line lg:hidden" />
               <BrandBar end={<SidebarButton label="Hide orders" expanded onClick={toggleSidebar} />} />
               <nav className="min-h-0 flex-1 overflow-y-auto px-3 pb-3">
                 {runs.length > 0 && <OrderGroup label="Your runs">{runs.map((r) => (
@@ -468,42 +476,37 @@ function Slider(p: { id: string; label: string; value: number; min: number; max:
 function LineRow(props: { l: ViewLine; state: "ok" | "done" | "flag"; pick?: string; active: boolean; catalog: SlimCatalog; onSelect: () => void; onChoose: (sku: string) => void; onUndo: () => void }) {
   const { l, state, pick, active, catalog } = props;
   const [showAll, setShowAll] = useState(false);
-  const qty = fmtQty(l.qty, catalog[l.sku]?.unit ?? l.unit);
+  const sellUnit = catalog[l.sku]?.unit;
+  const qty = fmtQty(l.qty, sellUnit ?? l.unit);
 
   if (state === "flag") {
     const shown = displayChoices(l);
-    const quickLine = l.quantityOnly && !showAll;
-    // one short instruction, beside the line, for what the rep should do here
-    const hint = quickLine
-      ? "Confirm if the quantity is right, or check with the customer"
-      : l.sku === NONE
-        ? "Pick the product if we carry it, or Not in catalog"
-        : "Pick the product the customer meant";
     const quick = l.quantityOnly && !showAll;
+    // On a line to check, show the quantity as the customer wrote it. If their unit differs from how the
+    // product is sold ("50 lb" of nails sold by the box), say both rather than silently converting.
+    const asked = l.unit && sellUnit && unitKey(l.unit) !== unitKey(sellUnit) ? `${fmtQty(l.qty, l.unit)} · sold per ${sellUnit === "each" ? "piece" : sellUnit}` : qty;
     return (
       <li id={`line-${l.id}`} onClick={props.onSelect} className={`scroll-mt-44 scroll-mb-8 border-b border-line px-6 py-5 last:border-b-0 ${active ? "bg-warnbg" : "bg-warnbg/40"}`} style={{ borderLeft: "4px solid var(--warn-line)" }}>
-        <div className="flex flex-wrap items-baseline gap-x-3">
-          <span className="font-mono text-[14px] font-medium">{l.raw}</span>
-          <span className="rounded-full bg-warnbg px-2 py-0.5 text-[12px] font-semibold text-warn">Check this</span>
-          <span className="text-[13px] text-muted sm:ml-auto">{hint}</span>
+        <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-0.5">
+          <span className="font-mono text-[14px] font-medium">
+            <span className="sr-only">Check this: </span>
+            {l.raw}
+          </span>
+          <span className="text-[14px] text-muted">{asked}</span>
         </div>
-        <ul className="mt-2 flex flex-col gap-1">
-          {l.reasons.map((r) => (
-            <li key={r} className="text-[14px] text-warn">{r}</li>
-          ))}
-        </ul>
+        <p className="mt-1.5 text-[14px] text-warn">{l.reasons.join(" ")}</p>
         {quick ? (
           <div className="mt-4 flex flex-wrap items-center gap-3">
             <button onClick={(e) => { e.stopPropagation(); props.onChoose(l.sku); }} className="min-h-11 rounded-xl bg-okbg px-4 py-2 text-left font-medium text-ok shadow-[0_0_0_1px_var(--ok)]">
-              <kbd className="mr-2 text-xs">Enter</kbd>Confirm {qty} of {l.name}
+              {active && <kbd className="mr-2 text-xs">Enter</kbd>}Confirm {qty} of {l.name}
             </button>
             <button onClick={(e) => { e.stopPropagation(); props.onChoose(NONE); }} className="min-h-11 rounded-xl bg-panel px-4 py-2 font-medium shadow-[0_0_0_1px_var(--control)] hover:bg-panel2">
-              <kbd className="mr-2 text-xs text-muted">x</kbd>Not in catalog
+              {active && <kbd className="mr-2 text-xs text-muted">x</kbd>}Not in catalog
             </button>
             <button onClick={(e) => { e.stopPropagation(); setShowAll(true); }} className="text-[13px] text-muted underline hover:text-ink">Other products…</button>
           </div>
         ) : (
-          <div role="group" aria-label={`Options for ${l.raw}`} className="mt-4 flex flex-col gap-2">
+          <div role="group" aria-label={`Options for ${l.raw}`} className="mt-3 flex flex-col gap-2">
             {shown.map((o, i) => (
               <button
                 key={o.sku}
@@ -514,9 +517,9 @@ function LineRow(props: { l: ViewLine; state: "ok" | "done" | "flag"; pick?: str
                 <kbd className="w-4 text-center text-xs text-muted">{i + 1}</kbd>
                 <span className="min-w-[12rem] flex-1">{o.name}</span>
                 {o.probability != null && (
-                  <span className="ml-6 flex w-28 shrink-0 items-center gap-1.5 text-xs text-muted sm:ml-0" aria-label={`${Math.round(o.probability * 100)} percent`}>
-                    <span className="h-1.5 flex-1 rounded-full" style={{ background: "var(--bar)" }}>
-                      <span className="block h-full rounded-full" style={{ width: `${Math.round(o.probability * 100)}%`, background: "var(--ok)" }} />
+                  <span className="ml-7 flex w-28 shrink-0 items-center gap-1.5 text-xs text-muted sm:ml-0" aria-label={`${Math.round(o.probability * 100)} percent`}>
+                    <span className="h-1.5 flex-1 rounded-full" style={{ background: "var(--line)" }}>
+                      <span className="block h-full rounded-full" style={{ width: `${Math.round(o.probability * 100)}%`, background: confColor(o.probability) }} />
                     </span>
                     <span className="w-8 text-right">{Math.round(o.probability * 100)}%</span>
                   </span>
@@ -526,10 +529,6 @@ function LineRow(props: { l: ViewLine; state: "ok" | "done" | "flag"; pick?: str
             ))}
           </div>
         )}
-        <p className="mt-4 flex flex-wrap items-center gap-x-4 text-[13px] text-muted">
-          <span>Quantity: <strong className="text-ink">{qty}</strong></span>
-          {!quick && <span><kbd>Enter</kbd> takes the top pick · <kbd>x</kbd> not in catalog</span>}
-        </p>
       </li>
     );
   }
@@ -604,8 +603,15 @@ function CostPanel({ result, samples, mode, T, unitMin, catalog, onMode, setT, s
             <span className="font-mono text-[12px] text-muted">{ms(x.t.ms)}</span>
           </div>
           <div className="mt-2 flex h-1.5 overflow-hidden rounded-full" style={{ background: "var(--line)" }} aria-hidden>
-            <span style={{ width: `${(100 * x.t.parseUsd) / maxUsd}%`, background: "var(--bar)" }} />
-            <span style={{ width: `${(100 * x.t.matchUsd) / maxUsd}%`, background: x.key === "jev" ? "var(--ok)" : "var(--control)" }} />
+            {x.key === "jev" ? (
+              <span style={{ width: `${(100 * x.t.usd) / maxUsd}%`, background: "var(--ok)" }} />
+            ) : (
+              // Claude only: light red up to the Claude + Jev cost, full red for the overage beyond it
+              <>
+                <span style={{ width: `${(100 * Math.min(x.t.usd, jev.t.usd)) / maxUsd}%`, background: "var(--over-soft)" }} />
+                <span style={{ width: `${(100 * Math.max(0, x.t.usd - jev.t.usd)) / maxUsd}%`, background: "var(--over)" }} />
+              </>
+            )}
           </div>
           <dl className="mt-3 grid grid-cols-[1fr_auto_auto] gap-x-3 gap-y-1 text-[12px]">
             <dt className="text-muted">Reading</dt>

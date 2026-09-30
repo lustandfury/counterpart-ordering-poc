@@ -35,7 +35,7 @@ export function computeView(result: OrderResult, mode: Mode, T: number, cat: Sli
       const d = route({ skuChoice: pick, skuConfidence: j.sku.confidence, unitOk: j.unitOk, qty: pl.qty, productUnit: cat[pick]?.unit ?? null, T, unitOkMin });
       const quantityOnly = !d.approved && pick !== NONE && j.sku.confidence >= T && d.reasons.length === 1 && d.reasons[0] === REASON.quantity;
       const reasons = quantityOnly
-        ? [`The product looks right (${Math.round(j.sku.confidence * 100)}% sure). Check the quantity: the customer wrote “${pl.raw}”, and this is sold per ${cat[pick]?.unit === "each" ? "piece" : (cat[pick]?.unit ?? "unit")}.`]
+        ? [`The product looks right (${Math.round(j.sku.confidence * 100)}% sure). Check the quantity: this is sold per ${cat[pick]?.unit === "each" ? "piece" : (cat[pick]?.unit ?? "unit")}.`]
         : d.reasons;
       return {
         id: pl.id, raw: pl.raw, qty: pl.qty, unit: pl.unit, sku: pick, name: nameOf(cat, pick), quantityOnly,

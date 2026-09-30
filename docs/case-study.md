@@ -151,6 +151,11 @@ Each entry: what we did, what happened, what it changed.
 **Happened:** the browser test now switches to Dark, reloads, and checks the choice held; a separate check confirmed System renders dark on a dark-mode machine while a first-time visitor on the same machine still gets light.
 **Changed:** the designed-for light version is what everyone sees first; dark is one click away.
 
+### 27. Phone-shaped orders, and colors that carry the verdict
+**Did:** on phones the orders panel now rises from the bottom as a sheet (with a grab bar, dimmed backdrop and safe-area padding) instead of sliding in from the left; wide screens keep the sidebar. In the cost panel the Claude + Jev bar is solid green, and the Claude-only bar is light red up to the Claude + Jev cost and full red for the overage beyond it. Confidence bars in a flagged line's options use three fixed steps: green from 85% (the default threshold), orange from 50%, red below. The keyboard-shortcut hint under the options was hidden; the shortcuts still work. All of these were Mike's calls.
+**Happened:** a first version blended the confidence colors continuously, and mid-range scores came out a muddy olive; fixed steps read at a glance. A new red token (with a soft variant) keeps red meaning "cost overage or low confidence", distinct from orange "check this".
+**Changed:** on the cost panel the difference between the two pipelines is visible as color, not just numbers, and a rep can tell a strong option from a weak one without reading the percentage.
+
 ## Where it stands
 
 | | Claude only | Claude + Jev |

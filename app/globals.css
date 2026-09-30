@@ -20,6 +20,9 @@
   --warn: #9a3412;
   --warn-bg: #fdede3;
   --warn-line: #c2410c;
+  /* red: Claude-only cost bar; soft up to the Claude + Jev cost, full red for the overage */
+  --over: #dc2626;
+  --over-soft: #fca5a5;
   --focus: #2456a6;
   --bar: #b3ad9d;
   --ring: rgb(0 0 0 / 0.06);
@@ -49,6 +52,8 @@
   --warn: #fdba74;
   --warn-bg: #3b1d0e;
   --warn-line: #ea580c;
+  --over: #f87171;
+  --over-soft: #7f2d2d;
   --focus: #8db4ff;
   --bar: #5a5a60;
   --ring: rgb(255 255 255 / 0.07);
@@ -74,7 +79,9 @@
     --warn: #fdba74;
     --warn-bg: #3b1d0e;
     --warn-line: #ea580c;
-    --focus: #8db4ff;
+    --over: #f87171;
+  --over-soft: #7f2d2d;
+  --focus: #8db4ff;
     --bar: #5a5a60;
     --ring: rgb(255 255 255 / 0.07);
     --shadow-sm: 0 1px 2px #00000066;
@@ -128,6 +135,23 @@ button { cursor: pointer; }
   background: var(--panel);
   border-radius: 14px;
   box-shadow: 0 0 0 1px var(--ring), var(--shadow-sm);
+}
+
+/* phones: the orders panel rises from the bottom as a sheet, over a fading backdrop */
+@keyframes sheet-up {
+  from { transform: translateY(100%); }
+}
+@keyframes sheet-fade {
+  from { opacity: 0; }
+}
+@utility sheet-up {
+  animation: sheet-up 240ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+@utility sheet-fade {
+  animation: sheet-fade 200ms ease-out;
+}
+@media (prefers-reduced-motion: reduce) {
+  .sheet-fade, #orders { animation: none; }
 }
 
 /* the composer marks focus with its container's border, not an outline on the text box */
