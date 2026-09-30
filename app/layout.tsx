@@ -56,6 +56,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${dmSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <head>
+        <link rel="preload" as="image" href="/images/lock-bg.jpg" />
         {/* apply the saved theme before first paint, so there is no flash of the wrong one */}
         <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
       </head>
