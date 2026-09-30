@@ -8,15 +8,18 @@ async function main() {
     const ctx = await browser.newContext({ viewport: { width: opts.width, height: opts.height }, colorScheme: opts.dark ? "dark" : "light" });
     const page = await ctx.newPage();
     await page.goto(base);
-    await page.selectOption("#order", process.env.ORDER ?? "o13");
+    if (process.env.ORDER) {
+      await page.keyboard.press("Control+b");
+      await page.locator("#orders").getByRole("button", { name: new RegExp(`^${process.env.ORDER}`) }).click();
+    }
     if (act) await act(page);
     await page.screenshot({ path: `shots/${name}.png`, fullPage: true });
     await ctx.close();
   };
   await shot("desktop-light", { width: 1280, height: 900 });
   await shot("desktop-dark", { width: 1280, height: 900, dark: true });
-  await shot("desktop-compare", { width: 1280, height: 900 }, async (p) => {
-    await p.getByRole("button", { name: /Compare Jev/ }).click();
+  await shot("desktop-sidebar", { width: 1440, height: 900 }, async (p) => {
+    await p.keyboard.press("Control+b");
   });
   await shot("mobile", { width: 390, height: 844 });
   await browser.close();

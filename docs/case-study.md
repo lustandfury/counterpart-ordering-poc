@@ -61,6 +61,11 @@ Each entry: what we did, what happened, what it changed.
 **Happened:** numbers reproduced and the key never reached a prompt, but the auditor made us disclose that the fix was designed on the same 20 orders (so it is in-sample), that lines with no catalog match skip the second call and flatter Jev's cost, and that our house-rules file contained notes about the test set that should not be in a production prompt. Two clean runs gave 72.7% and 73.9% approved, so single-digit differences are noise.
 **Changed:** the caveats are in the evaluation summary, the meta notes are out of the prompt, and the interaction test no longer depends on any one run's scores.
 
+### 9. From a form to a workspace
+**Did:** rebuilt the screen as a three-pane workspace, modeled on code editors like Cursor (Mike's direction). The orders list and a chat-style composer for pasted orders live in a left sidebar, hidden by default (⌘B). The center reads like a conversation: the contractor's message as a bubble, the draft order as the reply. A right panel gives a cost assessment for both pipelines side by side.
+**Happened:** putting the costs next to the work made the trade-off visible per order: on the default order, Jev's matching step cost about 60x less and ran about 5x faster, while both approved the same 3 of 4 lines. Across the 20 saved orders it is about $15 vs $68 per 1,000 orders. The screenshots also exposed misleading reasons on unmatched lines ("quantity unclear 0.00", "large quantity") for checks that are never run without a product.
+**Changed:** those reasons are gone (approvals unchanged, evaluation output byte-identical), each sidebar order shows how many lines need a check, and the interaction test now drives the sidebar.
+
 ## Where it stands
 
 | | Claude only | Claude + Jev |
@@ -93,7 +98,7 @@ Read as signals, not benchmarks: 20 orders, tuned in-sample, Claude prices assum
 ## Walking someone through it (about 5 minutes)
 
 1. **The problem (30s).** Show a messy text order. "Reading it is the easy part."
-2. **The screen (90s).** Open the review screen on the default order. Approved lines are quiet; the flagged line says why. Move a slider and watch lines re-route with no API call. Toggle Claude-only.
+2. **The screen (90s).** Open the workspace on the default order. Approved lines are quiet; the flagged line says why. Move a slider and watch lines re-route with no API call. Point at the cost panel: same approvals, about 60x cheaper matching. Open the sidebar (⌘B) to show the other orders and their counts.
 3. **The measurement (90s).** Open `results/eval-summary.md`. Read one number from each side; point at the calibration table.
 4. **The turning points (90s).** Timeline 4 (Jev lost), 5 (our bugs), 7 (the quantity question). "The interesting work was the honest debugging."
 5. **The close (30s).** "The hard part isn't reading the order. It's deciding what the rep doesn't need to check."

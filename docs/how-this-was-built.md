@@ -41,3 +41,7 @@ The first blind-labeler pass disagreed with my labels wherever a line depended o
 - `decide.ts` now makes two Jev calls per line: product first, then `unit_ok` with the product named. Lines that chose NONE skip the second call.
 - Result: Jev's auto-approve share went from about 49% to about 73%, level with Claude-only, with no wrong approvals. The eval-checker re-audited it: numbers reproduce, no leakage. It also flagged that the fix was designed on the same 20 orders (now in the caveats) and that `house-defaults.md` contained notes about the test set, which I removed from the prompt text. Because the prompt changed, I re-ran everything once more; two clean runs gave 72.7% and 73.9%.
 - Demo order changed from o06 to o13, since o06 no longer has flagged lines.
+
+## Workspace layout
+- The screen is now a three-pane workspace: collapsible orders sidebar with a composer for live runs (hidden by default, ⌘B), the conversation-style review in the center, and a cost assessment panel on the right comparing both pipelines for the current order and on average across the samples. The old fixed footer and comparison drawer are folded into that panel.
+- Routing no longer lists the quantity check or large-quantity rule as reasons on lines with no product match (neither applies without a product). Approvals and the evaluation output are unchanged.

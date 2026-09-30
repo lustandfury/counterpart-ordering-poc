@@ -21,11 +21,13 @@ export function route(a: {
   const T = a.T ?? DEFAULT_T;
   const unitMin = a.unitOkMin ?? UNIT_OK_MIN;
   const reasons: string[] = [];
-  if (a.skuChoice === "NONE") reasons.push("no single product matched");
+  const none = a.skuChoice === "NONE";
+  if (none) reasons.push("no single product matched");
   if (a.skuConfidence < T) reasons.push(`product confidence ${a.skuConfidence.toFixed(2)} below ${T}`);
-  if (a.unitOk < unitMin) reasons.push(`quantity/unit unclear (${a.unitOk.toFixed(2)}, needs ${unitMin})`);
+  // With no product there is no quantity check (it is not asked) and no selling unit to judge size against.
+  if (!none && a.unitOk < unitMin) reasons.push(`quantity/unit unclear (${a.unitOk.toFixed(2)}, needs ${unitMin})`);
   if (a.qty == null) reasons.push("quantity missing");
-  if (isLargeQuantity(a.qty, a.productUnit)) reasons.push("large quantity");
+  if (!none && isLargeQuantity(a.qty, a.productUnit)) reasons.push("large quantity");
   return { approved: reasons.length === 0, reasons };
 }
 

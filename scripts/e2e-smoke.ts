@@ -6,7 +6,13 @@ async function main() {
   const browser = await chromium.launch();
   const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
   await page.goto(`http://localhost:${process.env.PORT ?? 3100}`);
-  await page.selectOption("#order", "o13");
+  const openOrder = async (id: string) => {
+    if (!(await page.locator("#orders").isVisible())) await page.keyboard.press("Control+b");
+    await page.locator("#orders").getByRole("button", { name: new RegExp(`^${id}`) }).click();
+    await page.keyboard.press("Escape");
+  };
+  assert.equal(await page.locator("#orders").isVisible(), false, "sidebar is hidden by default");
+  await openOrder("o13");
   const summary = () => page.locator("[aria-live=polite]").innerText();
   const counts = async () => {
     const t = await summary();
@@ -45,11 +51,11 @@ async function main() {
   // Claude only mode disables the slider
   await page.getByRole("button", { name: "Claude only", exact: true }).click();
   assert.equal(await page.locator("#t").isDisabled(), true);
-  await page.getByRole("button", { name: "Compare Jev vs Claude only" }).click();
-  assert.ok(await page.getByRole("region", { name: "Comparison" }).isVisible());
+  assert.ok(await page.getByRole("complementary", { name: "Cost assessment" }).isVisible());
+  assert.match(await page.getByRole("complementary", { name: "Cost assessment" }).innerText(), /less[\s\S]*faster/);
 
   // switching orders resets review progress
-  await page.selectOption("#order", "o02");
+  await openOrder("o02");
   assert.match(await summary(), /0 done/);
   console.log("e2e smoke ok");
   await browser.close();

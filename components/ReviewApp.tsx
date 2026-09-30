@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { OrderResult } from "@/lib/types";
+import { CLAUDE_INPUT_PER_TOKEN, CLAUDE_OUTPUT_PER_TOKEN, JEV_INPUT_PER_TOKEN } from "@/lib/pricing";
 import { computeView, NONE, segmentText, totals, type Mode, type SlimCatalog, type ViewLine } from "@/lib/view";
 
 const usd = (n: number) => (n < 0.01 ? `$${n.toFixed(4)}` : `$${n.toFixed(3)}`);
@@ -23,38 +24,55 @@ const Check = () => (
 function fmtQty(qty: number | null, unit: string | null) {
   if (qty == null) return "no quantity";
   if (!unit) return String(qty);
-  const u = unit === "each" ? "pcs" : qty === 1 || /s$/.test(unit) ? unit : /(x|ch|sh)$/.test(unit) ? `${unit}es` : `${unit}s`;
+  const u = unit === "each" ? "pcs" : qty === 1 || /s$|^(feet|ft|lb|kg|m|mm|l|ml|sq)$/i.test(unit) ? unit : /(x|ch|sh)$/.test(unit) ? `${unit}es` : `${unit}s`;
   return `${qty} ${u}`;
 }
 
-function sampleLabel(r: OrderResult) {
-  const first = r.text.replace(/\s+/g, " ").trim();
-  return `${r.orderId} · ${first.length > 46 ? first.slice(0, 46) + "…" : first}`;
-}
+type Run = OrderResult & { runId: number };
 
 export function ReviewApp({ samples, catalog }: { samples: OrderResult[]; catalog: SlimCatalog }) {
-  const [live, setLive] = useState<OrderResult | null>(null);
-  const [sampleId, setSampleId] = useState(samples.find((x) => x.orderId === "o13")?.orderId ?? samples[0].orderId);
+  const [runs, setRuns] = useState<Run[]>([]); // live runs from the composer, newest first
+  const [selected, setSelected] = useState(samples.find((x) => x.orderId === "o13")?.orderId ?? samples[0].orderId);
   const [mode, setMode] = useState<Mode>("jev");
   const [T, setT] = useState(0.85);
   const [unitMin, setUnitMin] = useState(0.8);
-  const [runId, setRunId] = useState(0);
-  const [pasteOpen, setPasteOpen] = useState(false);
+  const [sidebar, setSidebar] = useState(false);
   const [pasteText, setPasteText] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const result = live ?? samples.find((s) => s.orderId === sampleId) ?? samples[0];
+
+  const live = runs.find((r) => `live-${r.runId}` === selected);
+  const result = live ?? samples.find((s) => s.orderId === selected) ?? samples[0];
+
+  // Cmd/Ctrl+B toggles the orders sidebar, Escape closes it (as in code editors)
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "b") {
+        e.preventDefault();
+        setSidebar((v) => !v);
+      } else if (e.key === "Escape") setSidebar(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
+  const pick = (id: string) => {
+    setSelected(id);
+    if (window.matchMedia("(max-width: 1023px)").matches) setSidebar(false);
+  };
 
   async function runLive() {
+    if (!pasteText.trim() || loading) return;
     setLoading(true);
     setError(null);
     try {
       const res = await fetch("/api/run", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ text: pasteText }) });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "The run failed.");
-      setLive(data as OrderResult);
-      setRunId((n) => n + 1);
-      setPasteOpen(false);
+      const runId = Date.now();
+      setRuns((r) => [{ ...(data as OrderResult), runId }, ...r]);
+      pick(`live-${runId}`);
+      setPasteText("");
     } catch (e) {
       setError(e instanceof Error ? e.message : "The run failed.");
     } finally {
@@ -62,96 +80,150 @@ export function ReviewApp({ samples, catalog }: { samples: OrderResult[]; catalo
     }
   }
 
+  const toCheck = (r: OrderResult) => computeView(r, mode, T, catalog, unitMin).filter((l) => !l.approved).length;
 
   return (
-    <div className="mx-auto flex min-h-screen w-full max-w-[1200px] flex-col px-4 pb-24 sm:px-6">
-      <div className="-mx-4 border-b border-line bg-panel2 px-4 py-1.5 text-xs text-muted sm:-mx-6 sm:px-6">
-        <strong className="font-semibold text-ink">Counterpart</strong> · outside-in sketch · synthetic data · not affiliated with any company
-      </div>
-
-      <header className="flex flex-wrap items-end gap-x-6 gap-y-3 py-4">
-        <div className="min-w-0 flex-1 basis-64">
-          <label htmlFor="order" className="mb-1 block text-xs font-medium text-muted">Order</label>
-          <div className="flex gap-2">
-            <select
-              id="order"
-              className="h-9 min-w-0 flex-1 rounded-md border border-control bg-panel px-2"
-              value={live ? "live" : sampleId}
-              onChange={(e) => {
-                setLive(null);
-                setSampleId(e.target.value);
-              }}
-            >
-              {live && <option value="live">Your pasted order</option>}
-              {samples.map((s) => (
-                <option key={s.orderId} value={s.orderId}>{sampleLabel(s)}</option>
-              ))}
-            </select>
-            <button className="h-9 shrink-0 rounded-md border border-control bg-panel px-3 hover:bg-panel2" onClick={() => setPasteOpen((v) => !v)} aria-expanded={pasteOpen}>
-              Paste an order
-            </button>
-          </div>
-        </div>
-
-        <fieldset className="shrink-0">
-          <legend className="mb-1 text-xs font-medium text-muted">Matching by</legend>
-          <div className="inline-flex overflow-hidden rounded-md border border-control" role="group">
-            {(["jev", "claude"] as const).map((m) => (
-              <button
-                key={m}
-                aria-pressed={mode === m}
-                onClick={() => setMode(m)}
-                className={`h-9 px-3 ${mode === m ? "bg-ink text-bg" : "bg-panel hover:bg-panel2"}`}
-              >
-                {m === "jev" ? "Claude + Jev" : "Claude only"}
-              </button>
-            ))}
-          </div>
-        </fieldset>
-
-        <div className="grid w-full shrink-0 grid-cols-2 gap-x-4 gap-y-1 sm:w-auto">
-          <Slider id="t" label="Product confidence needed" value={T} min={0.5} max={0.99} onChange={setT} disabled={mode === "claude"} />
-          <Slider id="u" label="Quantity/unit clarity needed" value={unitMin} min={0.3} max={0.9} onChange={setUnitMin} disabled={mode === "claude"} />
-          <p className="col-span-2 text-xs text-muted">
-            {mode === "claude" ? "Claude only has no thresholds: it approves its own “high” ratings." : "Higher = the rep checks more lines. Lower = fewer, with more risk."}
-          </p>
-        </div>
+    <div className="flex h-dvh flex-col overflow-hidden">
+      <header className="flex h-11 shrink-0 items-center gap-2 border-b border-line bg-panel2 px-2 text-sm">
+        <button
+          onClick={() => setSidebar((v) => !v)}
+          aria-expanded={sidebar}
+          aria-controls="orders"
+          aria-label={sidebar ? "Hide orders" : "Show orders"}
+          title="Orders (⌘B)"
+          className="grid h-8 w-8 place-items-center rounded-md text-muted hover:bg-panel hover:text-ink"
+        >
+          <SidebarIcon />
+        </button>
+        <strong className="font-semibold">Counterpart</strong>
+        <span className="text-muted" aria-hidden>/</span>
+        <button onClick={() => setSidebar(true)} className="truncate rounded px-1 text-muted hover:bg-panel hover:text-ink">
+          {live ? "Your order" : `Order ${result.orderId}`}
+        </button>
+        <span className="ml-auto hidden rounded-full border border-line px-2 py-0.5 text-xs text-muted sm:inline">outside-in sketch · synthetic data · not affiliated with any company</span>
       </header>
 
-      {pasteOpen && (
-        <section className="mb-4 rounded-lg border border-line bg-panel p-3">
-          <label htmlFor="paste" className="mb-1 block text-xs font-medium text-muted">Paste a text-message order (live run, up to 1,500 characters)</label>
-          <textarea
-            id="paste"
-            rows={5}
-            value={pasteText}
-            onChange={(e) => setPasteText(e.target.value)}
-            placeholder={"20 of the 2x6 (8ft)\n15 of the 2x4\n3 sheets 5/8 type X"}
-            className="w-full rounded-md border border-control bg-bg p-2 font-mono text-[13px]"
-          />
-          <div className="mt-2 flex items-center gap-3">
-            <button onClick={runLive} disabled={loading || !pasteText.trim()} className="h-9 rounded-md bg-ink px-4 text-bg disabled:opacity-40">
-              {loading ? "Reading the order…" : "Match it"}
-            </button>
-            {error && <span role="alert" className="text-warn">{error}</span>}
+      <div className="relative flex min-h-0 flex-1 max-lg:flex-col max-lg:overflow-y-auto">
+        {sidebar && (
+          <>
+            <button aria-label="Close orders" tabIndex={-1} onClick={() => setSidebar(false)} className="fixed inset-0 z-20 bg-black/30 lg:hidden" />
+            <aside id="orders" aria-label="Orders" className="flex w-72 shrink-0 flex-col border-r border-line bg-panel2 max-lg:fixed max-lg:inset-y-0 max-lg:left-0 max-lg:z-30 max-lg:shadow-xl">
+              <div className="flex h-10 shrink-0 items-center justify-between px-3 text-xs font-semibold uppercase tracking-wide text-muted">
+                Orders
+                <button onClick={() => setSidebar(false)} aria-label="Hide orders" className="grid h-7 w-7 place-items-center rounded hover:bg-panel">×</button>
+              </div>
+              <nav className="min-h-0 flex-1 overflow-y-auto px-1.5 pb-2">
+                {runs.length > 0 && <OrderGroup label="Your runs">{runs.map((r) => (
+                  <OrderItem key={r.runId} id={`live-${r.runId}`} title="Pasted order" preview={r.text} count={toCheck(r)} active={selected === `live-${r.runId}`} onPick={pick} />
+                ))}</OrderGroup>}
+                <OrderGroup label="Samples">{samples.map((s) => (
+                  <OrderItem key={s.orderId} id={s.orderId} title={s.orderId} preview={s.text} count={toCheck(s)} active={selected === s.orderId} onPick={pick} />
+                ))}</OrderGroup>
+              </nav>
+              <div className="shrink-0 border-t border-line p-2">
+                <label htmlFor="paste" className="sr-only">Paste a text-message order</label>
+                <div className="rounded-lg border border-control bg-panel focus-within:ring-2 focus-within:ring-[var(--focus)]">
+                  <textarea
+                    id="paste"
+                    rows={4}
+                    value={pasteText}
+                    onChange={(e) => setPasteText(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
+                        e.preventDefault();
+                        runLive();
+                      }
+                    }}
+                    placeholder={"Paste a text-message order…\n20 of the 2x6 (8ft)\n3 sheets 5/8 type X"}
+                    className="block w-full resize-none rounded-t-lg bg-transparent px-2.5 pt-2 font-mono text-[13px] outline-none"
+                  />
+                  <div className="flex items-center gap-2 px-2 pb-2">
+                    <span className="text-[11px] text-muted">Live run · paid API calls</span>
+                    <button onClick={runLive} disabled={loading || !pasteText.trim()} className="ml-auto h-7 rounded-md bg-ink px-3 text-xs font-medium text-bg disabled:opacity-40">
+                      {loading ? "Reading…" : "Run ⌘↵"}
+                    </button>
+                  </div>
+                </div>
+                {error && <p role="alert" className="mt-1.5 text-xs text-warn">{error}</p>}
+              </div>
+            </aside>
+          </>
+        )}
+
+        <main className="min-w-0 flex-1 lg:overflow-y-auto">
+          <div className="sticky top-0 z-10 flex flex-wrap items-end gap-x-5 gap-y-2 border-b border-line bg-bg/95 px-4 py-2.5 backdrop-blur sm:px-6">
+            <fieldset>
+              <legend className="mb-1 text-xs font-medium text-muted">Matching by</legend>
+              <div className="inline-flex overflow-hidden rounded-md border border-control text-sm" role="group">
+                {(["jev", "claude"] as const).map((m) => (
+                  <button key={m} aria-pressed={mode === m} onClick={() => setMode(m)} className={`h-8 px-3 ${mode === m ? "bg-ink text-bg" : "bg-panel hover:bg-panel2"}`}>
+                    {m === "jev" ? "Claude + Jev" : "Claude only"}
+                  </button>
+                ))}
+              </div>
+            </fieldset>
+            <Slider id="t" label="Product confidence" value={T} min={0.5} max={0.99} onChange={setT} disabled={mode === "claude"} />
+            <Slider id="u" label="Quantity clarity" value={unitMin} min={0.3} max={0.9} onChange={setUnitMin} disabled={mode === "claude"} />
+            <p className="basis-full text-xs text-muted sm:basis-auto sm:self-center">
+              {mode === "claude" ? "Claude only approves its own “high” ratings." : "Higher = the rep checks more lines."}
+            </p>
           </div>
-        </section>
-      )}
+          <div className="px-4 py-4 sm:px-6">
+            <Review key={selected} result={result} isLive={!!live} mode={mode} T={T} unitMin={unitMin} catalog={catalog} />
+          </div>
+        </main>
 
-
-      <Review key={live ? `live-${runId}` : sampleId} result={result} isLive={!!live} mode={mode} T={T} unitMin={unitMin} catalog={catalog} />
+        <aside aria-label="Cost assessment" className="shrink-0 border-line bg-panel2 lg:w-80 lg:overflow-y-auto lg:border-l max-lg:border-t">
+          <CostPanel result={result} samples={samples} mode={mode} T={T} unitMin={unitMin} catalog={catalog} onMode={setMode} />
+        </aside>
+      </div>
     </div>
+  );
+}
+
+const SidebarIcon = () => (
+  <svg aria-hidden viewBox="0 0 16 16" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.5">
+    <rect x="2" y="2.5" width="12" height="11" rx="1.5" />
+    <path d="M6 2.5v11" />
+  </svg>
+);
+
+function OrderGroup({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div className="mb-2">
+      <h3 className="px-2 pb-1 pt-2 text-[11px] font-medium text-muted">{label}</h3>
+      <ul className="flex flex-col gap-0.5">{children}</ul>
+    </div>
+  );
+}
+
+function OrderItem(p: { id: string; title: string; preview: string; count: number; active: boolean; onPick: (id: string) => void }) {
+  const preview = p.preview.replace(/\s+/g, " ").trim();
+  return (
+    <li>
+      <button
+        onClick={() => p.onPick(p.id)}
+        aria-current={p.active ? "true" : undefined}
+        className={`flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left ${p.active ? "bg-panel shadow-sm ring-1 ring-line" : "hover:bg-panel"}`}
+      >
+        <span className="w-9 shrink-0 font-mono text-xs text-muted">{p.title.startsWith("o") ? p.title : "live"}</span>
+        <span className="min-w-0 flex-1 truncate text-[13px]">{preview}</span>
+        {p.count > 0 ? (
+          <span className="shrink-0 rounded-full bg-warnbg px-1.5 text-[11px] font-medium text-warn" aria-label={`${p.count} to check`}>{p.count}</span>
+        ) : (
+          <span className="shrink-0 text-ok" aria-label="nothing to check"><Check /></span>
+        )}
+      </button>
+    </li>
   );
 }
 
 function Review({ result, isLive, mode, T, unitMin, catalog }: { result: OrderResult; isLive: boolean; mode: Mode; T: number; unitMin: number; catalog: SlimCatalog }) {
   const [resolved, setResolved] = useState<Record<string, string>>({}); // lineId -> sku chosen by the rep
   const [active, setActive] = useState<string | null>(null);
-  const [showCompare, setShowCompare] = useState(false);
   const lines = useMemo(() => computeView(result, mode, T, catalog, unitMin), [result, mode, T, catalog, unitMin]);
   const flagged = lines.filter((l) => !l.approved);
   const done = flagged.filter((l) => resolved[l.id]).length;
-  const tot = totals(result, mode);
   const current = active ?? flagged.find((l) => !resolved[l.id])?.id ?? null;
 
   const choose = useCallback((lineId: string, sku: string) => setResolved((r) => ({ ...r, [lineId]: sku })), []);
@@ -209,7 +281,7 @@ function Review({ result, isLive, mode, T, unitMin, catalog }: { result: OrderRe
         <span className="text-muted">{lines.length} lines</span>
         <span className="font-medium text-ok">{lines.length - flagged.length} auto-approved</span>
         <span className="font-medium text-warn">{flagged.length} to check{flagged.length ? ` · ${done} done` : ""}</span>
-        <span className="ml-auto hidden text-xs text-muted sm:inline">Keys: <kbd>j</kbd>/<kbd>k</kbd> move · <kbd>1</kbd>–<kbd>3</kbd> pick · <kbd>Enter</kbd> accept · <kbd>x</kbd> not in catalog</span>
+        <span className="ml-auto hidden text-xs text-muted xl:inline">Keys: <kbd>j</kbd>/<kbd>k</kbd> move · <kbd>1</kbd>–<kbd>3</kbd> pick · <kbd>Enter</kbd> accept · <kbd>x</kbd> not in catalog</span>
       </div>
 
       {(flagged.length === 0 || done === flagged.length) && (
@@ -218,10 +290,13 @@ function Review({ result, isLive, mode, T, unitMin, catalog }: { result: OrderRe
         </p>
       )}
 
-      <main className="grid gap-4 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
-        <section aria-label="Order message" className="h-fit rounded-lg border border-line bg-panel p-3 lg:sticky lg:top-3">
-          <h2 className="mb-2 text-xs font-medium text-muted">What the contractor sent</h2>
-          <p className="whitespace-pre-wrap font-mono text-[13px] leading-6">
+      <div className="flex flex-col gap-4">
+        <section aria-label="Order message" className="max-w-2xl">
+          <h2 className="mb-1.5 flex items-center gap-2 text-xs font-medium text-muted">
+            <span className="grid h-5 w-5 place-items-center rounded-full bg-panel2 text-[10px] font-semibold text-ink ring-1 ring-line" aria-hidden>C</span>
+            Contractor · text message
+          </h2>
+          <p className="whitespace-pre-wrap rounded-2xl rounded-tl-sm border border-line bg-panel px-4 py-3 font-mono text-[13px] leading-6">
             {segments.map((s, i) =>
               s.lineId ? (
                 <button
@@ -241,34 +316,25 @@ function Review({ result, isLive, mode, T, unitMin, catalog }: { result: OrderRe
         </section>
 
         <section aria-label="Draft order" className="min-w-0">
+          <h2 className="mb-1.5 flex items-center gap-2 text-xs font-medium text-muted">
+            <span className="grid h-5 w-5 place-items-center rounded-full bg-ink text-[10px] font-semibold text-bg" aria-hidden>AI</span>
+            Draft order · {mode === "jev" ? "Claude + Jev" : "Claude only"}
+          </h2>
           <ul className="overflow-hidden rounded-lg border border-line bg-panel">
             {lines.map((l) => (
               <LineRow key={l.id} l={l} state={status(l)} pick={resolved[l.id]} active={current === l.id} catalog={catalog} onSelect={() => setActive(l.id)} onChoose={(sku) => choose(l.id, sku)} onUndo={() => undo(l.id)} />
             ))}
           </ul>
         </section>
-      </main>
+      </div>
 
-      {showCompare && <Compare result={result} T={T} unitMin={unitMin} catalog={catalog} />}
-
-      <footer className="fixed inset-x-0 bottom-0 border-t border-line bg-panel/95 backdrop-blur">
-        <div className="mx-auto flex max-w-[1200px] flex-wrap items-center gap-x-6 gap-y-1 px-4 py-2 text-xs sm:px-6">
-          <span className="text-muted">
-            This order, {mode === "jev" ? "Claude + Jev" : "Claude only"}: <strong className="text-ink">{ms(tot.ms)}</strong> · <strong className="text-ink">{usd(tot.usd)}</strong>
-            <span className="hidden sm:inline"> (reading {ms(tot.parseMs)} + matching {ms(tot.matchMs)})</span>
-          </span>
-          <button className="ml-auto h-8 rounded-md border border-control px-3 hover:bg-panel2" aria-expanded={showCompare} onClick={() => setShowCompare((v) => !v)}>
-            {showCompare ? "Hide comparison" : "Compare Jev vs Claude only"}
-          </button>
-        </div>
-      </footer>
     </>
   );
 }
 
 function Slider(p: { id: string; label: string; value: number; min: number; max: number; disabled: boolean; onChange: (v: number) => void }) {
   return (
-    <div className="w-40">
+    <div className="w-36">
       <label htmlFor={p.id} className="mb-1 flex justify-between text-xs font-medium text-muted">
         <span>{p.label}</span>
         <span className="text-ink">{p.value.toFixed(2)}</span>
@@ -360,36 +426,87 @@ function LineRow(props: { l: ViewLine; state: "ok" | "done" | "flag"; pick?: str
   );
 }
 
-function Compare({ result, T, unitMin, catalog }: { result: OrderResult; T: number; unitMin: number; catalog: SlimCatalog }) {
+type Side = { key: Mode; label: string; matcher: string; t: ReturnType<typeof totals>; approved: number; lines: number; calls: number; matchTokens: string };
+
+function CostPanel({ result, samples, mode, T, unitMin, catalog, onMode }: { result: OrderResult; samples: OrderResult[]; mode: Mode; T: number; unitMin: number; catalog: SlimCatalog; onMode: (m: Mode) => void }) {
   const a = computeView(result, "jev", T, catalog, unitMin);
   const b = computeView(result, "claude", T, catalog);
-  const ta = totals(result, "jev");
-  const tb = totals(result, "claude");
+  const n = result.parse.lines.length;
+  const tok = (x: { inputTokens: number; outputTokens: number }) => `${x.inputTokens.toLocaleString()} in / ${x.outputTokens.toLocaleString()} out`;
+  const sides: Side[] = [
+    { key: "jev", label: "Claude + Jev", matcher: "Jev", t: totals(result, "jev"), approved: a.filter((l) => l.approved).length, lines: n,
+      calls: n + result.jev.lines.filter((l) => l.sku.choice !== NONE).length, matchTokens: `${result.jev.usage.inputTokens.toLocaleString()} in` },
+    { key: "claude", label: "Claude only", matcher: "Claude", t: totals(result, "claude"), approved: b.filter((l) => l.approved).length, lines: n,
+      calls: 1, matchTokens: tok(result.claudeOnly.usage) },
+  ];
+  const maxUsd = Math.max(...sides.map((x) => x.t.usd));
+  const [jev, cla] = sides;
+  const cheaper = cla.t.matchUsd / Math.max(jev.t.matchUsd, 1e-9);
+  const faster = cla.t.matchMs / Math.max(jev.t.matchMs, 1);
+  const avg = (f: (r: OrderResult) => number) => samples.reduce((s, r) => s + f(r), 0) / samples.length;
+  const avgJev = avg((r) => r.parse.costUsd + r.jev.costUsd);
+  const avgCla = avg((r) => r.parse.costUsd + r.claudeOnly.costUsd);
   const diff = a.filter((l, i) => l.sku !== b[i].sku);
-  const row = (label: string, x: string, y: string) => (
-    <tr className="border-t border-line">
-      <th scope="row" className="py-1.5 pr-4 text-left font-normal text-muted">{label}</th>
-      <td className="py-1.5 pr-4">{x}</td>
-      <td className="py-1.5">{y}</td>
-    </tr>
-  );
+
   return (
-    <section aria-label="Comparison" className="mt-4 rounded-lg border border-line bg-panel p-3">
-      <h2 className="mb-2 text-xs font-medium text-muted">This order, both ways (Jev threshold {T.toFixed(2)})</h2>
-      <table className="w-full max-w-xl text-sm">
-        <thead>
-          <tr className="text-left text-xs text-muted"><th /><th className="pb-1 font-medium">Claude + Jev</th><th className="pb-1 font-medium">Claude only</th></tr>
-        </thead>
-        <tbody>
-          {row("Auto-approved", `${a.filter((l) => l.approved).length} of ${a.length}`, `${b.filter((l) => l.approved).length} of ${b.length}`)}
-          {row("Matching time", ms(ta.matchMs), ms(tb.matchMs))}
-          {row("Matching cost", usd(ta.matchUsd), usd(tb.matchUsd))}
-          {row("Whole order (incl. reading)", `${ms(ta.ms)} · ${usd(ta.usd)}`, `${ms(tb.ms)} · ${usd(tb.usd)}`)}
-        </tbody>
-      </table>
-      <p className="mt-2 text-xs text-muted">
-        {diff.length ? `They pick different products on ${diff.length} line${diff.length > 1 ? "s" : ""}: ${diff.map((l) => `“${l.raw}”`).join(", ")}.` : "They pick the same product on every line."}
+    <div className="flex flex-col gap-3 p-4">
+      <div>
+        <h2 className="text-xs font-semibold uppercase tracking-wide text-muted">Cost assessment</h2>
+        <p className="mt-0.5 text-xs text-muted">This order, {n} lines. Reading is shared; only matching differs.</p>
+      </div>
+
+      <p className="rounded-lg bg-okbg px-3 py-2 text-sm text-ok">
+        Jev&apos;s matching step cost <strong>{Math.round(cheaper)}× less</strong> and ran <strong>{faster.toFixed(1)}× faster</strong> on this order.
       </p>
-    </section>
+
+      {sides.map((x) => (
+        <button
+          key={x.key}
+          onClick={() => onMode(x.key)}
+          aria-pressed={mode === x.key}
+          className={`rounded-lg border bg-panel p-3 text-left ${mode === x.key ? "border-ink ring-1 ring-ink" : "border-line hover:border-control"}`}
+        >
+          <div className="flex items-baseline justify-between gap-2">
+            <span className="font-semibold">{x.label}</span>
+            {mode === x.key && <span className="rounded-full bg-ink px-1.5 text-[10px] font-medium text-bg">showing</span>}
+          </div>
+          <div className="mt-1 flex items-baseline gap-2">
+            <span className="text-xl font-semibold">{usd(x.t.usd)}</span>
+            <span className="text-xs text-muted">{ms(x.t.ms)} · {x.approved} of {x.lines} auto-approved</span>
+          </div>
+          <div className="mt-2 flex h-2 overflow-hidden rounded-full" style={{ background: "var(--line)" }} aria-hidden>
+            <span style={{ width: `${(100 * x.t.parseUsd) / maxUsd}%`, background: "var(--bar)" }} />
+            <span style={{ width: `${(100 * x.t.matchUsd) / maxUsd}%`, background: x.key === "jev" ? "var(--ok)" : "var(--warn-line)" }} />
+          </div>
+          <dl className="mt-2 grid grid-cols-[auto_1fr] gap-x-3 gap-y-0.5 text-xs">
+            <dt className="text-muted">Reading</dt>
+            <dd className="text-right">{usd(x.t.parseUsd)} · {ms(x.t.parseMs)}</dd>
+            <dt className="text-muted">Matching ({x.matcher})</dt>
+            <dd className="text-right font-medium">{usd(x.t.matchUsd)} · {ms(x.t.matchMs)}</dd>
+            <dt className="text-muted">API calls (read + match)</dt>
+            <dd className="text-right">1 + {x.calls}</dd>
+            <dt className="text-muted">Match tokens</dt>
+            <dd className="text-right">{x.matchTokens}</dd>
+            <dt className="text-muted">Per 1,000 orders</dt>
+            <dd className="text-right font-medium">${(x.t.usd * 1000).toFixed(2)}</dd>
+          </dl>
+        </button>
+      ))}
+
+      <section className="rounded-lg border border-line bg-panel p-3 text-xs">
+        <h3 className="mb-1 font-semibold">Across all {samples.length} saved orders</h3>
+        <p className="text-muted">
+          Average per order: <strong className="text-ink">{usd(avgJev)}</strong> with Jev, <strong className="text-ink">{usd(avgCla)}</strong> Claude only.
+          Per 1,000 orders: <strong className="text-ink">${(avgJev * 1000).toFixed(2)}</strong> vs <strong className="text-ink">${(avgCla * 1000).toFixed(2)}</strong>.
+        </p>
+      </section>
+
+      <p className="text-xs text-muted">
+        {diff.length ? `The two pick different products on ${diff.length} line${diff.length > 1 ? "s" : ""}: ${diff.map((l) => `“${l.raw}”`).join(", ")}.` : "Both pick the same product on every line."}
+      </p>
+      <p className="text-[11px] leading-snug text-muted">
+        Claude priced at ${(CLAUDE_INPUT_PER_TOKEN * 1e6).toFixed(0)} / ${(CLAUDE_OUTPUT_PER_TOKEN * 1e6).toFixed(0)} per million input / output tokens (assumed). Jev at ${(JEV_INPUT_PER_TOKEN * 1e9).toFixed(0)} per billion input tokens, output free. Times are measured on one run and vary.
+      </p>
+    </div>
   );
 }

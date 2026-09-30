@@ -14,6 +14,7 @@ describe("route (Jev)", () => {
   });
   it("flags NONE, missing quantity and large quantities", () => {
     expect(route({ ...ok, skuChoice: "NONE" }).approved).toBe(false);
+    expect(route({ ...ok, skuChoice: "NONE", unitOk: 0, qty: 100, productUnit: null }).reasons).toEqual(["no single product matched"]);
     expect(route({ ...ok, qty: null }).reasons).toContain("quantity missing");
     expect(route({ ...ok, qty: 100 }).reasons).toContain("large quantity");
   });
