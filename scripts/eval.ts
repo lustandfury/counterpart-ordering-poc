@@ -1,11 +1,12 @@
 // Scores the saved pipeline results against data/labels.json.
-// Writes results/eval.csv (one row per line) and results/eval-summary.md. Usage: npm run eval
+// Writes results/eval.csv (one row per line), results/eval-summary.md, and results/eval.json (for the
+// Results dashboard, so the app never reads the answer key itself). Usage: npm run eval
 import { readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { productBySku } from "../lib/catalog";
 import {
   buildRows, claudeApprove, claudeBands, jevApprove, jevBands, mean, shortlistRecall, summarize, type Gold,
 } from "../lib/eval/metrics";
-import { DEFAULT_T } from "../lib/pipeline/route";
+import { DEFAULT_T, UNIT_OK_MIN } from "../lib/pipeline/route";
 import type { OrderResult } from "../lib/types";
 
 const labels = JSON.parse(readFileSync("data/labels.json", "utf8")) as Record<string, Gold[]>;
@@ -127,3 +128,54 @@ ${rows
 `;
 writeFileSync("results/eval-summary.md", md);
 console.log(md);
+
+// structured copy for the Results dashboard
+const byOrder = results.map((r) => {
+  const rs = rows.filter((x) => x.orderId === r.orderId);
+  const side = (pickSku: (x: (typeof rs)[number]) => string | null, approve: (x: (typeof rs)[number]) => boolean, m: { ms: number; costUsd: number }) => ({
+    approved: rs.filter(approve).length,
+    correct: rs.filter((x) => pickSku(x) === x.gold.sku).length,
+    wrongApproved: rs.filter((x) => approve(x) && pickSku(x) !== x.gold.sku).length,
+    matchMs: m.ms,
+    matchUsd: m.costUsd,
+    totalUsd: m.costUsd + r.parse.costUsd,
+  });
+  return {
+    orderId: r.orderId,
+    lines: rs.length,
+    shouldReview: rs.filter((x) => x.gold.shouldReview).length,
+    jev: side((x) => x.jev.sku, jevApprove(T), r.jev),
+    claude: side((x) => x.claude.sku, claudeApprove, r.claudeOnly),
+  };
+});
+writeFileSync(
+  "results/eval.json",
+  JSON.stringify(
+    {
+      orders: n,
+      lines: rows.length,
+      model: results[0].model,
+      thresholds: { productConfidence: T, quantityClarity: UNIT_OK_MIN },
+      summary: {
+        jev: { ...jev, matchMs: jevMs, matchUsd: jevUsd, totalUsd: parseUsd + jevUsd },
+        claude: { ...cla, matchMs: claMs, matchUsd: claUsd, totalUsd: parseUsd + claUsd },
+        parseUsd,
+      },
+      bands: { jev: jevBands(rows), claude: claudeBands(rows) },
+      shortlistRecall: shortlistRecall(rows),
+      wrong: rows
+        .filter((r) => r.jev.sku !== r.gold.sku || r.claude.sku !== r.gold.sku)
+        .map((r) => ({ orderId: r.orderId, raw: r.raw, key: r.gold.sku, jev: r.jev.sku, jevConfidence: r.jev.confidence, jevApproved: jevApprove(T)(r), claude: r.claude.sku, claudeConfidence: r.claude.confidence, claudeApproved: claudeApprove(r) })),
+      byOrder,
+      caveats: [
+        `Small sample: ${n} orders and ${rows.length} lines. Read these as signals, not benchmarks.`,
+        "Parts of the pipeline, including Jev's quantity check, were designed after seeing these same orders, so the results are in-sample. No held-out set has been run.",
+        "Claude prices are assumed (see lib/pricing.ts).",
+        `${noneLines} of ${rows.length} lines had no catalog match and skipped Jev's second call, which flatters Jev's cost; this set deliberately includes many.`,
+        "Results vary slightly between runs.",
+      ],
+    },
+    null,
+    2,
+  ) + "\n",
+);

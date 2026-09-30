@@ -2,6 +2,8 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { OrderResult, Sender } from "@/lib/types";
+import Link from "next/link";
+import { AppNav } from "@/components/AppNav";
 import { generateOrder } from "@/lib/generate";
 import { CLAUDE_INPUT_PER_TOKEN, CLAUDE_OUTPUT_PER_TOKEN, JEV_INPUT_PER_TOKEN } from "@/lib/pricing";
 import { computeView, displayChoices, NONE, segmentText, totals, type Mode, type SlimCatalog, type ViewLine } from "@/lib/view";
@@ -31,9 +33,9 @@ function fmtQty(qty: number | null, unit: string | null) {
 
 type Run = OrderResult & { runId: number };
 
-export function ReviewApp({ samples, catalog }: { samples: OrderResult[]; catalog: SlimCatalog }) {
+export function ReviewApp({ samples, catalog, initialOrder }: { samples: OrderResult[]; catalog: SlimCatalog; initialOrder?: string }) {
   const [runs, setRuns] = useState<Run[]>([]); // live runs from the composer, newest first
-  const [selected, setSelected] = useState(samples.find((x) => x.orderId === "o13")?.orderId ?? samples[0].orderId);
+  const [selected, setSelected] = useState(initialOrder ?? samples.find((x) => x.orderId === "o13")?.orderId ?? samples[0].orderId);
   const [mode, setMode] = useState<Mode>("jev");
   const [T, setT] = useState(0.85);
   const [unitMin, setUnitMin] = useState(0.8);
@@ -104,6 +106,9 @@ export function ReviewApp({ samples, catalog }: { samples: OrderResult[]; catalo
               <div className="flex h-16 shrink-0 items-center justify-between px-5">
                 <strong className="text-base font-semibold tracking-tight">Counterpart</strong>
                 <SidebarButton label="Hide orders" expanded onClick={toggleSidebar} />
+              </div>
+              <div className="px-4 pb-2">
+                <AppNav current="review" />
               </div>
               <nav className="min-h-0 flex-1 overflow-y-auto px-3 pb-3">
                 {runs.length > 0 && <OrderGroup label="Your runs">{runs.map((r) => (
@@ -529,9 +534,6 @@ function CostPanel({ result, samples, mode, T, unitMin, catalog, onMode, setT, s
   const [jev, cla] = sides;
   const cheaper = cla.t.matchUsd / Math.max(jev.t.matchUsd, 1e-9);
   const faster = cla.t.matchMs / Math.max(jev.t.matchMs, 1);
-  const avg = (f: (r: OrderResult) => number) => samples.reduce((s, r) => s + f(r), 0) / samples.length;
-  const avgJev = avg((r) => r.parse.costUsd + r.jev.costUsd);
-  const avgCla = avg((r) => r.parse.costUsd + r.claudeOnly.costUsd);
   const diff = a.filter((l, i) => l.sku !== b[i].sku);
   const per10k = (usdPerOrder: number) => `$${(usdPerOrder * PER).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
@@ -584,15 +586,9 @@ function CostPanel({ result, samples, mode, T, unitMin, catalog, onMode, setT, s
         </button>
       ))}
 
-      <section className="px-1 text-[12px]">
-        <h3 className="mb-1.5 font-semibold text-ink">All {samples.length} sample orders · per 10,000</h3>
-        <dl className="grid grid-cols-[1fr_auto] gap-y-1">
-          <dt className="text-muted">Claude + Jev</dt>
-          <dd className="text-right font-mono">{per10k(avgJev)}</dd>
-          <dt className="text-muted">Claude only</dt>
-          <dd className="text-right font-mono">{per10k(avgCla)}</dd>
-        </dl>
-      </section>
+      <Link href="/results" className="px-1 text-[13px] font-medium underline underline-offset-2">
+        See all {samples.length} sample results →
+      </Link>
 
       <p className="px-1 text-[12px] text-muted">
         {diff.length ? `They pick different products on ${diff.length} line${diff.length > 1 ? "s" : ""}: ${diff.map((l) => `“${l.raw}”`).join(", ")}.` : "Both pick the same product on every line."}

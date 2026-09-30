@@ -67,7 +67,8 @@ to either pipeline (a test enforces this in `lib/`, `app/`, `components/`).
 - The design should be calm and dense, like a rep's work tool. No marketing page
 
 ## Evaluation (scripts/eval.ts)
-Run both pipelines over all orders against labels.json. Write results/eval.csv and a
+Run both pipelines over all orders against labels.json. Write results/eval.csv,
+results/eval.json (read by the /results dashboard, so the app never reads labels.json) and a
 markdown summary with, for each pipeline: accuracy, % of lines auto-approved,
 error rate among auto-approved lines, accuracy by confidence band (>=0.9, 0.7-0.9, <0.7),
 how often the correct product is in the top-20 shortlist, and ms and USD per order for the

@@ -1,0 +1,524 @@
+{
+  "orders": 20,
+  "lines": 88,
+  "model": "claude-sonnet-5-5",
+  "thresholds": {
+    "productConfidence": 0.85,
+    "quantityClarity": 0.8
+  },
+  "summary": {
+    "jev": {
+      "lines": 88,
+      "accuracy": 97.72727272727273,
+      "approvedPct": 73.86363636363636,
+      "wrongProductAmongApproved": 0,
+      "shouldHaveReviewedAmongApproved": 0,
+      "reviewAgreement": 97.72727272727273,
+      "matchMs": 424.9784563999989,
+      "matchUsd": 0.0010254383999999997,
+      "totalUsd": 0.014729738400000003
+    },
+    "claude": {
+      "lines": 88,
+      "accuracy": 100,
+      "approvedPct": 73.86363636363636,
+      "wrongProductAmongApproved": 0,
+      "shouldHaveReviewedAmongApproved": 0,
+      "reviewAgreement": 97.72727272727273,
+      "matchMs": 2080.50686685,
+      "matchUsd": 0.05455875,
+      "totalUsd": 0.06826305
+    },
+    "parseUsd": 0.013704300000000003
+  },
+  "bands": {
+    "jev": [
+      {
+        "band": ">= 0.9",
+        "lines": 74,
+        "accuracy": 100
+      },
+      {
+        "band": "0.7 - 0.9",
+        "lines": 10,
+        "accuracy": 100
+      },
+      {
+        "band": "< 0.7",
+        "lines": 4,
+        "accuracy": 50
+      }
+    ],
+    "claude": [
+      {
+        "band": "high",
+        "lines": 70,
+        "accuracy": 100
+      },
+      {
+        "band": "medium",
+        "lines": 4,
+        "accuracy": 100
+      },
+      {
+        "band": "low",
+        "lines": 14,
+        "accuracy": 100
+      }
+    ]
+  },
+  "shortlistRecall": 100,
+  "wrong": [
+    {
+      "orderId": "o12",
+      "raw": "a bundle of shingles",
+      "key": null,
+      "jev": "ROF-SHG-3TAB-GRY",
+      "jevConfidence": 0.47,
+      "jevApproved": false,
+      "claude": null,
+      "claudeConfidence": "low",
+      "claudeApproved": false
+    },
+    {
+      "orderId": "o14",
+      "raw": "2 bags cement",
+      "key": null,
+      "jev": "MAS-CEM-GU-30KG",
+      "jevConfidence": 0.49,
+      "jevApproved": false,
+      "claude": null,
+      "claudeConfidence": "low",
+      "claudeApproved": false
+    }
+  ],
+  "byOrder": [
+    {
+      "orderId": "o01",
+      "lines": 5,
+      "shouldReview": 0,
+      "jev": {
+        "approved": 5,
+        "correct": 5,
+        "wrongApproved": 0,
+        "matchMs": 444.25883399999975,
+        "matchUsd": 0.001287258,
+        "totalUsd": 0.015549258
+      },
+      "claude": {
+        "approved": 5,
+        "correct": 5,
+        "wrongApproved": 0,
+        "matchMs": 1862.7335830000002,
+        "matchUsd": 0.0546,
+        "totalUsd": 0.068862
+      }
+    },
+    {
+      "orderId": "o02",
+      "lines": 5,
+      "shouldReview": 1,
+      "jev": {
+        "approved": 4,
+        "correct": 5,
+        "wrongApproved": 0,
+        "matchMs": 389.84158300000036,
+        "matchUsd": 0.0012863339999999999,
+        "totalUsd": 0.016403334000000002
+      },
+      "claude": {
+        "approved": 4,
+        "correct": 5,
+        "wrongApproved": 0,
+        "matchMs": 4090.467667,
+        "matchUsd": 0.059322,
+        "totalUsd": 0.074439
+      }
+    },
+    {
+      "orderId": "o03",
+      "lines": 4,
+      "shouldReview": 0,
+      "jev": {
+        "approved": 4,
+        "correct": 4,
+        "wrongApproved": 0,
+        "matchMs": 491.3602499999997,
+        "matchUsd": 0.000907956,
+        "totalUsd": 0.014593956
+      },
+      "claude": {
+        "approved": 4,
+        "correct": 4,
+        "wrongApproved": 0,
+        "matchMs": 1830.7449589999997,
+        "matchUsd": 0.053868,
+        "totalUsd": 0.067554
+      }
+    },
+    {
+      "orderId": "o04",
+      "lines": 4,
+      "shouldReview": 0,
+      "jev": {
+        "approved": 4,
+        "correct": 4,
+        "wrongApproved": 0,
+        "matchMs": 366.47999999999956,
+        "matchUsd": 0.000893592,
+        "totalUsd": 0.014597592000000001
+      },
+      "claude": {
+        "approved": 4,
+        "correct": 4,
+        "wrongApproved": 0,
+        "matchMs": 1644.8309579999986,
+        "matchUsd": 0.053952,
+        "totalUsd": 0.067656
+      }
+    },
+    {
+      "orderId": "o05",
+      "lines": 5,
+      "shouldReview": 0,
+      "jev": {
+        "approved": 5,
+        "correct": 5,
+        "wrongApproved": 0,
+        "matchMs": 381.74866699999984,
+        "matchUsd": 0.0013329960000000001,
+        "totalUsd": 0.015444995999999999
+      },
+      "claude": {
+        "approved": 5,
+        "correct": 5,
+        "wrongApproved": 0,
+        "matchMs": 2384.475458000001,
+        "matchUsd": 0.054588,
+        "totalUsd": 0.0687
+      }
+    },
+    {
+      "orderId": "o06",
+      "lines": 5,
+      "shouldReview": 0,
+      "jev": {
+        "approved": 5,
+        "correct": 5,
+        "wrongApproved": 0,
+        "matchMs": 427.211041999999,
+        "matchUsd": 0.001234674,
+        "totalUsd": 0.015343674
+      },
+      "claude": {
+        "approved": 5,
+        "correct": 5,
+        "wrongApproved": 0,
+        "matchMs": 2168.341375,
+        "matchUsd": 0.054471000000000006,
+        "totalUsd": 0.06858
+      }
+    },
+    {
+      "orderId": "o07",
+      "lines": 5,
+      "shouldReview": 0,
+      "jev": {
+        "approved": 4,
+        "correct": 5,
+        "wrongApproved": 0,
+        "matchMs": 437.28770799999984,
+        "matchUsd": 0.00126,
+        "totalUsd": 0.015024000000000001
+      },
+      "claude": {
+        "approved": 4,
+        "correct": 5,
+        "wrongApproved": 0,
+        "matchMs": 5094.104958,
+        "matchUsd": 0.060723,
+        "totalUsd": 0.074487
+      }
+    },
+    {
+      "orderId": "o08",
+      "lines": 5,
+      "shouldReview": 0,
+      "jev": {
+        "approved": 5,
+        "correct": 5,
+        "wrongApproved": 0,
+        "matchMs": 456.3792919999978,
+        "matchUsd": 0.0012141359999999998,
+        "totalUsd": 0.015014136
+      },
+      "claude": {
+        "approved": 5,
+        "correct": 5,
+        "wrongApproved": 0,
+        "matchMs": 1765.8886669999993,
+        "matchUsd": 0.054488999999999996,
+        "totalUsd": 0.068289
+      }
+    },
+    {
+      "orderId": "o09",
+      "lines": 6,
+      "shouldReview": 0,
+      "jev": {
+        "approved": 6,
+        "correct": 6,
+        "wrongApproved": 0,
+        "matchMs": 702.7992089999971,
+        "matchUsd": 0.0014246399999999998,
+        "totalUsd": 0.015794640000000002
+      },
+      "claude": {
+        "approved": 6,
+        "correct": 6,
+        "wrongApproved": 0,
+        "matchMs": 1802.9034170000014,
+        "matchUsd": 0.054735,
+        "totalUsd": 0.069105
+      }
+    },
+    {
+      "orderId": "o10",
+      "lines": 6,
+      "shouldReview": 0,
+      "jev": {
+        "approved": 6,
+        "correct": 6,
+        "wrongApproved": 0,
+        "matchMs": 626.6990420000002,
+        "matchUsd": 0.0014137199999999998,
+        "totalUsd": 0.01626972
+      },
+      "claude": {
+        "approved": 6,
+        "correct": 6,
+        "wrongApproved": 0,
+        "matchMs": 1888.866750000001,
+        "matchUsd": 0.055071,
+        "totalUsd": 0.069927
+      }
+    },
+    {
+      "orderId": "o11",
+      "lines": 3,
+      "shouldReview": 2,
+      "jev": {
+        "approved": 1,
+        "correct": 3,
+        "wrongApproved": 0,
+        "matchMs": 370.6778750000012,
+        "matchUsd": 0.0005976600000000001,
+        "totalUsd": 0.013125659999999999
+      },
+      "claude": {
+        "approved": 1,
+        "correct": 3,
+        "wrongApproved": 0,
+        "matchMs": 1313.7797090000022,
+        "matchUsd": 0.052890000000000006,
+        "totalUsd": 0.065418
+      }
+    },
+    {
+      "orderId": "o12",
+      "lines": 4,
+      "shouldReview": 4,
+      "jev": {
+        "approved": 0,
+        "correct": 3,
+        "wrongApproved": 0,
+        "matchMs": 417.5491669999974,
+        "matchUsd": 0.000855792,
+        "totalUsd": 0.013698792
+      },
+      "claude": {
+        "approved": 0,
+        "correct": 4,
+        "wrongApproved": 0,
+        "matchMs": 1767.1173750000016,
+        "matchUsd": 0.053151000000000004,
+        "totalUsd": 0.065994
+      }
+    },
+    {
+      "orderId": "o13",
+      "lines": 4,
+      "shouldReview": 1,
+      "jev": {
+        "approved": 3,
+        "correct": 4,
+        "wrongApproved": 0,
+        "matchMs": 306.1634999999951,
+        "matchUsd": 0.0008924579999999999,
+        "totalUsd": 0.013843458000000001
+      },
+      "claude": {
+        "approved": 3,
+        "correct": 4,
+        "wrongApproved": 0,
+        "matchMs": 1465.2596669999984,
+        "matchUsd": 0.053625,
+        "totalUsd": 0.066576
+      }
+    },
+    {
+      "orderId": "o14",
+      "lines": 4,
+      "shouldReview": 4,
+      "jev": {
+        "approved": 0,
+        "correct": 3,
+        "wrongApproved": 0,
+        "matchMs": 480.29812500000116,
+        "matchUsd": 0.0007691040000000001,
+        "totalUsd": 0.013819103999999999
+      },
+      "claude": {
+        "approved": 0,
+        "correct": 4,
+        "wrongApproved": 0,
+        "matchMs": 2206.8137089999946,
+        "matchUsd": 0.053109,
+        "totalUsd": 0.066159
+      }
+    },
+    {
+      "orderId": "o15",
+      "lines": 3,
+      "shouldReview": 0,
+      "jev": {
+        "approved": 3,
+        "correct": 3,
+        "wrongApproved": 0,
+        "matchMs": 337.0564999999988,
+        "matchUsd": 0.0007547400000000001,
+        "totalUsd": 0.01378074
+      },
+      "claude": {
+        "approved": 3,
+        "correct": 3,
+        "wrongApproved": 0,
+        "matchMs": 1587.4443749999991,
+        "matchUsd": 0.053529,
+        "totalUsd": 0.066555
+      }
+    },
+    {
+      "orderId": "o16",
+      "lines": 1,
+      "shouldReview": 1,
+      "jev": {
+        "approved": 0,
+        "correct": 1,
+        "wrongApproved": 0,
+        "matchMs": 167.99929200000042,
+        "matchUsd": 0.00012058199999999999,
+        "totalUsd": 0.011706582
+      },
+      "claude": {
+        "approved": 0,
+        "correct": 1,
+        "wrongApproved": 0,
+        "matchMs": 1132.0022920000047,
+        "matchUsd": 0.05187,
+        "totalUsd": 0.063456
+      }
+    },
+    {
+      "orderId": "o17",
+      "lines": 5,
+      "shouldReview": 0,
+      "jev": {
+        "approved": 5,
+        "correct": 5,
+        "wrongApproved": 0,
+        "matchMs": 516.2769589999953,
+        "matchUsd": 0.001340808,
+        "totalUsd": 0.016319807999999998
+      },
+      "claude": {
+        "approved": 5,
+        "correct": 5,
+        "wrongApproved": 0,
+        "matchMs": 1789.5047499999928,
+        "matchUsd": 0.054879,
+        "totalUsd": 0.069858
+      }
+    },
+    {
+      "orderId": "o18",
+      "lines": 6,
+      "shouldReview": 1,
+      "jev": {
+        "approved": 5,
+        "correct": 6,
+        "wrongApproved": 0,
+        "matchMs": 493.98858299999847,
+        "matchUsd": 0.00130704,
+        "totalUsd": 0.01589004
+      },
+      "claude": {
+        "approved": 5,
+        "correct": 6,
+        "wrongApproved": 0,
+        "matchMs": 1676.6221249999944,
+        "matchUsd": 0.055122000000000004,
+        "totalUsd": 0.069705
+      }
+    },
+    {
+      "orderId": "o19",
+      "lines": 4,
+      "shouldReview": 4,
+      "jev": {
+        "approved": 0,
+        "correct": 4,
+        "wrongApproved": 0,
+        "matchMs": 338.8921249999985,
+        "matchUsd": 0.0007964879999999999,
+        "totalUsd": 0.013978488
+      },
+      "claude": {
+        "approved": 0,
+        "correct": 4,
+        "wrongApproved": 0,
+        "matchMs": 1730.3604590000032,
+        "matchUsd": 0.053523,
+        "totalUsd": 0.066705
+      }
+    },
+    {
+      "orderId": "o20",
+      "lines": 4,
+      "shouldReview": 3,
+      "jev": {
+        "approved": 0,
+        "correct": 4,
+        "wrongApproved": 0,
+        "matchMs": 346.60137499999837,
+        "matchUsd": 0.00081879,
+        "totalUsd": 0.01439679
+      },
+      "claude": {
+        "approved": 0,
+        "correct": 4,
+        "wrongApproved": 0,
+        "matchMs": 2407.8750839999993,
+        "matchUsd": 0.053658000000000004,
+        "totalUsd": 0.067236
+      }
+    }
+  ],
+  "caveats": [
+    "Small sample: 20 orders and 88 lines. Read these as signals, not benchmarks.",
+    "Parts of the pipeline, including Jev's quantity check, were designed after seeing these same orders, so the results are in-sample. No held-out set has been run.",
+    "Claude prices are assumed (see lib/pricing.ts).",
+    "14 of 88 lines had no catalog match and skipped Jev's second call, which flatters Jev's cost; this set deliberately includes many.",
+    "Results vary slightly between runs."
+  ]
+}

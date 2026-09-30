@@ -33,7 +33,9 @@ A three-pane workspace:
 - **Center:** one card per order: who sent it, then each line as the contractor wrote it next to the product it matched. Approved lines are quiet; flagged lines say why and offer the top alternatives. When only the quantity is in doubt, a flagged line is a one-click confirm.
 - **Right:** a cost assessment of both pipelines for the current order and across all samples. Clicking a pipeline's card shows its draft, and **Settings** there holds the thresholds.
 
-The two thresholds (product confidence and quantity clarity) re-route lines live. Each line to check carries a short hint saying what to do. Keyboard shortcuts also work: `j`/`k` move, `1`–`3` pick, `Enter` accepts, `x` marks a line as not in the catalog.
+The two thresholds (product confidence and quantity clarity) re-route lines live.
+
+A second page, **Sample results** (`/results`), is a dashboard for the 20 saved orders: headline comparisons, a by-order table linking back to each order, calibration, the misses and the caveats. Each line to check carries a short hint saying what to do. Keyboard shortcuts also work: `j`/`k` move, `1`–`3` pick, `Enter` accepts, `x` marks a line as not in the catalog.
 
 ## Results
 
@@ -73,7 +75,7 @@ npm run dev                  # http://localhost:3000
 | --- | --- |
 | `npm run check` | Lint, typecheck and unit tests |
 | `npm run pipeline` | Run both pipelines over `data/orders/` and save to `results/` (about $1.40 for all 20; `-- o01 o05` runs a subset, `-- --jev-only` re-runs only the Jev step) |
-| `npm run eval` | Score the saved results against `data/labels.json` |
+| `npm run eval` | Score the saved results against `data/labels.json`; writes the report, the per-line CSV and `results/eval.json` for the dashboard |
 | `npm run jev:test` | One raw Jev call, to see the response shape |
 | `npm run gen:catalog` | Regenerate `data/catalog.json` |
 | `npm run export:review` | Build `data/review-sheet.csv` for reviewing labels |

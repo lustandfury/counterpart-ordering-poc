@@ -126,6 +126,11 @@ Each entry: what we did, what happened, what it changed.
 **Happened:** cutting the order lines out of a chatty message left broken sentences ("We need and , all regular spf not treated. also . thx"). When order lines sit inside sentences, the card now shows the whole message instead; list-style messages keep just the extra notes.
 **Changed:** the rep reads each line once, request and match side by side, instead of matching highlights between two panels.
 
+### 22. A dashboard for the evaluation
+**Did:** moved the 20-sample results out of the cost panel onto their own page, Sample results (Mike's call), reached from Review | Sample results tabs in the sidebar. It shows five headline comparisons, a by-order table (company, lines, what the answer key says needs checking, approvals and right products for each pipeline, cost) with an Open link back into the review screen, the calibration tables, the lines either pipeline got wrong, and the caveats.
+**Happened:** the dashboard needs scores against the answer key, but the app is not allowed to read the key. The evaluation script now also writes `results/eval.json`, and the page reads that. Making the review screen open a chosen order (`/?order=o07`) turned it from a prebuilt page into one rendered per request, so its sample files had to be bundled explicitly for the server.
+**Changed:** the review screen stays about one order; the numbers for the whole set live in one place.
+
 ## Where it stands
 
 | | Claude only | Claude + Jev |
@@ -159,7 +164,7 @@ Read as signals, not benchmarks: 20 orders, tuned in-sample, Claude prices assum
 
 1. **The problem (30s).** Show a messy text order. "Reading it is the easy part."
 2. **The screen (90s).** Open the workspace on the default order. Approved lines are quiet; the flagged line says why. Open Settings in the cost panel, move a slider and watch lines re-route with no API call. Point at the cost panel: same approvals, about 60x cheaper matching; click the Claude-only card to switch the draft. Point at the sidebar: every order with its count of lines to check.
-3. **The measurement (90s).** Open `results/eval-summary.md`. Read one number from each side; point at the calibration table.
+3. **The measurement (90s).** Switch to Sample results. Read one number from each side; point at the calibration table.
 4. **The turning points (90s).** Timeline 4 (Jev lost), 5 (our bugs), 7 (the quantity question). "The interesting work was the honest debugging."
 5. **The close (30s).** "The hard part isn't reading the order. It's deciding what the rep doesn't need to check."
 
