@@ -346,8 +346,8 @@ export function ReviewApp({ samples, catalog, initialOrder }: { samples: OrderRe
 
 function AccessLockScreen({ code, setCode, error, unlocking, onSubmit }: { code: string; setCode: (value: string) => void; error: boolean; unlocking: boolean; onSubmit: () => void }) {
   return (
-    <div className={`lock-screen textured-surface fixed inset-0 z-[70] grid place-items-center p-6 ${unlocking ? "lock-screen-exit" : ""}`}>
-      <form onSubmit={(e) => { e.preventDefault(); onSubmit(); }} className="lock-screen-form flex w-full max-w-xs flex-col items-center text-center">
+    <div className={`lock-screen fixed inset-0 z-[70] grid place-items-center p-6 ${unlocking ? "lock-screen-exit" : ""}`}>
+      <form onSubmit={(e) => { e.preventDefault(); onSubmit(); }} className="lock-screen-form flex w-full max-w-sm flex-col items-center text-center">
         <div className="action-sheet-handle" aria-hidden />
         <Wordmark large />
         <p className="mt-5 text-lg font-medium tracking-tight">Process orders at the speed of AI</p>

@@ -364,6 +364,29 @@ button { cursor: pointer; }
 .lock-screen {
   transition: opacity 520ms ease;
   animation: lock-screen-in 500ms ease both;
+  /* the lumber-and-blueprint photo from the social preview (without its wordmark), anchored so the wood stays in view */
+  background-color: var(--bg);
+  background-image: url("/images/lock-bg.jpg");
+  background-size: cover;
+  background-position: right bottom;
+  background-repeat: no-repeat;
+  background-attachment: scroll;
+}
+/* dark themes: dim the photo so it does not glare */
+:root[data-theme="dark"] .lock-screen {
+  background-image: linear-gradient(rgb(20 20 22 / 0.78), rgb(20 20 22 / 0.78)), url("/images/lock-bg.jpg");
+}
+@media (prefers-color-scheme: dark) {
+  :root[data-theme="system"] .lock-screen {
+    background-image: linear-gradient(rgb(20 20 22 / 0.78), rgb(20 20 22 / 0.78)), url("/images/lock-bg.jpg");
+  }
+}
+/* wide screens: the form is a card over the photo, as the phone layout's sheet is, so it stays readable over the wood */
+.lock-screen-form {
+  background: var(--panel);
+  border-radius: 24px;
+  padding: 2rem 1.75rem;
+  box-shadow: 0 0 0 1px var(--ring), 0 12px 40px rgb(0 0 0 / 0.16);
 }
 .lock-screen-exit {
   opacity: 0;

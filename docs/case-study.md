@@ -161,6 +161,11 @@ Each entry: what we did, what happened, what it changed.
 **Happened:** a browser run checked that Send only appears after the last decision, that the sent state and the decision survive switching orders, and that Reopen brings Send back.
 **Changed:** a walkthrough now ends with a finished order rather than a green banner.
 
+### 29. One picture for the link and the front door
+**Did:** made a social preview image (Mike's call): the lumber-and-blueprint photo with the logo and wordmark on the left and the tagline "Process orders at the speed of AI" beneath, in the app's own typeface. The same photo (without the baked-in wordmark) now sits behind the access-code lock screen, so the first thing a visitor sees matches the link they clicked. A small script regenerates the preview image, so copy or type changes are a re-run, not a redesign.
+**Happened:** a first plain logo-on-paper version was dropped for the photo, which says "lumber" before any words do. Getting the type right took several rounds of small calls (size, tracking, tagline fitted to the wordmark's width by measuring it in the page, the text group centred on the logo by its visible ink, the photo nudged down so the wood clears the tagline). On wide screens the form sat straight on the wood and was hard to read, so it became a card, as the phone layout's sheet already was. The photo went from 2.3 MB to a 181 KB copy for the lock screen, since it is the first thing loaded; dark mode dims it.
+**Changed:** the link preview, the lock screen and the app share one look, and the preview is reproducible from a script.
+
 ## Where it stands
 
 | | Claude only | Claude + Jev |
