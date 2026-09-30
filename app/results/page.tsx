@@ -5,7 +5,10 @@ import { join } from "node:path";
 import { BrandBar } from "@/components/AppNav";
 import type { Sender } from "@/lib/types";
 
-export const metadata: Metadata = { title: "Sample results · Counterpart" };
+export const metadata: Metadata = {
+  title: "Sample results",
+  alternates: { canonical: "/results" },
+};
 
 type Side = {
   accuracy: number;

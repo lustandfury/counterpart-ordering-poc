@@ -69,7 +69,7 @@ cp .env.example .env.local   # then fill in the keys
 npm run dev                  # http://localhost:3000
 ```
 
-`.env.local` needs `ANTHROPIC_API_KEY`, `ANTHROPIC_MODEL` (for example `claude-sonnet-5-5`), `TYPESAFE_API_KEY`, and `POSTGRES_URL` for the live-order usage limit and email signups. The saved sample orders work without keys; only live paste and the pipeline scripts call the APIs.
+`.env.local` needs `ANTHROPIC_API_KEY`, `ANTHROPIC_MODEL` (for example `claude-sonnet-5-5`), `TYPESAFE_API_KEY`, and `POSTGRES_URL` for the live-order usage limit and email signups. Set `NEXT_PUBLIC_SITE_URL` to the public URL when deploying so canonical and social metadata point to the right host. The saved sample orders work without keys; only live paste and the pipeline scripts call the APIs.
 
 | Command | What it does |
 | --- | --- |

@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { DM_Sans, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { THEME_SCRIPT } from "@/lib/theme";
@@ -15,8 +15,36 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Counterpart",
-  description: "Outside-in sketch of AI-assisted lumber ordering. Synthetic data.",
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://counterpart-ordering-poc.vercel.app"),
+  title: {
+    default: "Counterpart — AI-assisted lumber ordering",
+    template: "%s · Counterpart",
+  },
+  description: "Turn messy contractor text messages into accurate, reviewable lumber orders with AI-assisted matching.",
+  applicationName: "Counterpart",
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "website",
+    locale: "en_CA",
+    url: "/",
+    siteName: "Counterpart",
+    title: "Counterpart — AI-assisted lumber ordering",
+    description: "Turn messy contractor text messages into accurate, reviewable lumber orders with AI-assisted matching.",
+    images: [{ url: "/images/counterpart-og.png", width: 1730, height: 909, alt: "Counterpart AI-assisted lumber ordering" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Counterpart — AI-assisted lumber ordering",
+    description: "Turn messy contractor text messages into accurate, reviewable lumber orders with AI-assisted matching.",
+    images: ["/images/counterpart-og.png"],
+  },
+  icons: { icon: "/favicon.ico" },
+  robots: { index: true, follow: true },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#ffca05",
+  colorScheme: "light dark",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
