@@ -21,13 +21,17 @@ async function generateOGImage() {
       position: relative;
       overflow: hidden;
     }
-    .background {
+    /* The photo is shifted down 40px, so the wood sits clear of the tagline. A mirrored copy of the
+       photo fills the strip left at the top, so the blueprint lines carry on rather than stopping. */
+    .background, .background-mirror {
       position: absolute;
-      inset: 0;
-      background-image: url('data:image/png;base64,${bgData}');
-      background-size: cover;
-      background-position: center;
+      left: 0;
+      width: 100%;
+      height: 909px;
+      background-size: 100% 100%;
     }
+    .background { top: 40px; background-image: url('data:image/png;base64,${bgData}'); }
+    .background-mirror { top: -869px; transform: scaleY(-1); background-image: url('data:image/png;base64,${bgData}'); }
     .logo-container {
       position: relative;
       z-index: 10;
@@ -44,12 +48,15 @@ async function generateOGImage() {
     }
     .wordmark {
       color: #1c1c1e;
+      /* optical centring: line boxes leave extra space above the letters, so lift the text until its
+         visible ink (top of the wordmark to the tagline's descenders) is centred on the logo */
+      transform: translateY(-15.5px);
     }
     .wordmark h1 {
-      font-size: 64px;
+      font-size: 128px;
       font-weight: 700;
       margin: 0;
-      letter-spacing: -0.03em;
+      letter-spacing: -0.015em;
       line-height: 1.2;
     }
     .part {
@@ -57,9 +64,9 @@ async function generateOGImage() {
       color: #5c5c61;
     }
     .wordmark p {
-      font-size: 20px;
+      font-size: 40px;
       margin: 0;
-      margin-top: 12px;
+      margin-top: -14px;
       color: #5c5c61;
       font-weight: 400;
       line-height: 1.4;
@@ -67,6 +74,7 @@ async function generateOGImage() {
   </style>
 </head>
 <body>
+  <div class="background-mirror"></div>
   <div class="background"></div>
   <div class="logo-container">
     <svg class="logo" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -84,11 +92,36 @@ async function generateOGImage() {
   `;
 
   const browser = await chromium.launch();
-  const page = await browser.newPage({ viewport: { width: 1730, height: 909 } });
-  await page.setContent(html);
-  await page.screenshot({ path: "public/images/counterpart-og.png" });
-  await browser.close();
-  console.log("✓ Generated public/images/counterpart-og.png (1730×909 with logo overlay)");
+  try {
+    const page = await browser.newPage({ viewport: { width: 1730, height: 909 } });
+    await page.setContent(html);
+    await page.evaluate(async () => {
+      await document.fonts.ready;
+    });
+    // Fit the tagline to the wordmark's width: larger type, then letter-spacing takes up the remainder.
+    // The page function is kept free of nested named helpers, which tsx would wrap in a helper the browser lacks.
+    const fit = await page.evaluate(() => {
+      const h1 = document.querySelector(".wordmark h1")!;
+      const p = document.querySelector(".wordmark p") as HTMLElement;
+      const range = document.createRange();
+      range.selectNodeContents(h1);
+      const target = range.getBoundingClientRect().width;
+      p.style.whiteSpace = "nowrap";
+      p.style.fontSize = "43px";
+      p.style.letterSpacing = "0px";
+      range.selectNodeContents(p);
+      const natural = range.getBoundingClientRect().width;
+      const chars = (p.textContent ?? "").length;
+      const ls = (target - natural) / (chars - 1); // spacing lands between letters, so the last one adds none
+      p.style.letterSpacing = `${ls}px`;
+      return { target, ls };
+    });
+    console.log(`tagline letter-spacing ${fit.ls.toFixed(2)}px to match wordmark width ${fit.target.toFixed(0)}px`);
+    await page.screenshot({ path: "public/images/counterpart-og.png" });
+    console.log("✓ Generated public/images/counterpart-og.png (1730×909 with logo overlay)");
+  } finally {
+    await browser.close();
+  }
 }
 
 generateOGImage().catch(console.error);
