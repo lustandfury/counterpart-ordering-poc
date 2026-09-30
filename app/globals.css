@@ -86,3 +86,8 @@ button { cursor: pointer; }
   border-radius: 14px;
   box-shadow: 0 0 0 1px var(--ring), var(--shadow-sm);
 }
+
+/* the composer shows its focus ring on its container */
+#paste:focus-visible {
+  outline: none;
+}
