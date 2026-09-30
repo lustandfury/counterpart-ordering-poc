@@ -1,524 +1,2761 @@
 {
-  "orders": 20,
-  "lines": 88,
-  "model": "claude-sonnet-5-5",
-  "thresholds": {
-    "productConfidence": 0.85,
-    "quantityClarity": 0.8
-  },
-  "summary": {
-    "jev": {
-      "lines": 88,
-      "accuracy": 98.86363636363636,
-      "approvedPct": 75,
-      "wrongProductAmongApproved": 0,
-      "shouldHaveReviewedAmongApproved": 0,
-      "reviewAgreement": 98.86363636363636,
-      "matchMs": 531.0188937000004,
-      "matchUsd": 0.0010211879999999997,
-      "totalUsd": 0.010139888
-    },
-    "claude": {
-      "lines": 88,
-      "accuracy": 98.86363636363636,
-      "approvedPct": 75,
-      "wrongProductAmongApproved": 0,
-      "shouldHaveReviewedAmongApproved": 0,
-      "reviewAgreement": 98.86363636363636,
-      "matchMs": 2480.153527050001,
-      "matchUsd": 0.036519699999999995,
-      "totalUsd": 0.045638399999999996
-    },
-    "parseUsd": 0.0091187
-  },
-  "bands": {
-    "jev": [
-      {
-        "band": ">= 0.9",
-        "lines": 75,
-        "accuracy": 100
-      },
-      {
-        "band": "0.7 - 0.9",
-        "lines": 10,
-        "accuracy": 100
-      },
-      {
-        "band": "< 0.7",
-        "lines": 3,
-        "accuracy": 66.66666666666667
-      }
-    ],
-    "claude": [
-      {
-        "band": "high",
-        "lines": 72,
-        "accuracy": 100
-      },
-      {
-        "band": "medium",
-        "lines": 3,
-        "accuracy": 100
-      },
-      {
-        "band": "low",
-        "lines": 13,
-        "accuracy": 92.3076923076923
-      }
-    ]
-  },
-  "shortlistRecall": 100,
-  "wrong": [
-    {
-      "orderId": "o12",
-      "raw": "half a pallet of block",
-      "key": "MAS-CMU-8",
-      "jev": "MAS-CMU-8",
-      "jevConfidence": 0.78,
-      "jevApproved": false,
-      "claude": null,
-      "claudeConfidence": "low",
-      "claudeApproved": false
-    },
-    {
-      "orderId": "o14",
-      "raw": "2 bags cement",
-      "key": null,
-      "jev": "MAS-CEM-GU-30KG",
-      "jevConfidence": 0.54,
-      "jevApproved": false,
-      "claude": null,
-      "claudeConfidence": "low",
-      "claudeApproved": false
-    }
-  ],
-  "byOrder": [
+  "rows": [
     {
       "orderId": "o01",
-      "lines": 5,
-      "shouldReview": 0,
+      "lineId": "1",
+      "raw": "12 - 2x4x8 SPF",
+      "qty": 12,
+      "gold": {
+        "raw": "12 - 2x4x8 SPF",
+        "sku": "LBR-2X4-08-SPF",
+        "qty": 12,
+        "unit": "each",
+        "shouldReview": false,
+        "reason": "Size, type and quantity are stated explicitly; unambiguous match."
+      },
+      "inShortlist": true,
       "jev": {
-        "approved": 5,
-        "correct": 5,
-        "wrongApproved": 0,
-        "matchMs": 537.0591249999998,
-        "matchUsd": 0.001284318,
-        "totalUsd": 0.010776318
+        "sku": "LBR-2X4-08-SPF",
+        "confidence": 1,
+        "unitOk": 0.97,
+        "unit": "each"
       },
       "claude": {
-        "approved": 5,
-        "correct": 5,
-        "wrongApproved": 0,
-        "matchMs": 2255.410583,
-        "matchUsd": 0.036384,
-        "totalUsd": 0.045876
+        "sku": "LBR-2X4-08-SPF",
+        "confidence": "high",
+        "unit": "each"
+      },
+      "cost": {
+        "jev": 0.00216447,
+        "claude": 0.0091752
+      }
+    },
+    {
+      "orderId": "o01",
+      "lineId": "2",
+      "raw": "8 - 2x6x10 SPF",
+      "qty": 8,
+      "gold": {
+        "raw": "8 - 2x6x10 SPF",
+        "sku": "LBR-2X6-10-SPF",
+        "qty": 8,
+        "unit": "each",
+        "shouldReview": false,
+        "reason": "Size, type and quantity are stated explicitly; unambiguous match."
+      },
+      "inShortlist": true,
+      "jev": {
+        "sku": "LBR-2X6-10-SPF",
+        "confidence": 1,
+        "unitOk": 0.97,
+        "unit": "each"
+      },
+      "claude": {
+        "sku": "LBR-2X6-10-SPF",
+        "confidence": "high",
+        "unit": "each"
+      },
+      "cost": {
+        "jev": 0.0021658980000000003,
+        "claude": 0.0091752
+      }
+    },
+    {
+      "orderId": "o01",
+      "lineId": "3",
+      "raw": "10 - 2x4x12 SPF",
+      "qty": 10,
+      "gold": {
+        "raw": "10 - 2x4x12 SPF",
+        "sku": "LBR-2X4-12-SPF",
+        "qty": 10,
+        "unit": "each",
+        "shouldReview": false,
+        "reason": "Size, type and quantity are stated explicitly; unambiguous match."
+      },
+      "inShortlist": true,
+      "jev": {
+        "sku": "LBR-2X4-12-SPF",
+        "confidence": 1,
+        "unitOk": 0.97,
+        "unit": "each"
+      },
+      "claude": {
+        "sku": "LBR-2X4-12-SPF",
+        "confidence": "high",
+        "unit": "each"
+      },
+      "cost": {
+        "jev": 0.0021660660000000003,
+        "claude": 0.0091752
+      }
+    },
+    {
+      "orderId": "o01",
+      "lineId": "4",
+      "raw": "20 sheets 7/16 OSB",
+      "qty": 20,
+      "gold": {
+        "raw": "20 sheets 7/16 OSB",
+        "sku": "SHT-OSB-716",
+        "qty": 20,
+        "unit": "sheet",
+        "shouldReview": false,
+        "reason": "Size, type and quantity are stated explicitly; unambiguous match."
+      },
+      "inShortlist": true,
+      "jev": {
+        "sku": "SHT-OSB-716",
+        "confidence": 1,
+        "unitOk": 0.97,
+        "unit": "sheet"
+      },
+      "claude": {
+        "sku": "SHT-OSB-716",
+        "confidence": "high",
+        "unit": "sheet"
+      },
+      "cost": {
+        "jev": 0.0021289380000000004,
+        "claude": 0.0091752
+      }
+    },
+    {
+      "orderId": "o01",
+      "lineId": "5",
+      "raw": "1 box 16d common nails 5lb",
+      "qty": 1,
+      "gold": {
+        "raw": "1 box 16d common nails 5lb",
+        "sku": "FST-16D-COM-5LB",
+        "qty": 1,
+        "unit": "box",
+        "shouldReview": false,
+        "reason": "Size, type and quantity are stated explicitly; unambiguous match."
+      },
+      "inShortlist": true,
+      "jev": {
+        "sku": "FST-16D-COM-5LB",
+        "confidence": 0.97,
+        "unitOk": 0.96,
+        "unit": "box"
+      },
+      "claude": {
+        "sku": "FST-16D-COM-5LB",
+        "confidence": "high",
+        "unit": "box"
+      },
+      "cost": {
+        "jev": 0.002150946,
+        "claude": 0.0091752
       }
     },
     {
       "orderId": "o02",
-      "lines": 5,
-      "shouldReview": 1,
+      "lineId": "1",
+      "raw": "30 sheets 1/2 regular drywall 4x8",
+      "qty": 30,
+      "gold": {
+        "raw": "30 sheets 1/2 regular drywall 4x8",
+        "sku": "DRY-12-REG-4X8",
+        "qty": 30,
+        "unit": "sheet",
+        "shouldReview": false,
+        "reason": "Size, type and quantity are stated explicitly; unambiguous match."
+      },
+      "inShortlist": true,
       "jev": {
-        "approved": 4,
-        "correct": 5,
-        "wrongApproved": 0,
-        "matchMs": 498.3088750000006,
-        "matchUsd": 0.0012833940000000002,
-        "totalUsd": 0.011345394
+        "sku": "DRY-12-REG-4X8",
+        "confidence": 1,
+        "unitOk": 0.97,
+        "unit": "sheet"
       },
       "claude": {
-        "approved": 4,
-        "correct": 5,
-        "wrongApproved": 0,
-        "matchMs": 3848.6469579999994,
-        "matchUsd": 0.039282,
-        "totalUsd": 0.049344
+        "sku": "DRY-12-REG-4X8",
+        "confidence": "high",
+        "unit": "sheet"
+      },
+      "cost": {
+        "jev": 0.0022749420000000003,
+        "claude": 0.0098688
+      }
+    },
+    {
+      "orderId": "o02",
+      "lineId": "2",
+      "raw": "10 sheets 5/8 type X drywall 4x12",
+      "qty": 10,
+      "gold": {
+        "raw": "10 sheets 5/8 type X drywall 4x12",
+        "sku": "DRY-58-X-4X12",
+        "qty": 10,
+        "unit": "sheet",
+        "shouldReview": false,
+        "reason": "Size, type and quantity are stated explicitly; unambiguous match."
+      },
+      "inShortlist": true,
+      "jev": {
+        "sku": "DRY-58-X-4X12",
+        "confidence": 1,
+        "unitOk": 0.97,
+        "unit": "sheet"
+      },
+      "claude": {
+        "sku": "DRY-58-X-4X12",
+        "confidence": "high",
+        "unit": "sheet"
+      },
+      "cost": {
+        "jev": 0.0022781340000000002,
+        "claude": 0.0098688
+      }
+    },
+    {
+      "orderId": "o02",
+      "lineId": "3",
+      "raw": "2 buckets joint compound 4.5 gal",
+      "qty": 2,
+      "gold": {
+        "raw": "2 buckets joint compound 4.5 gal",
+        "sku": "DRY-MUD-45",
+        "qty": 2,
+        "unit": "bucket",
+        "shouldReview": false,
+        "reason": "Size, type and quantity are stated explicitly; unambiguous match."
+      },
+      "inShortlist": true,
+      "jev": {
+        "sku": "DRY-MUD-45",
+        "confidence": 0.98,
+        "unitOk": 0.95,
+        "unit": "bucket"
+      },
+      "claude": {
+        "sku": "DRY-MUD-45",
+        "confidence": "high",
+        "unit": "bucket"
+      },
+      "cost": {
+        "jev": 0.0022226100000000003,
+        "claude": 0.0098688
+      }
+    },
+    {
+      "orderId": "o02",
+      "lineId": "4",
+      "raw": "3 rolls paper drywall tape",
+      "qty": 3,
+      "gold": {
+        "raw": "3 rolls paper drywall tape",
+        "sku": "DRY-TAPE-250",
+        "qty": 3,
+        "unit": "roll",
+        "shouldReview": false,
+        "reason": "Size, type and quantity are stated explicitly; unambiguous match."
+      },
+      "inShortlist": true,
+      "jev": {
+        "sku": "DRY-TAPE-250",
+        "confidence": 0.98,
+        "unitOk": 0.96,
+        "unit": "roll"
+      },
+      "claude": {
+        "sku": "DRY-TAPE-250",
+        "confidence": "high",
+        "unit": "roll"
+      },
+      "cost": {
+        "jev": 0.0022781340000000002,
+        "claude": 0.0098688
+      }
+    },
+    {
+      "orderId": "o02",
+      "lineId": "5",
+      "raw": "2 boxes 5lb 1-5/8 drywall screws",
+      "qty": 2,
+      "gold": {
+        "raw": "2 boxes 5lb 1-5/8 drywall screws",
+        "sku": "FST-DRY-158-5LB",
+        "qty": 2,
+        "unit": "box",
+        "shouldReview": true,
+        "reason": "Coarse vs fine thread not stated and no default settles it."
+      },
+      "inShortlist": true,
+      "jev": {
+        "sku": "FST-DRY-158-5LB",
+        "confidence": 0.8,
+        "unitOk": 0.96,
+        "unit": "box"
+      },
+      "claude": {
+        "sku": "FST-DRY-158-5LB",
+        "confidence": "medium",
+        "unit": "box"
+      },
+      "cost": {
+        "jev": 0.002291574,
+        "claude": 0.0098688
       }
     },
     {
       "orderId": "o03",
-      "lines": 4,
-      "shouldReview": 0,
+      "lineId": "1",
+      "raw": "40 bags 30 kg concrete mix",
+      "qty": 40,
+      "gold": {
+        "raw": "40 bags 30 kg concrete mix",
+        "sku": "CON-30KG",
+        "qty": 40,
+        "unit": "bag",
+        "shouldReview": false,
+        "reason": "Size, type and quantity are stated explicitly; unambiguous match."
+      },
+      "inShortlist": true,
       "jev": {
-        "approved": 4,
-        "correct": 4,
-        "wrongApproved": 0,
-        "matchMs": 395.10370899999907,
-        "matchUsd": 0.000905604,
-        "totalUsd": 0.010013603999999999
+        "sku": "CON-30KG",
+        "confidence": 1,
+        "unitOk": 0.95,
+        "unit": "bag"
       },
       "claude": {
-        "approved": 4,
-        "correct": 4,
-        "wrongApproved": 0,
-        "matchMs": 2619.290167000001,
-        "matchUsd": 0.035896,
-        "totalUsd": 0.045003999999999995
+        "sku": "CON-30KG",
+        "confidence": "high",
+        "unit": "bag"
+      },
+      "cost": {
+        "jev": 0.0024926699999999998,
+        "claude": 0.011250999999999999
+      }
+    },
+    {
+      "orderId": "o03",
+      "lineId": "2",
+      "raw": "10 pcs 15M rebar 3m",
+      "qty": 10,
+      "gold": {
+        "raw": "10 pcs 15M rebar 3m",
+        "sku": "CON-REBAR-15M-3M",
+        "qty": 10,
+        "unit": "each",
+        "shouldReview": false,
+        "reason": "Size, type and quantity are stated explicitly; unambiguous match."
+      },
+      "inShortlist": true,
+      "jev": {
+        "sku": "CON-REBAR-15M-3M",
+        "confidence": 1,
+        "unitOk": 0.95,
+        "unit": "each"
+      },
+      "claude": {
+        "sku": "CON-REBAR-15M-3M",
+        "confidence": "high",
+        "unit": "each"
+      },
+      "cost": {
+        "jev": 0.002492922,
+        "claude": 0.011250999999999999
+      }
+    },
+    {
+      "orderId": "o03",
+      "lineId": "3",
+      "raw": "2 sheets 6x6 welded wire mesh",
+      "qty": 2,
+      "gold": {
+        "raw": "2 sheets 6x6 welded wire mesh",
+        "sku": "CON-MESH-5X10",
+        "qty": 2,
+        "unit": "sheet",
+        "shouldReview": false,
+        "reason": "Size, type and quantity are stated explicitly; unambiguous match."
+      },
+      "inShortlist": true,
+      "jev": {
+        "sku": "CON-MESH-5X10",
+        "confidence": 0.91,
+        "unitOk": 0.95,
+        "unit": "sheet"
+      },
+      "claude": {
+        "sku": "CON-MESH-5X10",
+        "confidence": "high",
+        "unit": "sheet"
+      },
+      "cost": {
+        "jev": 0.0025298399999999998,
+        "claude": 0.011250999999999999
+      }
+    },
+    {
+      "orderId": "o03",
+      "lineId": "4",
+      "raw": "4 12 in tube forms",
+      "qty": 4,
+      "gold": {
+        "raw": "4 12 in tube forms",
+        "sku": "CON-FORM-SONO-12",
+        "qty": 4,
+        "unit": "each",
+        "shouldReview": false,
+        "reason": "Size, type and quantity are stated explicitly; unambiguous match."
+      },
+      "inShortlist": true,
+      "jev": {
+        "sku": "CON-FORM-SONO-12",
+        "confidence": 0.98,
+        "unitOk": 0.96,
+        "unit": "each"
+      },
+      "claude": {
+        "sku": "CON-FORM-SONO-12",
+        "confidence": "high",
+        "unit": "each"
+      },
+      "cost": {
+        "jev": 0.002498172,
+        "claude": 0.011250999999999999
       }
     },
     {
       "orderId": "o04",
-      "lines": 4,
-      "shouldReview": 0,
+      "lineId": "1",
+      "raw": "24 bundles architectural shingles onyx black",
+      "qty": 24,
+      "gold": {
+        "raw": "24 bundles architectural shingles onyx black",
+        "sku": "ROF-SHG-ARCH-BLK",
+        "qty": 24,
+        "unit": "bundle",
+        "shouldReview": false,
+        "reason": "Size, type and quantity are stated explicitly; unambiguous match."
+      },
+      "inShortlist": true,
       "jev": {
-        "approved": 4,
-        "correct": 4,
-        "wrongApproved": 0,
-        "matchMs": 537.1962910000002,
-        "matchUsd": 0.00089124,
-        "totalUsd": 0.01001124
+        "sku": "ROF-SHG-ARCH-BLK",
+        "confidence": 1,
+        "unitOk": 0.94,
+        "unit": "bundle"
       },
       "claude": {
-        "approved": 4,
-        "correct": 4,
-        "wrongApproved": 0,
-        "matchMs": 2173.666333000001,
-        "matchUsd": 0.035952,
-        "totalUsd": 0.045072
+        "sku": "ROF-SHG-ARCH-BLK",
+        "confidence": "high",
+        "unit": "bundle"
+      },
+      "cost": {
+        "jev": 0.002496384,
+        "claude": 0.011268
+      }
+    },
+    {
+      "orderId": "o04",
+      "lineId": "2",
+      "raw": "3 rolls synthetic underlayment",
+      "qty": 3,
+      "gold": {
+        "raw": "3 rolls synthetic underlayment",
+        "sku": "ROF-UNDER-SYN",
+        "qty": 3,
+        "unit": "roll",
+        "shouldReview": false,
+        "reason": "Size, type and quantity are stated explicitly; unambiguous match."
+      },
+      "inShortlist": true,
+      "jev": {
+        "sku": "ROF-UNDER-SYN",
+        "confidence": 0.98,
+        "unitOk": 0.96,
+        "unit": "roll"
+      },
+      "claude": {
+        "sku": "ROF-UNDER-SYN",
+        "confidence": "high",
+        "unit": "roll"
+      },
+      "cost": {
+        "jev": 0.002485254,
+        "claude": 0.011268
+      }
+    },
+    {
+      "orderId": "o04",
+      "lineId": "3",
+      "raw": "10 white drip edge 10ft",
+      "qty": 10,
+      "gold": {
+        "raw": "10 white drip edge 10ft",
+        "sku": "ROF-DRIP-10",
+        "qty": 10,
+        "unit": "each",
+        "shouldReview": false,
+        "reason": "Size, type and quantity are stated explicitly; unambiguous match."
+      },
+      "inShortlist": true,
+      "jev": {
+        "sku": "ROF-DRIP-10",
+        "confidence": 0.99,
+        "unitOk": 0.96,
+        "unit": "each"
+      },
+      "claude": {
+        "sku": "ROF-DRIP-10",
+        "confidence": "high",
+        "unit": "each"
+      },
+      "cost": {
+        "jev": 0.0025375859999999997,
+        "claude": 0.011268
+      }
+    },
+    {
+      "orderId": "o04",
+      "lineId": "4",
+      "raw": "2 rolls ice and water shield 36in",
+      "qty": 2,
+      "gold": {
+        "raw": "2 rolls ice and water shield 36in",
+        "sku": "ROF-ICE-36",
+        "qty": 2,
+        "unit": "roll",
+        "shouldReview": false,
+        "reason": "Size, type and quantity are stated explicitly; unambiguous match."
+      },
+      "inShortlist": true,
+      "jev": {
+        "sku": "ROF-ICE-36",
+        "confidence": 1,
+        "unitOk": 0.97,
+        "unit": "roll"
+      },
+      "claude": {
+        "sku": "ROF-ICE-36",
+        "confidence": "high",
+        "unit": "roll"
+      },
+      "cost": {
+        "jev": 0.0024920159999999997,
+        "claude": 0.011268
       }
     },
     {
       "orderId": "o05",
-      "lines": 5,
-      "shouldReview": 0,
+      "lineId": "1",
+      "raw": "2x4x8 PT x 15",
+      "qty": 15,
+      "gold": {
+        "raw": "2x4x8 PT x 15",
+        "sku": "LBR-2X4-08-PT",
+        "qty": 15,
+        "unit": "each",
+        "shouldReview": false,
+        "reason": "Size, type and quantity are stated explicitly; unambiguous match."
+      },
+      "inShortlist": true,
       "jev": {
-        "approved": 5,
-        "correct": 5,
-        "wrongApproved": 0,
-        "matchMs": 383.79049999999916,
-        "matchUsd": 0.001330056,
-        "totalUsd": 0.010722055999999999
+        "sku": "LBR-2X4-08-PT",
+        "confidence": 0.99,
+        "unitOk": 0.96,
+        "unit": "each"
       },
       "claude": {
-        "approved": 5,
-        "correct": 5,
-        "wrongApproved": 0,
-        "matchMs": 1964.526667000002,
-        "matchUsd": 0.036376,
-        "totalUsd": 0.045767999999999996
+        "sku": "LBR-2X4-08-PT",
+        "confidence": "high",
+        "unit": "each"
+      },
+      "cost": {
+        "jev": 0.002144344,
+        "claude": 0.0091536
+      }
+    },
+    {
+      "orderId": "o05",
+      "lineId": "2",
+      "raw": "2x6x12 PT x 10",
+      "qty": 10,
+      "gold": {
+        "raw": "2x6x12 PT x 10",
+        "sku": "LBR-2X6-12-PT",
+        "qty": 10,
+        "unit": "each",
+        "shouldReview": false,
+        "reason": "Size, type and quantity are stated explicitly; unambiguous match."
+      },
+      "inShortlist": true,
+      "jev": {
+        "sku": "LBR-2X6-12-PT",
+        "confidence": 1,
+        "unitOk": 0.96,
+        "unit": "each"
+      },
+      "claude": {
+        "sku": "LBR-2X6-12-PT",
+        "confidence": "high",
+        "unit": "each"
+      },
+      "cost": {
+        "jev": 0.00214594,
+        "claude": 0.0091536
+      }
+    },
+    {
+      "orderId": "o05",
+      "lineId": "3",
+      "raw": "4x4x10 PT x 6",
+      "qty": 6,
+      "gold": {
+        "raw": "4x4x10 PT x 6",
+        "sku": "LBR-4X4-10-PT",
+        "qty": 6,
+        "unit": "each",
+        "shouldReview": false,
+        "reason": "Size, type and quantity are stated explicitly; unambiguous match."
+      },
+      "inShortlist": true,
+      "jev": {
+        "sku": "LBR-4X4-10-PT",
+        "confidence": 1,
+        "unitOk": 0.95,
+        "unit": "each"
+      },
+      "claude": {
+        "sku": "LBR-4X4-10-PT",
+        "confidence": "high",
+        "unit": "each"
+      },
+      "cost": {
+        "jev": 0.002142748,
+        "claude": 0.0091536
+      }
+    },
+    {
+      "orderId": "o05",
+      "lineId": "4",
+      "raw": "3in deck screws 5lb tan x2",
+      "qty": 2,
+      "gold": {
+        "raw": "3in deck screws 5lb tan x2",
+        "sku": "FST-DECK-3-TAN-5LB",
+        "qty": 2,
+        "unit": "box",
+        "shouldReview": false,
+        "reason": "Size, type and quantity are stated explicitly; unambiguous match."
+      },
+      "inShortlist": true,
+      "jev": {
+        "sku": "FST-DECK-3-TAN-5LB",
+        "confidence": 0.98,
+        "unitOk": 0.95,
+        "unit": "box"
+      },
+      "claude": {
+        "sku": "FST-DECK-3-TAN-5LB",
+        "confidence": "high",
+        "unit": "box"
+      },
+      "cost": {
+        "jev": 0.00215329,
+        "claude": 0.0091536
+      }
+    },
+    {
+      "orderId": "o05",
+      "lineId": "5",
+      "raw": "5/4 decking 16ft x 40",
+      "qty": 40,
+      "gold": {
+        "raw": "5/4 decking 16ft x 40",
+        "sku": "DCK-54-16-PT",
+        "qty": 40,
+        "unit": "each",
+        "shouldReview": false,
+        "reason": "Length is given and 5/4 decking matches only one catalog product."
+      },
+      "inShortlist": true,
+      "jev": {
+        "sku": "DCK-54-16-PT",
+        "confidence": 1,
+        "unitOk": 0.89,
+        "unit": "each"
+      },
+      "claude": {
+        "sku": "DCK-54-16-PT",
+        "confidence": "high",
+        "unit": "each"
+      },
+      "cost": {
+        "jev": 0.002135734,
+        "claude": 0.0091536
       }
     },
     {
       "orderId": "o06",
-      "lines": 5,
-      "shouldReview": 0,
+      "lineId": "1",
+      "raw": "5/8 type X 4x8 x 20",
+      "qty": 20,
+      "gold": {
+        "raw": "5/8 type X 4x8 x 20",
+        "sku": "DRY-58-X-4X8",
+        "qty": 20,
+        "unit": "sheet",
+        "shouldReview": false,
+        "reason": "Size, type and quantity are stated explicitly; unambiguous match."
+      },
+      "inShortlist": true,
       "jev": {
-        "approved": 5,
-        "correct": 5,
-        "wrongApproved": 0,
-        "matchMs": 429.36562499999854,
-        "matchUsd": 0.001231734,
-        "totalUsd": 0.010621733999999999
+        "sku": "DRY-58-X-4X8",
+        "confidence": 0.99,
+        "unitOk": 0.95,
+        "unit": "sheet"
       },
       "claude": {
-        "approved": 5,
-        "correct": 5,
-        "wrongApproved": 0,
-        "matchMs": 2647.3960829999996,
-        "matchUsd": 0.036298000000000004,
-        "totalUsd": 0.045688000000000006
+        "sku": "DRY-58-X-4X8",
+        "confidence": "high",
+        "unit": "sheet"
+      },
+      "cost": {
+        "jev": 0.002127816,
+        "claude": 0.009137600000000001
+      }
+    },
+    {
+      "orderId": "o06",
+      "lineId": "2",
+      "raw": "5/8 rock reg 4x8 x 10",
+      "qty": 10,
+      "gold": {
+        "raw": "5/8 rock reg 4x8 x 10",
+        "sku": "DRY-58-REG-4X8",
+        "qty": 10,
+        "unit": "sheet",
+        "shouldReview": false,
+        "reason": "Size, type and quantity are stated explicitly; unambiguous match."
+      },
+      "inShortlist": true,
+      "jev": {
+        "sku": "DRY-58-REG-4X8",
+        "confidence": 0.97,
+        "unitOk": 0.96,
+        "unit": "sheet"
+      },
+      "claude": {
+        "sku": "DRY-58-REG-4X8",
+        "confidence": "high",
+        "unit": "sheet"
+      },
+      "cost": {
+        "jev": 0.002132016,
+        "claude": 0.009137600000000001
+      }
+    },
+    {
+      "orderId": "o06",
+      "lineId": "3",
+      "raw": "greenboard 1/2 4x8 x 6",
+      "qty": 6,
+      "gold": {
+        "raw": "greenboard 1/2 4x8 x 6",
+        "sku": "DRY-12-MR-4X8",
+        "qty": 6,
+        "unit": "sheet",
+        "shouldReview": false,
+        "reason": "Size, type and quantity are stated explicitly; unambiguous match."
+      },
+      "inShortlist": true,
+      "jev": {
+        "sku": "DRY-12-MR-4X8",
+        "confidence": 0.99,
+        "unitOk": 0.96,
+        "unit": "sheet"
+      },
+      "claude": {
+        "sku": "DRY-12-MR-4X8",
+        "confidence": "high",
+        "unit": "sheet"
+      },
+      "cost": {
+        "jev": 0.002126976,
+        "claude": 0.009137600000000001
+      }
+    },
+    {
+      "orderId": "o06",
+      "lineId": "4",
+      "raw": "mud 3 buckets",
+      "qty": 3,
+      "gold": {
+        "raw": "mud 3 buckets",
+        "sku": "DRY-MUD-45",
+        "qty": 3,
+        "unit": "bucket",
+        "shouldReview": false,
+        "reason": "Size, type and quantity are stated explicitly; unambiguous match."
+      },
+      "inShortlist": true,
+      "jev": {
+        "sku": "DRY-MUD-45",
+        "confidence": 0.98,
+        "unitOk": 0.94,
+        "unit": "bucket"
+      },
+      "claude": {
+        "sku": "DRY-MUD-45",
+        "confidence": "high",
+        "unit": "bucket"
+      },
+      "cost": {
+        "jev": 0.002109672,
+        "claude": 0.009137600000000001
+      }
+    },
+    {
+      "orderId": "o06",
+      "lineId": "5",
+      "raw": "mesh tape x2",
+      "qty": 2,
+      "gold": {
+        "raw": "mesh tape x2",
+        "sku": "DRY-TAPE-MESH",
+        "qty": 2,
+        "unit": "roll",
+        "shouldReview": false,
+        "reason": "Size, type and quantity are stated explicitly; unambiguous match."
+      },
+      "inShortlist": true,
+      "jev": {
+        "sku": "DRY-TAPE-MESH",
+        "confidence": 0.98,
+        "unitOk": 0.95,
+        "unit": "roll"
+      },
+      "claude": {
+        "sku": "DRY-TAPE-MESH",
+        "confidence": "high",
+        "unit": "roll"
+      },
+      "cost": {
+        "jev": 0.002125254,
+        "claude": 0.009137600000000001
       }
     },
     {
       "orderId": "o07",
-      "lines": 5,
-      "shouldReview": 0,
+      "lineId": "1",
+      "raw": "2x6 hangers box x2",
+      "qty": 2,
+      "gold": {
+        "raw": "2x6 hangers box x2",
+        "sku": "HDW-JH-2X6-BOX",
+        "qty": 2,
+        "unit": "box",
+        "shouldReview": false,
+        "reason": "Size, type and quantity are stated explicitly; unambiguous match."
+      },
+      "inShortlist": true,
       "jev": {
-        "approved": 4,
-        "correct": 5,
-        "wrongApproved": 0,
-        "matchMs": 1276.1288329999988,
-        "matchUsd": 0.00125706,
-        "totalUsd": 0.010417059999999999
+        "sku": "HDW-JH-2X6-BOX",
+        "confidence": 1,
+        "unitOk": 0.93,
+        "unit": "box"
       },
       "claude": {
-        "approved": 4,
-        "correct": 5,
-        "wrongApproved": 0,
-        "matchMs": 4168.454166999996,
-        "matchUsd": 0.039726,
-        "totalUsd": 0.048886
+        "sku": "HDW-JH-2X6-BOX",
+        "confidence": "high",
+        "unit": "box"
+      },
+      "cost": {
+        "jev": 0.002087192,
+        "claude": 0.0097772
+      }
+    },
+    {
+      "orderId": "o07",
+      "lineId": "2",
+      "raw": "hurricane ties 50",
+      "qty": 50,
+      "gold": {
+        "raw": "hurricane ties 50",
+        "sku": "HDW-HT-H2-5",
+        "qty": 50,
+        "unit": "each",
+        "shouldReview": false,
+        "reason": "Size, type and quantity are stated explicitly; unambiguous match."
+      },
+      "inShortlist": true,
+      "jev": {
+        "sku": "HDW-HT-H2-5",
+        "confidence": 0.98,
+        "unitOk": 0.88,
+        "unit": "each"
+      },
+      "claude": {
+        "sku": "HDW-HT-H2-5",
+        "confidence": "high",
+        "unit": "each"
+      },
+      "cost": {
+        "jev": 0.002041412,
+        "claude": 0.0097772
+      }
+    },
+    {
+      "orderId": "o07",
+      "lineId": "3",
+      "raw": "16d sinkers 50lb",
+      "qty": 50,
+      "gold": {
+        "raw": "16d sinkers 50lb",
+        "sku": "FST-16D-SINK-50LB",
+        "qty": 1,
+        "unit": "box",
+        "shouldReview": false,
+        "reason": "Size, type and quantity are stated explicitly; unambiguous match."
+      },
+      "inShortlist": true,
+      "jev": {
+        "sku": "FST-16D-SINK-50LB",
+        "confidence": 0.99,
+        "unitOk": 0.52,
+        "unit": "box"
+      },
+      "claude": {
+        "sku": "FST-16D-SINK-50LB",
+        "confidence": "medium",
+        "unit": "box"
+      },
+      "cost": {
+        "jev": 0.0020936179999999998,
+        "claude": 0.0097772
+      }
+    },
+    {
+      "orderId": "o07",
+      "lineId": "4",
+      "raw": "2x10x16 spf x 12",
+      "qty": 12,
+      "gold": {
+        "raw": "2x10x16 spf x 12",
+        "sku": "LBR-2X10-16-SPF",
+        "qty": 12,
+        "unit": "each",
+        "shouldReview": false,
+        "reason": "Size, type and quantity are stated explicitly; unambiguous match."
+      },
+      "inShortlist": true,
+      "jev": {
+        "sku": "LBR-2X10-16-SPF",
+        "confidence": 1,
+        "unitOk": 0.95,
+        "unit": "each"
+      },
+      "claude": {
+        "sku": "LBR-2X10-16-SPF",
+        "confidence": "high",
+        "unit": "each"
+      },
+      "cost": {
+        "jev": 0.002100422,
+        "claude": 0.0097772
+      }
+    },
+    {
+      "orderId": "o07",
+      "lineId": "5",
+      "raw": "2x10 hangers 30",
+      "qty": 30,
+      "gold": {
+        "raw": "2x10 hangers 30",
+        "sku": "HDW-JH-2X10",
+        "qty": 30,
+        "unit": "each",
+        "shouldReview": false,
+        "reason": "Size, type and quantity are stated explicitly; unambiguous match."
+      },
+      "inShortlist": true,
+      "jev": {
+        "sku": "HDW-JH-2X10",
+        "confidence": 0.91,
+        "unitOk": 0.9,
+        "unit": "each"
+      },
+      "claude": {
+        "sku": "HDW-JH-2X10",
+        "confidence": "high",
+        "unit": "each"
+      },
+      "cost": {
+        "jev": 0.002094416,
+        "claude": 0.0097772
       }
     },
     {
       "orderId": "o08",
-      "lines": 5,
-      "shouldReview": 0,
+      "lineId": "1",
+      "raw": "1/2 cdx 12 sheets",
+      "qty": 12,
+      "gold": {
+        "raw": "1/2 cdx 12 sheets",
+        "sku": "SHT-PLY-CDX-12",
+        "qty": 12,
+        "unit": "sheet",
+        "shouldReview": false,
+        "reason": "Size, type and quantity are stated explicitly; unambiguous match."
+      },
+      "inShortlist": true,
       "jev": {
-        "approved": 5,
-        "correct": 5,
-        "wrongApproved": 0,
-        "matchMs": 445.9176660000012,
-        "matchUsd": 0.0012111959999999999,
-        "totalUsd": 0.010395195999999999
+        "sku": "SHT-PLY-CDX-12",
+        "confidence": 1,
+        "unitOk": 0.95,
+        "unit": "sheet"
       },
       "claude": {
-        "approved": 5,
-        "correct": 5,
-        "wrongApproved": 0,
-        "matchMs": 2097.7139160000006,
-        "matchUsd": 0.03631,
-        "totalUsd": 0.045494
+        "sku": "SHT-PLY-CDX-12",
+        "confidence": "high",
+        "unit": "sheet"
+      },
+      "cost": {
+        "jev": 0.002103542,
+        "claude": 0.0090988
+      }
+    },
+    {
+      "orderId": "o08",
+      "lineId": "2",
+      "raw": "3/4 tg osb 30",
+      "qty": 30,
+      "gold": {
+        "raw": "3/4 tg osb 30",
+        "sku": "SHT-OSB-2332",
+        "qty": 30,
+        "unit": "sheet",
+        "shouldReview": false,
+        "reason": "Size, type and quantity are stated explicitly; unambiguous match."
+      },
+      "inShortlist": true,
+      "jev": {
+        "sku": "SHT-OSB-2332",
+        "confidence": 1,
+        "unitOk": 0.94,
+        "unit": "sheet"
+      },
+      "claude": {
+        "sku": "SHT-OSB-2332",
+        "confidence": "high",
+        "unit": "sheet"
+      },
+      "cost": {
+        "jev": 0.002080274,
+        "claude": 0.0090988
+      }
+    },
+    {
+      "orderId": "o08",
+      "lineId": "3",
+      "raw": "3/4 pt ply x 4",
+      "qty": 4,
+      "gold": {
+        "raw": "3/4 pt ply x 4",
+        "sku": "SHT-PLY-PT-34",
+        "qty": 4,
+        "unit": "sheet",
+        "shouldReview": false,
+        "reason": "Size, type and quantity are stated explicitly; unambiguous match."
+      },
+      "inShortlist": true,
+      "jev": {
+        "sku": "SHT-PLY-PT-34",
+        "confidence": 0.88,
+        "unitOk": 0.94,
+        "unit": "sheet"
+      },
+      "claude": {
+        "sku": "SHT-PLY-PT-34",
+        "confidence": "high",
+        "unit": "sheet"
+      },
+      "cost": {
+        "jev": 0.00208922,
+        "claude": 0.0090988
+      }
+    },
+    {
+      "orderId": "o08",
+      "lineId": "4",
+      "raw": "liquid nails x 12",
+      "qty": 12,
+      "gold": {
+        "raw": "liquid nails x 12",
+        "sku": "SUP-ADH-CONST-10",
+        "qty": 12,
+        "unit": "each",
+        "shouldReview": false,
+        "reason": "Size, type and quantity are stated explicitly; unambiguous match."
+      },
+      "inShortlist": true,
+      "jev": {
+        "sku": "SUP-ADH-CONST-10",
+        "confidence": 0.99,
+        "unitOk": 0.94,
+        "unit": "each"
+      },
+      "claude": {
+        "sku": "SUP-ADH-CONST-10",
+        "confidence": "high",
+        "unit": "each"
+      },
+      "cost": {
+        "jev": 0.00208019,
+        "claude": 0.0090988
+      }
+    },
+    {
+      "orderId": "o08",
+      "lineId": "5",
+      "raw": "subfloor glue 12",
+      "qty": 12,
+      "gold": {
+        "raw": "subfloor glue 12",
+        "sku": "SUP-ADH-SUBFL-28",
+        "qty": 12,
+        "unit": "each",
+        "shouldReview": false,
+        "reason": "Size, type and quantity are stated explicitly; unambiguous match."
+      },
+      "inShortlist": true,
+      "jev": {
+        "sku": "SUP-ADH-SUBFL-28",
+        "confidence": 0.95,
+        "unitOk": 0.92,
+        "unit": "each"
+      },
+      "claude": {
+        "sku": "SUP-ADH-SUBFL-28",
+        "confidence": "high",
+        "unit": "each"
+      },
+      "cost": {
+        "jev": 0.00204197,
+        "claude": 0.0090988
       }
     },
     {
       "orderId": "o09",
-      "lines": 6,
-      "shouldReview": 0,
+      "lineId": "1",
+      "raw": "r20 15in x 8 bags",
+      "qty": 8,
+      "gold": {
+        "raw": "r20 15in x 8 bags",
+        "sku": "INS-R20-15",
+        "qty": 8,
+        "unit": "bag",
+        "shouldReview": false,
+        "reason": "Size, type and quantity are stated explicitly; unambiguous match."
+      },
+      "inShortlist": true,
       "jev": {
-        "approved": 6,
-        "correct": 6,
-        "wrongApproved": 0,
-        "matchMs": 718.3611670000028,
-        "matchUsd": 0.0014211119999999998,
-        "totalUsd": 0.010985112
+        "sku": "INS-R20-15",
+        "confidence": 0.96,
+        "unitOk": 0.95,
+        "unit": "bag"
       },
       "claude": {
-        "approved": 6,
-        "correct": 6,
-        "wrongApproved": 0,
-        "matchMs": 2005.7662500000006,
-        "matchUsd": 0.036474,
-        "totalUsd": 0.046037999999999996
+        "sku": "INS-R20-15",
+        "confidence": "high",
+        "unit": "bag"
+      },
+      "cost": {
+        "jev": 0.001811266,
+        "claude": 0.007673
+      }
+    },
+    {
+      "orderId": "o09",
+      "lineId": "2",
+      "raw": "r12 23in x 4",
+      "qty": 4,
+      "gold": {
+        "raw": "r12 23in x 4",
+        "sku": "INS-R12-23",
+        "qty": 4,
+        "unit": "bag",
+        "shouldReview": false,
+        "reason": "Size, type and quantity are stated explicitly; unambiguous match."
+      },
+      "inShortlist": true,
+      "jev": {
+        "sku": "INS-R12-23",
+        "confidence": 0.99,
+        "unitOk": 0.94,
+        "unit": "bag"
+      },
+      "claude": {
+        "sku": "INS-R12-23",
+        "confidence": "high",
+        "unit": "bag"
+      },
+      "cost": {
+        "jev": 0.001813114,
+        "claude": 0.007673
+      }
+    },
+    {
+      "orderId": "o09",
+      "lineId": "3",
+      "raw": "tyvek 9ft x 2",
+      "qty": 2,
+      "gold": {
+        "raw": "tyvek 9ft x 2",
+        "sku": "WTH-WRAP-9",
+        "qty": 2,
+        "unit": "roll",
+        "shouldReview": false,
+        "reason": "Size, type and quantity are stated explicitly; unambiguous match."
+      },
+      "inShortlist": true,
+      "jev": {
+        "sku": "WTH-WRAP-9",
+        "confidence": 0.98,
+        "unitOk": 0.88,
+        "unit": "roll"
+      },
+      "claude": {
+        "sku": "WTH-WRAP-9",
+        "confidence": "high",
+        "unit": "roll"
+      },
+      "cost": {
+        "jev": 0.001844026,
+        "claude": 0.007673
+      }
+    },
+    {
+      "orderId": "o09",
+      "lineId": "4",
+      "raw": "flashing tape 6in x 3",
+      "qty": 3,
+      "gold": {
+        "raw": "flashing tape 6in x 3",
+        "sku": "WTH-FLASH-6",
+        "qty": 3,
+        "unit": "roll",
+        "shouldReview": false,
+        "reason": "Size, type and quantity are stated explicitly; unambiguous match."
+      },
+      "inShortlist": true,
+      "jev": {
+        "sku": "WTH-FLASH-6",
+        "confidence": 0.91,
+        "unitOk": 0.94,
+        "unit": "roll"
+      },
+      "claude": {
+        "sku": "WTH-FLASH-6",
+        "confidence": "high",
+        "unit": "roll"
+      },
+      "cost": {
+        "jev": 0.001838272,
+        "claude": 0.007673
+      }
+    },
+    {
+      "orderId": "o09",
+      "lineId": "5",
+      "raw": "cap nails 2 boxes",
+      "qty": 2,
+      "gold": {
+        "raw": "cap nails 2 boxes",
+        "sku": "WTH-CAP-1",
+        "qty": 2,
+        "unit": "box",
+        "shouldReview": false,
+        "reason": "Size, type and quantity are stated explicitly; unambiguous match."
+      },
+      "inShortlist": true,
+      "jev": {
+        "sku": "WTH-CAP-1",
+        "confidence": 0.89,
+        "unitOk": 0.95,
+        "unit": "box"
+      },
+      "claude": {
+        "sku": "WTH-CAP-1",
+        "confidence": "high",
+        "unit": "box"
+      },
+      "cost": {
+        "jev": 0.0018422199999999999,
+        "claude": 0.007673
+      }
+    },
+    {
+      "orderId": "o09",
+      "lineId": "6",
+      "raw": "6 mil poly x1",
+      "qty": 1,
+      "gold": {
+        "raw": "6 mil poly x1",
+        "sku": "WTH-POLY-6",
+        "qty": 1,
+        "unit": "roll",
+        "shouldReview": false,
+        "reason": "Size, type and quantity are stated explicitly; unambiguous match."
+      },
+      "inShortlist": true,
+      "jev": {
+        "sku": "WTH-POLY-6",
+        "confidence": 0.97,
+        "unitOk": 0.96,
+        "unit": "roll"
+      },
+      "claude": {
+        "sku": "WTH-POLY-6",
+        "confidence": "high",
+        "unit": "roll"
+      },
+      "cost": {
+        "jev": 0.0018362139999999999,
+        "claude": 0.007673
       }
     },
     {
       "orderId": "o10",
-      "lines": 6,
-      "shouldReview": 0,
+      "lineId": "1",
+      "raw": "6x6x10 pt post x 8",
+      "qty": 8,
+      "gold": {
+        "raw": "6x6x10 pt post x 8",
+        "sku": "LBR-6X6-10-PT",
+        "qty": 8,
+        "unit": "each",
+        "shouldReview": false,
+        "reason": "Size, type and quantity are stated explicitly; unambiguous match."
+      },
+      "inShortlist": true,
       "jev": {
-        "approved": 6,
-        "correct": 6,
-        "wrongApproved": 0,
-        "matchMs": 693.8287909999999,
-        "matchUsd": 0.0014101920000000002,
-        "totalUsd": 0.011298192000000002
+        "sku": "LBR-6X6-10-PT",
+        "confidence": 0.99,
+        "unitOk": 0.95,
+        "unit": "each"
       },
       "claude": {
-        "approved": 6,
-        "correct": 6,
-        "wrongApproved": 0,
-        "matchMs": 2393.608042,
-        "matchUsd": 0.036697999999999995,
-        "totalUsd": 0.046585999999999995
+        "sku": "LBR-6X6-10-PT",
+        "confidence": "high",
+        "unit": "each"
+      },
+      "cost": {
+        "jev": 0.0019125160000000002,
+        "claude": 0.007764333333333332
+      }
+    },
+    {
+      "orderId": "o10",
+      "lineId": "2",
+      "raw": "4x4x8 treated x 10",
+      "qty": 10,
+      "gold": {
+        "raw": "4x4x8 treated x 10",
+        "sku": "LBR-4X4-8-PT",
+        "qty": 10,
+        "unit": "each",
+        "shouldReview": false,
+        "reason": "Size, type and quantity are stated explicitly; unambiguous match."
+      },
+      "inShortlist": true,
+      "jev": {
+        "sku": "LBR-4X4-8-PT",
+        "confidence": 0.95,
+        "unitOk": 0.95,
+        "unit": "each"
+      },
+      "claude": {
+        "sku": "LBR-4X4-8-PT",
+        "confidence": "high",
+        "unit": "each"
+      },
+      "cost": {
+        "jev": 0.001907896,
+        "claude": 0.007764333333333332
+      }
+    },
+    {
+      "orderId": "o10",
+      "lineId": "3",
+      "raw": "sonotube 12 x 8",
+      "qty": 8,
+      "gold": {
+        "raw": "sonotube 12 x 8",
+        "sku": "CON-FORM-SONO-12",
+        "qty": 8,
+        "unit": "each",
+        "shouldReview": false,
+        "reason": "Size, type and quantity are stated explicitly; unambiguous match."
+      },
+      "inShortlist": true,
+      "jev": {
+        "sku": "CON-FORM-SONO-12",
+        "confidence": 0.89,
+        "unitOk": 0.92,
+        "unit": "each"
+      },
+      "claude": {
+        "sku": "CON-FORM-SONO-12",
+        "confidence": "high",
+        "unit": "each"
+      },
+      "cost": {
+        "jev": 0.0018608980000000002,
+        "claude": 0.007764333333333332
+      }
+    },
+    {
+      "orderId": "o10",
+      "lineId": "4",
+      "raw": "30kg concrete x 30",
+      "qty": 30,
+      "gold": {
+        "raw": "30kg concrete x 30",
+        "sku": "CON-30KG",
+        "qty": 30,
+        "unit": "bag",
+        "shouldReview": false,
+        "reason": "Size, type and quantity are stated explicitly; unambiguous match."
+      },
+      "inShortlist": true,
+      "jev": {
+        "sku": "CON-30KG",
+        "confidence": 1,
+        "unitOk": 0.93,
+        "unit": "bag"
+      },
+      "claude": {
+        "sku": "CON-30KG",
+        "confidence": "high",
+        "unit": "bag"
+      },
+      "cost": {
+        "jev": 0.0018626620000000002,
+        "claude": 0.007764333333333332
+      }
+    },
+    {
+      "orderId": "o10",
+      "lineId": "5",
+      "raw": "anchor bolts 1/2 x 8 x 20",
+      "qty": 20,
+      "gold": {
+        "raw": "anchor bolts 1/2 x 8 x 20",
+        "sku": "FST-ATROD-12-8",
+        "qty": 20,
+        "unit": "each",
+        "shouldReview": false,
+        "reason": "Size, type and quantity are stated explicitly; unambiguous match."
+      },
+      "inShortlist": true,
+      "jev": {
+        "sku": "FST-ATROD-12-8",
+        "confidence": 0.93,
+        "unitOk": 0.94,
+        "unit": "each"
+      },
+      "claude": {
+        "sku": "FST-ATROD-12-8",
+        "confidence": "high",
+        "unit": "each"
+      },
+      "cost": {
+        "jev": 0.0018896260000000002,
+        "claude": 0.007764333333333332
+      }
+    },
+    {
+      "orderId": "o10",
+      "lineId": "6",
+      "raw": "wedge anchors 1/2 x 1 box",
+      "qty": 1,
+      "gold": {
+        "raw": "wedge anchors 1/2 x 1 box",
+        "sku": "FST-ANCH-12-50",
+        "qty": 1,
+        "unit": "box",
+        "shouldReview": false,
+        "reason": "Size, type and quantity are stated explicitly; unambiguous match."
+      },
+      "inShortlist": true,
+      "jev": {
+        "sku": "FST-ANCH-12-50",
+        "confidence": 0.96,
+        "unitOk": 0.96,
+        "unit": "box"
+      },
+      "claude": {
+        "sku": "FST-ANCH-12-50",
+        "confidence": "high",
+        "unit": "box"
+      },
+      "cost": {
+        "jev": 0.0018645940000000002,
+        "claude": 0.007764333333333332
       }
     },
     {
       "orderId": "o11",
-      "lines": 3,
-      "shouldReview": 2,
+      "lineId": "1",
+      "raw": "20 of the 2x6 (8ft)",
+      "qty": 20,
+      "gold": {
+        "raw": "20 of the 2x6 (8ft)",
+        "sku": "LBR-2X6-08-SPF",
+        "qty": 20,
+        "unit": "each",
+        "shouldReview": false,
+        "reason": "Size, type and quantity are stated explicitly; unambiguous match."
+      },
+      "inShortlist": true,
       "jev": {
-        "approved": 1,
-        "correct": 3,
-        "wrongApproved": 0,
-        "matchMs": 326.34841700000106,
-        "matchUsd": 0.000596484,
-        "totalUsd": 0.008932484
+        "sku": "LBR-2X6-08-SPF",
+        "confidence": 1,
+        "unitOk": 0.96,
+        "unit": "each"
       },
       "claude": {
-        "approved": 1,
-        "correct": 3,
-        "wrongApproved": 0,
-        "matchMs": 1364.114207999999,
-        "matchUsd": 0.035244,
-        "totalUsd": 0.043579999999999994
+        "sku": "LBR-2X6-08-SPF",
+        "confidence": "high",
+        "unit": "each"
+      },
+      "cost": {
+        "jev": 0.003042804666666667,
+        "claude": 0.014526666666666667
+      }
+    },
+    {
+      "orderId": "o11",
+      "lineId": "2",
+      "raw": "15 of the 2x4",
+      "qty": 15,
+      "gold": {
+        "raw": "15 of the 2x4",
+        "sku": null,
+        "qty": 15,
+        "unit": "each",
+        "shouldReview": true,
+        "reason": "Length missing (2x4 comes in 8/10/12/16 ft and precut); product cannot be determined."
+      },
+      "inShortlist": true,
+      "jev": {
+        "sku": null,
+        "confidence": 0.57,
+        "unitOk": 0,
+        "unit": null
+      },
+      "claude": {
+        "sku": null,
+        "confidence": "low",
+        "unit": null
+      },
+      "cost": {
+        "jev": 0.0029505306666666666,
+        "claude": 0.014526666666666667
+      }
+    },
+    {
+      "orderId": "o11",
+      "lineId": "3",
+      "raw": "2 of the 4x4 posts",
+      "qty": 2,
+      "gold": {
+        "raw": "2 of the 4x4 posts",
+        "sku": null,
+        "qty": 2,
+        "unit": "each",
+        "shouldReview": true,
+        "reason": "Species and length missing (SPF or PT, 8/10/12 ft); product cannot be determined."
+      },
+      "inShortlist": true,
+      "jev": {
+        "sku": null,
+        "confidence": 0.95,
+        "unitOk": 0,
+        "unit": null
+      },
+      "claude": {
+        "sku": null,
+        "confidence": "low",
+        "unit": null
+      },
+      "cost": {
+        "jev": 0.0029391486666666667,
+        "claude": 0.014526666666666667
       }
     },
     {
       "orderId": "o12",
-      "lines": 4,
-      "shouldReview": 4,
+      "lineId": "1",
+      "raw": "a bundle of shingles",
+      "qty": 1,
+      "gold": {
+        "raw": "a bundle of shingles",
+        "sku": null,
+        "qty": 1,
+        "unit": "bundle",
+        "shouldReview": true,
+        "reason": "Shingle style and color not stated; product cannot be determined."
+      },
+      "inShortlist": true,
       "jev": {
-        "approved": 0,
-        "correct": 4,
-        "wrongApproved": 0,
-        "matchMs": 414.64741700000013,
-        "matchUsd": 0.0007617539999999999,
-        "totalUsd": 0.009307754
+        "sku": null,
+        "confidence": 0.51,
+        "unitOk": 0,
+        "unit": null
       },
       "claude": {
-        "approved": 0,
-        "correct": 3,
-        "wrongApproved": 0,
-        "matchMs": 1613.304750000003,
-        "matchUsd": 0.035337999999999994,
-        "totalUsd": 0.04388399999999999
+        "sku": null,
+        "confidence": "low",
+        "unit": null
+      },
+      "cost": {
+        "jev": 0.002286566,
+        "claude": 0.010970999999999998
+      }
+    },
+    {
+      "orderId": "o12",
+      "lineId": "2",
+      "raw": "2 rolls felt",
+      "qty": 2,
+      "gold": {
+        "raw": "2 rolls felt",
+        "sku": null,
+        "qty": 2,
+        "unit": "roll",
+        "shouldReview": true,
+        "reason": "Felt weight not stated (#15, #30, synthetic); product cannot be determined."
+      },
+      "inShortlist": true,
+      "jev": {
+        "sku": null,
+        "confidence": 0.78,
+        "unitOk": 0,
+        "unit": null
+      },
+      "claude": {
+        "sku": null,
+        "confidence": "low",
+        "unit": null
+      },
+      "cost": {
+        "jev": 0.00229925,
+        "claude": 0.010970999999999998
+      }
+    },
+    {
+      "orderId": "o12",
+      "lineId": "3",
+      "raw": "a box of screws",
+      "qty": 1,
+      "gold": {
+        "raw": "a box of screws",
+        "sku": null,
+        "qty": 1,
+        "unit": "box",
+        "shouldReview": true,
+        "reason": "No screw type, size or box size given; cannot be matched."
+      },
+      "inShortlist": true,
+      "jev": {
+        "sku": null,
+        "confidence": 0.97,
+        "unitOk": 0,
+        "unit": null
+      },
+      "claude": {
+        "sku": null,
+        "confidence": "low",
+        "unit": null
+      },
+      "cost": {
+        "jev": 0.002317394,
+        "claude": 0.010970999999999998
+      }
+    },
+    {
+      "orderId": "o12",
+      "lineId": "4",
+      "raw": "half a pallet of block",
+      "qty": 0.5,
+      "gold": {
+        "raw": "half a pallet of block",
+        "sku": "MAS-CMU-8",
+        "qty": null,
+        "unit": null,
+        "shouldReview": true,
+        "reason": "Quantity is a fraction of a pallet, not a count; block size assumed 8x8x16."
+      },
+      "inShortlist": true,
+      "jev": {
+        "sku": "MAS-CMU-8",
+        "confidence": 0.78,
+        "unitOk": 0.18,
+        "unit": "each"
+      },
+      "claude": {
+        "sku": null,
+        "confidence": "low",
+        "unit": null
+      },
+      "cost": {
+        "jev": 0.0024045439999999998,
+        "claude": 0.010970999999999998
       }
     },
     {
       "orderId": "o13",
-      "lines": 4,
-      "shouldReview": 1,
+      "lineId": "1",
+      "raw": "50 studs",
+      "qty": 50,
+      "gold": {
+        "raw": "50 studs",
+        "sku": "LBR-2X4-PRECUT-SPF",
+        "qty": 50,
+        "unit": "each",
+        "shouldReview": false,
+        "reason": "Size, type and quantity are stated explicitly; unambiguous match."
+      },
+      "inShortlist": true,
       "jev": {
-        "approved": 3,
-        "correct": 4,
-        "wrongApproved": 0,
-        "matchMs": 317.2350000000006,
-        "matchUsd": 0.0008903999999999999,
-        "totalUsd": 0.0095084
+        "sku": "LBR-2X4-PRECUT-SPF",
+        "confidence": 1,
+        "unitOk": 0.91,
+        "unit": "each"
       },
       "claude": {
-        "approved": 3,
-        "correct": 4,
-        "wrongApproved": 0,
-        "matchMs": 2412.052082999995,
-        "matchUsd": 0.035734,
-        "totalUsd": 0.044352
+        "sku": "LBR-2X4-PRECUT-SPF",
+        "confidence": "high",
+        "unit": "each"
+      },
+      "cost": {
+        "jev": 0.00240419,
+        "claude": 0.011088
+      }
+    },
+    {
+      "orderId": "o13",
+      "lineId": "2",
+      "raw": "3 sheets of 1/2 plywood",
+      "qty": 3,
+      "gold": {
+        "raw": "3 sheets of 1/2 plywood",
+        "sku": "SHT-PLY-CDX-12",
+        "qty": 3,
+        "unit": "sheet",
+        "shouldReview": false,
+        "reason": "Size, type and quantity are stated explicitly; unambiguous match."
+      },
+      "inShortlist": true,
+      "jev": {
+        "sku": "SHT-PLY-CDX-12",
+        "confidence": 1,
+        "unitOk": 0.97,
+        "unit": "sheet"
+      },
+      "claude": {
+        "sku": "SHT-PLY-CDX-12",
+        "confidence": "high",
+        "unit": "sheet"
+      },
+      "cost": {
+        "jev": 0.002408936,
+        "claude": 0.011088
+      }
+    },
+    {
+      "orderId": "o13",
+      "lineId": "3",
+      "raw": "6 buckets of mud",
+      "qty": 6,
+      "gold": {
+        "raw": "6 buckets of mud",
+        "sku": "DRY-MUD-45",
+        "qty": 6,
+        "unit": "bucket",
+        "shouldReview": false,
+        "reason": "Size, type and quantity are stated explicitly; unambiguous match."
+      },
+      "inShortlist": true,
+      "jev": {
+        "sku": "DRY-MUD-45",
+        "confidence": 0.93,
+        "unitOk": 0.92,
+        "unit": "bucket"
+      },
+      "claude": {
+        "sku": "DRY-MUD-45",
+        "confidence": "high",
+        "unit": "bucket"
+      },
+      "cost": {
+        "jev": 0.0023849120000000003,
+        "claude": 0.011088
+      }
+    },
+    {
+      "orderId": "o13",
+      "lineId": "4",
+      "raw": "100 feet of tape",
+      "qty": 100,
+      "gold": {
+        "raw": "100 feet of tape",
+        "sku": null,
+        "qty": null,
+        "unit": null,
+        "shouldReview": true,
+        "reason": "Tape type not stated and the quantity is in feet, which the catalog does not sell; cannot be determined."
+      },
+      "inShortlist": true,
+      "jev": {
+        "sku": null,
+        "confidence": 0.82,
+        "unitOk": 0,
+        "unit": null
+      },
+      "claude": {
+        "sku": null,
+        "confidence": "low",
+        "unit": null
+      },
+      "cost": {
+        "jev": 0.0023103620000000003,
+        "claude": 0.011088
       }
     },
     {
       "orderId": "o14",
-      "lines": 4,
-      "shouldReview": 4,
+      "lineId": "1",
+      "raw": "10 lbs of 16d nails",
+      "qty": 10,
+      "gold": {
+        "raw": "10 lbs of 16d nails",
+        "sku": null,
+        "qty": null,
+        "unit": null,
+        "shouldReview": true,
+        "reason": "Common vs sinker and box size not stated; pounds do not map to one box size; cannot be determined."
+      },
+      "inShortlist": true,
       "jev": {
-        "approved": 0,
-        "correct": 3,
-        "wrongApproved": 0,
-        "matchMs": 329.484083000003,
-        "matchUsd": 0.0007676339999999999,
-        "totalUsd": 0.009451634
+        "sku": null,
+        "confidence": 0.81,
+        "unitOk": 0,
+        "unit": null
       },
       "claude": {
-        "approved": 0,
-        "correct": 4,
-        "wrongApproved": 0,
-        "matchMs": 1460.9364169999972,
-        "matchUsd": 0.03539,
-        "totalUsd": 0.044074
+        "sku": null,
+        "confidence": "low",
+        "unit": null
+      },
+      "cost": {
+        "jev": 0.0023333720000000002,
+        "claude": 0.0110185
+      }
+    },
+    {
+      "orderId": "o14",
+      "lineId": "2",
+      "raw": "4 tubes of caulk",
+      "qty": 4,
+      "gold": {
+        "raw": "4 tubes of caulk",
+        "sku": null,
+        "qty": 4,
+        "unit": "each",
+        "shouldReview": true,
+        "reason": "Silicone vs latex not stated; product cannot be determined."
+      },
+      "inShortlist": true,
+      "jev": {
+        "sku": null,
+        "confidence": 0.79,
+        "unitOk": 0,
+        "unit": null
+      },
+      "claude": {
+        "sku": null,
+        "confidence": "low",
+        "unit": null
+      },
+      "cost": {
+        "jev": 0.002349374,
+        "claude": 0.0110185
+      }
+    },
+    {
+      "orderId": "o14",
+      "lineId": "3",
+      "raw": "2 bags cement",
+      "qty": 2,
+      "gold": {
+        "raw": "2 bags cement",
+        "sku": null,
+        "qty": 2,
+        "unit": "bag",
+        "shouldReview": true,
+        "reason": "'Cement' could mean Portland cement or concrete mix; no default, so the product cannot be determined."
+      },
+      "inShortlist": true,
+      "jev": {
+        "sku": "MAS-CEM-GU-30KG",
+        "confidence": 0.54,
+        "unitOk": 0.97,
+        "unit": "bag"
+      },
+      "claude": {
+        "sku": null,
+        "confidence": "low",
+        "unit": null
+      },
+      "cost": {
+        "jev": 0.002429006,
+        "claude": 0.0110185
+      }
+    },
+    {
+      "orderId": "o14",
+      "lineId": "4",
+      "raw": "30 m of 15M rebar",
+      "qty": 30,
+      "gold": {
+        "raw": "30 m of 15M rebar",
+        "sku": null,
+        "qty": null,
+        "unit": null,
+        "shouldReview": true,
+        "reason": "Piece length not stated (3 m vs 6 m) and quantity is in metres; cannot be determined."
+      },
+      "inShortlist": true,
+      "jev": {
+        "sku": null,
+        "confidence": 0.71,
+        "unitOk": 0,
+        "unit": null
+      },
+      "claude": {
+        "sku": null,
+        "confidence": "low",
+        "unit": null
+      },
+      "cost": {
+        "jev": 0.002339882,
+        "claude": 0.0110185
       }
     },
     {
       "orderId": "o15",
-      "lines": 3,
-      "shouldReview": 0,
+      "lineId": "1",
+      "raw": "30 2x4x8",
+      "qty": 30,
+      "gold": {
+        "raw": "30 2x4x8",
+        "sku": "LBR-2X4-08-SPF",
+        "qty": 30,
+        "unit": "each",
+        "shouldReview": false,
+        "reason": "Size, type and quantity are stated explicitly; unambiguous match."
+      },
+      "inShortlist": true,
       "jev": {
-        "approved": 3,
-        "correct": 3,
-        "wrongApproved": 0,
-        "matchMs": 346.7288750000007,
-        "matchUsd": 0.0007539420000000001,
-        "totalUsd": 0.009421942
+        "sku": "LBR-2X4-08-SPF",
+        "confidence": 1,
+        "unitOk": 0.96,
+        "unit": "each"
       },
       "claude": {
-        "approved": 3,
-        "correct": 3,
-        "wrongApproved": 0,
-        "matchMs": 1775.7836250000037,
-        "matchUsd": 0.03567,
-        "totalUsd": 0.044338
+        "sku": "LBR-2X4-08-SPF",
+        "confidence": "high",
+        "unit": "each"
+      },
+      "cost": {
+        "jev": 0.0031535553333333338,
+        "claude": 0.014779333333333334
+      }
+    },
+    {
+      "orderId": "o15",
+      "lineId": "2",
+      "raw": "12 2x6x8",
+      "qty": 12,
+      "gold": {
+        "raw": "12 2x6x8",
+        "sku": "LBR-2X6-08-SPF",
+        "qty": 12,
+        "unit": "each",
+        "shouldReview": false,
+        "reason": "Size, type and quantity are stated explicitly; unambiguous match."
+      },
+      "inShortlist": true,
+      "jev": {
+        "sku": "LBR-2X6-08-SPF",
+        "confidence": 1,
+        "unitOk": 0.96,
+        "unit": "each"
+      },
+      "claude": {
+        "sku": "LBR-2X6-08-SPF",
+        "confidence": "high",
+        "unit": "each"
+      },
+      "cost": {
+        "jev": 0.0031559493333333335,
+        "claude": 0.014779333333333334
+      }
+    },
+    {
+      "orderId": "o15",
+      "lineId": "3",
+      "raw": "4 sheets of 3/4 ply cdx",
+      "qty": 4,
+      "gold": {
+        "raw": "4 sheets of 3/4 ply cdx",
+        "sku": "SHT-PLY-CDX-34",
+        "qty": 4,
+        "unit": "sheet",
+        "shouldReview": false,
+        "reason": "Size, type and quantity are stated explicitly; unambiguous match."
+      },
+      "inShortlist": true,
+      "jev": {
+        "sku": "SHT-PLY-CDX-34",
+        "confidence": 0.94,
+        "unitOk": 0.97,
+        "unit": "sheet"
+      },
+      "claude": {
+        "sku": "SHT-PLY-CDX-34",
+        "confidence": "high",
+        "unit": "sheet"
+      },
+      "cost": {
+        "jev": 0.0031124373333333336,
+        "claude": 0.014779333333333334
       }
     },
     {
       "orderId": "o16",
-      "lines": 1,
-      "shouldReview": 1,
+      "lineId": "1",
+      "raw": "Same as last time but double the drywall and skip the mud.",
+      "qty": null,
+      "gold": {
+        "raw": "Same as last time but double the drywall and skip the mud",
+        "sku": null,
+        "qty": null,
+        "unit": null,
+        "shouldReview": true,
+        "reason": "References a prior order that is not in the data; unresolvable."
+      },
+      "inShortlist": true,
       "jev": {
-        "approved": 0,
-        "correct": 1,
-        "wrongApproved": 0,
-        "matchMs": 281.3915830000042,
-        "matchUsd": 0.00012033,
-        "totalUsd": 0.00783833
+        "sku": null,
+        "confidence": 1,
+        "unitOk": 0,
+        "unit": null
       },
       "claude": {
-        "approved": 0,
-        "correct": 1,
-        "wrongApproved": 0,
-        "matchMs": 1383.119000000006,
-        "matchUsd": 0.034566,
-        "totalUsd": 0.042284
+        "sku": null,
+        "confidence": "high",
+        "unit": null
+      },
+      "cost": {
+        "jev": 0.00783833,
+        "claude": 0.042284
       }
     },
     {
       "orderId": "o17",
-      "lines": 5,
-      "shouldReview": 0,
+      "lineId": "1",
+      "raw": "pressure treated 2x8x12 for the joists, need 14",
+      "qty": 14,
+      "gold": {
+        "raw": "pressure treated 2x8x12 for the joists, need 14",
+        "sku": "LBR-2X8-12-PT",
+        "qty": 14,
+        "unit": "each",
+        "shouldReview": false,
+        "reason": "Size, type and quantity are stated explicitly; unambiguous match."
+      },
+      "inShortlist": true,
       "jev": {
-        "approved": 5,
-        "correct": 5,
-        "wrongApproved": 0,
-        "matchMs": 1435.5645000000077,
-        "matchUsd": 0.001337868,
-        "totalUsd": 0.011307868
+        "sku": "LBR-2X8-12-PT",
+        "confidence": 1,
+        "unitOk": 0.96,
+        "unit": "each"
       },
       "claude": {
-        "approved": 5,
-        "correct": 5,
-        "wrongApproved": 0,
-        "matchMs": 2413.0224580000067,
-        "matchUsd": 0.03657,
-        "totalUsd": 0.04654
+        "sku": "LBR-2X8-12-PT",
+        "confidence": "high",
+        "unit": "each"
+      },
+      "cost": {
+        "jev": 0.002264564,
+        "claude": 0.009308
+      }
+    },
+    {
+      "orderId": "o17",
+      "lineId": "2",
+      "raw": "2 of the 2x10x12 PT for the beam",
+      "qty": 2,
+      "gold": {
+        "raw": "2 of the 2x10x12 PT",
+        "sku": "LBR-2X10-12-PT",
+        "qty": 2,
+        "unit": "each",
+        "shouldReview": false,
+        "reason": "Size, type and quantity are stated explicitly; unambiguous match."
+      },
+      "inShortlist": true,
+      "jev": {
+        "sku": "LBR-2X10-12-PT",
+        "confidence": 1,
+        "unitOk": 0.96,
+        "unit": "each"
+      },
+      "claude": {
+        "sku": "LBR-2X10-12-PT",
+        "confidence": "high",
+        "unit": "each"
+      },
+      "cost": {
+        "jev": 0.0022648160000000002,
+        "claude": 0.009308
+      }
+    },
+    {
+      "orderId": "o17",
+      "lineId": "3",
+      "raw": "9 4x4x8 PT for posts",
+      "qty": 9,
+      "gold": {
+        "raw": "9 4x4x8 PT",
+        "sku": "LBR-4X4-8-PT",
+        "qty": 9,
+        "unit": "each",
+        "shouldReview": false,
+        "reason": "Size, type and quantity are stated explicitly; unambiguous match."
+      },
+      "inShortlist": true,
+      "jev": {
+        "sku": "LBR-4X4-8-PT",
+        "confidence": 1,
+        "unitOk": 0.96,
+        "unit": "each"
+      },
+      "claude": {
+        "sku": "LBR-4X4-8-PT",
+        "confidence": "high",
+        "unit": "each"
+      },
+      "cost": {
+        "jev": 0.002252174,
+        "claude": 0.009308
+      }
+    },
+    {
+      "orderId": "o17",
+      "lineId": "4",
+      "raw": "Deck screws 3in tan one 25lb box",
+      "qty": 1,
+      "gold": {
+        "raw": "Deck screws 3in tan one 25lb box",
+        "sku": "FST-DECK-3-TAN-25LB",
+        "qty": 1,
+        "unit": "box",
+        "shouldReview": false,
+        "reason": "Size, type and quantity are stated explicitly; unambiguous match."
+      },
+      "inShortlist": true,
+      "jev": {
+        "sku": "FST-DECK-3-TAN-25LB",
+        "confidence": 0.99,
+        "unitOk": 0.97,
+        "unit": "box"
+      },
+      "claude": {
+        "sku": "FST-DECK-3-TAN-25LB",
+        "confidence": "high",
+        "unit": "box"
+      },
+      "cost": {
+        "jev": 0.0022712,
+        "claude": 0.009308
+      }
+    },
+    {
+      "orderId": "o17",
+      "lineId": "5",
+      "raw": "joist hangers for the 2x8s, 28 of em",
+      "qty": 28,
+      "gold": {
+        "raw": "joist hangers for the 2x8s, 28 of em",
+        "sku": "HDW-JH-2X8",
+        "qty": 28,
+        "unit": "each",
+        "shouldReview": false,
+        "reason": "Size, type and quantity are stated explicitly; unambiguous match."
+      },
+      "inShortlist": true,
+      "jev": {
+        "sku": "HDW-JH-2X8",
+        "confidence": 0.98,
+        "unitOk": 0.93,
+        "unit": "each"
+      },
+      "claude": {
+        "sku": "HDW-JH-2X8",
+        "confidence": "high",
+        "unit": "each"
+      },
+      "cost": {
+        "jev": 0.002255114,
+        "claude": 0.009308
       }
     },
     {
       "orderId": "o18",
-      "lines": 6,
-      "shouldReview": 1,
+      "lineId": "1",
+      "raw": "18 bundles weathered wood shingles",
+      "qty": 18,
+      "gold": {
+        "raw": "18 bundles weathered wood shingles",
+        "sku": "ROF-SHG-ARCH-BRN",
+        "qty": 18,
+        "unit": "bundle",
+        "shouldReview": false,
+        "reason": "Size, type and quantity are stated explicitly; unambiguous match."
+      },
+      "inShortlist": true,
       "jev": {
-        "approved": 5,
-        "correct": 6,
-        "wrongApproved": 0,
-        "matchMs": 442.69679200000246,
-        "matchUsd": 0.001357692,
-        "totalUsd": 0.011023692
+        "sku": "ROF-SHG-ARCH-BRN",
+        "confidence": 0.97,
+        "unitOk": 0.93,
+        "unit": "bundle"
       },
       "claude": {
-        "approved": 5,
-        "correct": 6,
-        "wrongApproved": 0,
-        "matchMs": 2254.597000000009,
-        "matchUsd": 0.036724,
-        "totalUsd": 0.04639
+        "sku": "ROF-SHG-ARCH-BRN",
+        "confidence": "high",
+        "unit": "bundle"
+      },
+      "cost": {
+        "jev": 0.0018479219999999999,
+        "claude": 0.007731666666666666
+      }
+    },
+    {
+      "orderId": "o18",
+      "lineId": "2",
+      "raw": "2 rolls of the 30# felt",
+      "qty": 2,
+      "gold": {
+        "raw": "2 rolls of the 30# felt",
+        "sku": "ROF-UNDER-30",
+        "qty": 2,
+        "unit": "roll",
+        "shouldReview": false,
+        "reason": "Size, type and quantity are stated explicitly; unambiguous match."
+      },
+      "inShortlist": true,
+      "jev": {
+        "sku": "ROF-UNDER-30",
+        "confidence": 1,
+        "unitOk": 0.96,
+        "unit": "roll"
+      },
+      "claude": {
+        "sku": "ROF-UNDER-30",
+        "confidence": "high",
+        "unit": "roll"
+      },
+      "cost": {
+        "jev": 0.0018468719999999998,
+        "claude": 0.007731666666666666
+      }
+    },
+    {
+      "orderId": "o18",
+      "lineId": "3",
+      "raw": "6 brown drip edge",
+      "qty": 6,
+      "gold": {
+        "raw": "6 brown drip edge",
+        "sku": "ROF-DRIP-10-BRN",
+        "qty": 6,
+        "unit": "each",
+        "shouldReview": false,
+        "reason": "Size, type and quantity are stated explicitly; unambiguous match."
+      },
+      "inShortlist": true,
+      "jev": {
+        "sku": "ROF-DRIP-10-BRN",
+        "confidence": 1,
+        "unitOk": 0.96,
+        "unit": "each"
+      },
+      "claude": {
+        "sku": "ROF-DRIP-10-BRN",
+        "confidence": "high",
+        "unit": "each"
+      },
+      "cost": {
+        "jev": 0.00186573,
+        "claude": 0.007731666666666666
+      }
+    },
+    {
+      "orderId": "o18",
+      "lineId": "4",
+      "raw": "2 hip and ridge",
+      "qty": 2,
+      "gold": {
+        "raw": "2 hip and ridge",
+        "sku": "ROF-SHG-RIDGE",
+        "qty": 2,
+        "unit": "bundle",
+        "shouldReview": false,
+        "reason": "Size, type and quantity are stated explicitly; unambiguous match."
+      },
+      "inShortlist": true,
+      "jev": {
+        "sku": "ROF-SHG-RIDGE",
+        "confidence": 0.99,
+        "unitOk": 0.9,
+        "unit": "bundle"
+      },
+      "claude": {
+        "sku": "ROF-SHG-RIDGE",
+        "confidence": "high",
+        "unit": "bundle"
+      },
+      "cost": {
+        "jev": 0.0018236459999999997,
+        "claude": 0.007731666666666666
+      }
+    },
+    {
+      "orderId": "o18",
+      "lineId": "5",
+      "raw": "5 ridge vent",
+      "qty": 5,
+      "gold": {
+        "raw": "5 ridge vent",
+        "sku": "ROF-VENT-RIDGE",
+        "qty": 5,
+        "unit": "each",
+        "shouldReview": false,
+        "reason": "Size, type and quantity are stated explicitly; unambiguous match."
+      },
+      "inShortlist": true,
+      "jev": {
+        "sku": "ROF-VENT-RIDGE",
+        "confidence": 0.99,
+        "unitOk": 0.94,
+        "unit": "each"
+      },
+      "claude": {
+        "sku": "ROF-VENT-RIDGE",
+        "confidence": "high",
+        "unit": "each"
+      },
+      "cost": {
+        "jev": 0.0018669479999999998,
+        "claude": 0.007731666666666666
+      }
+    },
+    {
+      "orderId": "o18",
+      "lineId": "6",
+      "raw": "do you guys rent a dumpster",
+      "qty": null,
+      "gold": {
+        "raw": "do you guys rent a dumpster",
+        "sku": null,
+        "qty": null,
+        "unit": null,
+        "shouldReview": true,
+        "reason": "A question, not an order line; dumpster is not in the catalog."
+      },
+      "inShortlist": true,
+      "jev": {
+        "sku": null,
+        "confidence": 1,
+        "unitOk": 0,
+        "unit": null
+      },
+      "claude": {
+        "sku": null,
+        "confidence": "high",
+        "unit": null
+      },
+      "cost": {
+        "jev": 0.0017725739999999999,
+        "claude": 0.007731666666666666
       }
     },
     {
       "orderId": "o19",
-      "lines": 4,
-      "shouldReview": 4,
+      "lineId": "1",
+      "raw": "200 2x4x8 spf",
+      "qty": 200,
+      "gold": {
+        "raw": "200 2x4x8 spf",
+        "sku": "LBR-2X4-08-SPF",
+        "qty": 200,
+        "unit": "each",
+        "shouldReview": true,
+        "reason": "Quantity is very large for one order; verify with the customer."
+      },
+      "inShortlist": true,
       "jev": {
-        "approved": 0,
-        "correct": 4,
-        "wrongApproved": 0,
-        "matchMs": 369.9710839999898,
-        "matchUsd": 0.0007947240000000001,
-        "totalUsd": 0.009566724
+        "sku": "LBR-2X4-08-SPF",
+        "confidence": 1,
+        "unitOk": 0.93,
+        "unit": "each"
       },
       "claude": {
-        "approved": 0,
-        "correct": 4,
-        "wrongApproved": 0,
-        "matchMs": 5041.067792000002,
-        "matchUsd": 0.038265999999999994,
-        "totalUsd": 0.047037999999999996
+        "sku": "LBR-2X4-08-SPF",
+        "confidence": "medium",
+        "unit": "each"
+      },
+      "cost": {
+        "jev": 0.002458062,
+        "claude": 0.011759499999999999
+      }
+    },
+    {
+      "orderId": "o19",
+      "lineId": "2",
+      "raw": "5000 sheets of 1/2 drywall",
+      "qty": 5000,
+      "gold": {
+        "raw": "5000 sheets of 1/2 drywall",
+        "sku": "DRY-12-REG-4X8",
+        "qty": 5000,
+        "unit": "sheet",
+        "shouldReview": true,
+        "reason": "Absurd quantity (about 5,000 sheets); likely a typo."
+      },
+      "inShortlist": true,
+      "jev": {
+        "sku": "DRY-12-REG-4X8",
+        "confidence": 0.99,
+        "unitOk": 0.91,
+        "unit": "sheet"
+      },
+      "claude": {
+        "sku": "DRY-12-REG-4X8",
+        "confidence": "low",
+        "unit": "sheet"
+      },
+      "cost": {
+        "jev": 0.002458776,
+        "claude": 0.011759499999999999
+      }
+    },
+    {
+      "orderId": "o19",
+      "lineId": "3",
+      "raw": "3 bobcat rentals",
+      "qty": 3,
+      "gold": {
+        "raw": "3 bobcat rentals",
+        "sku": null,
+        "qty": 3,
+        "unit": null,
+        "shouldReview": true,
+        "reason": "Equipment rental is not in the catalog."
+      },
+      "inShortlist": true,
+      "jev": {
+        "sku": null,
+        "confidence": 1,
+        "unitOk": 0,
+        "unit": null
+      },
+      "claude": {
+        "sku": null,
+        "confidence": "high",
+        "unit": null
+      },
+      "cost": {
+        "jev": 0.002304636,
+        "claude": 0.011759499999999999
+      }
+    },
+    {
+      "orderId": "o19",
+      "lineId": "4",
+      "raw": "1 tile saw",
+      "qty": 1,
+      "gold": {
+        "raw": "1 tile saw",
+        "sku": null,
+        "qty": 1,
+        "unit": null,
+        "shouldReview": true,
+        "reason": "Tool is not in the catalog."
+      },
+      "inShortlist": true,
+      "jev": {
+        "sku": null,
+        "confidence": 1,
+        "unitOk": 0,
+        "unit": null
+      },
+      "claude": {
+        "sku": null,
+        "confidence": "high",
+        "unit": null
+      },
+      "cost": {
+        "jev": 0.00234525,
+        "claude": 0.011759499999999999
       }
     },
     {
       "orderId": "o20",
-      "lines": 4,
-      "shouldReview": 3,
+      "lineId": "1",
+      "raw": "9000 pcs 2x6x10 SPF",
+      "qty": 9000,
+      "gold": {
+        "raw": "9000 pcs 2x6x10 SPF",
+        "sku": "LBR-2X6-10-SPF",
+        "qty": 9000,
+        "unit": "each",
+        "shouldReview": true,
+        "reason": "Absurd quantity; likely a typo."
+      },
+      "inShortlist": true,
       "jev": {
-        "approved": 1,
-        "correct": 4,
-        "wrongApproved": 0,
-        "matchMs": 441.2495409999974,
-        "matchUsd": 0.000817026,
-        "totalUsd": 0.009853025999999999
+        "sku": "LBR-2X6-10-SPF",
+        "confidence": 1,
+        "unitOk": 0.9,
+        "unit": "each"
       },
       "claude": {
-        "approved": 1,
-        "correct": 4,
-        "wrongApproved": 0,
-        "matchMs": 3710.594041999997,
-        "matchUsd": 0.037496,
-        "totalUsd": 0.046532000000000004
+        "sku": "LBR-2X6-10-SPF",
+        "confidence": "low",
+        "unit": "each"
+      },
+      "cost": {
+        "jev": 0.00252633,
+        "claude": 0.011633000000000001
+      }
+    },
+    {
+      "orderId": "o20",
+      "lineId": "2",
+      "raw": "cedar shakes 2 sq",
+      "qty": 2,
+      "gold": {
+        "raw": "cedar shakes 2 sq",
+        "sku": null,
+        "qty": 2,
+        "unit": "sq",
+        "shouldReview": true,
+        "reason": "Cedar shakes are not in the catalog."
+      },
+      "inShortlist": true,
+      "jev": {
+        "sku": null,
+        "confidence": 1,
+        "unitOk": 0,
+        "unit": null
+      },
+      "claude": {
+        "sku": null,
+        "confidence": "high",
+        "unit": null
+      },
+      "cost": {
+        "jev": 0.0024270839999999995,
+        "claude": 0.011633000000000001
+      }
+    },
+    {
+      "orderId": "o20",
+      "lineId": "3",
+      "raw": "marine plywood 3/4 x 60",
+      "qty": 60,
+      "gold": {
+        "raw": "marine plywood 3/4 x 60",
+        "sku": null,
+        "qty": 60,
+        "unit": "sheet",
+        "shouldReview": true,
+        "reason": "Marine plywood is not in the catalog."
+      },
+      "inShortlist": true,
+      "jev": {
+        "sku": null,
+        "confidence": 0.92,
+        "unitOk": 0,
+        "unit": null
+      },
+      "claude": {
+        "sku": null,
+        "confidence": "high",
+        "unit": null
+      },
+      "cost": {
+        "jev": 0.0023805479999999997,
+        "claude": 0.011633000000000001
+      }
+    },
+    {
+      "orderId": "o20",
+      "lineId": "4",
+      "raw": "40 5-gal pails deck stain",
+      "qty": 40,
+      "gold": {
+        "raw": "40 5-gal pails deck stain",
+        "sku": "SUP-SEAL-EXT-5G",
+        "qty": 40,
+        "unit": "pail",
+        "shouldReview": false,
+        "reason": "One matching product; 40 is under the 50-unit large-quantity threshold."
+      },
+      "inShortlist": true,
+      "jev": {
+        "sku": "SUP-SEAL-EXT-5G",
+        "confidence": 0.99,
+        "unitOk": 0.83,
+        "unit": "pail"
+      },
+      "claude": {
+        "sku": "SUP-SEAL-EXT-5G",
+        "confidence": "high",
+        "unit": "pail"
+      },
+      "cost": {
+        "jev": 0.0025190639999999997,
+        "claude": 0.011633000000000001
       }
     }
   ],
+  "costs": [
+    {
+      "orderId": "o01",
+      "jevUsd": 0.010776318,
+      "claudeUsd": 0.045876
+    },
+    {
+      "orderId": "o02",
+      "jevUsd": 0.011345394,
+      "claudeUsd": 0.049344
+    },
+    {
+      "orderId": "o03",
+      "jevUsd": 0.010013603999999999,
+      "claudeUsd": 0.045003999999999995
+    },
+    {
+      "orderId": "o04",
+      "jevUsd": 0.01001124,
+      "claudeUsd": 0.045072
+    },
+    {
+      "orderId": "o05",
+      "jevUsd": 0.010722055999999999,
+      "claudeUsd": 0.045767999999999996
+    },
+    {
+      "orderId": "o06",
+      "jevUsd": 0.010621733999999999,
+      "claudeUsd": 0.045688000000000006
+    },
+    {
+      "orderId": "o07",
+      "jevUsd": 0.010417059999999999,
+      "claudeUsd": 0.048886
+    },
+    {
+      "orderId": "o08",
+      "jevUsd": 0.010395195999999999,
+      "claudeUsd": 0.045494
+    },
+    {
+      "orderId": "o09",
+      "jevUsd": 0.010985112,
+      "claudeUsd": 0.046037999999999996
+    },
+    {
+      "orderId": "o10",
+      "jevUsd": 0.011298192000000002,
+      "claudeUsd": 0.046585999999999995
+    },
+    {
+      "orderId": "o11",
+      "jevUsd": 0.008932484,
+      "claudeUsd": 0.043579999999999994
+    },
+    {
+      "orderId": "o12",
+      "jevUsd": 0.009307754,
+      "claudeUsd": 0.04388399999999999
+    },
+    {
+      "orderId": "o13",
+      "jevUsd": 0.0095084,
+      "claudeUsd": 0.044352
+    },
+    {
+      "orderId": "o14",
+      "jevUsd": 0.009451634,
+      "claudeUsd": 0.044074
+    },
+    {
+      "orderId": "o15",
+      "jevUsd": 0.009421942,
+      "claudeUsd": 0.044338
+    },
+    {
+      "orderId": "o16",
+      "jevUsd": 0.00783833,
+      "claudeUsd": 0.042284
+    },
+    {
+      "orderId": "o17",
+      "jevUsd": 0.011307868,
+      "claudeUsd": 0.04654
+    },
+    {
+      "orderId": "o18",
+      "jevUsd": 0.011023692,
+      "claudeUsd": 0.04639
+    },
+    {
+      "orderId": "o19",
+      "jevUsd": 0.009566724,
+      "claudeUsd": 0.047037999999999996
+    },
+    {
+      "orderId": "o20",
+      "jevUsd": 0.009853025999999999,
+      "claudeUsd": 0.046532000000000004
+    }
+  ],
+  "models": [
+    "claude-sonnet-5-5"
+  ],
+  "provenance": {
+    "reviewer": "Mike Costanzo (2026-09-29)",
+    "runDate": "Original API run date not recorded",
+    "jevModel": "jev-latest (resolved version not recorded)"
+  },
   "caveats": [
-    "Small sample: 20 orders and 88 lines. Read these as signals, not benchmarks.",
-    "Parts of the pipeline, including Jev's quantity check, were designed after seeing these same orders, so the results are in-sample. No held-out set has been run.",
-    "Costs are each call's recorded token counts at published list prices (lib/pricing.ts); billed dollars would come from the Admin API cost report.",
-    "15 of 88 lines had no catalog match and skipped Jev's second call, which flatters Jev's cost; this set deliberately includes many.",
-    "Results vary slightly between runs."
+    "Small sample: 20 orders, 88 lines. Read these as signals, not benchmarks.",
+    "Parts of the pipeline, including Jev's quantity check, were designed after seeing these same orders. No held-out set has been run.",
+    "Costs use recorded token counts at list prices, rather than billed dollars. The matched-lines estimate allocates shared reading and Claude batch matching cost equally across each order's lines; Jev matching uses recorded per-line cost.",
+    "Results vary between API runs. Re-scoring saved outputs does not establish repeatability of new API runs.",
+    "Claude only approves its own high ratings; sliders change Jev's gates. Both apply the same missing and large quantity rules."
   ]
 }

@@ -2,6 +2,8 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { createPortal } from "react-dom";
+import { useThresholds } from "@/lib/settings";
+import { DEFAULT_T, UNIT_OK_MIN as DEFAULT_UNIT } from "@/lib/pipeline/route";
 import { trackEvent } from "@/lib/analytics";
 import { readOrderStream, type OrderProgress, type OrderStage } from "@/lib/order-progress";
 import { OrderLoading } from "@/components/OrderLoading";
@@ -16,7 +18,7 @@ import { applyTheme, readTheme, THEMES, type Theme } from "@/lib/theme";
 import { CLAUDE_INPUT_PER_TOKEN, CLAUDE_OUTPUT_PER_TOKEN, JEV_INPUT_PER_TOKEN } from "@/lib/pricing";
 import { computeView, displayChoices, NONE, segmentText, totals, type Mode, type SlimCatalog, type ViewLine } from "@/lib/view";
 
-const usd = (n: number) => (n < 0.01 ? `$${n.toFixed(4)}` : `$${n.toFixed(3)}`);
+const usd = (n: number) => `$${n.toFixed(4)}`;
 const ms = (n: number) => (n >= 1000 ? `${(n / 1000).toFixed(1)} s` : `${Math.round(n)} ms`);
 
 const Person = () => (
@@ -58,8 +60,7 @@ export function ReviewApp({ samples, catalog, initialOrder }: { samples: OrderRe
   const [runs, setRuns] = useState<Run[]>([]); // live runs from the composer, newest first
   const [selected, setSelected] = useState(initialOrder ?? samples.find((x) => x.orderId === DEFAULT_SAMPLE)?.orderId ?? samples[0].orderId);
   const [mode, setMode] = useState<Mode>("jev");
-  const [T, setT] = useState(0.85);
-  const [unitMin, setUnitMin] = useState(0.8);
+  const { T, unitMin, setT, setUnitMin } = useThresholds();
   // The orders sidebar is open by default on wide screens and closed on phones, where it opens as a bottom sheet.
   const [desktopOpen, setDesktopOpen] = useState(true);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -493,8 +494,6 @@ function Walkthrough({ step, composerReady, onBack, onNext, onClose }: { step: W
   );
 }
 
-const DEFAULT_T = 0.85;
-const DEFAULT_UNIT = 0.8;
 
 type Thresholds = { mode: Mode; T: number; unitMin: number; setT: (v: number) => void; setUnitMin: (v: number) => void };
 
@@ -995,10 +994,9 @@ function CostPanel({ result, samples, mode, T, unitMin, catalog, onMode, setT, s
   ];
   const maxUsd = Math.max(...sides.map((x) => x.t.usd));
   const [jev, cla] = sides;
-  const cheaper = cla.t.matchUsd / Math.max(jev.t.matchUsd, 1e-9);
-  const faster = cla.t.matchMs / Math.max(jev.t.matchMs, 1);
+  const cheaper = cla.t.usd / jev.t.usd;
   const diff = a.filter((l, i) => l.sku !== b[i].sku);
-  const per10k = (usdPerOrder: number) => `$${(usdPerOrder * PER).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  const per10k = (usdPerOrder: number) => `$${(usdPerOrder * PER).toLocaleString("en-US", { minimumFractionDigits: 4, maximumFractionDigits: 4 })}`;
 
   return (
     <div className="flex flex-col">
@@ -1021,9 +1019,9 @@ function CostPanel({ result, samples, mode, T, unitMin, catalog, onMode, setT, s
         {settingsOpen && <SettingsDialog mode={mode} T={T} unitMin={unitMin} setT={setT} setUnitMin={setUnitMin} changed={changed} onReplay={() => { setSettingsOpen(false); onReplay(); }} onClose={() => setSettingsOpen(false)} />}
         {helpOpen && <HelpDialog onClose={() => setHelpOpen(false)} />}
 
-        <div className="rounded-xl bg-okbg px-4 py-3 text-ok">
-          <p className="text-[12px] text-ok">Claude with Jev&apos;s matching is</p>
-          <p className="mt-0.5 font-mono text-[15px] font-semibold">{Math.round(cheaper)}× cheaper · {faster.toFixed(1)}× faster</p>
+        <div className="rounded-xl bg-brandsoft px-4 py-3">
+          <p className="font-mono text-lg font-semibold">{cheaper.toFixed(1)}× this order</p>
+          <p className="mt-1 text-[12px] text-muted">{usd(jev.t.usd)} vs {usd(cla.t.usd)} · single run, results vary</p>
         </div>
 
         {sides.map((x) => (
@@ -1035,22 +1033,15 @@ function CostPanel({ result, samples, mode, T, unitMin, catalog, onMode, setT, s
             style={{ "--tour-delay": x.key === "jev" ? "0ms" : "600ms" } as React.CSSProperties}
           >
           <div className="flex items-center justify-between gap-2 text-[14px]">
-            <span className="font-semibold">{x.label}</span>
+            <span className={`font-semibold ${x.key === "jev" ? "text-branddeep" : "text-ink"}`}>{x.label}</span>
           </div>
           <div className="mt-1.5 flex items-baseline justify-between gap-2">
             <span className="font-mono text-xl font-medium tracking-tight">{usd(x.t.usd)}</span>
             <span className="font-mono text-[12px] text-muted">{ms(x.t.ms)}</span>
           </div>
           <div className="mt-2 flex h-1.5 overflow-hidden rounded-full" style={{ background: "var(--line)" }} aria-hidden>
-            {x.key === "jev" ? (
-              <span style={{ width: `${(100 * x.t.usd) / maxUsd}%`, background: "var(--ok)" }} />
-            ) : (
-              // Claude only: light red up to the Claude + Jev cost, full red for the overage beyond it
-              <>
-                <span style={{ width: `${(100 * Math.min(x.t.usd, jev.t.usd)) / maxUsd}%`, background: "var(--over-soft)" }} />
-                <span style={{ width: `${(100 * Math.max(0, x.t.usd - jev.t.usd)) / maxUsd}%`, background: "var(--over)" }} />
-              </>
-            )}
+            <span style={{ width: `${(100 * x.t.parseUsd) / maxUsd}%`, background: "var(--bar)" }} />
+            <span style={{ width: `${(100 * x.t.matchUsd) / maxUsd}%`, background: "var(--brand)" }} />
           </div>
           <dl className="mt-3 grid grid-cols-[1fr_auto_auto] gap-x-3 gap-y-1 text-[12px]">
             <dt className="text-muted">Reading</dt>
@@ -1063,14 +1054,14 @@ function CostPanel({ result, samples, mode, T, unitMin, catalog, onMode, setT, s
             <dd className="col-span-2 text-right font-mono">{x.approved} / {x.lines}</dd>
           </dl>
           <div className="mt-3 flex items-baseline justify-between border-t border-line pt-2.5 text-[12px]">
-            <span className="text-muted">Per 10,000 orders</span>
+            <span className="text-muted">Per 10,000 orders<small className="block text-[11px]">this order × 10,000</small></span>
             <span className="font-mono text-[14px] font-medium">{per10k(x.t.usd)}</span>
           </div>
           </button>
         ))}
 
         <Link href="/results" className="flex min-h-11 items-center px-1 text-[13px] font-medium underline underline-offset-2">
-          See all {samples.length} sample results →
+          See results on all {samples.length} sample orders →
         </Link>
 
         <p className="px-1 text-[12px] text-muted">
@@ -1109,7 +1100,7 @@ function HelpDialog({ onClose }: { onClose: () => void }) {
               <h3 className="text-[13px] font-semibold uppercase tracking-wider text-ink">How the comparison works</h3>
               <p><span className="font-medium text-ink">Claude + Jev:</span> Claude reads the message and extracts the order lines. Jev then evaluates each line against a short catalog shortlist, checking the category, product, and quantity clarity.</p>
               <p><span className="font-medium text-ink">Claude only:</span> Claude reads the same order, then matches each line against the full catalog in one comparison pass. Both views use the same order and catalog context.</p>
-              <p><span className="font-medium text-ink">The savings:</span> The green comparison shows Jev&apos;s matching cost and time against Claude&apos;s matching cost and time for this order. The cards below include the full pipeline, and “per 10,000 orders” scales each run&apos;s total cost.</p>
+              <p><span className="font-medium text-ink">The savings:</span> The headline compares the whole order cost. In both bars, grey is reading and the accent is matching, on the same scale. “Per 10,000 orders” scales this run&apos;s total cost.</p>
             </div>
           </div>
           <button onClick={onClose} className="mt-6 h-9 rounded-lg bg-brand px-4 text-[13px] font-semibold text-onbrand">Got it</button>

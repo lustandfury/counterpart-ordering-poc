@@ -7,6 +7,7 @@ import {
   buildRows, claudeApprove, claudeBands, jevApprove, jevBands, mean, shortlistRecall, summarize, type Gold,
 } from "../lib/eval/metrics";
 import { DEFAULT_T, UNIT_OK_MIN } from "../lib/pipeline/route";
+import { allocateCosts, resultsMetrics, type EvalData } from "../lib/eval/display";
 import type { OrderResult } from "../lib/types";
 
 const labels = JSON.parse(readFileSync("data/labels.json", "utf8")) as Record<string, Gold[]>;
@@ -17,7 +18,7 @@ const results = readdirSync("results")
 const units = productBySku();
 const rows = buildRows(results, labels, (s) => units.get(s)?.unit ?? null);
 
-const f = (n: number | null, d = 1) => (n == null ? "n/a" : n.toFixed(d));
+const f = (n: number | null, d = 0) => (n == null ? "n/a" : n.toFixed(d));
 const T = DEFAULT_T;
 const jev = summarize(rows, (r) => r.jev.sku, jevApprove(T));
 const cla = summarize(rows, (r) => r.claude.sku, claudeApprove);
@@ -29,6 +30,21 @@ const jevLineMs = mean(results.map((r) => sum(r.jev.lines.map((l) => l.ms))));
 const jevUsd = mean(results.map((r) => r.jev.costUsd));
 const claUsd = mean(results.map((r) => r.claudeOnly.costUsd));
 const parseUsd = mean(results.map((r) => r.parse.costUsd));
+
+const displayData: EvalData = {
+  rows: allocateCosts(rows, results),
+  costs: results.map((r) => ({ orderId: r.orderId, jevUsd: r.parse.costUsd + r.jev.costUsd, claudeUsd: r.parse.costUsd + r.claudeOnly.costUsd })),
+  models: [...new Set(results.map((r) => r.model))],
+  provenance: { reviewer: "Mike Costanzo (2026-09-29)", runDate: "Original API run date not recorded", jevModel: "jev-latest (resolved version not recorded)" },
+  caveats: [
+    `Small sample: ${n} orders, ${rows.length} lines. Read these as signals, not benchmarks.`,
+    "Parts of the pipeline, including Jev's quantity check, were designed after seeing these same orders. No held-out set has been run.",
+    "Costs use recorded token counts at list prices, rather than billed dollars. The matched-lines estimate allocates shared reading and Claude batch matching cost equally across each order's lines; Jev matching uses recorded per-line cost.",
+    "Results vary between API runs. Re-scoring saved outputs does not establish repeatability of new API runs.",
+    "Claude only approves its own high ratings; sliders change Jev's gates. Both apply the same missing and large quantity rules.",
+  ],
+};
+const display = resultsMetrics(displayData, T, UNIT_OK_MIN);
 
 // per-line CSV
 const q = (s: unknown) => `"${String(s ?? "").replace(/"/g, '""')}"`;
@@ -57,6 +73,16 @@ const bandRow = (b: { band: string; lines: number; accuracy: number | null }) =>
 
 const md = `# Evaluation summary
 
+${display.headline}
+
+Right product: ${display.jev.correct} vs ${display.claude.correct} of ${rows.length}. Auto-approved: ${display.jev.approved} vs ${display.claude.approved} of ${rows.length}. Wrong among approved: ${display.jev.wrongApproved} of ${display.jev.approved} vs ${display.claude.wrongApproved} of ${display.claude.approved}. Unneeded reviews: ${display.jev.unneeded} vs ${display.claude.unneeded} of ${rows.length}.
+
+Whole-pipeline mean cost per order: $${display.jevCost.toFixed(4)} vs $${display.claudeCost.toFixed(4)} (Claude + Jev vs Claude only); per 10,000: $${(display.jevCost * 10000).toFixed(2)} vs $${(display.claudeCost * 10000).toFixed(2)}.
+Excluding ${display.excludedLines} lines with no catalog match: ${display.matchedRatio.toFixed(1)}× cheaper on ${display.matchedLines} matched lines. Shared reading and Claude batch matching are allocated equally across each order's lines; Jev matching uses per-line recorded costs.
+${displayData.provenance.reviewer}. ${displayData.provenance.runDate}. Jev: ${displayData.provenance.jevModel}.
+
+Suggested message to Vadim: “On a small synthetic test set (${n} orders, ${rows.length} lines), pairing Claude with a much smaller matching model ${display.sameDecisions === rows.length ? "made the same decisions as Claude alone" : `agreed with Claude alone on ${display.sameDecisions} of ${rows.length} review decisions`} at about ${display.leadRatio.toFixed(1)}x lower cost ${display.matchedRatio < 3.5 ? "on catalog-matched lines" : "per order"}.”
+
 ${n} orders, ${rows.length} lines. Model: ${results[0].model}. Jev threshold T = ${T}, unit_ok >= 0.8. Small sample: read these as signals, not benchmarks.
 Matching step only (parsing is shared and excluded), except the last row.
 
@@ -75,7 +101,7 @@ Matching step only (parsing is shared and excluded), except the last row.
 Whole-pipeline cost includes the shared parse step (${parseUsd.toFixed(4)} USD per order). Costs are recorded token counts at list prices (lib/pricing.ts).
 Caveats:
 - Timing: Jev makes up to two calls per line (product, then quantity check), five lines at a time, so its wall-clock time depends on concurrency; the sum of the per-line calls is shown too. Claude-only is one large call (about 17k input tokens). Both ran together in one run, so each includes some contention and network noise.
-- ${noneLines} of ${rows.length} lines chose NONE (no catalog match) and skipped the second Jev call, so their \`jev_unit_ok\` is stored as 0 meaning "not asked". That saves Jev time and cost, but it depends on how many not-in-catalog lines the set has, and this set deliberately has many. Do not average \`unit_ok\` over all lines.
+- ${noneLines} of ${rows.length} lines chose NONE (no catalog match) and skipped the second Jev call, so their \`jev_unit_ok\` is stored as 0 meaning "not asked". Excluding those lines, the whole-pipeline allocated cost ratio is ${display.matchedRatio.toFixed(1)}×. This set deliberately has many no-match lines. Do not average \`unit_ok\` over all lines.
 - The quantity check was the only reason for flagging on ${gateOnly} of ${rows.length} lines. The check adds little on this set with the current wording (eval.csv shows which lines).
 - The second Jev call (its existence, its position after the product choice, and its wording) was designed after seeing this same set of 20 orders fail the first version. The Jev approve rate is therefore in-sample and optimistic, and no held-out set has been run.
 - Results vary a little from run to run (the parse and the Claude-only call are not deterministic): across three clean runs Jev's approve rate was 72.7%, 73.9% and 75.0% (the last after a one-line reword of a prompt heading).
@@ -129,53 +155,5 @@ ${rows
 writeFileSync("results/eval-summary.md", md);
 console.log(md);
 
-// structured copy for the Results dashboard
-const byOrder = results.map((r) => {
-  const rs = rows.filter((x) => x.orderId === r.orderId);
-  const side = (pickSku: (x: (typeof rs)[number]) => string | null, approve: (x: (typeof rs)[number]) => boolean, m: { ms: number; costUsd: number }) => ({
-    approved: rs.filter(approve).length,
-    correct: rs.filter((x) => pickSku(x) === x.gold.sku).length,
-    wrongApproved: rs.filter((x) => approve(x) && pickSku(x) !== x.gold.sku).length,
-    matchMs: m.ms,
-    matchUsd: m.costUsd,
-    totalUsd: m.costUsd + r.parse.costUsd,
-  });
-  return {
-    orderId: r.orderId,
-    lines: rs.length,
-    shouldReview: rs.filter((x) => x.gold.shouldReview).length,
-    jev: side((x) => x.jev.sku, jevApprove(T), r.jev),
-    claude: side((x) => x.claude.sku, claudeApprove, r.claudeOnly),
-  };
-});
-writeFileSync(
-  "results/eval.json",
-  JSON.stringify(
-    {
-      orders: n,
-      lines: rows.length,
-      model: results[0].model,
-      thresholds: { productConfidence: T, quantityClarity: UNIT_OK_MIN },
-      summary: {
-        jev: { ...jev, matchMs: jevMs, matchUsd: jevUsd, totalUsd: parseUsd + jevUsd },
-        claude: { ...cla, matchMs: claMs, matchUsd: claUsd, totalUsd: parseUsd + claUsd },
-        parseUsd,
-      },
-      bands: { jev: jevBands(rows), claude: claudeBands(rows) },
-      shortlistRecall: shortlistRecall(rows),
-      wrong: rows
-        .filter((r) => r.jev.sku !== r.gold.sku || r.claude.sku !== r.gold.sku)
-        .map((r) => ({ orderId: r.orderId, raw: r.raw, key: r.gold.sku, jev: r.jev.sku, jevConfidence: r.jev.confidence, jevApproved: jevApprove(T)(r), claude: r.claude.sku, claudeConfidence: r.claude.confidence, claudeApproved: claudeApprove(r) })),
-      byOrder,
-      caveats: [
-        `Small sample: ${n} orders and ${rows.length} lines. Read these as signals, not benchmarks.`,
-        "Parts of the pipeline, including Jev's quantity check, were designed after seeing these same orders, so the results are in-sample. No held-out set has been run.",
-        "Costs are each call's recorded token counts at published list prices (lib/pricing.ts); billed dollars would come from the Admin API cost report.",
-        `${noneLines} of ${rows.length} lines had no catalog match and skipped Jev's second call, which flatters Jev's cost; this set deliberately includes many.`,
-        "Results vary slightly between runs.",
-      ],
-    },
-    null,
-    2,
-  ) + "\n",
-);
+// Stored raw confidences and scoring labels let the dashboard re-route without API calls.
+writeFileSync("results/eval.json", JSON.stringify(displayData, null, 2) + "\n");

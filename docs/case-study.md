@@ -238,3 +238,10 @@ Read as signals, not benchmarks: 20 orders, tuned in-sample, costs from token co
 **Happened:** what we observed, with numbers.
 **Changed:** what it altered in the product or the process.
 ```
+
+
+## Results display and threshold exploration — September 30, 2026
+
+The live panel now compares the whole-order costs directly and draws shared reading and matching as grey and accent segments on one scale. The results dashboard leads with the finding: same accuracy and decisions on all 88 lines, at 4.5× lower whole-order cost. At defaults, each pipeline gets 87 products right, auto-approves 66 with zero wrong products, and flags one line unnecessarily. Excluding 15 Jev no-match lines gives an allocated whole-pipeline saving of 4.4× on 73 lines; shared batch costs are divided equally across each order's lines.
+
+Quality cards show counts first. The time card is removed. Both approval columns remain for transparency, with a badge when any line's decision differs. Thresholds persist in a shared browser store and re-route the saved per-line confidences throughout the dashboard without API calls. Table totals, cost means, confidence bands, misses, and headline use the same scoring function. Method notes identify Mike's answer-key review on September 29 and explicitly mark the original run date and resolved Jev version as unrecorded. The older step-only comparisons above describe historical iterations; the current claim is whole-order cost.

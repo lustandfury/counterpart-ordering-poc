@@ -41,23 +41,20 @@ A second page, **Sample results** (`/results`), is a dashboard for the 20 saved 
 
 20 synthetic orders (88 lines) scored against a hand-reviewed answer key. The full report is in [`results/eval-summary.md`](results/eval-summary.md), with one row per line in [`results/eval.csv`](results/eval.csv).
 
+**Same accuracy and the same review decisions on all 88 lines, at 4.5× lower cost per order.** These are the default thresholds (product 0.85, quantity 0.80); the dashboard follows the review sliders without new API calls.
+
 | | Claude only | Claude + Jev |
 | --- | --- | --- |
-| Lines matched to the right product | 98.9% | 98.9% |
-| Lines auto-approved | 75.0% | 75.0% |
-| Wrong product among auto-approved lines | 0% | 0% |
-| Matching step, time per order | 2.5 s | 0.5 s |
-| Matching step, cost per order | $0.037 | $0.001 |
+| Right product | 87 of 88 (99%) | 87 of 88 (99%) |
+| Lines auto-approved | 66 of 88 (75%) | 66 of 88 (75%) |
+| Wrong product among auto-approved | 0 of 66 | 0 of 66 |
+| Unneeded reviews | 1 of 88 | 1 of 88 |
+| Whole pipeline, mean cost per order | $0.0456 | $0.0101 |
 | Whole pipeline, cost per 10,000 orders | $456.38 | $101.40 |
 
-**What this supports:** on this set, Jev cleared the same share of lines for auto-approval as Claude alone, with no wrong approvals, and its matching step was roughly 36x cheaper and about 4.7x faster on the clock (about 1.3x if you add up every call, because Jev's lines run in parallel). Its confidence was trustworthy: every line it rated at 0.7 or above was right.
+Excluding the 15 lines where Jev selected no catalog product, the saving is **4.4×** across 73 matched lines. Jev matching uses per-line recorded costs; shared reading and Claude batch matching are allocated equally across each order's lines. The per-10,000 figures scale the unrounded mean.
 
-**What it doesn't:** it doesn't show that Jev is more accurate. Read these as signals, not benchmarks:
-- The set is small: 20 orders. There were only two wrong product picks in total, one from each pipeline (Jev's on "2 bags cement", Claude's on "half a pallet of block"), and both were flagged for the rep rather than approved.
-- Parts of the pipeline, including Jev's quantity check, were designed after seeing these same orders. The results are in-sample, and no held-out set has been run.
-- Costs are computed from each call's recorded token counts at published list prices (`lib/pricing.ts`); the API reports tokens, not dollars.
-- The set deliberately includes many products that aren't in the catalog. Those skip Jev's second call, which flatters its cost.
-- Results vary between runs, and one run can flip a single line: Claude-only scored 100% on an earlier run and 98.9% on the latest, while Jev went from 97.7% to 98.9%. The comparison is best read as "level on accuracy", not as a ranking.
+Read these as signals, not benchmarks: 20 synthetic orders, tuned in-sample, with no held-out set. Mike Costanzo reviewed the answer key on September 29, 2026. Costs use token counts at list prices in `lib/pricing.ts`. With zero wrong approvals among 66 lines, the approximate 95% upper bound is still ~4.5%. Re-scoring the saved results is deterministic; it does not measure variation across fresh API runs. The original API run date and resolved Jev model version were not recorded.
 
 ## Run it locally
 
