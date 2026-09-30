@@ -66,6 +66,11 @@ Each entry: what we did, what happened, what it changed.
 **Happened:** putting the costs next to the work made the trade-off visible per order: on the default order, Jev's matching step cost about 60x less and ran about 5x faster, while both approved the same 3 of 4 lines. Across the 20 saved orders it is about $15 vs $68 per 1,000 orders. The screenshots also exposed misleading reasons on unmatched lines ("quantity unclear 0.00", "large quantity") for checks that are never run without a product.
 **Changed:** those reasons are gone (approvals unchanged, evaluation output byte-identical), each sidebar order shows how many lines need a check, and the interaction test now drives the sidebar.
 
+### 10. Designing for legibility
+**Did:** restyled the workspace toward a lighter, calmer look, using a public product website's light sections as a reference (Mike's direction): a warm paper background with white surfaces, DM Sans at 15px with 1.6 line height, soft cards (a faint outline and shadow instead of hard borders), larger row heights and more space between sections. We took the qualities, not the branding: no logo, no brand colors, and green and amber stay as the only signals.
+**Happened:** the extra space made the page taller, and the auto-scroll to the flagged line then hid the order summary behind the pinned toolbar on first load. Text contrast stayed above AA (muted text 6.2:1, control outlines 3.7:1).
+**Changed:** the view follows the cursor only after the rep moves it, and cost figures no longer wrap mid-number.
+
 ## Where it stands
 
 | | Claude only | Claude + Jev |

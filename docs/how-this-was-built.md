@@ -45,3 +45,7 @@ The first blind-labeler pass disagreed with my labels wherever a line depended o
 ## Workspace layout
 - The screen is now a three-pane workspace: collapsible orders sidebar with a composer for live runs (hidden by default, ⌘B), the conversation-style review in the center, and a cost assessment panel on the right comparing both pipelines for the current order and on average across the samples. The old fixed footer and comparison drawer are folded into that panel.
 - Routing no longer lists the quantity check or large-quantity rule as reasons on lines with no product match (neither applies without a product). Approvals and the evaluation output are unchanged.
+
+## Visual refresh
+- Lighter theme with more whitespace: paper background, white "card" surfaces (faint outline + soft shadow), DM Sans 15px / 1.6, taller rows. Tokens in `app/globals.css`; contrast re-checked (all text at least 5.7:1, control outlines 3.7:1).
+- Auto-scroll now follows the cursor only after the rep moves it, so the order summary is visible on load.

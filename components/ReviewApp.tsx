@@ -84,35 +84,35 @@ export function ReviewApp({ samples, catalog }: { samples: OrderResult[]; catalo
 
   return (
     <div className="flex h-dvh flex-col overflow-hidden">
-      <header className="flex h-11 shrink-0 items-center gap-2 border-b border-line bg-panel2 px-2 text-sm">
+      <header className="flex h-14 shrink-0 items-center gap-3 border-b border-line bg-panel px-4 text-[15px]">
         <button
           onClick={() => setSidebar((v) => !v)}
           aria-expanded={sidebar}
           aria-controls="orders"
           aria-label={sidebar ? "Hide orders" : "Show orders"}
           title="Orders (⌘B)"
-          className="grid h-8 w-8 place-items-center rounded-md text-muted hover:bg-panel hover:text-ink"
+          className="grid h-9 w-9 place-items-center rounded-lg text-muted hover:bg-bg hover:text-ink"
         >
           <SidebarIcon />
         </button>
-        <strong className="font-semibold">Counterpart</strong>
+        <strong className="text-base font-semibold tracking-tight">Counterpart</strong>
         <span className="text-muted" aria-hidden>/</span>
-        <button onClick={() => setSidebar(true)} className="truncate rounded px-1 text-muted hover:bg-panel hover:text-ink">
+        <button onClick={() => setSidebar(true)} className="truncate rounded-md px-1.5 py-0.5 text-muted hover:bg-bg hover:text-ink">
           {live ? "Your order" : `Order ${result.orderId}`}
         </button>
-        <span className="ml-auto hidden rounded-full border border-line px-2 py-0.5 text-xs text-muted sm:inline">outside-in sketch · synthetic data · not affiliated with any company</span>
+        <span className="ml-auto hidden rounded-full bg-bg px-3 py-1 text-[13px] text-muted sm:inline">outside-in sketch · synthetic data · not affiliated with any company</span>
       </header>
 
       <div className="relative flex min-h-0 flex-1 max-lg:flex-col max-lg:overflow-y-auto">
         {sidebar && (
           <>
             <button aria-label="Close orders" tabIndex={-1} onClick={() => setSidebar(false)} className="fixed inset-0 z-20 bg-black/30 lg:hidden" />
-            <aside id="orders" aria-label="Orders" className="flex w-72 shrink-0 flex-col border-r border-line bg-panel2 max-lg:fixed max-lg:inset-y-0 max-lg:left-0 max-lg:z-30 max-lg:shadow-xl">
-              <div className="flex h-10 shrink-0 items-center justify-between px-3 text-xs font-semibold uppercase tracking-wide text-muted">
+            <aside id="orders" aria-label="Orders" className="flex w-80 shrink-0 flex-col border-r border-line bg-panel max-lg:fixed max-lg:inset-y-0 max-lg:left-0 max-lg:z-30 max-lg:shadow-xl">
+              <div className="flex h-12 shrink-0 items-center justify-between px-5 text-[13px] font-semibold text-ink">
                 Orders
-                <button onClick={() => setSidebar(false)} aria-label="Hide orders" className="grid h-7 w-7 place-items-center rounded hover:bg-panel">×</button>
+                <button onClick={() => setSidebar(false)} aria-label="Hide orders" className="grid h-8 w-8 place-items-center rounded-lg text-lg text-muted hover:bg-bg">×</button>
               </div>
-              <nav className="min-h-0 flex-1 overflow-y-auto px-1.5 pb-2">
+              <nav className="min-h-0 flex-1 overflow-y-auto px-3 pb-3">
                 {runs.length > 0 && <OrderGroup label="Your runs">{runs.map((r) => (
                   <OrderItem key={r.runId} id={`live-${r.runId}`} title="Pasted order" preview={r.text} count={toCheck(r)} active={selected === `live-${r.runId}`} onPick={pick} />
                 ))}</OrderGroup>}
@@ -120,9 +120,9 @@ export function ReviewApp({ samples, catalog }: { samples: OrderResult[]; catalo
                   <OrderItem key={s.orderId} id={s.orderId} title={s.orderId} preview={s.text} count={toCheck(s)} active={selected === s.orderId} onPick={pick} />
                 ))}</OrderGroup>
               </nav>
-              <div className="shrink-0 border-t border-line p-2">
+              <div className="shrink-0 border-t border-line p-4">
                 <label htmlFor="paste" className="sr-only">Paste a text-message order</label>
-                <div className="rounded-lg border border-control bg-panel focus-within:ring-2 focus-within:ring-[var(--focus)]">
+                <div className="card focus-within:ring-2 focus-within:ring-[var(--focus)]">
                   <textarea
                     id="paste"
                     rows={4}
@@ -135,28 +135,28 @@ export function ReviewApp({ samples, catalog }: { samples: OrderResult[]; catalo
                       }
                     }}
                     placeholder={"Paste a text-message order…\n20 of the 2x6 (8ft)\n3 sheets 5/8 type X"}
-                    className="block w-full resize-none rounded-t-lg bg-transparent px-2.5 pt-2 font-mono text-[13px] outline-none"
+                    className="block w-full resize-none rounded-t-[14px] bg-transparent px-3.5 pt-3 font-mono text-[13px] leading-6 outline-none"
                   />
-                  <div className="flex items-center gap-2 px-2 pb-2">
-                    <span className="text-[11px] text-muted">Live run · paid API calls</span>
-                    <button onClick={runLive} disabled={loading || !pasteText.trim()} className="ml-auto h-7 rounded-md bg-ink px-3 text-xs font-medium text-bg disabled:opacity-40">
+                  <div className="flex items-center gap-2 px-3 pb-3">
+                    <span className="text-[12px] text-muted">Live run · paid API calls</span>
+                    <button onClick={runLive} disabled={loading || !pasteText.trim()} className="ml-auto h-8 rounded-lg bg-ink px-3.5 text-[13px] font-medium text-bg disabled:opacity-40">
                       {loading ? "Reading…" : "Run ⌘↵"}
                     </button>
                   </div>
                 </div>
-                {error && <p role="alert" className="mt-1.5 text-xs text-warn">{error}</p>}
+                {error && <p role="alert" className="mt-2 text-[13px] text-warn">{error}</p>}
               </div>
             </aside>
           </>
         )}
 
         <main className="min-w-0 flex-1 lg:overflow-y-auto">
-          <div className="sticky top-0 z-10 flex flex-wrap items-end gap-x-5 gap-y-2 border-b border-line bg-bg/95 px-4 py-2.5 backdrop-blur sm:px-6">
+          <div className="sticky top-0 z-10 flex flex-wrap items-end gap-x-8 gap-y-3 border-b border-line bg-bg/90 px-5 py-4 backdrop-blur sm:px-10">
             <fieldset>
-              <legend className="mb-1 text-xs font-medium text-muted">Matching by</legend>
-              <div className="inline-flex overflow-hidden rounded-md border border-control text-sm" role="group">
+              <legend className="mb-1.5 text-[13px] font-medium text-muted">Matching by</legend>
+              <div className="inline-flex gap-1 rounded-xl bg-panel p-1 text-sm shadow-[0_0_0_1px_var(--ring)]" role="group">
                 {(["jev", "claude"] as const).map((m) => (
-                  <button key={m} aria-pressed={mode === m} onClick={() => setMode(m)} className={`h-8 px-3 ${mode === m ? "bg-ink text-bg" : "bg-panel hover:bg-panel2"}`}>
+                  <button key={m} aria-pressed={mode === m} onClick={() => setMode(m)} className={`h-8 rounded-lg px-3.5 font-medium ${mode === m ? "bg-ink text-bg shadow-sm" : "text-muted hover:bg-bg hover:text-ink"}`}>
                     {m === "jev" ? "Claude + Jev" : "Claude only"}
                   </button>
                 ))}
@@ -164,16 +164,16 @@ export function ReviewApp({ samples, catalog }: { samples: OrderResult[]; catalo
             </fieldset>
             <Slider id="t" label="Product confidence" value={T} min={0.5} max={0.99} onChange={setT} disabled={mode === "claude"} />
             <Slider id="u" label="Quantity clarity" value={unitMin} min={0.3} max={0.9} onChange={setUnitMin} disabled={mode === "claude"} />
-            <p className="basis-full text-xs text-muted sm:basis-auto sm:self-center">
+            <p className="basis-full text-[13px] text-muted sm:basis-auto sm:self-center">
               {mode === "claude" ? "Claude only approves its own “high” ratings." : "Higher = the rep checks more lines."}
             </p>
           </div>
-          <div className="px-4 py-4 sm:px-6">
+          <div className="mx-auto max-w-4xl px-5 py-8 sm:px-10">
             <Review key={selected} result={result} isLive={!!live} mode={mode} T={T} unitMin={unitMin} catalog={catalog} />
           </div>
         </main>
 
-        <aside aria-label="Cost assessment" className="shrink-0 border-line bg-panel2 lg:w-80 lg:overflow-y-auto lg:border-l max-lg:border-t">
+        <aside aria-label="Cost assessment" className="shrink-0 border-line bg-panel lg:w-[22rem] lg:overflow-y-auto lg:border-l max-lg:border-t">
           <CostPanel result={result} samples={samples} mode={mode} T={T} unitMin={unitMin} catalog={catalog} onMode={setMode} />
         </aside>
       </div>
@@ -191,7 +191,7 @@ const SidebarIcon = () => (
 function OrderGroup({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="mb-2">
-      <h3 className="px-2 pb-1 pt-2 text-[11px] font-medium text-muted">{label}</h3>
+      <h3 className="px-2 pb-1.5 pt-3 text-[12px] font-medium uppercase tracking-wider text-muted">{label}</h3>
       <ul className="flex flex-col gap-0.5">{children}</ul>
     </div>
   );
@@ -204,12 +204,12 @@ function OrderItem(p: { id: string; title: string; preview: string; count: numbe
       <button
         onClick={() => p.onPick(p.id)}
         aria-current={p.active ? "true" : undefined}
-        className={`flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left ${p.active ? "bg-panel shadow-sm ring-1 ring-line" : "hover:bg-panel"}`}
+        className={`flex w-full items-center gap-3 rounded-lg px-2.5 py-2.5 text-left ${p.active ? "bg-bg font-medium" : "hover:bg-bg"}`}
       >
-        <span className="w-9 shrink-0 font-mono text-xs text-muted">{p.title.startsWith("o") ? p.title : "live"}</span>
-        <span className="min-w-0 flex-1 truncate text-[13px]">{preview}</span>
+        <span className="w-9 shrink-0 font-mono text-[12px] text-muted">{p.title.startsWith("o") ? p.title : "live"}</span>
+        <span className="min-w-0 flex-1 truncate text-[14px]">{preview}</span>
         {p.count > 0 ? (
-          <span className="shrink-0 rounded-full bg-warnbg px-1.5 text-[11px] font-medium text-warn" aria-label={`${p.count} to check`}>{p.count}</span>
+          <span className="shrink-0 rounded-full bg-warnbg px-2 py-0.5 text-[12px] font-medium leading-none text-warn" aria-label={`${p.count} to check`}>{p.count}</span>
         ) : (
           <span className="shrink-0 text-ok" aria-label="nothing to check"><Check /></span>
         )}
@@ -262,8 +262,11 @@ function Review({ result, isLive, mode, T, unitMin, catalog }: { result: OrderRe
   }, [flagged, current, choose, resolved]);
 
   useEffect(() => {
-    if (current) document.getElementById(`line-${current}`)?.scrollIntoView({ block: "nearest" });
-  }, [current]);
+    if (!active) return; // only follow the cursor after the rep moves it, not on first load
+    const el = document.getElementById(`line-${active}`);
+    const r = el?.getBoundingClientRect();
+    if (el && r && (r.top < 160 || r.bottom > window.innerHeight)) el.scrollIntoView({ block: "nearest" });
+  }, [active]);
 
 
   const segments = useMemo(() => segmentText(result.text, lines), [result, lines]);
@@ -276,27 +279,27 @@ function Review({ result, isLive, mode, T, unitMin, catalog }: { result: OrderRe
           Skip to the first line to check
         </a>
       )}
-      <div className="mb-3 flex flex-wrap items-center gap-x-4 gap-y-1" aria-live="polite">
-        <h1 className="text-base font-semibold">{isLive ? "Your order" : `Order ${result.orderId}`}</h1>
+      <div className="mb-6 flex flex-wrap items-baseline gap-x-5 gap-y-1" aria-live="polite">
+        <h1 className="text-2xl font-semibold tracking-tight">{isLive ? "Your order" : `Order ${result.orderId}`}</h1>
         <span className="text-muted">{lines.length} lines</span>
         <span className="font-medium text-ok">{lines.length - flagged.length} auto-approved</span>
         <span className="font-medium text-warn">{flagged.length} to check{flagged.length ? ` · ${done} done` : ""}</span>
-        <span className="ml-auto hidden text-xs text-muted xl:inline">Keys: <kbd>j</kbd>/<kbd>k</kbd> move · <kbd>1</kbd>–<kbd>3</kbd> pick · <kbd>Enter</kbd> accept · <kbd>x</kbd> not in catalog</span>
+        <span className="basis-full pt-1 text-[13px] text-muted">Keys: <kbd>j</kbd>/<kbd>k</kbd> move · <kbd>1</kbd>–<kbd>3</kbd> pick · <kbd>Enter</kbd> accept · <kbd>x</kbd> not in catalog</span>
       </div>
 
       {(flagged.length === 0 || done === flagged.length) && (
-        <p role="status" className="mb-3 rounded-lg border border-ok bg-okbg px-3 py-2 font-medium text-ok">
+        <p role="status" className="mb-6 rounded-xl bg-okbg px-5 py-3.5 font-medium text-ok">
           {flagged.length === 0 ? "Nothing needs your attention. This order is ready to send." : "All checked. This order is ready to send."}
         </p>
       )}
 
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-8">
         <section aria-label="Order message" className="max-w-2xl">
-          <h2 className="mb-1.5 flex items-center gap-2 text-xs font-medium text-muted">
-            <span className="grid h-5 w-5 place-items-center rounded-full bg-panel2 text-[10px] font-semibold text-ink ring-1 ring-line" aria-hidden>C</span>
+          <h2 className="mb-2.5 flex items-center gap-2.5 text-[13px] font-medium text-muted">
+            <span className="grid h-6 w-6 place-items-center rounded-full bg-panel text-[11px] font-semibold text-ink shadow-[0_0_0_1px_var(--ring)]" aria-hidden>C</span>
             Contractor · text message
           </h2>
-          <p className="whitespace-pre-wrap rounded-2xl rounded-tl-sm border border-line bg-panel px-4 py-3 font-mono text-[13px] leading-6">
+          <p className="card whitespace-pre-wrap !rounded-tl-sm px-6 py-5 font-mono text-[14px] leading-7">
             {segments.map((s, i) =>
               s.lineId ? (
                 <button
@@ -316,11 +319,11 @@ function Review({ result, isLive, mode, T, unitMin, catalog }: { result: OrderRe
         </section>
 
         <section aria-label="Draft order" className="min-w-0">
-          <h2 className="mb-1.5 flex items-center gap-2 text-xs font-medium text-muted">
-            <span className="grid h-5 w-5 place-items-center rounded-full bg-ink text-[10px] font-semibold text-bg" aria-hidden>AI</span>
+          <h2 className="mb-2.5 flex items-center gap-2.5 text-[13px] font-medium text-muted">
+            <span className="grid h-6 w-6 place-items-center rounded-full bg-ink text-[10px] font-semibold text-bg" aria-hidden>AI</span>
             Draft order · {mode === "jev" ? "Claude + Jev" : "Claude only"}
           </h2>
-          <ul className="overflow-hidden rounded-lg border border-line bg-panel">
+          <ul className="card overflow-hidden">
             {lines.map((l) => (
               <LineRow key={l.id} l={l} state={status(l)} pick={resolved[l.id]} active={current === l.id} catalog={catalog} onSelect={() => setActive(l.id)} onChoose={(sku) => choose(l.id, sku)} onUndo={() => undo(l.id)} />
             ))}
@@ -334,8 +337,8 @@ function Review({ result, isLive, mode, T, unitMin, catalog }: { result: OrderRe
 
 function Slider(p: { id: string; label: string; value: number; min: number; max: number; disabled: boolean; onChange: (v: number) => void }) {
   return (
-    <div className="w-36">
-      <label htmlFor={p.id} className="mb-1 flex justify-between text-xs font-medium text-muted">
+    <div className="w-40">
+      <label htmlFor={p.id} className="mb-1.5 flex justify-between text-[13px] font-medium text-muted">
         <span>{p.label}</span>
         <span className="text-ink">{p.value.toFixed(2)}</span>
       </label>
@@ -355,31 +358,31 @@ function LineRow(props: { l: ViewLine; state: "ok" | "done" | "flag"; pick?: str
     const noneOpt = l.options.find((o) => o.sku === NONE) ?? { sku: NONE, name: "Not in catalog" };
     const quick = l.quantityOnly && !showAll;
     return (
-      <li id={`line-${l.id}`} onClick={props.onSelect} className={`border-b border-line bg-warnbg/40 p-3 last:border-b-0 ${active ? "ring-2 ring-inset ring-[var(--focus)]" : ""}`} style={{ borderLeft: "4px solid var(--warn-line)" }}>
+      <li id={`line-${l.id}`} onClick={props.onSelect} className={`scroll-mt-44 scroll-mb-8 border-b border-line bg-warnbg/50 px-6 py-5 last:border-b-0 ${active ? "ring-2 ring-inset ring-[var(--focus)]" : ""}`} style={{ borderLeft: "4px solid var(--warn-line)" }}>
         <div className="flex flex-wrap items-baseline gap-x-3">
           <span className="font-medium">{l.raw}</span>
-          <span className="text-xs font-semibold text-warn">Check this</span>
+          <span className="rounded-full bg-warnbg px-2 py-0.5 text-[12px] font-semibold text-warn">Check this</span>
         </div>
-        <ul className="mt-1 flex flex-col gap-1">
+        <ul className="mt-2 flex flex-col gap-1">
           {l.reasons.map((r) => (
-            <li key={r} className="text-sm text-warn">{r}</li>
+            <li key={r} className="text-[14px] text-warn">{r}</li>
           ))}
         </ul>
         {quick ? (
-          <div className="mt-2 flex flex-wrap items-center gap-2">
-            <button onClick={(e) => { e.stopPropagation(); props.onChoose(l.sku); }} className="min-h-9 rounded-md border border-ok bg-okbg px-3 py-1 text-left font-medium text-ok">
+          <div className="mt-4 flex flex-wrap items-center gap-3">
+            <button onClick={(e) => { e.stopPropagation(); props.onChoose(l.sku); }} className="min-h-11 rounded-xl bg-okbg px-4 py-2 text-left font-medium text-ok shadow-[0_0_0_1px_var(--ok)]">
               <kbd className="mr-2 text-xs">Enter</kbd>Confirm {qty} of {l.name}
             </button>
-            <button onClick={(e) => { e.stopPropagation(); setShowAll(true); }} className="text-xs underline">Other products…</button>
+            <button onClick={(e) => { e.stopPropagation(); setShowAll(true); }} className="text-[13px] text-muted underline hover:text-ink">Other products…</button>
           </div>
         ) : (
-          <div role="group" aria-label={`Options for ${l.raw}`} className="mt-2 flex flex-col gap-1.5">
+          <div role="group" aria-label={`Options for ${l.raw}`} className="mt-4 flex flex-col gap-2">
             {shown.map((o, i) => (
               <button
                 key={o.sku}
                 aria-pressed={pick === o.sku}
                 onClick={(e) => { e.stopPropagation(); props.onChoose(o.sku); }}
-                className={`flex min-h-9 flex-wrap items-center gap-x-2 gap-y-1 rounded-md border px-2 py-1 text-left ${pick === o.sku ? "border-ok bg-okbg" : "border-control bg-panel hover:bg-panel2"}`}
+                className={`flex min-h-11 flex-wrap items-center gap-x-3 gap-y-1 rounded-xl px-3.5 py-2 text-left ${pick === o.sku ? "bg-okbg shadow-[0_0_0_1px_var(--ok)]" : "bg-panel shadow-[0_0_0_1px_var(--control)] hover:bg-panel2"}`}
               >
                 <kbd className="w-4 text-center text-xs text-muted">{i + 1}</kbd>
                 <span className="min-w-[12rem] flex-1">{o.name}</span>
@@ -396,7 +399,7 @@ function LineRow(props: { l: ViewLine; state: "ok" | "done" | "flag"; pick?: str
             ))}
           </div>
         )}
-        <p className="mt-2 flex flex-wrap items-center gap-x-3 text-xs text-muted">
+        <p className="mt-4 flex flex-wrap items-center gap-x-4 text-[13px] text-muted">
           <span>Quantity: <strong className="text-ink">{qty}</strong></span>
           {!quick && <span><kbd>Enter</kbd> takes the top pick</span>}
           {noneOpt.sku !== l.sku && (
@@ -409,19 +412,19 @@ function LineRow(props: { l: ViewLine; state: "ok" | "done" | "flag"; pick?: str
 
   const chosen = state === "done" ? (pick === NONE ? "Not in catalog" : (catalog[pick!]?.name ?? pick)) : l.name;
   return (
-    <li id={`line-${l.id}`} className={`border-b border-line last:border-b-0 ${active ? "ring-2 ring-inset ring-[var(--focus)]" : ""}`}>
-      <div className={`flex min-h-10 items-center gap-2 px-3 py-1.5 ${state === "done" && pick === NONE ? "text-warn" : "text-ok"}`}>
+    <li id={`line-${l.id}`} className={`scroll-mt-44 border-b border-line last:border-b-0 ${active ? "ring-2 ring-inset ring-[var(--focus)]" : ""}`}>
+      <div className={`flex min-h-14 items-center gap-3 px-6 py-3 ${state === "done" && pick === NONE ? "text-warn" : "text-ok"}`}>
         {state === "done" ? <Person /> : <Check />}
         <button className="flex min-w-0 flex-1 items-baseline gap-2 text-left text-ink" aria-expanded={open} onClick={() => setOpen((v) => !v)}>
           <span className="min-w-0 flex-1 sm:truncate">{chosen}</span>
-          <span className="shrink-0 text-xs text-muted">{qty}</span>
+          <span className="shrink-0 text-[14px] text-muted">{qty}</span>
         </button>
-        <span className="shrink-0 text-xs text-muted" title={`Match confidence ${l.confidence}`}>{state === "done" ? (pick === NONE ? "skipped by you" : "checked by you") : ""}</span>
+        <span className="shrink-0 text-[13px] text-muted" title={`Match confidence ${l.confidence}`}>{state === "done" ? (pick === NONE ? "skipped by you" : "checked by you") : ""}</span>
         {state === "done" && (
-          <button className="shrink-0 text-xs underline" onClick={props.onUndo}>Undo</button>
+          <button className="shrink-0 text-[13px] underline" onClick={props.onUndo}>Undo</button>
         )}
       </div>
-      {open && <p className="px-9 pb-2 text-xs text-muted">From: “{l.raw}”</p>}
+      {open && <p className="px-14 pb-3 text-[13px] text-muted">From: “{l.raw}”</p>}
     </li>
   );
 }
@@ -449,13 +452,13 @@ function CostPanel({ result, samples, mode, T, unitMin, catalog, onMode }: { res
   const diff = a.filter((l, i) => l.sku !== b[i].sku);
 
   return (
-    <div className="flex flex-col gap-3 p-4">
+    <div className="flex flex-col gap-5 p-6">
       <div>
-        <h2 className="text-xs font-semibold uppercase tracking-wide text-muted">Cost assessment</h2>
-        <p className="mt-0.5 text-xs text-muted">This order, {n} lines. Reading is shared; only matching differs.</p>
+        <h2 className="text-lg font-semibold tracking-tight">Cost assessment</h2>
+        <p className="mt-1 text-[13px] text-muted">This order, {n} lines. Reading is shared; only matching differs.</p>
       </div>
 
-      <p className="rounded-lg bg-okbg px-3 py-2 text-sm text-ok">
+      <p className="rounded-xl bg-okbg px-4 py-3 text-[14px] leading-snug text-ok">
         Jev&apos;s matching step cost <strong>{Math.round(cheaper)}× less</strong> and ran <strong>{faster.toFixed(1)}× faster</strong> on this order.
       </p>
 
@@ -464,47 +467,47 @@ function CostPanel({ result, samples, mode, T, unitMin, catalog, onMode }: { res
           key={x.key}
           onClick={() => onMode(x.key)}
           aria-pressed={mode === x.key}
-          className={`rounded-lg border bg-panel p-3 text-left ${mode === x.key ? "border-ink ring-1 ring-ink" : "border-line hover:border-control"}`}
+          className={`card p-5 text-left ${mode === x.key ? "!shadow-[0_0_0_2px_var(--ink)]" : "hover:!shadow-[0_0_0_1px_var(--control)]"}`}
         >
           <div className="flex items-baseline justify-between gap-2">
             <span className="font-semibold">{x.label}</span>
-            {mode === x.key && <span className="rounded-full bg-ink px-1.5 text-[10px] font-medium text-bg">showing</span>}
+            {mode === x.key && <span className="rounded-full bg-ink px-2 py-0.5 text-[11px] font-medium leading-none text-bg">showing</span>}
           </div>
-          <div className="mt-1 flex items-baseline gap-2">
-            <span className="text-xl font-semibold">{usd(x.t.usd)}</span>
-            <span className="text-xs text-muted">{ms(x.t.ms)} · {x.approved} of {x.lines} auto-approved</span>
+          <div className="mt-2 flex flex-wrap items-baseline gap-x-2">
+            <span className="text-2xl font-semibold tracking-tight">{usd(x.t.usd)}</span>
+            <span className="text-[13px] text-muted">{ms(x.t.ms)} · {x.approved} of {x.lines} auto-approved</span>
           </div>
-          <div className="mt-2 flex h-2 overflow-hidden rounded-full" style={{ background: "var(--line)" }} aria-hidden>
+          <div className="mt-3 flex h-2 overflow-hidden rounded-full" style={{ background: "var(--line)" }} aria-hidden>
             <span style={{ width: `${(100 * x.t.parseUsd) / maxUsd}%`, background: "var(--bar)" }} />
             <span style={{ width: `${(100 * x.t.matchUsd) / maxUsd}%`, background: x.key === "jev" ? "var(--ok)" : "var(--warn-line)" }} />
           </div>
-          <dl className="mt-2 grid grid-cols-[auto_1fr] gap-x-3 gap-y-0.5 text-xs">
+          <dl className="mt-4 grid grid-cols-[1fr_auto] gap-x-4 gap-y-1.5 text-[13px]">
             <dt className="text-muted">Reading</dt>
-            <dd className="text-right">{usd(x.t.parseUsd)} · {ms(x.t.parseMs)}</dd>
+            <dd className="whitespace-nowrap text-right">{usd(x.t.parseUsd)} · {ms(x.t.parseMs)}</dd>
             <dt className="text-muted">Matching ({x.matcher})</dt>
-            <dd className="text-right font-medium">{usd(x.t.matchUsd)} · {ms(x.t.matchMs)}</dd>
-            <dt className="text-muted">API calls (read + match)</dt>
-            <dd className="text-right">1 + {x.calls}</dd>
+            <dd className="whitespace-nowrap text-right font-medium">{usd(x.t.matchUsd)} · {ms(x.t.matchMs)}</dd>
+            <dt className="text-muted">API calls</dt>
+            <dd className="whitespace-nowrap text-right">1 + {x.calls}</dd>
             <dt className="text-muted">Match tokens</dt>
-            <dd className="text-right">{x.matchTokens}</dd>
+            <dd className="whitespace-nowrap text-right">{x.matchTokens}</dd>
             <dt className="text-muted">Per 1,000 orders</dt>
-            <dd className="text-right font-medium">${(x.t.usd * 1000).toFixed(2)}</dd>
+            <dd className="whitespace-nowrap text-right font-medium">${(x.t.usd * 1000).toFixed(2)}</dd>
           </dl>
         </button>
       ))}
 
-      <section className="rounded-lg border border-line bg-panel p-3 text-xs">
-        <h3 className="mb-1 font-semibold">Across all {samples.length} saved orders</h3>
+      <section className="card p-5 text-[13px]">
+        <h3 className="mb-1.5 text-[14px] font-semibold">Across all {samples.length} saved orders</h3>
         <p className="text-muted">
           Average per order: <strong className="text-ink">{usd(avgJev)}</strong> with Jev, <strong className="text-ink">{usd(avgCla)}</strong> Claude only.
           Per 1,000 orders: <strong className="text-ink">${(avgJev * 1000).toFixed(2)}</strong> vs <strong className="text-ink">${(avgCla * 1000).toFixed(2)}</strong>.
         </p>
       </section>
 
-      <p className="text-xs text-muted">
+      <p className="text-[13px] text-muted">
         {diff.length ? `The two pick different products on ${diff.length} line${diff.length > 1 ? "s" : ""}: ${diff.map((l) => `“${l.raw}”`).join(", ")}.` : "Both pick the same product on every line."}
       </p>
-      <p className="text-[11px] leading-snug text-muted">
+      <p className="text-[12px] leading-relaxed text-muted">
         Claude priced at ${(CLAUDE_INPUT_PER_TOKEN * 1e6).toFixed(0)} / ${(CLAUDE_OUTPUT_PER_TOKEN * 1e6).toFixed(0)} per million input / output tokens (assumed). Jev at ${(JEV_INPUT_PER_TOKEN * 1e9).toFixed(0)} per billion input tokens, output free. Times are measured on one run and vary.
       </p>
     </div>
