@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { trackEvent } from "@/lib/analytics";
 import type { OrderResult, Sender } from "@/lib/types";
@@ -69,6 +69,8 @@ export function ReviewApp({ samples, catalog, initialOrder }: { samples: OrderRe
   const [decisions, setDecisions] = useState<Record<string, Decisions>>({});
   const [sent, setSent] = useState<Record<string, number>>({}); // order id -> time sent
   const [walkthroughStep, setWalkthroughStep] = useState<WalkthroughStep | null>(null);
+  const walkthroughStepRef = useRef<WalkthroughStep | null>(null);
+  const [walkthroughCompared, setWalkthroughCompared] = useState<Mode[]>([]);
   const { unlocked, unlock } = useAccess();
   const [unlocking, setUnlocking] = useState(false);
   const [accessCode, setAccessCode] = useState("");
@@ -88,7 +90,9 @@ export function ReviewApp({ samples, catalog, initialOrder }: { samples: OrderRe
   const toggleSidebar = useCallback(() => (narrow() ? setMobileOpen((v) => !v) : setDesktopOpen((v) => !v)), []);
 
   const showWalkthroughStep = useCallback((step: WalkthroughStep) => {
+    walkthroughStepRef.current = step;
     setWalkthroughStep(step);
+    setWalkthroughCompared([]);
     setDesktopOpen(true);
     const mobile = window.matchMedia("(max-width: 1023px)").matches;
     setMobileOpen(mobile && step === 0);
@@ -123,6 +127,7 @@ export function ReviewApp({ samples, catalog, initialOrder }: { samples: OrderRe
   }, [showWalkthroughStep]);
 
   const closeWalkthrough = useCallback(() => {
+    walkthroughStepRef.current = null;
     window.localStorage.setItem(WALKTHROUGH_KEY, "true");
     setWalkthroughStep(null);
   }, []);
@@ -168,6 +173,10 @@ export function ReviewApp({ samples, catalog, initialOrder }: { samples: OrderRe
       setPasteFrom(undefined);
       pick(`live-${runId}`);
       setPasteText("");
+      if (walkthroughStepRef.current === 0) {
+        const needsReview = computeView(data as OrderResult, mode, T, catalog, unitMin).some((line) => !line.approved);
+        showWalkthroughStep(needsReview ? 1 : 2);
+      }
     } catch (e) {
       trackEvent("order_run_failed");
       setError(e instanceof Error ? e.message : "The run failed.");
@@ -277,6 +286,7 @@ export function ReviewApp({ samples, catalog, initialOrder }: { samples: OrderRe
               catalog={catalog}
               resolved={decisions[selected] ?? {}}
               setResolved={(f) => setDecisions((d) => ({ ...d, [selected]: f(d[selected] ?? {}) }))}
+              onReviewed={() => { if (walkthroughStep === 1) showWalkthroughStep(2); }}
               sentAt={sent[selected]}
               onSend={() => {
                 trackEvent("order_sent", { source: live ? "live" : "sample", mode, demo: true });
@@ -291,6 +301,11 @@ export function ReviewApp({ samples, catalog, initialOrder }: { samples: OrderRe
           <CostPanel result={result} samples={samples} mode={mode} T={T} unitMin={unitMin} catalog={catalog} onMode={(nextMode) => {
             if (nextMode !== mode) trackEvent("comparison_mode_changed", { mode: nextMode });
             setMode(nextMode);
+            if (walkthroughStep === 2) {
+              const compared = [...new Set([...walkthroughCompared, nextMode])];
+              setWalkthroughCompared(compared);
+              if (compared.length === 2) closeWalkthrough();
+            }
           }} setT={setT} setUnitMin={setUnitMin} onReplay={replayWalkthrough} />
         </aside>
       </div>
@@ -610,10 +625,11 @@ function OrderDetails({ result, isLive, lines, flagged, done, sentAt, onSend }: 
   );
 }
 
-function Review({ result, isLive, mode, T, unitMin, catalog, resolved, setResolved, sentAt, onSend, onReopen }: {
+function Review({ result, isLive, mode, T, unitMin, catalog, resolved, setResolved, sentAt, onSend, onReopen, onReviewed }: {
   result: OrderResult; isLive: boolean; mode: Mode; T: number; unitMin: number; catalog: SlimCatalog;
   resolved: Decisions; setResolved: (f: (r: Decisions) => Decisions) => void;
   sentAt?: number; onSend: () => void; onReopen: () => void;
+  onReviewed: () => void;
 }) {
   const [active, setActive] = useState<string | null>(null);
   const lines = useMemo(() => computeView(result, mode, T, catalog, unitMin), [result, mode, T, catalog, unitMin]);
@@ -627,7 +643,8 @@ function Review({ result, isLive, mode, T, unitMin, catalog, resolved, setResolv
   const choose = useCallback((lineId: string, sku: string) => {
     trackEvent("order_line_reviewed", { mode, decision: sku === NONE ? "not_in_catalog" : "product" });
     setResolved((r) => ({ ...r, [lineId]: sku }));
-  }, [mode, setResolved]);
+    onReviewed();
+  }, [mode, setResolved, onReviewed]);
   const undo = (lineId: string) => {
     setActive(lineId);
     setResolved((r) => Object.fromEntries(Object.entries(r).filter(([id]) => id !== lineId)));

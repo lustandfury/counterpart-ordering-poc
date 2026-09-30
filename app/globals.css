@@ -237,24 +237,38 @@ button { cursor: pointer; }
 @keyframes tour-trace {
   to { --tour-angle: 360deg; }
 }
+@keyframes tour-glow {
+  0%, 100% { box-shadow: 0 0 0 4px rgb(255 202 5 / 0.2), 0 0 12px rgb(255 202 5 / 0.3); }
+  50% { box-shadow: 0 0 0 7px rgb(255 202 5 / 0.35), 0 0 24px rgb(255 202 5 / 0.65); }
+}
 .tour-cue,
 .walkthrough-1 .tour-choice .tour-option,
 .walkthrough-2 .tour-compare {
   position: relative;
+}
+.tour-cue::before,
+.walkthrough-1 .tour-choice .tour-option::before,
+.walkthrough-2 .tour-compare::before {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: inherit;
+  pointer-events: none;
+  animation: tour-glow 1.8s ease-in-out infinite;
 }
 .tour-cue::after,
 .walkthrough-1 .tour-choice .tour-option::after,
 .walkthrough-2 .tour-compare::after {
   content: "";
   position: absolute;
-  inset: -2px;
-  padding: 1.5px;
+  inset: -3px;
+  padding: 3px;
   border-radius: inherit;
   pointer-events: none;
-  background: conic-gradient(from var(--tour-angle), rgb(255 202 5 / 0.08) 0%, rgb(255 202 5 / 0.08) 40%, rgb(255 202 5 / 0.2) 65%, rgb(255 202 5 / 0.5) 82%, rgb(255 202 5 / 0.2) 94%, rgb(255 202 5 / 0.08) 100%);
+  background: conic-gradient(from var(--tour-angle), rgb(255 202 5 / 0.7) 0%, rgb(255 202 5 / 0.7) 40%, #ffca05 65%, #fff4bf 82%, #ffca05 94%, rgb(255 202 5 / 0.7) 100%);
   mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   mask-composite: exclude;
-  animation: tour-trace 5s linear var(--tour-delay, 0ms) infinite;
+  animation: tour-trace 2.4s linear var(--tour-delay, 0ms) infinite;
 }
 @media (max-width: 1023px) {
   .walkthrough-0 .walkthrough-card {
@@ -269,11 +283,17 @@ button { cursor: pointer; }
   }
 }
 @media (prefers-reduced-motion: reduce) {
+  .tour-cue::before,
+  .walkthrough-1 .tour-choice .tour-option::before,
+  .walkthrough-2 .tour-compare::before {
+    animation: none;
+    box-shadow: 0 0 0 4px rgb(255 202 5 / 0.3);
+  }
   .tour-cue::after,
   .walkthrough-1 .tour-choice .tour-option::after,
   .walkthrough-2 .tour-compare::after {
     animation: none;
-    background: rgb(255 202 5 / 0.35);
+    background: #ffca05;
   }
 }
 .action-sheet-handle {
