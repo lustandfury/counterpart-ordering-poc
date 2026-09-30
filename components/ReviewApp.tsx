@@ -136,7 +136,6 @@ export function ReviewApp({ samples, catalog }: { samples: OrderResult[]; catalo
                   </div>
                 </div>
                 {error && <p role="alert" className="mt-2 text-[13px] text-warn">{error}</p>}
-                <p className="mt-3 text-[12px] leading-snug text-muted">Outside-in sketch · synthetic data · not affiliated with any company</p>
               </div>
         </aside>
 
@@ -149,7 +148,7 @@ export function ReviewApp({ samples, catalog }: { samples: OrderResult[]; catalo
           </div>
         </main>
 
-        <aside aria-label="Cost assessment" className="shrink-0 border-line bg-panel lg:w-[22rem] lg:overflow-y-auto lg:border-l max-lg:border-t">
+        <aside aria-label="Cost assessment" className="shrink-0 border-line bg-panel lg:w-80 lg:overflow-y-auto lg:border-l max-lg:border-t">
           <CostPanel result={result} samples={samples} mode={mode} T={T} unitMin={unitMin} catalog={catalog} onMode={setMode} setT={setT} setUnitMin={setUnitMin} />
         </aside>
       </div>
@@ -473,7 +472,8 @@ function LineRow(props: { l: ViewLine; state: "ok" | "done" | "flag"; pick?: str
   );
 }
 
-type Side = { key: Mode; label: string; matcher: string; t: ReturnType<typeof totals>; approved: number; lines: number; calls: number; matchTokens: string };
+type Side = { key: Mode; label: string; matcher: string; t: ReturnType<typeof totals>; approved: number; lines: number };
+const PER = 10_000;
 
 function CostPanel({ result, samples, mode, T, unitMin, catalog, onMode, setT, setUnitMin }: { result: OrderResult; samples: OrderResult[]; mode: Mode; T: number; unitMin: number; catalog: SlimCatalog; onMode: (m: Mode) => void; setT: (v: number) => void; setUnitMin: (v: number) => void }) {
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -481,12 +481,9 @@ function CostPanel({ result, samples, mode, T, unitMin, catalog, onMode, setT, s
   const a = computeView(result, "jev", T, catalog, unitMin);
   const b = computeView(result, "claude", T, catalog);
   const n = result.parse.lines.length;
-  const tok = (x: { inputTokens: number; outputTokens: number }) => `${x.inputTokens.toLocaleString()} in / ${x.outputTokens.toLocaleString()} out`;
   const sides: Side[] = [
-    { key: "jev", label: "Claude + Jev", matcher: "Jev", t: totals(result, "jev"), approved: a.filter((l) => l.approved).length, lines: n,
-      calls: n + result.jev.lines.filter((l) => l.sku.choice !== NONE).length, matchTokens: `${result.jev.usage.inputTokens.toLocaleString()} in` },
-    { key: "claude", label: "Claude only", matcher: "Claude", t: totals(result, "claude"), approved: b.filter((l) => l.approved).length, lines: n,
-      calls: 1, matchTokens: tok(result.claudeOnly.usage) },
+    { key: "jev", label: "Claude + Jev", matcher: "Jev", t: totals(result, "jev"), approved: a.filter((l) => l.approved).length, lines: n },
+    { key: "claude", label: "Claude only", matcher: "Claude", t: totals(result, "claude"), approved: b.filter((l) => l.approved).length, lines: n },
   ];
   const maxUsd = Math.max(...sides.map((x) => x.t.usd));
   const [jev, cla] = sides;
@@ -496,69 +493,72 @@ function CostPanel({ result, samples, mode, T, unitMin, catalog, onMode, setT, s
   const avgJev = avg((r) => r.parse.costUsd + r.jev.costUsd);
   const avgCla = avg((r) => r.parse.costUsd + r.claudeOnly.costUsd);
   const diff = a.filter((l, i) => l.sku !== b[i].sku);
+  const per10k = (usdPerOrder: number) => `$${(usdPerOrder * PER).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
   return (
-    <div className="flex flex-col gap-5 p-6">
-      <div>
-        <div className="flex items-center justify-between gap-2">
-          <h2 className="text-lg font-semibold tracking-tight">Cost assessment</h2>
-          <SettingsButton open={settingsOpen} changed={changed} onToggle={() => setSettingsOpen((v) => !v)} />
-        </div>
-        <p className="mt-1 text-[13px] text-muted">This order, {n} lines. Reading is shared; only matching differs. Pick a card to see its draft.</p>
+    <div className="flex flex-col gap-4 p-5">
+      <div className="flex items-center justify-between gap-2">
+        <h2 className="text-[15px] font-semibold">Cost</h2>
+        <SettingsButton open={settingsOpen} changed={changed} onToggle={() => setSettingsOpen((v) => !v)} />
       </div>
       {settingsOpen && <SettingsSection mode={mode} T={T} unitMin={unitMin} setT={setT} setUnitMin={setUnitMin} changed={changed} />}
 
-      <p className="rounded-xl bg-okbg px-4 py-3 text-[14px] leading-snug text-ok">
-        Jev&apos;s matching step cost <strong>{Math.round(cheaper)}× less</strong> and ran <strong>{faster.toFixed(1)}× faster</strong> on this order.
-      </p>
+      <div className="rounded-xl bg-okbg px-4 py-3 text-ok">
+        <p className="font-mono text-[15px] font-medium">{Math.round(cheaper)}× cheaper · {faster.toFixed(1)}× faster</p>
+        <p className="mt-0.5 text-[12px] opacity-80">Jev&apos;s matching step vs Claude only, this order</p>
+      </div>
 
       {sides.map((x) => (
         <button
           key={x.key}
           onClick={() => onMode(x.key)}
           aria-pressed={mode === x.key}
-          className={`card p-5 text-left ${mode === x.key ? "!shadow-[0_0_0_2px_var(--ink)]" : "hover:!shadow-[0_0_0_1px_var(--control)]"}`}
+          className={`card p-4 text-left ${mode === x.key ? "!shadow-[0_0_0_2px_var(--ink)]" : "hover:!shadow-[0_0_0_1px_var(--control)]"}`}
         >
-          <div className="flex items-baseline justify-between gap-2">
+          <div className="flex items-center justify-between gap-2 text-[14px]">
             <span className="font-semibold">{x.label}</span>
             {mode === x.key && <span className="rounded-full bg-ink px-2 py-0.5 text-[11px] font-medium leading-none text-bg">showing</span>}
           </div>
-          <div className="mt-2 flex flex-wrap items-baseline gap-x-2">
-            <span className="text-2xl font-semibold tracking-tight">{usd(x.t.usd)}</span>
-            <span className="text-[13px] text-muted">{ms(x.t.ms)} · {x.approved} of {x.lines} auto-approved</span>
+          <div className="mt-1.5 flex items-baseline justify-between gap-2">
+            <span className="font-mono text-xl font-medium tracking-tight">{usd(x.t.usd)}</span>
+            <span className="font-mono text-[12px] text-muted">{ms(x.t.ms)}</span>
           </div>
-          <div className="mt-3 flex h-2 overflow-hidden rounded-full" style={{ background: "var(--line)" }} aria-hidden>
+          <div className="mt-2 flex h-1.5 overflow-hidden rounded-full" style={{ background: "var(--line)" }} aria-hidden>
             <span style={{ width: `${(100 * x.t.parseUsd) / maxUsd}%`, background: "var(--bar)" }} />
             <span style={{ width: `${(100 * x.t.matchUsd) / maxUsd}%`, background: x.key === "jev" ? "var(--ok)" : "var(--warn-line)" }} />
           </div>
-          <dl className="mt-4 grid grid-cols-[1fr_auto] gap-x-4 gap-y-1.5 text-[13px]">
+          <dl className="mt-3 grid grid-cols-[1fr_auto_auto] gap-x-3 gap-y-1 text-[12px]">
             <dt className="text-muted">Reading</dt>
-            <dd className="whitespace-nowrap text-right">{usd(x.t.parseUsd)} · {ms(x.t.parseMs)}</dd>
-            <dt className="text-muted">Matching ({x.matcher})</dt>
-            <dd className="whitespace-nowrap text-right font-medium">{usd(x.t.matchUsd)} · {ms(x.t.matchMs)}</dd>
-            <dt className="text-muted">API calls</dt>
-            <dd className="whitespace-nowrap text-right">1 + {x.calls}</dd>
-            <dt className="text-muted">Match tokens</dt>
-            <dd className="whitespace-nowrap text-right">{x.matchTokens}</dd>
-            <dt className="text-muted">Per 1,000 orders</dt>
-            <dd className="whitespace-nowrap text-right font-medium">${(x.t.usd * 1000).toFixed(2)}</dd>
+            <dd className="text-right font-mono">{usd(x.t.parseUsd)}</dd>
+            <dd className="text-right font-mono text-muted">{ms(x.t.parseMs)}</dd>
+            <dt className="text-muted">Matching</dt>
+            <dd className="text-right font-mono">{usd(x.t.matchUsd)}</dd>
+            <dd className="text-right font-mono text-muted">{ms(x.t.matchMs)}</dd>
+            <dt className="text-muted">Auto-approved</dt>
+            <dd className="col-span-2 text-right font-mono">{x.approved} / {x.lines}</dd>
           </dl>
+          <div className="mt-3 flex items-baseline justify-between border-t border-line pt-2.5 text-[12px]">
+            <span className="text-muted">Per 10,000 orders</span>
+            <span className="font-mono text-[14px] font-medium">{per10k(x.t.usd)}</span>
+          </div>
         </button>
       ))}
 
-      <section className="card p-5 text-[13px]">
-        <h3 className="mb-1.5 text-[14px] font-semibold">Across all {samples.length} saved orders</h3>
-        <p className="text-muted">
-          Average per order: <strong className="text-ink">{usd(avgJev)}</strong> with Jev, <strong className="text-ink">{usd(avgCla)}</strong> Claude only.
-          Per 1,000 orders: <strong className="text-ink">${(avgJev * 1000).toFixed(2)}</strong> vs <strong className="text-ink">${(avgCla * 1000).toFixed(2)}</strong>.
-        </p>
+      <section className="px-1 text-[12px]">
+        <h3 className="mb-1.5 font-semibold text-ink">All {samples.length} sample orders · per 10,000</h3>
+        <dl className="grid grid-cols-[1fr_auto] gap-y-1">
+          <dt className="text-muted">Claude + Jev</dt>
+          <dd className="text-right font-mono">{per10k(avgJev)}</dd>
+          <dt className="text-muted">Claude only</dt>
+          <dd className="text-right font-mono">{per10k(avgCla)}</dd>
+        </dl>
       </section>
 
-      <p className="text-[13px] text-muted">
-        {diff.length ? `The two pick different products on ${diff.length} line${diff.length > 1 ? "s" : ""}: ${diff.map((l) => `“${l.raw}”`).join(", ")}.` : "Both pick the same product on every line."}
+      <p className="px-1 text-[12px] text-muted">
+        {diff.length ? `They pick different products on ${diff.length} line${diff.length > 1 ? "s" : ""}: ${diff.map((l) => `“${l.raw}”`).join(", ")}.` : "Both pick the same product on every line."}
       </p>
-      <p className="text-[12px] leading-relaxed text-muted">
-        Claude priced at ${(CLAUDE_INPUT_PER_TOKEN * 1e6).toFixed(0)} / ${(CLAUDE_OUTPUT_PER_TOKEN * 1e6).toFixed(0)} per million input / output tokens (assumed). Jev at ${(JEV_INPUT_PER_TOKEN * 1e9).toFixed(0)} per billion input tokens, output free. Times are measured on one run and vary. Synthetic data; not affiliated with any company.
+      <p className="px-1 text-[11px] leading-relaxed text-muted">
+        Claude at ${(CLAUDE_INPUT_PER_TOKEN * 1e6).toFixed(0)} / ${(CLAUDE_OUTPUT_PER_TOKEN * 1e6).toFixed(0)} per million tokens in / out (assumed); Jev at ${(JEV_INPUT_PER_TOKEN * 1e9).toFixed(0)} per billion input tokens. Times are from one run. Synthetic data.
       </p>
     </div>
   );

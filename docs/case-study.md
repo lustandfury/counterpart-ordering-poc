@@ -91,6 +91,11 @@ Each entry: what we did, what happened, what it changed.
 **Happened:** the center is now only the order: the message and the draft. Everything about the comparison (which pipeline, what it cost, how strict it is) lives in one panel. Settings opens inline rather than as a floating menu, because the scrolling panel would clip a popover.
 **Changed:** the panel's subtitle says "Pick a card to see its draft", and the browser test now switches pipelines by clicking the cost card.
 
+### 15. A quieter cost panel
+**Did:** reworked the right panel to be lighter and easier to scan (Mike's direction): costs scaled to 10,000 orders, prices and times set in a mono font so the numbers stand apart from their labels, a one-line headline ("60× cheaper · 4.8× faster"), and three rows per pipeline (reading, matching, auto-approved). The token counts, the call counts, the panel's explanatory subtitle and the "not affiliated" line in the sidebar were removed; a short "Synthetic data" note stays in the panel's footnote.
+**Happened:** at 10,000 orders the comparison reads as a budget line rather than fractions of a cent: about $147 with Jev versus $683 with Claude alone across the 20 samples.
+**Changed:** the panel is narrower (20rem), and the README's cost row uses the same scale.
+
 ## Where it stands
 
 | | Claude only | Claude + Jev |

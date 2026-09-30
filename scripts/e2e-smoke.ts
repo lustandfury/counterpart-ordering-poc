@@ -63,7 +63,7 @@ async function main() {
   await openSettings();
   assert.equal(await page.locator("#t").isDisabled(), true);
   assert.ok(await page.getByRole("complementary", { name: "Cost assessment" }).isVisible());
-  assert.match(await page.getByRole("complementary", { name: "Cost assessment" }).innerText(), /less[\s\S]*faster/);
+  assert.match(await page.getByRole("complementary", { name: "Cost assessment" }).innerText(), /cheaper[\s\S]*faster[\s\S]*Per 10,000 orders/);
 
   // switching orders resets review progress
   await openOrder("o02");

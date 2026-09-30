@@ -46,7 +46,7 @@ The two thresholds (product confidence and quantity clarity) re-route lines live
 | Wrong product among auto-approved lines | 0% | 0% |
 | Matching step, time per order | 2.1 s | 0.4 s |
 | Matching step, cost per order | $0.055 | $0.001 |
-| Whole pipeline, cost per 1,000 orders | $68.26 | $14.73 |
+| Whole pipeline, cost per 10,000 orders | $682.60 | $147.30 |
 
 **What this supports:** on this set, Jev cleared the same share of lines for auto-approval as Claude alone, with no wrong approvals, and its matching step was roughly 50x cheaper and 5x faster. Its confidence was trustworthy: every line it rated at 0.7 or above was right.
 
