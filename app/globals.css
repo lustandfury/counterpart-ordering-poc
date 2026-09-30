@@ -246,7 +246,48 @@ button { cursor: pointer; }
   box-shadow: 0 0 0 3px var(--brand), 0 0 0 6px rgb(255 255 255 / 0.92);
 }
 .walkthrough-card {
+  width: min(320px, calc(100vw - 24px));
+  padding: 12px;
   border: 1px solid var(--line);
+}
+.walkthrough-arrow {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  transform: rotate(45deg);
+  pointer-events: none;
+}
+.walkthrough-card[data-side="top"] .walkthrough-arrow {
+  top: -7px;
+  left: calc(var(--walkthrough-arrow) - 6px);
+  border-right: 0;
+  border-bottom: 0;
+}
+.walkthrough-card[data-side="bottom"] .walkthrough-arrow {
+  bottom: -7px;
+  left: calc(var(--walkthrough-arrow) - 6px);
+  border-left: 0;
+  border-top: 0;
+}
+.walkthrough-card[data-side="left"] .walkthrough-arrow {
+  left: -7px;
+  top: calc(var(--walkthrough-arrow) - 6px);
+  border-right: 0;
+  border-top: 0;
+}
+.walkthrough-card[data-side="right"] .walkthrough-arrow {
+  right: -7px;
+  top: calc(var(--walkthrough-arrow) - 6px);
+  border-left: 0;
+  border-bottom: 0;
+}
+@media (min-width: 1024px) {
+  .walkthrough-card {
+    width: 360px;
+    padding: 20px;
+  }
 }
 /* A moving border leads the eye without covering labels or intercepting clicks. */
 @property --tour-angle {
@@ -289,18 +330,6 @@ button { cursor: pointer; }
   mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   mask-composite: exclude;
   animation: tour-trace 2.4s linear var(--tour-delay, 0ms) infinite;
-}
-@media (max-width: 1023px) {
-  .walkthrough-0 .walkthrough-card {
-    top: 1rem;
-    bottom: auto;
-  }
-  .walkthrough-active .app-shell {
-    scroll-padding-bottom: 17rem;
-  }
-  .walkthrough-2 .tour-cost {
-    margin-bottom: 17rem;
-  }
 }
 @media (prefers-reduced-motion: reduce) {
   .tour-cue::before,
@@ -395,21 +424,6 @@ button { cursor: pointer; }
     margin: -0.5rem auto 1.5rem;
     border-radius: 999px;
     background: var(--line);
-  }
-  .walkthrough-card {
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    max-height: 85dvh;
-    overflow-y: auto;
-    border-right: 0;
-    border-bottom: 0;
-    border-left: 0;
-    border-radius: 24px 24px 0 0;
-    padding-bottom: calc(1.25rem + env(safe-area-inset-bottom));
-    translate: none;
-    transform: none;
-    animation: lock-sheet-in 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
   }
   .lock-screen {
     align-items: end;

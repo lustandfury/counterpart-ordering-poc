@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { createPortal } from "react-dom";
 import { trackEvent } from "@/lib/analytics";
 import { readOrderStream, type OrderProgress, type OrderStage } from "@/lib/order-progress";
@@ -101,7 +101,7 @@ export function ReviewApp({ samples, catalog, initialOrder }: { samples: OrderRe
     setMobileOpen(mobile && step === 0);
     if (mobile && step > 0) {
       window.requestAnimationFrame(() => {
-        document.querySelector(step === 1 ? ".tour-review" : ".tour-cost")?.scrollIntoView({ block: "start" });
+        document.querySelector(step === 1 ? ".tour-choice .tour-option" : ".tour-compare")?.scrollIntoView({ block: "center" });
       });
     }
   }, []);
@@ -401,26 +401,79 @@ function SignupDialog({ email, setEmail, loading, error, onSubmit, onClose }: { 
 }
 
 function Walkthrough({ step, composerReady, onBack, onNext, onClose }: { step: WalkthroughStep; composerReady: boolean; onBack: () => void; onNext: () => void; onClose: () => void }) {
+  const cardRef = useRef<HTMLElement>(null);
+  const [position, setPosition] = useState<{ left: number; top: number; arrow: number; side: string; visible: boolean } | null>(null);
+
+  useEffect(() => {
+    let frame: number;
+    const update = () => {
+      const target = (document.querySelector<HTMLElement>(["#paste", ".tour-choice .tour-option", ".tour-compare"][step]) ?? document.querySelector<HTMLElement>("#review h1"));
+      const card = cardRef.current;
+      if (target && card) {
+        const rect = target.getBoundingClientRect();
+        const { width, height } = card.getBoundingClientRect();
+        const viewport = window.visualViewport;
+        const minX = (viewport?.offsetLeft ?? 0) + 12;
+        const minY = (viewport?.offsetTop ?? 0) + 12;
+        const maxX = minX + (viewport?.width ?? window.innerWidth) - 24;
+        const maxY = minY + (viewport?.height ?? window.innerHeight) - 24;
+        const gap = 12;
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        const clamp = (value: number, min: number, max: number) => Math.max(min, Math.min(value, max));
+        let left = clamp(centerX - width / 2, minX, maxX - width);
+        let top: number;
+        let side: string;
+        let arrow: number;
+        if (window.innerWidth >= 1024 && rect.right + gap + width <= maxX) {
+          left = rect.right + gap;
+          top = clamp(centerY - height / 2, minY, maxY - height);
+          side = "left";
+          arrow = clamp(centerY - top, 20, height - 20);
+        } else if (window.innerWidth >= 1024 && rect.left - gap - width >= minX) {
+          left = rect.left - gap - width;
+          top = clamp(centerY - height / 2, minY, maxY - height);
+          side = "right";
+          arrow = clamp(centerY - top, 20, height - 20);
+        } else {
+          const above = rect.top - gap - height;
+          const below = rect.bottom + gap;
+          const useAbove = above >= minY || (below + height > maxY && rect.top - minY > maxY - rect.bottom);
+          top = useAbove ? above : below;
+          side = useAbove ? "bottom" : "top";
+          arrow = clamp(centerX - left, 20, width - 20);
+        }
+        const visible = rect.bottom > minY && rect.top < maxY && rect.right > minX && rect.left < maxX;
+        const next = { left: Math.round(left), top: Math.round(top), arrow: Math.round(arrow), side, visible };
+        setPosition(previous => previous && Object.keys(next).every(key => previous[key as keyof typeof next] === next[key as keyof typeof next]) ? previous : next);
+      }
+      // Follow nested scrolling, sheet animations, layout changes, and the mobile keyboard.
+      frame = window.requestAnimationFrame(update);
+    };
+    frame = window.requestAnimationFrame(update);
+    return () => window.cancelAnimationFrame(frame);
+  }, [step, composerReady]);
+
   const content = [
-    { eyebrow: "1 of 3 · Make an order", title: "Bring on the lumber lingo.", body: composerReady ? "Now tap Run. We'll do the decoding; you keep the coffee. Or hit Next to explore a saved sample." : "No contractor text handy? Tap Generate. We'll supply the typos. You can also paste your own order, then tap Run." },
-    { eyebrow: "2 of 3 · Make the call", title: "Even AI needs safety glasses.", body: "Check a flagged line and choose the product that fits, confirm the quantity, or select Not in catalog. The glowing choices are yours to make. No rubber stamp required." },
-    { eyebrow: "3 of 3 · Compare the savings", title: "Less waiting. More lumber.", body: "Tap Claude + Jev and Claude only to compare cost and time for this order. Your calculator can take a coffee break." },
+    { eyebrow: "1 of 3 · Make an order", title: "Bring on the lumber lingo.", body: composerReady ? "Now tap Run. We'll do the decoding; you keep the coffee. Or hit Next to explore a saved sample." : "No contractor text handy? Tap Generate. We'll supply the typos. You can also paste your own order, then tap Run.", mobileTitle: "Make an order", mobileBody: composerReady ? "Tap Run to match your order." : "Paste an order or tap Generate, then Run." },
+    { eyebrow: "2 of 3 · Make the call", title: "Even AI needs safety glasses.", body: "Check a flagged line and choose the product that fits, confirm the quantity, or select Not in catalog. The glowing choices are yours to make. No rubber stamp required.", mobileTitle: "Check a flagged line", mobileBody: "Choose a product, confirm quantity, or tap Not in catalog." },
+    { eyebrow: "3 of 3 · Compare the savings", title: "Less waiting. More lumber.", body: "Tap Claude + Jev and Claude only to compare cost and time for this order. Your calculator can take a coffee break.", mobileTitle: "Compare cost & time", mobileBody: "Tap Claude + Jev and Claude only to compare." },
   ][step];
 
   return (
     <>
       <div className="walkthrough-backdrop fixed inset-0 z-40 bg-black/35" aria-hidden />
-      <section role="dialog" aria-modal="true" aria-labelledby="walkthrough-title" className="walkthrough-card fixed bottom-6 left-1/2 z-50 w-[min(420px,calc(100vw-2rem))] sm:-translate-x-1/2 rounded-2xl bg-panel p-5 shadow-2xl">
-        <div className="action-sheet-handle" aria-hidden />
-        <div className="flex items-start justify-between gap-4">
-          <p className="text-[12px] font-semibold uppercase tracking-wider text-muted">{content.eyebrow}</p>
-          <button onClick={onClose} aria-label="Close walkthrough" className="-mr-2 -mt-2 rounded-lg px-2 py-1 text-xl leading-none text-muted hover:bg-bg hover:text-ink">×</button>
+      <section ref={cardRef} role="dialog" aria-labelledby="walkthrough-title" aria-describedby="walkthrough-body" data-side={position?.side} className="walkthrough-card fixed z-50 rounded-2xl bg-panel shadow-2xl" style={{ left: position?.left ?? 0, top: position?.top ?? 0, visibility: position?.visible ? "visible" : "hidden", "--walkthrough-arrow": `${position?.arrow ?? 20}px` } as CSSProperties}>
+        <span className="walkthrough-arrow" aria-hidden />
+        <div className="flex items-center justify-between gap-4">
+          <p className="text-[11px] font-semibold uppercase tracking-wider text-muted"><span className="lg:hidden">{step + 1} of 3</span><span className="hidden lg:inline">{content.eyebrow}</span></p>
+          <button onClick={onClose} aria-label="Close walkthrough" className="-mr-2 -mt-1 grid h-8 w-8 place-items-center rounded-lg text-xl leading-none text-muted hover:bg-bg hover:text-ink">×</button>
         </div>
-        <h2 id="walkthrough-title" className="mt-2 text-lg font-semibold tracking-tight">{content.title}</h2>
-        <p className="mt-1.5 text-[14px] leading-relaxed text-muted">{content.body}</p>
-        <div className="mt-5 flex items-center justify-between gap-3">
+        <h2 id="walkthrough-title" className="text-[15px] font-semibold tracking-tight lg:mt-2 lg:text-lg"><span className="lg:hidden">{content.mobileTitle}</span><span className="hidden lg:inline">{content.title}</span></h2>
+        <p id="walkthrough-body" className="mt-1 text-[13px] leading-snug text-muted lg:mt-1.5 lg:text-[14px] lg:leading-relaxed"><span className="lg:hidden">{content.mobileBody}</span><span className="hidden lg:inline">{content.body}</span></p>
+        <div className="mt-2 flex items-center justify-between gap-3 lg:mt-4">
           <button onClick={onBack} disabled={step === 0} className="h-9 rounded-lg px-3 text-[13px] font-medium text-muted hover:bg-bg hover:text-ink disabled:invisible">Back</button>
-          <button onClick={onNext} className="h-9 rounded-lg bg-brand px-4 text-[13px] font-semibold text-ink">{step === 2 ? "Let's get to work" : "Next"}</button>
+          <button onClick={onNext} className="h-9 rounded-lg bg-brand px-4 text-[13px] font-semibold text-ink">{step === 2 ? <><span className="lg:hidden">Done</span><span className="hidden lg:inline">Let&apos;s get to work</span></> : "Next"}</button>
         </div>
       </section>
     </>
