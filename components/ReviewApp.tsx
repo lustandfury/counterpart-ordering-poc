@@ -39,6 +39,8 @@ type Run = OrderResult & { runId: number };
 
 const DEFAULT_SAMPLE = "o13";
 const SAMPLES_SHOWN = 3;
+const ORDER_TEXT_LIMIT = 600;
+const ORDER_COUNTER_THRESHOLD = ORDER_TEXT_LIMIT * 0.8;
 
 export function ReviewApp({ samples, catalog, initialOrder }: { samples: OrderResult[]; catalog: SlimCatalog; initialOrder?: string }) {
   const [runs, setRuns] = useState<Run[]>([]); // live runs from the composer, newest first
@@ -138,7 +140,7 @@ export function ReviewApp({ samples, catalog, initialOrder }: { samples: OrderRe
                     id="paste"
                     rows={7}
                     value={pasteText}
-                    maxLength={600}
+                    maxLength={ORDER_TEXT_LIMIT}
                     onChange={(e) => {
                       setPasteText(e.target.value);
                       setPasteFrom(undefined);
@@ -167,7 +169,7 @@ export function ReviewApp({ samples, catalog, initialOrder }: { samples: OrderRe
                       <DiceIcon />
                       Generate
                     </button>
-                    <span className="text-[12px] text-muted">{pasteText.length}/600</span>
+                    {pasteText.length >= ORDER_COUNTER_THRESHOLD && <span className="text-[12px] text-muted" aria-label={`${pasteText.length} of ${ORDER_TEXT_LIMIT} characters`}>{pasteText.length}/{ORDER_TEXT_LIMIT}</span>}
                     <button onClick={runLive} disabled={loading || !pasteText.trim()} className="ml-auto h-8 rounded-lg bg-brand px-3.5 text-[13px] font-semibold text-ink disabled:opacity-40">
                       {loading ? "Reading…" : "Run ⌘↵"}
                     </button>
@@ -363,6 +365,31 @@ function OrderItem(p: { id: string; tag: string; title: string; preview: string;
 
 type Decisions = Record<string, string>; // lineId -> sku chosen by the rep
 
+function OrderDetails({ result, isLive, lines, flagged, done, sentAt, onSend }: { result: OrderResult; isLive: boolean; lines: number; flagged: number; done: number; sentAt?: number; onSend: () => void }) {
+  const title = isLive ? "Your order" : `Order ${result.orderId}`;
+  const readyToSend = !sentAt && flagged === done;
+  const stats = [
+    { label: "Lines", value: lines, suffix: "", className: "text-ink" },
+    { label: "Auto-approved", value: lines - flagged, suffix: "", className: "text-ok" },
+    { label: "To check", value: Math.max(0, flagged - done), suffix: "", className: "text-warn" },
+  ];
+  return (
+    <div className="mb-6 rounded-xl border border-line bg-panel px-4 py-3 shadow-[0_0_0_1px_var(--ring)]" aria-live="polite">
+      <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-4 sm:flex sm:flex-wrap sm:gap-x-4 sm:gap-y-3">
+        <div className="contents sm:flex sm:min-w-0 sm:flex-wrap sm:items-center sm:gap-4">
+          <h1 className="min-w-0 break-words text-xl font-semibold tracking-tight">{title}</h1>
+          <div className="col-span-2 row-start-2 grid grid-cols-3 divide-x divide-line rounded-lg bg-bg py-2 sm:flex sm:items-center sm:px-1 sm:py-1">
+            {stats.map((stat) => <span key={stat.label} className={`flex min-w-0 flex-col items-center gap-0.5 px-1 text-[18px] font-semibold sm:block sm:px-3 sm:text-[13px] sm:font-medium ${stat.className}`}>{stat.value}{stat.suffix} <span className="text-[11px] font-normal text-muted sm:text-[13px]">{stat.label}</span></span>)}
+          </div>
+        </div>
+        <button onClick={onSend} disabled={!readyToSend} className="col-start-2 row-start-1 ml-auto h-11 shrink-0 whitespace-nowrap rounded-lg bg-brand px-3.5 text-[13px] font-semibold text-ink transition-opacity disabled:cursor-not-allowed disabled:opacity-40 sm:h-9">
+          {sentAt ? "Sent" : "Send order"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
 function Review({ result, isLive, mode, T, unitMin, catalog, resolved, setResolved, sentAt, onSend, onReopen }: {
   result: OrderResult; isLive: boolean; mode: Mode; T: number; unitMin: number; catalog: SlimCatalog;
   resolved: Decisions; setResolved: (f: (r: Decisions) => Decisions) => void;
@@ -370,7 +397,10 @@ function Review({ result, isLive, mode, T, unitMin, catalog, resolved, setResolv
 }) {
   const [active, setActive] = useState<string | null>(null);
   const lines = useMemo(() => computeView(result, mode, T, catalog, unitMin), [result, mode, T, catalog, unitMin]);
-  const flagged = lines.filter((l) => !l.approved);
+  // Unmatched lines need triage before product or quantity checks, so keep them at the top of the review list.
+  // The original `lines` order stays intact for reconstructing the contractor's message above the list.
+  const orderedLines = useMemo(() => [...lines].sort((a, b) => Number(b.sku === NONE) - Number(a.sku === NONE)), [lines]);
+  const flagged = orderedLines.filter((l) => !l.approved);
   const done = flagged.filter((l) => resolved[l.id]).length;
   const current = active ?? flagged.find((l) => !resolved[l.id])?.id ?? null;
 
@@ -445,12 +475,15 @@ function Review({ result, isLive, mode, T, unitMin, catalog, resolved, setResolv
           Skip to the first line to check
         </a>
       )}
-      <div className="mb-6 flex flex-wrap items-baseline gap-x-5 gap-y-1" aria-live="polite">
-        <h1 className="text-2xl font-semibold tracking-tight">{isLive ? "Your order" : `Order ${result.orderId}`}</h1>
-        <span className="text-muted">{lines.length} lines</span>
-        <span className="font-medium text-ok">{lines.length - flagged.length} auto-approved</span>
-        <span className="font-medium text-warn">{flagged.length} to check{flagged.length ? ` · ${done} done` : ""}</span>
-      </div>
+      <OrderDetails
+        result={result}
+        isLive={isLive}
+        lines={lines.length}
+        flagged={flagged.length}
+        done={done}
+        sentAt={sentAt}
+        onSend={onSend}
+      />
 
 
       {/* Sending is mocked: it only marks the order as sent in this browser tab */}
@@ -466,24 +499,23 @@ function Review({ result, isLive, mode, T, unitMin, catalog, resolved, setResolv
       ) : (flagged.length === 0 || done === flagged.length) && (
         <div role="status" className="mb-6 flex flex-wrap items-center gap-x-4 gap-y-2 rounded-xl bg-okbg px-5 py-3">
           <p className="flex-1 font-medium text-ok">{flagged.length === 0 ? "Nothing needs your attention. This order is ready to send." : "All checked. This order is ready to send."}</p>
-          <button onClick={onSend} className="h-9 rounded-lg bg-brand px-4 text-[14px] font-semibold text-ink">Send order</button>
         </div>
       )}
 
       <section aria-label="Order" inert={!!sentAt} className={`card overflow-hidden ${sentAt ? "opacity-70" : ""}`}>
-        <header className="flex flex-wrap items-center gap-x-3 gap-y-1 border-b border-line px-6 py-4">
-          <span className="grid h-8 w-8 place-items-center rounded-full bg-bg text-[11px] font-semibold text-ink" aria-hidden>
+        <header className="grid grid-cols-[2rem_minmax(0,1fr)] items-center gap-x-3 gap-y-2 border-b border-line px-4 py-4 sm:flex sm:flex-wrap sm:gap-y-1 sm:px-6">
+          <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-bg text-[11px] font-semibold text-ink" aria-hidden>
             {result.from ? result.from.name.split(" ").map((w) => w[0]).join("").slice(0, 2) : "C"}
           </span>
-          <span className="text-[14px]">
-            <span className="font-semibold">{result.from?.name ?? "Contractor"}</span>
-            {result.from && <span className="text-muted"> · {result.from.company}</span>}
+          <span className="min-w-0 break-words text-[14px]">
+            <span className="block font-semibold sm:inline">{result.from?.name ?? "Contractor"}</span>
+            {result.from && <span className="block text-[13px] text-muted sm:inline sm:text-[14px]"><span className="hidden sm:inline"> · </span>{result.from.company}</span>}
           </span>
-          <span className="whitespace-nowrap text-[13px] text-muted sm:ml-auto">{mode === "jev" ? "Claude + Jev" : "Claude only"}</span>
-          {notes && <p className="basis-full pt-1 text-[14px] leading-relaxed text-muted">“{notes}”</p>}
+          <span className="col-start-2 whitespace-nowrap text-[12px] text-muted sm:ml-auto sm:text-[13px]">{mode === "jev" ? "Claude + Jev" : "Claude only"}</span>
+          {notes && <p className="col-span-2 min-w-0 break-words border-t border-line pt-3 text-[14px] leading-relaxed text-muted sm:basis-full sm:border-t-0 sm:pt-1">“{notes}”</p>}
         </header>
         <ul>
-          {lines.map((l) => (
+          {orderedLines.map((l) => (
             <LineRow key={l.id} l={l} state={status(l)} pick={resolved[l.id]} active={current === l.id} catalog={catalog} onSelect={() => setActive(l.id)} onChoose={(sku) => choose(l.id, sku)} onUndo={() => undo(l.id)} />
           ))}
         </ul>

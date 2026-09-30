@@ -4,7 +4,7 @@ export const DEFAULT_T = 0.85;
 
 /** Plain-language reasons shown to the rep. */
 export const REASON = {
-  noMatch: "We couldn't find a clear match in the catalog.",
+  noMatch: "Needs review. Select an option below.",
   unsure: (c: number) => `We're not sure which product this is (${Math.round(c * 100)}% on the best guess).`,
   quantity: "The quantity or unit may not fit how this product is sold.",
   noQty: "No quantity was given.",
