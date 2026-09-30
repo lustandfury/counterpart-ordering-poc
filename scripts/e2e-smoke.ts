@@ -65,7 +65,18 @@ async function main() {
   assert.ok(await page.getByRole("complementary", { name: "Cost assessment" }).isVisible());
   assert.match(await page.getByRole("complementary", { name: "Cost assessment" }).innerText(), /cheaper[\s\S]*faster[\s\S]*Per 10,000 orders/);
 
-  // Generate fills the composer with a sample order (no API call)
+  // theme: light by default; Dark and System apply at once and survive a reload
+  const theme = () => page.evaluate(() => document.documentElement.dataset.theme);
+  assert.equal(await theme(), "light");
+  await page.getByRole("radio", { name: "Dark" }).click();
+  assert.equal(await theme(), "dark");
+  await page.reload();
+  assert.equal(await theme(), "dark");
+  await openSettings();
+  await page.getByRole("radio", { name: "Light" }).click();
+  assert.equal(await theme(), "light");
+
+    // Generate fills the composer with a sample order (no API call)
   await page.getByRole("button", { name: "Generate" }).click();
   assert.ok((await page.locator("#paste").inputValue()).split("\n").length >= 3);
 

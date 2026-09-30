@@ -5,6 +5,7 @@ import type { OrderResult, Sender } from "@/lib/types";
 import Link from "next/link";
 import { BrandBar } from "@/components/AppNav";
 import { generateOrder } from "@/lib/generate";
+import { applyTheme, readTheme, THEMES, type Theme } from "@/lib/theme";
 import { CLAUDE_INPUT_PER_TOKEN, CLAUDE_OUTPUT_PER_TOKEN, JEV_INPUT_PER_TOKEN } from "@/lib/pricing";
 import { computeView, displayChoices, NONE, segmentText, totals, type Mode, type SlimCatalog, type ViewLine } from "@/lib/view";
 
@@ -226,7 +227,38 @@ function SettingsSection(p: Thresholds & { changed: boolean }) {
       >
         Reset to defaults
       </button>
+      <ThemeChoice />
     </section>
+  );
+}
+
+/** Light / Dark / System. Rendered only when Settings is open, so reading storage here is client-side only. */
+function ThemeChoice() {
+  const [theme, setTheme] = useState<Theme>(() => readTheme());
+  const label: Record<Theme, string> = { light: "Light", dark: "Dark", system: "System" };
+  return (
+    <fieldset className="mt-5 border-t border-line pt-4">
+      <legend className="sr-only">Theme</legend>
+      <p className="mb-2 text-[13px] font-medium text-muted" aria-hidden>
+        Theme
+      </p>
+      <div className="inline-flex gap-1 rounded-xl bg-panel p-1 text-[13px] shadow-[0_0_0_1px_var(--ring)]" role="radiogroup" aria-label="Theme">
+        {THEMES.map((t) => (
+          <button
+            key={t}
+            role="radio"
+            aria-checked={theme === t}
+            onClick={() => {
+              setTheme(t);
+              applyTheme(t);
+            }}
+            className={`h-8 rounded-lg px-3 font-medium ${theme === t ? "bg-ink text-bg" : "text-muted hover:bg-bg hover:text-ink"}`}
+          >
+            {label[t]}
+          </button>
+        ))}
+      </div>
+    </fieldset>
   );
 }
 

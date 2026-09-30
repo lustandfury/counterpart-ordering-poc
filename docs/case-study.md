@@ -146,6 +146,11 @@ Each entry: what we did, what happened, what it changed.
 **Happened:** the "needs checking" color was amber, which would have read as brand yellow. It moved to orange, so yellow means brand, orange means attention and green means approved or saved. Contrast checks set the rules: yellow works as a fill behind dark text (11:1) but is too faint as a thin line on white (1.5:1), so the selected cost card keeps a dark outline; the new green passes on white, the paper background and its own tint.
 **Changed:** each color has one meaning.
 
+### 26. Theme is the viewer's choice
+**Did:** added Light / Dark / System to Settings (Mike's call). Light stays the default; the choice is saved in the viewer's browser and applied by a one-line script before the page paints, so there is no flash of the wrong theme. System follows the computer's setting. The dark palette was refreshed with the new green.
+**Happened:** the browser test now switches to Dark, reloads, and checks the choice held; a separate check confirmed System renders dark on a dark-mode machine while a first-time visitor on the same machine still gets light.
+**Changed:** the designed-for light version is what everyone sees first; dark is one click away.
+
 ## Where it stands
 
 | | Claude only | Claude + Jev |
