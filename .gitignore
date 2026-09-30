@@ -44,3 +44,4 @@ next-env.d.ts
 # private planning notes (mention the outreach; keep out of the public repo)
 AI Ordering POC Build Plan.md
 *.tsbuildinfo
+shots/

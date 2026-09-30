@@ -1,26 +1,69 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg: #f5f4f0;
+  --panel: #ffffff;
+  --panel-2: #faf9f6;
+  --ink: #1b1f1c;
+  --muted: #58605a;
+  --line: #ddd9cf;
+  --control: #8a8577;
+  --ok: #1c6a50;
+  --ok-bg: #e5f1ea;
+  --warn: #8a4f00;
+  --warn-bg: #fcefd6;
+  --warn-line: #a86b00;
+  --focus: #2456a6;
+  --bar: #b3ad9d;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #141715;
+    --panel: #1c201d;
+    --panel-2: #181c19;
+    --ink: #e8ebe6;
+    --muted: #a0a89f;
+    --line: #333a35;
+  --control: #6f7972;
+    --ok: #6fcfa6;
+    --ok-bg: #16352a;
+    --warn: #f0b95a;
+    --warn-bg: #3a2c11;
+    --warn-line: #b57a1c;
+    --focus: #8db4ff;
+    --bar: #6f7972;
+  }
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-bg: var(--bg);
+  --color-panel: var(--panel);
+  --color-panel2: var(--panel-2);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-control: var(--control);
+  --color-ok: var(--ok);
+  --color-okbg: var(--ok-bg);
+  --color-warn: var(--warn);
+  --color-warnbg: var(--warn-bg);
+  --color-warnline: var(--warn-line);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-size: 14px;
+  line-height: 1.45;
+  font-variant-numeric: tabular-nums;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+  border-radius: 4px;
 }
+button { cursor: pointer; }
