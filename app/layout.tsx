@@ -38,7 +38,7 @@ export const metadata: Metadata = {
     description: "Turn messy contractor text messages into accurate, reviewable lumber orders with AI-assisted matching.",
     images: ["/images/counterpart-og.png"],
   },
-  icons: { icon: "/favicon.ico" },
+  // icons come from app/favicon.ico, app/icon.svg and app/apple-icon.png (see scripts/generate-icons.ts)
   robots: { index: true, follow: true },
 };
 
