@@ -8,12 +8,13 @@ async function generateOGImage() {
 <html>
 <head>
   <meta charset="utf-8">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&display=swap" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; }
     body {
       width: 1730px;
       height: 909px;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       display: flex;
       align-items: center;
       justify-content: flex-start;
@@ -32,35 +33,36 @@ async function generateOGImage() {
       z-index: 10;
       padding-left: 80px;
       display: flex;
-      flex-direction: column;
       align-items: center;
-      gap: 30px;
+      gap: 48px;
     }
     .logo {
-      width: 220px;
-      height: 220px;
+      width: 200px;
+      height: 200px;
+      flex-shrink: 0;
       filter: drop-shadow(0 10px 30px rgba(0,0,0,0.15));
     }
     .wordmark {
-      text-align: center;
-      color: white;
-      text-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      color: #1c1c1e;
     }
     .wordmark h1 {
-      font-size: 56px;
-      font-weight: bold;
+      font-size: 64px;
+      font-weight: 700;
       margin: 0;
-      letter-spacing: -1px;
+      letter-spacing: -0.03em;
+      line-height: 1.2;
     }
     .part {
       font-weight: 500;
-      opacity: 0.85;
+      color: #5c5c61;
     }
     .wordmark p {
-      font-size: 18px;
+      font-size: 20px;
       margin: 0;
-      margin-top: 8px;
-      opacity: 0.9;
+      margin-top: 12px;
+      color: #5c5c61;
+      font-weight: 400;
+      line-height: 1.4;
     }
   </style>
 </head>
