@@ -71,6 +71,14 @@ npm run dev                  # http://localhost:3000
 
 `.env.local` needs `ANTHROPIC_API_KEY`, `ANTHROPIC_MODEL` (for example `claude-sonnet-5-5`), `TYPESAFE_API_KEY`, and `POSTGRES_URL` for the live-order usage limit and email signups. Set `NEXT_PUBLIC_SITE_URL` to the public URL when deploying so canonical and social metadata point to the right host. The saved sample orders work without keys; only live paste and the pipeline scripts call the APIs.
 
+## Analytics
+
+PostHog is optional. Set `NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN` to the project's public token in `.env.local` and your hosting environment. Set `NEXT_PUBLIC_POSTHOG_HOST` to the ingestion host for your project (`https://us.i.posthog.com` or `https://eu.i.posthog.com`). Rebuild/redeploy after changing these values because Next.js embeds public environment variables at build time. Leave the token empty to disable analytics, including for local development.
+
+Page views include initial loads and client-side navigation. Custom events cover workspace unlock, order selection, live-run start/completion/failure, the signup gate and completion, comparison mode changes, line review decisions, and mock order sends. Event properties contain workflow counts and categories; order text, sender details, emails, and access codes are not included. Autocapture, session replay, and surveys are disabled. Visitors use anonymous browser IDs; signup does not identify them by email.
+
+To verify a configured deployment, open PostHog's live events view, visit Review and Sample results, and review a line. Look for `$pageview` and `order_line_reviewed`; sending a completed order emits `order_sent` with `demo: true`.
+
 | Command | What it does |
 | --- | --- |
 | `npm run check` | Lint, typecheck and unit tests |

@@ -342,7 +342,7 @@ function AccessLockScreen({ code, setCode, error, unlocking, onSubmit }: { code:
         />
         {error && <p id="access-code-error" role="alert" className="mt-2 text-[13px] text-warn">That code doesn&apos;t match.</p>}
         <button type="submit" disabled={code.length !== 3 || unlocking} className="mt-4 h-10 w-full rounded-xl bg-brand px-4 text-[14px] font-semibold text-ink transition-opacity disabled:cursor-not-allowed disabled:opacity-40">
-          Enter Counterpart
+          Enter
         </button>
       </form>
     </div>
