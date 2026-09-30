@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { BrandBar } from "@/components/AppNav";
 import { ModalCloseButton } from "@/components/ModalCloseButton";
-import type { Sender } from "@/lib/types";
+import type { OrderResult, Sender } from "@/lib/types";
+import { totals } from "@/lib/view";
 import { resultsMetrics, type EvalData } from "@/lib/eval/display";
 import { useThresholds } from "@/lib/settings";
 
@@ -11,11 +12,15 @@ const pct = (n: number | null) => n == null ? "n/a" : `${Math.round(n)}%`;
 const money = (n: number) => `$${n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 const usd = (n: number) => `$${n.toFixed(4)}`;
 
-export function ResultsDisplay({ data, senders, onClose, onOpenOrder }: { data: EvalData; senders: Record<string, Sender>; onClose?: () => void; onOpenOrder?: (id: string) => void }) {
+export function ResultsDisplay({ data, samples, senders, onClose, onOpenOrder }: { data: EvalData; samples: OrderResult[]; senders: Record<string, Sender>; onClose?: () => void; onOpenOrder?: (id: string) => void }) {
   const { T, unitMin, changed, reset } = useThresholds();
   const e = resultsMetrics(data, T, unitMin);
   const { jev, claude } = e;
   const lines = data.rows.length;
+  const orders = samples.filter((sample) => data.costs.some((order) => order.orderId === sample.orderId));
+  const jevMs = orders.reduce((sum, order) => sum + totals(order, "jev").ms, 0);
+  const claudeMs = orders.reduce((sum, order) => sum + totals(order, "claude").ms, 0);
+  const timeSaved = Math.round((1 - jevMs / claudeMs) * 100);
   const quality = [
     { label: "Right product", key: "correct" as const, denominator: () => lines },
     { label: "Lines auto-approved", key: "approved" as const, denominator: () => lines },
@@ -33,6 +38,7 @@ export function ResultsDisplay({ data, senders, onClose, onOpenOrder }: { data: 
           {onClose && <ModalCloseButton onClose={onClose} label="Close sample results" />}
         </div>
         <p data-testid="results-headline" className="mt-3 max-w-4xl text-xl font-semibold">{e.headline}</p>
+        {jevMs > 0 && claudeMs > 0 && <p className="mt-1 max-w-4xl text-sm text-muted">Claude + Jev takes {Math.abs(timeSaved)}% {timeSaved < 0 ? "more" : "less"} time per order on average, including reading and matching · saved runs, results vary.</p>}
         <p className="mt-2 max-w-3xl text-muted">
           Both pipelines on {data.costs.length} synthetic orders ({lines} lines), scored against a hand-reviewed answer key.
           Thresholds: product confidence <span className="font-mono">{T.toFixed(2)}</span>, quantity clarity <span className="font-mono">{unitMin.toFixed(2)}</span> ({changed ? "custom" : "defaults"}).

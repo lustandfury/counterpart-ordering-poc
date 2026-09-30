@@ -376,7 +376,7 @@ export function ReviewApp({ samples, catalog, initialOrder, evalData }: { sample
         {loading ? <><div className="flex items-start justify-between gap-4"><h2 className="text-xl font-semibold tracking-tight">Cost</h2><ModalCloseButton onClose={() => setMobileCostOpen(false)} label="Close cost comparison" /></div><p className="py-8 text-[14px] text-muted">The cost comparison will appear when both matching checks finish.</p></> : <CostPanel {...costPanelProps} onClose={() => setMobileCostOpen(false)} />}
       </ActionSheet>}
       <ActionSheet open={resultsOpen} id="sample-results-sheet" labelledBy="sample-results-title" onClose={() => setResultsOpen(false)} className="max-w-6xl">
-        <ResultsDisplay data={evalData} senders={Object.fromEntries(samples.flatMap(sample => sample.from ? [[sample.orderId, sample.from]] : []))} onClose={() => setResultsOpen(false)} onOpenOrder={id => {
+        <ResultsDisplay data={evalData} samples={samples} senders={Object.fromEntries(samples.flatMap(sample => sample.from ? [[sample.orderId, sample.from]] : []))} onClose={() => setResultsOpen(false)} onOpenOrder={id => {
           pick(id);
           setResultsOpen(false);
           setMobileCostOpen(false);
@@ -1105,6 +1105,7 @@ function CostPanel({ result, samples, mode, T, unitMin, catalog, onMode, setting
   const maxUsd = Math.max(...sides.map((x) => x.t.usd));
   const [jev, cla] = sides;
   const cheaper = cla.t.usd / jev.t.usd;
+  const timeSaved = Math.round((1 - jev.t.ms / cla.t.ms) * 100);
   const diff = a.filter((l, i) => l.sku !== b[i].sku);
   const per10k = (usdPerOrder: number) => `$${(usdPerOrder * PER).toLocaleString("en-US", { minimumFractionDigits: 4, maximumFractionDigits: 4 })}`;
 
@@ -1130,6 +1131,7 @@ function CostPanel({ result, samples, mode, T, unitMin, catalog, onMode, setting
 
         <div className="rounded-xl bg-brandsoft px-4 py-3">
           <p className="font-mono text-base font-semibold">{cheaper.toFixed(1)}× lower cost per order</p>
+          {jev.t.ms > 0 && cla.t.ms > 0 && <p className="mt-1 text-sm text-muted">{Math.abs(timeSaved)}% {timeSaved < 0 ? "more" : "less"} time per order</p>}
           <p className="mt-1 text-[12px] text-muted">{usd(jev.t.usd)} vs {usd(cla.t.usd)} · single run, results vary</p>
         </div>
 
