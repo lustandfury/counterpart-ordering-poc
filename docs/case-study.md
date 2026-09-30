@@ -106,6 +106,11 @@ Each entry: what we did, what happened, what it changed.
 **Happened:** that shared function also fixed a quiet mismatch: the screen hid options under 5%, but the number keys indexed the unfiltered list, so pressing 2 could pick something not shown.
 **Changed:** the escape hatch is as visible as the products, which matters most on the lines that most need it.
 
+### 18. A generator that always leaves something to check
+**Did:** added a Generate button to the paste box (Mike's idea). It writes a realistic text-message order in the browser, free and instantly, from templates tied to the catalog: 3 to 6 clean lines plus one or two lines drawn from the house rules' "always review" list (a missing length, an ambiguous product, something we don't carry, a unit we don't sell in, an absurd quantity, or no quantity). Only Run makes paid calls.
+**Happened:** unit tests over 300 seeded orders confirm every order has a planted problem and fits the live limits. Running four through the real pipeline: every planted problem was flagged, and so was one "clean" template, "27 2x6 joist hangers", fairly, since hangers are sold singly and in boxes of 25.
+**Changed:** that template was dropped rather than arguing with the pipeline; generated orders give a live demo with a guaranteed review moment.
+
 ## Where it stands
 
 | | Claude only | Claude + Jev |

@@ -24,6 +24,9 @@ async function main() {
   await shot("desktop-settings", { width: 1280, height: 900 }, async (p) => {
     await p.getByRole("button", { name: "Settings" }).click();
   });
+  await shot("desktop-generate", { width: 1280, height: 900 }, async (p) => {
+    await p.getByRole("button", { name: "Generate" }).click();
+  });
   await shot("mobile", { width: 390, height: 844 });
   await browser.close();
 }

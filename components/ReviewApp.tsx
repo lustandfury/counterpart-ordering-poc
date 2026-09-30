@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { OrderResult } from "@/lib/types";
+import { generateOrder } from "@/lib/generate";
 import { CLAUDE_INPUT_PER_TOKEN, CLAUDE_OUTPUT_PER_TOKEN, JEV_INPUT_PER_TOKEN } from "@/lib/pricing";
 import { computeView, displayChoices, NONE, segmentText, totals, type Mode, type SlimCatalog, type ViewLine } from "@/lib/view";
 
@@ -115,7 +116,7 @@ export function ReviewApp({ samples, catalog }: { samples: OrderResult[]; catalo
                 <div className="rounded-[14px] bg-input shadow-[inset_0_0_0_1px_var(--ring)] focus-within:ring-2 focus-within:ring-[var(--focus)]">
                   <textarea
                     id="paste"
-                    rows={4}
+                    rows={7}
                     value={pasteText}
                     maxLength={600}
                     onChange={(e) => setPasteText(e.target.value)}
@@ -125,11 +126,23 @@ export function ReviewApp({ samples, catalog }: { samples: OrderResult[]; catalo
                         runLive();
                       }
                     }}
-                    placeholder={"Paste a text-message order…\n20 of the 2x6 (8ft)\n3 sheets 5/8 type X"}
-                    className="block w-full resize-none rounded-t-[14px] bg-transparent px-3.5 pt-3 font-mono text-[13px] leading-6 outline-none"
+                    placeholder={"Paste a text-message order, or press Generate for a sample…"}
+                    className="block w-full resize-none rounded-t-[14px] bg-transparent px-3.5 pt-3 font-mono text-[13px] leading-6 outline-none focus-visible:outline-none"
                   />
                   <div className="flex items-center gap-2 px-3 pb-3">
-                    <span className="text-[12px] text-muted">Live run · {pasteText.length}/600</span>
+                    <button
+                      onClick={() => {
+                        setPasteText(generateOrder().text);
+                        setError(null);
+                        requestAnimationFrame(() => document.getElementById("paste")?.focus());
+                      }}
+                      title="Fill in a random sample order. It always includes at least one line to check."
+                      className="flex h-8 items-center gap-1.5 rounded-lg px-2 text-[13px] font-medium text-muted hover:bg-panel hover:text-ink"
+                    >
+                      <DiceIcon />
+                      Generate
+                    </button>
+                    <span className="text-[12px] text-muted">{pasteText.length}/600</span>
                     <button onClick={runLive} disabled={loading || !pasteText.trim()} className="ml-auto h-8 rounded-lg bg-ink px-3.5 text-[13px] font-medium text-bg disabled:opacity-40">
                       {loading ? "Reading…" : "Run ⌘↵"}
                     </button>
@@ -201,6 +214,15 @@ function SettingsSection(p: Thresholds & { changed: boolean }) {
     </section>
   );
 }
+
+const DiceIcon = () => (
+  <svg aria-hidden viewBox="0 0 16 16" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.4">
+    <rect x="2.5" y="2.5" width="11" height="11" rx="2.5" />
+    <circle cx="5.8" cy="5.8" r="0.9" fill="currentColor" stroke="none" />
+    <circle cx="10.2" cy="10.2" r="0.9" fill="currentColor" stroke="none" />
+    <circle cx="8" cy="8" r="0.9" fill="currentColor" stroke="none" />
+  </svg>
+);
 
 const GearIcon = () => (
   <svg aria-hidden viewBox="0 0 16 16" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.4">
