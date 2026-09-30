@@ -346,7 +346,25 @@ function Review({ result, isLive, mode, T, unitMin, catalog }: { result: OrderRe
   }, [active]);
 
 
-  const segments = useMemo(() => segmentText(result.text, lines), [result, lines]);
+  // What the contractor wrote besides the order lines (greetings, delivery notes), shown with the sender.
+  // If order lines sit inside sentences ("We need 30 2x4x8 and 12 2x6x8"), cutting them out would leave
+  // broken text, so the whole message is shown instead.
+  const notes = useMemo(() => {
+    const segs = segmentText(result.text, lines);
+    const inline = segs.some((seg, i) => {
+      if (!seg.lineId) return false;
+      const before = (segs[i - 1]?.text ?? "\n").split("\n").pop()!.trim();
+      const after = (segs[i + 1]?.text ?? "\n").split("\n")[0].trim();
+      return before !== "" || after !== "";
+    });
+    if (inline) return result.text.replace(/\s+/g, " ").trim();
+    return segs
+      .filter((seg) => !seg.lineId)
+      .map((seg) => seg.text.replace(/\s+/g, " ").trim())
+      .filter((t) => /[a-z]{2}/i.test(t))
+      .join(" ")
+      .trim();
+  }, [result, lines]);
   const status = (l: ViewLine) => (l.approved ? "ok" : resolved[l.id] ? "done" : "flag");
 
   return (
@@ -370,52 +388,24 @@ function Review({ result, isLive, mode, T, unitMin, catalog }: { result: OrderRe
         </p>
       )}
 
-      <div className="flex flex-col gap-8">
-        <section aria-label="Order message" className="max-w-2xl">
-          <h2 className="mb-2.5 flex items-center gap-2.5 text-[13px] font-medium text-muted">
-            <span className="grid h-6 w-6 place-items-center rounded-full bg-panel text-[10px] font-semibold text-ink shadow-[0_0_0_1px_var(--ring)]" aria-hidden>
-              {result.from ? result.from.name.split(" ").map((w) => w[0]).join("").slice(0, 2) : "C"}
-            </span>
-            {result.from ? (
-              <span>
-                <span className="text-ink">{result.from.name}</span> · {result.from.company} · text message
-              </span>
-            ) : (
-              "Contractor · text message"
-            )}
-          </h2>
-          <p className="card whitespace-pre-wrap !rounded-tl-sm px-6 py-5 font-mono text-[14px] leading-7">
-            {segments.map((s, i) =>
-              s.lineId ? (
-                <button
-                  key={i}
-                  onClick={() => setActive(s.lineId!)}
-                  className={`rounded-sm px-0.5 text-left ${
-                    { ok: "", done: "opacity-70", flag: "bg-warnbg underline decoration-warnline decoration-2 underline-offset-2" }[status(lines.find((l) => l.id === s.lineId)!)]
-                  }`}
-                >
-                  {s.text}
-                </button>
-              ) : (
-                <span key={i}>{s.text}</span>
-              ),
-            )}
-          </p>
-        </section>
-
-        <section aria-label="Draft order" className="min-w-0">
-          <h2 className="mb-2.5 flex items-center gap-2.5 text-[13px] font-medium text-muted">
-            <span className="grid h-6 w-6 place-items-center rounded-full bg-ink text-[10px] font-semibold text-bg" aria-hidden>AI</span>
-            Draft order · {mode === "jev" ? "Claude + Jev" : "Claude only"}
-          </h2>
-          <ul className="card overflow-hidden">
-            {lines.map((l) => (
-              <LineRow key={l.id} l={l} state={status(l)} pick={resolved[l.id]} active={current === l.id} catalog={catalog} onSelect={() => setActive(l.id)} onChoose={(sku) => choose(l.id, sku)} onUndo={() => undo(l.id)} />
-            ))}
-          </ul>
-        </section>
-      </div>
-
+      <section aria-label="Order" className="card overflow-hidden">
+        <header className="flex flex-wrap items-center gap-x-3 gap-y-1 border-b border-line px-6 py-4">
+          <span className="grid h-8 w-8 place-items-center rounded-full bg-bg text-[11px] font-semibold text-ink" aria-hidden>
+            {result.from ? result.from.name.split(" ").map((w) => w[0]).join("").slice(0, 2) : "C"}
+          </span>
+          <span className="text-[14px]">
+            <span className="font-semibold">{result.from?.name ?? "Contractor"}</span>
+            {result.from && <span className="text-muted"> · {result.from.company}</span>}
+          </span>
+          <span className="whitespace-nowrap text-[13px] text-muted sm:ml-auto">{mode === "jev" ? "Claude + Jev" : "Claude only"}</span>
+          {notes && <p className="basis-full pt-1 text-[14px] leading-relaxed text-muted">“{notes}”</p>}
+        </header>
+        <ul>
+          {lines.map((l) => (
+            <LineRow key={l.id} l={l} state={status(l)} pick={resolved[l.id]} active={current === l.id} catalog={catalog} onSelect={() => setActive(l.id)} onChoose={(sku) => choose(l.id, sku)} onUndo={() => undo(l.id)} />
+          ))}
+        </ul>
+      </section>
     </>
   );
 }
@@ -434,7 +424,6 @@ function Slider(p: { id: string; label: string; value: number; min: number; max:
 
 function LineRow(props: { l: ViewLine; state: "ok" | "done" | "flag"; pick?: string; active: boolean; catalog: SlimCatalog; onSelect: () => void; onChoose: (sku: string) => void; onUndo: () => void }) {
   const { l, state, pick, active, catalog } = props;
-  const [open, setOpen] = useState(false);
   const [showAll, setShowAll] = useState(false);
   const qty = fmtQty(l.qty, catalog[l.sku]?.unit ?? l.unit);
 
@@ -451,7 +440,7 @@ function LineRow(props: { l: ViewLine; state: "ok" | "done" | "flag"; pick?: str
     return (
       <li id={`line-${l.id}`} onClick={props.onSelect} className={`scroll-mt-44 scroll-mb-8 border-b border-line px-6 py-5 last:border-b-0 ${active ? "bg-warnbg" : "bg-warnbg/40"}`} style={{ borderLeft: "4px solid var(--warn-line)" }}>
         <div className="flex flex-wrap items-baseline gap-x-3">
-          <span className="font-medium">{l.raw}</span>
+          <span className="font-mono text-[14px] font-medium">{l.raw}</span>
           <span className="rounded-full bg-warnbg px-2 py-0.5 text-[12px] font-semibold text-warn">Check this</span>
           <span className="text-[13px] text-muted sm:ml-auto">{hint}</span>
         </div>
@@ -504,19 +493,21 @@ function LineRow(props: { l: ViewLine; state: "ok" | "done" | "flag"; pick?: str
 
   const chosen = state === "done" ? (pick === NONE ? "Not in catalog" : (catalog[pick!]?.name ?? pick)) : l.name;
   return (
-    <li id={`line-${l.id}`} className={`scroll-mt-44 border-b border-line last:border-b-0 ${active ? "bg-bg" : ""}`}>
-      <div className={`flex min-h-14 items-center gap-3 px-6 py-3 ${state === "done" && pick === NONE ? "text-warn" : "text-ok"}`}>
-        {state === "done" ? <Person /> : <Check />}
-        <button className="flex min-w-0 flex-1 items-baseline gap-2 text-left text-ink" aria-expanded={open} onClick={() => setOpen((v) => !v)}>
-          <span className="min-w-0 flex-1 sm:truncate">{chosen}</span>
-          <span className="shrink-0 text-[14px] text-muted">{qty}</span>
-        </button>
-        <span className="shrink-0 text-[13px] text-muted" title={`Match confidence ${l.confidence}`}>{state === "done" ? (pick === NONE ? "skipped by you" : "checked by you") : ""}</span>
+    <li id={`line-${l.id}`} onClick={props.onSelect} className={`scroll-mt-44 border-b border-line last:border-b-0 ${active ? "bg-bg" : ""}`}>
+      <div className="flex min-h-14 items-center gap-3 px-6 py-3">
+        <span className={state === "done" && pick === NONE ? "text-warn" : "text-ok"}>{state === "done" ? <Person /> : <Check />}</span>
+        <span className="min-w-0 flex-1">
+          <span className="block font-mono text-[13px] text-muted">{l.raw}</span>
+          <span className="block text-ink sm:truncate">{chosen}</span>
+        </span>
+        <span className="shrink-0 text-[14px] text-muted">{qty}</span>
         {state === "done" && (
-          <button className="shrink-0 text-[13px] underline" onClick={props.onUndo}>Undo</button>
+          <>
+            <span className="shrink-0 text-[13px] text-muted">{pick === NONE ? "skipped by you" : "checked by you"}</span>
+            <button className="shrink-0 text-[13px] underline" onClick={props.onUndo}>Undo</button>
+          </>
         )}
       </div>
-      {open && <p className="px-14 pb-3 text-[13px] text-muted">From: “{l.raw}”</p>}
     </li>
   );
 }

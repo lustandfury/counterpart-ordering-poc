@@ -121,6 +121,11 @@ Each entry: what we did, what happened, what it changed.
 **Happened:** the senders live in `data/contractors.json` as display metadata, not in the order text, so the saved pipeline results, the answer key and the evaluation did not have to be re-run. The sender is never sent to either pipeline.
 **Changed:** the sidebar reads like an inbox (company, then order id and preview) instead of a list of order numbers.
 
+### 21. One card per order
+**Did:** merged the contractor's message and the draft order into a single card (Mike's call). The sender sits at the top with anything in the message that isn't an order line (greetings, delivery notes), and each row pairs the contractor's own words, in mono, with the product they were matched to. Lines to check expand in place as before.
+**Happened:** cutting the order lines out of a chatty message left broken sentences ("We need and , all regular spf not treated. also . thx"). When order lines sit inside sentences, the card now shows the whole message instead; list-style messages keep just the extra notes.
+**Changed:** the rep reads each line once, request and match side by side, instead of matching highlights between two panels.
+
 ## Where it stands
 
 | | Claude only | Claude + Jev |
