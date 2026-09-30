@@ -1,6 +1,7 @@
 @import "tailwindcss";
 
 :root {
+  color-scheme: light;
   --bg: #f7f6f2;
   --panel: #ffffff;
   --panel-2: #fbfaf8;
@@ -20,27 +21,27 @@
   --shadow-sm: 0 1px 3px #00000014, 0 1px 2px #0000000a;
   --shadow-md: 0 4px 6px -1px #00000014, 0 2px 4px -2px #0000000a;
 }
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #141416;
-    --panel: #1c1c1e;
-    --panel-2: #18181a;
-    --input: #111113;
-    --ink: #ececec;
-    --muted: #a3a3a8;
-    --line: #2e2e32;
-    --control: #6f7972;
-    --ok: #6fcfa6;
-    --ok-bg: #16352a;
-    --warn: #f0b95a;
-    --warn-bg: #3a2c11;
-    --warn-line: #b57a1c;
-    --focus: #8db4ff;
-    --bar: #5a5a60;
-    --ring: rgb(255 255 255 / 0.07);
-    --shadow-sm: 0 1px 2px #00000066;
-    --shadow-md: 0 4px 10px -2px #00000080;
-  }
+/* Light is the default for everyone. The dark palette is opt-in via <html data-theme="dark">. */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #141416;
+  --panel: #1c1c1e;
+  --panel-2: #18181a;
+  --input: #111113;
+  --ink: #ececec;
+  --muted: #a3a3a8;
+  --line: #2e2e32;
+  --control: #6f7972;
+  --ok: #6fcfa6;
+  --ok-bg: #16352a;
+  --warn: #f0b95a;
+  --warn-bg: #3a2c11;
+  --warn-line: #b57a1c;
+  --focus: #8db4ff;
+  --bar: #5a5a60;
+  --ring: rgb(255 255 255 / 0.07);
+  --shadow-sm: 0 1px 2px #00000066;
+  --shadow-md: 0 4px 10px -2px #00000080;
 }
 
 @theme inline {

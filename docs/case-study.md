@@ -136,6 +136,11 @@ Each entry: what we did, what happened, what it changed.
 **Happened:** every saved result keeps its token counts, so a small script repriced all 20 orders with no new calls. Claude's cost fell by a third: Claude-only matching from $0.055 to $0.036 per order, the whole pipeline from about $683 to $455 per 10,000 orders (Jev: $147 to $102). Jev's matching step is about 35× cheaper, not the roughly 50× we had been quoting.
 **Changed:** the pricing file names its source and date, costs now include cache-write and cache-read tokens when present, `npm run reprice` recomputes saved results after any price change, and "assumed" is gone from every caveat. The header also got a wordmark, a chart icon for Sample results and a slider icon for Settings.
 
+### 24. Light by default
+**Did:** made the light theme the default for everyone (Mike's call). The app had followed the viewer's system setting, so anyone in dark mode saw the dark version. The dark palette is kept as an opt-in (`data-theme="dark"` on the page) for a future theme switch.
+**Happened:** nothing else changed; the browser test and screenshots in dark-preference browsers now show the light theme.
+**Changed:** everyone sees the same, designed-for version of the screen.
+
 ## Where it stands
 
 | | Claude only | Claude + Jev |
