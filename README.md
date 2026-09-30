@@ -1,36 +1,116 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Counterpart
 
-## Getting Started
+**An outside-in sketch of AI-assisted lumber ordering.** Paste a contractor's text-message order and get a draft order matched to a product catalog, with only the lines a sales rep needs to check flagged.
 
-First, run the development server:
+**Live demo:** https://counterpart-ordering-poc.vercel.app
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+> All data is synthetic. This is a prototype, not affiliated with any company.
+
+The idea it tests: reading a messy order is the easy part. The hard part is deciding **what the rep does not need to check**, and doing that cheaply, quickly and measurably.
+
+## How it works
+
+```
+order text ─▶ Claude parses it into lines            (shared by both pipelines)
+           ─▶ Fuse.js shortlists 20 products per line
+           ─▶ Jev: which product?              → a choice with calibrated confidence
+           ─▶ Jev: is the quantity sensible for that product?  → yes/no probability
+           ─▶ route: auto-approve if both clear their thresholds, else flag for the rep
+
+Comparison pipeline: Claude alone matches every line against the whole catalog
+and rates itself high / medium / low; only "high" lines auto-approve.
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- **Claude** does the one step that needs reading. **Jev** (TypeSafe's model, which answers typed questions such as "pick one" or "yes/no" with calibrated probabilities) makes the per-line decisions.
+- The same **house rules** (`data/house-defaults.md`) go to both pipelines, so the comparison is fair: what a counter person assumes without calling (framing lumber is SPF #2 kiln-dried, "stud" means a precut stud, a bare number means pieces) and what always needs review (a missing length, a missing box size, large quantities).
+- Raw scores are saved, and thresholds are applied afterwards. That makes the sliders in the UI instant and free to re-tune.
+- Units are Canadian: 30 kg bags, metric rebar, litres.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## The screen
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+A three-pane workspace:
+- **Left, hidden by default (⌘B):** sample orders, each with the number of lines to check, and a composer to paste your own.
+- **Center:** the contractor's message and the draft order. Approved lines are quiet; flagged lines say why and offer the top alternatives. When only the quantity is in doubt, a flagged line is a one-click confirm.
+- **Right:** a cost assessment of both pipelines for the current order and across all samples.
 
-## Learn More
+Two sliders (product confidence and quantity clarity) re-route lines live. Keyboard shortcuts: `j`/`k` move, `1`–`3` pick, `Enter` accepts, `x` marks a line as not in the catalog.
 
-To learn more about Next.js, take a look at the following resources:
+## Results
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+20 synthetic orders (88 lines) scored against a hand-reviewed answer key. The full report is in [`results/eval-summary.md`](results/eval-summary.md), with one row per line in [`results/eval.csv`](results/eval.csv).
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+| | Claude only | Claude + Jev |
+| --- | --- | --- |
+| Lines matched to the right product | 100% | 97.7% |
+| Lines auto-approved | 73.9% | 73.9% |
+| Wrong product among auto-approved lines | 0% | 0% |
+| Matching step, time per order | 2.1 s | 0.4 s |
+| Matching step, cost per order | $0.055 | $0.001 |
+| Whole pipeline, cost per 1,000 orders | $68.26 | $14.73 |
 
-## Deploy on Vercel
+**What this supports:** on this set, Jev cleared the same share of lines for auto-approval as Claude alone, with no wrong approvals, and its matching step was roughly 50x cheaper and 5x faster. Its confidence was trustworthy: every line it rated at 0.7 or above was right.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+**What it doesn't:** it doesn't show that Jev is more accurate. Read these as signals, not benchmarks:
+- The set is small: 20 orders. There were only two wrong product picks in total, both Jev's, and both were flagged for the rep rather than approved.
+- Parts of the pipeline, including Jev's quantity check, were designed after seeing these same orders. The results are in-sample, and no held-out set has been run.
+- Claude prices are assumed (`lib/pricing.ts`).
+- The set deliberately includes many products that aren't in the catalog. Those skip Jev's second call, which flatters its cost.
+- Results vary slightly between runs.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Run it locally
+
+Requires Node 22 or later.
+
+```bash
+npm install
+cp .env.example .env.local   # then fill in the keys
+npm run dev                  # http://localhost:3000
+```
+
+`.env.local` needs `ANTHROPIC_API_KEY`, `ANTHROPIC_MODEL` (for example `claude-sonnet-5-5`) and `TYPESAFE_API_KEY`. The saved sample orders work without keys; only live paste and the pipeline scripts call the APIs.
+
+| Command | What it does |
+| --- | --- |
+| `npm run check` | Lint, typecheck and unit tests |
+| `npm run pipeline` | Run both pipelines over `data/orders/` and save to `results/` (about $1.40 for all 20; `-- o01 o05` runs a subset, `-- --jev-only` re-runs only the Jev step) |
+| `npm run eval` | Score the saved results against `data/labels.json` |
+| `npm run jev:test` | One raw Jev call, to see the response shape |
+| `npm run gen:catalog` | Regenerate `data/catalog.json` |
+| `npm run export:review` | Build `data/review-sheet.csv` for reviewing labels |
+
+With a production build running (`npm run build && PORT=3100 npm start`), `npx tsx scripts/e2e-smoke.ts` tests the keyboard flow and sliders in a real browser, and `npx tsx scripts/screenshots.ts` saves screenshots to `shots/`.
+
+**Live paste is capped:**
+- 600 characters and 15 items per order
+- 5 runs per visitor per hour and 40 a day
+
+The counters are per server instance. The spend limit on the API key is the hard stop, and setting `LIVE_RUNS=off` switches live paste off.
+
+## Repo layout
+
+| Path | What's there |
+| --- | --- |
+| `lib/pipeline/` | parse, shortlist, decide (Jev), route, the Claude-only comparison |
+| `lib/eval/` | Evaluation metrics (unit-tested) |
+| `lib/view.ts` | Turns saved scores into approved or flagged lines at any threshold |
+| `app/`, `components/` | The Next.js app and the review screen |
+| `data/` | Synthetic catalog (203 products), 20 orders, answer key, house rules |
+| `results/` | Saved pipeline outputs and the evaluation |
+| `docs/` | The case study and the technical build log |
+
+## How this was built
+
+Built with Claude Code, one milestone at a time, with independent checks at every layer:
+
+- **Guardrails from day one.**
+  - Hooks run lint and tests at the end of every turn, and scan every commit for secrets.
+  - A test fails if application code ever reads the answer key.
+  - A hook blocks product-changing commits unless the case study is updated.
+- **Read-only review agents** (`.claude/agents/`):
+  - A *blind labeler*, a second Claude with no access to the answer key, relabeled every line. That exposed places where the key was quietly guessing.
+  - An *eval-checker* recomputed every metric from the raw files. It caught a timing comparison taken from two different runs, and made us disclose in-sample tuning.
+  - A *ux-critic* drove the screen in a real browser. It found flags that asked the rep the wrong question, and contrast failures.
+  - A *security-reviewer* checked the repo before launch. It caught a cost gap in the live route.
+- **Keeping the honest result.** In the first comparison, Jev auto-approved only half as many lines as Claude. Asking why exposed two bugs in our own shortlist, and a question design flaw: we asked Jev whether a quantity made sense before it knew the product. Fixing that, and disclosing that the fix was tuned on this set, was the most useful work in the project.
+
+The full story, with numbers at each turn, is in [`docs/case-study.md`](docs/case-study.md). The terse technical log is [`docs/how-this-was-built.md`](docs/how-this-was-built.md).
