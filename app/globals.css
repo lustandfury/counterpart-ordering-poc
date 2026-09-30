@@ -73,8 +73,9 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
+/* One focus style for the whole app: keyboard users only (never on mouse clicks), thin, offset. */
 :focus-visible {
-  outline: 2px solid var(--focus);
+  outline: 1.5px solid var(--focus);
   outline-offset: 2px;
   border-radius: 4px;
 }
@@ -87,7 +88,8 @@ button { cursor: pointer; }
   box-shadow: 0 0 0 1px var(--ring), var(--shadow-sm);
 }
 
-/* the composer shows its focus ring on its container */
+/* the composer marks focus with its container's border, not an outline on the text box */
+#paste:focus,
 #paste:focus-visible {
   outline: none;
 }

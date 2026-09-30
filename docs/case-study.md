@@ -111,6 +111,11 @@ Each entry: what we did, what happened, what it changed.
 **Happened:** unit tests over 300 seeded orders confirm every order has a planted problem and fits the live limits. Running four through the real pipeline: every planted problem was flagged, and so was one "clean" template, "27 2x6 joist hangers", fairly, since hangers are sold singly and in boxes of 25.
 **Changed:** that template was dropped rather than arguing with the pipeline; generated orders give a live demo with a guaranteed review moment.
 
+### 19. Quieter focus, guidance where it's needed
+**Did:** reviewed every focus and selection style after Mike flagged them as overdone. There were four stacked treatments: a 2px ring on the paste box's container plus an outline on the text box inside it, a 2px blue ring on the current flagged card on top of its amber edge, a ring around the current line in the message, and a 2px outline on the selected cost card. Now there is one rule: a thin outline for keyboard users only. The paste box darkens its border on focus, the current flagged line gets a stronger amber background, the message has no ring, and the selected cost card has a 1px outline. The instructions box above the order was also replaced (Mike's call) by one short hint beside each line to check, which changes with the situation: "Pick the product the customer meant", "Pick the product if we carry it, or Not in catalog", or "Confirm if the quantity is right, or check with the customer".
+**Happened:** the "current line" marker had been styled like keyboard focus, so it showed for mouse users too, where it read as a stuck highlight. The dev-mode badge from the framework was also covering the Generate button, so it is switched off.
+**Changed:** focus means keyboard focus; selection and "you are here" use quieter backgrounds.
+
 ## Where it stands
 
 | | Claude only | Claude + Jev |

@@ -113,7 +113,7 @@ export function ReviewApp({ samples, catalog }: { samples: OrderResult[]; catalo
               </nav>
               <div className="shrink-0 border-t border-line p-4">
                 <label htmlFor="paste" className="sr-only">Paste a text-message order</label>
-                <div className="rounded-[14px] bg-input shadow-[inset_0_0_0_1px_var(--ring)] focus-within:ring-2 focus-within:ring-[var(--focus)]">
+                <div className="rounded-[14px] bg-input shadow-[inset_0_0_0_1px_var(--ring)] transition-shadow focus-within:shadow-[inset_0_0_0_1px_var(--control)]">
                   <textarea
                     id="paste"
                     rows={7}
@@ -290,10 +290,6 @@ function Review({ result, isLive, mode, T, unitMin, catalog }: { result: OrderRe
   const flagged = lines.filter((l) => !l.approved);
   const done = flagged.filter((l) => resolved[l.id]).length;
   const current = active ?? flagged.find((l) => !resolved[l.id])?.id ?? null;
-  const open = flagged.filter((l) => !resolved[l.id]);
-  const remaining = open.length;
-  const anyQuantityOnly = open.some((l) => l.quantityOnly);
-  const anyProductChoice = open.some((l) => !l.quantityOnly);
 
   const choose = useCallback((lineId: string, sku: string) => setResolved((r) => ({ ...r, [lineId]: sku })), []);
   const undo = (lineId: string) => {
@@ -355,23 +351,6 @@ function Review({ result, isLive, mode, T, unitMin, catalog }: { result: OrderRe
         <span className="font-medium text-warn">{flagged.length} to check{flagged.length ? ` · ${done} done` : ""}</span>
       </div>
 
-      {remaining > 0 && (
-        <section aria-label="What to do" className="mb-6 rounded-xl bg-warnbg px-5 py-4">
-          <p className="font-semibold text-warn">
-            {remaining === 1 ? "1 line needs your review before this order can go out." : `${remaining} lines need your review before this order can go out.`}
-          </p>
-          <ol className="mt-2 list-decimal space-y-1 pl-5 text-[14px] text-ink">
-            <li>Read why the highlighted line was flagged.</li>
-            <li>
-              {anyQuantityOnly && !anyProductChoice
-                ? "If the quantity is right, confirm it. If not, check the order with the customer."
-                : "Choose the product the customer meant, or confirm the quantity if the product is already right."}
-            </li>
-            <li>If we don’t carry it, choose “Not in catalog” so it’s left off the order.</li>
-          </ol>
-          <p className="mt-2 text-[13px] text-muted">Green lines are already approved and need nothing from you.</p>
-        </section>
-      )}
 
       {(flagged.length === 0 || done === flagged.length) && (
         <p role="status" className="mb-6 rounded-xl bg-okbg px-5 py-3.5 font-medium text-ok">
@@ -393,7 +372,7 @@ function Review({ result, isLive, mode, T, unitMin, catalog }: { result: OrderRe
                   onClick={() => setActive(s.lineId!)}
                   className={`rounded-sm px-0.5 text-left ${
                     { ok: "", done: "opacity-70", flag: "bg-warnbg underline decoration-warnline decoration-2 underline-offset-2" }[status(lines.find((l) => l.id === s.lineId)!)]
-                  } ${current === s.lineId ? "ring-2 ring-[var(--focus)]" : ""}`}
+                  }`}
                 >
                   {s.text}
                 </button>
@@ -441,12 +420,20 @@ function LineRow(props: { l: ViewLine; state: "ok" | "done" | "flag"; pick?: str
 
   if (state === "flag") {
     const shown = displayChoices(l);
+    const quickLine = l.quantityOnly && !showAll;
+    // one short instruction, beside the line, for what the rep should do here
+    const hint = quickLine
+      ? "Confirm if the quantity is right, or check with the customer"
+      : l.sku === NONE
+        ? "Pick the product if we carry it, or Not in catalog"
+        : "Pick the product the customer meant";
     const quick = l.quantityOnly && !showAll;
     return (
-      <li id={`line-${l.id}`} onClick={props.onSelect} className={`scroll-mt-44 scroll-mb-8 border-b border-line bg-warnbg/50 px-6 py-5 last:border-b-0 ${active ? "ring-2 ring-inset ring-[var(--focus)]" : ""}`} style={{ borderLeft: "4px solid var(--warn-line)" }}>
+      <li id={`line-${l.id}`} onClick={props.onSelect} className={`scroll-mt-44 scroll-mb-8 border-b border-line px-6 py-5 last:border-b-0 ${active ? "bg-warnbg" : "bg-warnbg/40"}`} style={{ borderLeft: "4px solid var(--warn-line)" }}>
         <div className="flex flex-wrap items-baseline gap-x-3">
           <span className="font-medium">{l.raw}</span>
           <span className="rounded-full bg-warnbg px-2 py-0.5 text-[12px] font-semibold text-warn">Check this</span>
+          <span className="text-[13px] text-muted sm:ml-auto">{hint}</span>
         </div>
         <ul className="mt-2 flex flex-col gap-1">
           {l.reasons.map((r) => (
@@ -497,7 +484,7 @@ function LineRow(props: { l: ViewLine; state: "ok" | "done" | "flag"; pick?: str
 
   const chosen = state === "done" ? (pick === NONE ? "Not in catalog" : (catalog[pick!]?.name ?? pick)) : l.name;
   return (
-    <li id={`line-${l.id}`} className={`scroll-mt-44 border-b border-line last:border-b-0 ${active ? "ring-2 ring-inset ring-[var(--focus)]" : ""}`}>
+    <li id={`line-${l.id}`} className={`scroll-mt-44 border-b border-line last:border-b-0 ${active ? "bg-bg" : ""}`}>
       <div className={`flex min-h-14 items-center gap-3 px-6 py-3 ${state === "done" && pick === NONE ? "text-warn" : "text-ok"}`}>
         {state === "done" ? <Person /> : <Check />}
         <button className="flex min-w-0 flex-1 items-baseline gap-2 text-left text-ink" aria-expanded={open} onClick={() => setOpen((v) => !v)}>
@@ -555,7 +542,7 @@ function CostPanel({ result, samples, mode, T, unitMin, catalog, onMode, setT, s
           key={x.key}
           onClick={() => onMode(x.key)}
           aria-pressed={mode === x.key}
-          className={`card p-4 text-left ${mode === x.key ? "!shadow-[0_0_0_2px_var(--ink)]" : "hover:!shadow-[0_0_0_1px_var(--control)]"}`}
+          className={`card p-4 text-left ${mode === x.key ? "!shadow-[0_0_0_1px_var(--ink)]" : "hover:!shadow-[0_0_0_1px_var(--control)]"}`}
         >
           <div className="flex items-center justify-between gap-2 text-[14px]">
             <span className="font-semibold">{x.label}</span>
