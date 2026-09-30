@@ -49,3 +49,7 @@ The first blind-labeler pass disagreed with my labels wherever a line depended o
 ## Visual refresh
 - Lighter theme with more whitespace: paper background, white "card" surfaces (faint outline + soft shadow), DM Sans 15px / 1.6, taller rows. Tokens in `app/globals.css`; contrast re-checked (all text at least 5.7:1, control outlines 3.7:1).
 - Auto-scroll now follows the cursor only after the rep moves it, so the order summary is visible on load.
+
+## Deployment (milestone 6)
+- Vercel project linked and connected to the GitHub repo; keys stored as sensitive environment variables for preview and production. A protected preview was deployed and tested (page, a live run, the length cap) before production.
+- **What the security-reviewer caught:** no secrets in the tree or history, but a real company name in an agent file, lines hinting at private context, and that one pasted line could parse into many paid items. Fixed: item cap (15) after parsing and before any paid call, JSON-only requests, 600 characters / 15 lines, 5 runs per visitor per hour, 40 per day per instance.

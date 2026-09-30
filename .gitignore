@@ -41,7 +41,7 @@ yarn-error.log*
 next-env.d.ts
 !.env.example
 
-# private planning notes (mention the outreach; keep out of the public repo)
+# private planning notes (kept local)
 AI Ordering POC Build Plan.md
 *.tsbuildinfo
 shots/

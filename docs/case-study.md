@@ -71,6 +71,11 @@ Each entry: what we did, what happened, what it changed.
 **Happened:** the extra space made the page taller, and the auto-scroll to the flagged line then hid the order summary behind the pinned toolbar on first load. Text contrast stayed above AA (muted text 6.2:1, control outlines 3.7:1).
 **Changed:** the view follows the cursor only after the rep moves it, and cost figures no longer wrap mid-number.
 
+### 11. Going live, and what the security review caught
+**Did:** connected the project to Vercel (pushes to main now deploy), added the keys as sensitive environment variables, and deployed a login-protected preview first. A security-review agent checked the whole repo, its history and the live route before anything went public.
+**Happened:** no secrets anywhere in the history. But the review caught a real company name in one of our own agent instructions, a few lines hinting at private context, and a cost gap: we capped the pasted text at 600 characters and 15 lines, yet a single line can parse into dozens of items, each of which makes paid matching calls. It also pointed out that in-memory rate limits reset per server instance, so they are a brake, not a wall.
+**Changed:** the parsed items are capped at 15 before any paid call, the route only accepts JSON, live runs are limited to 5 per visitor per hour and 40 a day per instance, and the spend limit on the Anthropic key and the prepaid Jev credits are the hard stops. The flagged wording is gone from the repo.
+
 ## Where it stands
 
 | | Claude only | Claude + Jev |
@@ -98,7 +103,7 @@ Read as signals, not benchmarks: 20 orders, tuned in-sample, Claude prices assum
 - A held-out set of messier orders (the current set was used to tune).
 - Verify Claude pricing; the cost ratio depends on it.
 - How the quantity check behaves on real, noisier unit language.
-- Deployment and the spend cap on the live-paste route.
+- A hard, shared cap on live runs (the current limits are per server instance).
 
 ## Walking someone through it (about 5 minutes)
 

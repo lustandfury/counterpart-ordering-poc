@@ -127,6 +127,7 @@ export function ReviewApp({ samples, catalog }: { samples: OrderResult[]; catalo
                     id="paste"
                     rows={4}
                     value={pasteText}
+                    maxLength={600}
                     onChange={(e) => setPasteText(e.target.value)}
                     onKeyDown={(e) => {
                       if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
@@ -138,7 +139,7 @@ export function ReviewApp({ samples, catalog }: { samples: OrderResult[]; catalo
                     className="block w-full resize-none rounded-t-[14px] bg-transparent px-3.5 pt-3 font-mono text-[13px] leading-6 outline-none"
                   />
                   <div className="flex items-center gap-2 px-3 pb-3">
-                    <span className="text-[12px] text-muted">Live run · paid API calls</span>
+                    <span className="text-[12px] text-muted">Live run · {pasteText.length}/600</span>
                     <button onClick={runLive} disabled={loading || !pasteText.trim()} className="ml-auto h-8 rounded-lg bg-ink px-3.5 text-[13px] font-medium text-bg disabled:opacity-40">
                       {loading ? "Reading…" : "Run ⌘↵"}
                     </button>

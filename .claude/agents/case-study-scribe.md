@@ -15,4 +15,4 @@ Add or update, in this order of preference:
 
 Style: plain, concrete and short. Past tense for what happened. Honest about failures, dead ends and what was tuned on what. No hype, no marketing language. Keep each entry under about 150 words.
 
-Hard rules: never mention any real company, person, job application, outreach, keys, or file paths outside the repo. Edit ONLY `docs/case-study.md`. Do not commit.
+Hard rules: never mention any real company or person, anything personal about the author, keys, or file paths outside the repo. Edit ONLY `docs/case-study.md`. Do not commit.

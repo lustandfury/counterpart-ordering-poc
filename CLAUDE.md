@@ -2,7 +2,7 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-Full context lives in `AI Ordering POC Build Plan.md` (goals, Jev API details, test data spec, evaluation table, demo script). No code exists yet; milestone 1 is the scaffold.
+Background notes live in a local, untracked planning file.
 
 ## Counterpart: an outside-in sketch of AI ordering (repo: counterpart-ordering-poc)
 
@@ -104,7 +104,7 @@ check caught, and what I decided myself. It becomes a README section.
   a result changes a decision, or the process improves, add a Did / Happened / Changed entry (use the
   `case-study-scribe` agent or write it directly) in the same change. A commit hook blocks product-changing
   commits without it; use `[skip-case-study]` in the commit command only for trivial changes. The repo is public: no
-  company names, no outreach details, no keys.
+  real company names, nothing personal, no keys.
 - Work one milestone at a time. Propose a plan first, then stop for my review when done
 - Commit at the end of each milestone with a clear message
 - Never hardcode keys or commit .env files
