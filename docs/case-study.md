@@ -141,6 +141,11 @@ Each entry: what we did, what happened, what it changed.
 **Happened:** nothing else changed; the browser test and screenshots in dark-preference browsers now show the light theme.
 **Changed:** everyone sees the same, designed-for version of the screen.
 
+### 25. Brand color, and keeping signals distinct
+**Did:** made yellow (#ffca05) the brand color (Mike's call) for the logo, the Run button, the "showing" badge, the active-order marker and the sliders; brightened the approval green to #15803d on a lighter mint, with the cost savings highlighted in it; and gave both pages one shared brand row so the logo, name and results button sit in exactly the same place when switching between them (the browser test now measures this).
+**Happened:** the "needs checking" color was amber, which would have read as brand yellow. It moved to orange, so yellow means brand, orange means attention and green means approved or saved. Contrast checks set the rules: yellow works as a fill behind dark text (11:1) but is too faint as a thin line on white (1.5:1), so the selected cost card keeps a dark outline; the new green passes on white, the paper background and its own tint.
+**Changed:** each color has one meaning.
+
 ## Where it stands
 
 | | Claude only | Claude + Jev |

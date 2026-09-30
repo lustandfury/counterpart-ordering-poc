@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { OrderResult, Sender } from "@/lib/types";
 import Link from "next/link";
-import { ResultsButton, Wordmark } from "@/components/AppNav";
+import { BrandBar } from "@/components/AppNav";
 import { generateOrder } from "@/lib/generate";
 import { CLAUDE_INPUT_PER_TOKEN, CLAUDE_OUTPUT_PER_TOKEN, JEV_INPUT_PER_TOKEN } from "@/lib/pricing";
 import { computeView, displayChoices, NONE, segmentText, totals, type Mode, type SlimCatalog, type ViewLine } from "@/lib/view";
@@ -103,15 +103,7 @@ export function ReviewApp({ samples, catalog, initialOrder }: { samples: OrderRe
           aria-label="Orders"
           className={`w-80 shrink-0 flex-col border-r border-line bg-panel max-lg:fixed max-lg:inset-y-0 max-lg:left-0 max-lg:z-30 max-lg:shadow-xl ${desktopOpen ? "lg:flex" : "lg:hidden"} ${mobileOpen ? "max-lg:flex" : "max-lg:hidden"}`}
         >
-              <div className="flex h-16 shrink-0 items-center gap-1.5 px-4">
-                <Wordmark />
-                <span className="ml-1">
-                  <ResultsButton />
-                </span>
-                <span className="ml-auto">
-                  <SidebarButton label="Hide orders" expanded onClick={toggleSidebar} />
-                </span>
-              </div>
+              <BrandBar end={<SidebarButton label="Hide orders" expanded onClick={toggleSidebar} />} />
               <nav className="min-h-0 flex-1 overflow-y-auto px-3 pb-3">
                 {runs.length > 0 && <OrderGroup label="Your runs">{runs.map((r) => (
                   <OrderItem key={r.runId} id={`live-${r.runId}`} tag="live" title={r.from?.company ?? "Pasted order"} preview={r.text} count={toCheck(r)} active={selected === `live-${r.runId}`} onPick={pick} />
@@ -157,7 +149,7 @@ export function ReviewApp({ samples, catalog, initialOrder }: { samples: OrderRe
                       Generate
                     </button>
                     <span className="text-[12px] text-muted">{pasteText.length}/600</span>
-                    <button onClick={runLive} disabled={loading || !pasteText.trim()} className="ml-auto h-8 rounded-lg bg-ink px-3.5 text-[13px] font-medium text-bg disabled:opacity-40">
+                    <button onClick={runLive} disabled={loading || !pasteText.trim()} className="ml-auto h-8 rounded-lg bg-brand px-3.5 text-[13px] font-semibold text-ink disabled:opacity-40">
                       {loading ? "Reading…" : "Run ⌘↵"}
                     </button>
                   </div>
@@ -286,7 +278,7 @@ function OrderItem(p: { id: string; tag: string; title: string; preview: string;
         onClick={() => p.onPick(p.id)}
         aria-current={p.active ? "true" : undefined}
         aria-label={`${p.tag} ${p.title}`}
-        className={`flex w-full items-center gap-3 rounded-lg px-2.5 py-2 text-left ${p.active ? "bg-bg" : "hover:bg-bg"}`}
+        className={`flex w-full items-center gap-3 rounded-lg px-2.5 py-2 text-left ${p.active ? "bg-bg shadow-[inset_3px_0_0_var(--brand)]" : "hover:bg-bg"}`}
       >
         <span className="min-w-0 flex-1">
           <span className={`block truncate text-[14px] ${p.active ? "font-semibold" : "font-medium"}`}>{p.title}</span>
@@ -426,7 +418,7 @@ function Slider(p: { id: string; label: string; value: number; min: number; max:
         <span>{p.label}</span>
         <span className="text-ink">{p.value.toFixed(2)}</span>
       </label>
-      <input id={p.id} type="range" min={p.min} max={p.max} step={0.01} value={p.value} disabled={p.disabled} onChange={(e) => p.onChange(Number(e.target.value))} className="h-7 w-full accent-[var(--ok)] disabled:opacity-40" />
+      <input id={p.id} type="range" min={p.min} max={p.max} step={0.01} value={p.value} disabled={p.disabled} onChange={(e) => p.onChange(Number(e.target.value))} className="h-7 w-full accent-[var(--brand)] disabled:opacity-40" />
     </div>
   );
 }
@@ -550,8 +542,8 @@ function CostPanel({ result, samples, mode, T, unitMin, catalog, onMode, setT, s
       {settingsOpen && <SettingsSection mode={mode} T={T} unitMin={unitMin} setT={setT} setUnitMin={setUnitMin} changed={changed} />}
 
       <div className="rounded-xl bg-okbg px-4 py-3 text-ok">
-        <p className="font-mono text-[15px] font-medium">{Math.round(cheaper)}× cheaper · {faster.toFixed(1)}× faster</p>
-        <p className="mt-0.5 text-[12px] opacity-80">Jev&apos;s matching step vs Claude only, this order</p>
+        <p className="font-mono text-[15px] font-semibold">{Math.round(cheaper)}× cheaper · {faster.toFixed(1)}× faster</p>
+        <p className="mt-0.5 text-[12px] text-muted">Jev&apos;s matching step vs Claude only, this order</p>
       </div>
 
       {sides.map((x) => (
@@ -563,7 +555,7 @@ function CostPanel({ result, samples, mode, T, unitMin, catalog, onMode, setT, s
         >
           <div className="flex items-center justify-between gap-2 text-[14px]">
             <span className="font-semibold">{x.label}</span>
-            {mode === x.key && <span className="rounded-full bg-ink px-2 py-0.5 text-[11px] font-medium leading-none text-bg">showing</span>}
+            {mode === x.key && <span className="rounded-full bg-brand px-2 py-0.5 text-[11px] font-semibold leading-none text-ink">showing</span>}
           </div>
           <div className="mt-1.5 flex items-baseline justify-between gap-2">
             <span className="font-mono text-xl font-medium tracking-tight">{usd(x.t.usd)}</span>
@@ -571,7 +563,7 @@ function CostPanel({ result, samples, mode, T, unitMin, catalog, onMode, setT, s
           </div>
           <div className="mt-2 flex h-1.5 overflow-hidden rounded-full" style={{ background: "var(--line)" }} aria-hidden>
             <span style={{ width: `${(100 * x.t.parseUsd) / maxUsd}%`, background: "var(--bar)" }} />
-            <span style={{ width: `${(100 * x.t.matchUsd) / maxUsd}%`, background: x.key === "jev" ? "var(--ok)" : "var(--warn-line)" }} />
+            <span style={{ width: `${(100 * x.t.matchUsd) / maxUsd}%`, background: x.key === "jev" ? "var(--ok)" : "var(--control)" }} />
           </div>
           <dl className="mt-3 grid grid-cols-[1fr_auto_auto] gap-x-3 gap-y-1 text-[12px]">
             <dt className="text-muted">Reading</dt>

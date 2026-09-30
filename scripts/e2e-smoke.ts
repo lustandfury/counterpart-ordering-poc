@@ -72,9 +72,16 @@ async function main() {
   // switching orders resets review progress
   await openOrder("o02");
   assert.match(await summary(), /0 done/);
-  // the Results page lists all samples and links back to an order
+  // the Results page lists all samples and links back to an order; the brand row must not move between pages
+  const brandBoxes = async () => ({
+    logo: await page.getByRole("link", { name: "Counterpart, review" }).boundingBox(),
+    results: await page.getByRole("link", { name: "Sample results", exact: true }).boundingBox(),
+  });
+  const onReview = await brandBoxes();
   await page.getByRole("link", { name: "Sample results", exact: true }).click();
   await page.getByRole("heading", { name: "Sample results" }).waitFor();
+  const onResults = await brandBoxes();
+  assert.deepEqual(onResults, onReview, "logo and results button stay put when switching pages");
   assert.equal(await page.getByRole("link", { name: "Open", exact: true }).count(), 20);
   await page.locator("tr", { hasText: "o07" }).getByRole("link", { name: "Open" }).click();
   await page.getByRole("heading", { name: "Order o07" }).waitFor();

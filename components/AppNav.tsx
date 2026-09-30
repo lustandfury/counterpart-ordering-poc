@@ -5,9 +5,9 @@ export function Wordmark() {
   return (
     <Link href="/" aria-label="Counterpart, review" className="flex items-center gap-2 rounded-lg">
       <svg aria-hidden viewBox="0 0 24 24" className="h-7 w-7 shrink-0">
-        <rect width="24" height="24" rx="7" fill="var(--ink)" />
-        <path d="M6.5 8.5h7M6.5 12h5M6.5 15.5h4" stroke="var(--bg)" strokeWidth="1.8" strokeLinecap="round" opacity="0.55" />
-        <path d="M14 14.8l1.9 1.9 3.6-4.2" stroke="var(--bg)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+        <rect width="24" height="24" rx="7" fill="var(--brand)" />
+        <path d="M6.5 8.5h7M6.5 12h5M6.5 15.5h4" stroke="var(--ink)" strokeWidth="1.8" strokeLinecap="round" opacity="0.45" />
+        <path d="M14 14.8l1.9 1.9 3.6-4.2" stroke="var(--ink)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none" />
       </svg>
       <span className="text-[17px] font-bold tracking-[-0.03em] text-ink">
         counter<span className="font-medium text-muted">part</span>
@@ -24,12 +24,28 @@ export function ResultsButton({ active = false }: { active?: boolean }) {
       aria-label="Sample results"
       aria-current={active ? "page" : undefined}
       title="Sample results"
-      className={`grid h-8 w-8 place-items-center rounded-lg ${active ? "bg-bg text-ink shadow-[0_0_0_1px_var(--ring)]" : "text-muted hover:bg-bg hover:text-ink"}`}
+      className={`grid h-8 w-8 place-items-center rounded-lg ${active ? "bg-brandsoft text-ink" : "text-muted hover:bg-bg hover:text-ink"}`}
     >
       <svg aria-hidden viewBox="0 0 16 16" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
         <path d="M2.5 13.5h11" />
         <path d="M4.5 11V8.5M8 11V4.5M11.5 11V6.5" strokeWidth="2" />
       </svg>
     </Link>
+  );
+}
+
+/**
+ * The brand row (logo, name, results button), shared by both pages so these sit at exactly the same place
+ * when switching between Review and Sample results. `end` fills the right-hand side.
+ */
+export function BrandBar({ active = false, end }: { active?: boolean; end?: React.ReactNode }) {
+  return (
+    <div className="flex h-16 shrink-0 items-center gap-1.5 px-4">
+      <Wordmark />
+      <span className="ml-1">
+        <ResultsButton active={active} />
+      </span>
+      {end && <span className="ml-auto">{end}</span>}
+    </div>
   );
 }
