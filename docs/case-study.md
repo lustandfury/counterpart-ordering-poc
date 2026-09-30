@@ -27,7 +27,7 @@ Each entry: what we did, what happened, what it changed.
 **Changed:** the structured-output step asks for the tool call in the prompt instead of forcing it. Lesson: verify the boring plumbing with a real call before building on it.
 
 ### 2. Data, and the answer key nobody should trust yet
-**Did:** generated a 201-product synthetic catalog with deliberate look-alikes (lengths, SPF vs pressure-treated, drywall types, the same screw in three box sizes) and 20 text-message orders (88 lines) in five difficulty types, including two "impossible" orders. Drafted an answer key.
+**Did:** generated a 203-product synthetic catalog with deliberate look-alikes (lengths, SPF vs pressure-treated, drywall types, the same screw in three box sizes) and 20 text-message orders (88 lines) in five difficulty types, including two "impossible" orders. Drafted an answer key.
 **Happened:** we had a second Claude, with no access to the key, label every line independently (the "blind labeler"). It agreed on 78 of 88 lines. Where we disagreed, my key had quietly guessed at the product ("15 of the 2x4" was labeled as 8-foot SPF, but the message never says the length).
 **Changed:** lines that cannot be resolved from the text now have no product in the key and are always for review. A key encodes assumptions; the blind labeler is how we found them.
 
@@ -191,7 +191,7 @@ Each entry: what we did, what happened, what it changed.
 | Matching time per order | about 2.1 s | about 0.4 s |
 | Matching cost per order | about $0.036 | about $0.001 |
 
-Read as signals, not benchmarks: 20 orders, tuned in-sample, costs from token counts at list prices. What the data supports is that Jev's confidence is well calibrated (every line it was at least 70% sure of was right) and the matching step is roughly 35x cheaper and 5x faster, with the same number of lines safely skipping review. It does not show Jev is more accurate.
+Read as signals, not benchmarks: 20 orders, tuned in-sample, costs from token counts at list prices. What the data supports is that Jev's confidence is well calibrated (every line it was at least 70% sure of was right) and the matching step is roughly 35x cheaper and about 5x faster on the clock (about 1.5x if you add up every call, because Jev's lines run in parallel), with the same number of lines safely skipping review. It does not show Jev is more accurate.
 
 ## What the process taught us
 

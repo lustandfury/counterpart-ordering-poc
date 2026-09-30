@@ -8,15 +8,15 @@ describe("house defaults", () => {
     expect(houseDefaultsPrompt()).toContain(houseDefaults());
     expect(withHouseDefaults({ raw: "2x4x8" }).house_rules).toBe(houseDefaults());
   });
-  it("never lets application code read the answer key", () => {
+  it("never lets application code, prompts or their data files read the answer key", () => {
+    // The answer key and anything derived from it. Application code and prompt sources must not mention them.
+    const forbidden = /labels(\.draft)?\.json|blind-labels|review-sheet|shouldReview\s*:\s*(true|false)/;
     for (const dir of ["lib", "app", "components"]) {
-      let files: string[] = [];
-      try {
-        files = (readdirSync(dir, { recursive: true }) as string[]).filter((f) => /\.tsx?$/.test(f) && !f.endsWith(".test.ts"));
-      } catch {
-        continue;
-      }
-      for (const f of files) expect(readFileSync(`${dir}/${f}`, "utf8"), `${dir}/${f}`).not.toMatch(/labels(\.draft)?\.json|blind-labels/);
+      // no try/catch: a missing folder should fail the test, not silently skip the check
+      const files = (readdirSync(dir, { recursive: true }) as string[]).filter((f) => /\.(tsx?|json|md|csv|txt)$/.test(f) && !/\.test\.tsx?$/.test(f));
+      for (const f of files) expect(readFileSync(`${dir}/${f}`, "utf8"), `${dir}/${f}`).not.toMatch(forbidden);
     }
+    // The business rules both pipelines receive as a prompt must not carry answers either
+    expect(readFileSync("data/house-defaults.md", "utf8")).not.toMatch(/labels(\.draft)?\.json|blind-labels|review-sheet/);
   });
 });

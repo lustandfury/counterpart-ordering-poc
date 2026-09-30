@@ -50,7 +50,7 @@ A second page, **Sample results** (`/results`), is a dashboard for the 20 saved 
 | Matching step, cost per order | $0.036 | $0.001 |
 | Whole pipeline, cost per 10,000 orders | $455.09 | $101.62 |
 
-**What this supports:** on this set, Jev cleared the same share of lines for auto-approval as Claude alone, with no wrong approvals, and its matching step was roughly 35x cheaper and 5x faster. Its confidence was trustworthy: every line it rated at 0.7 or above was right.
+**What this supports:** on this set, Jev cleared the same share of lines for auto-approval as Claude alone, with no wrong approvals, and its matching step was roughly 35x cheaper and about 5x faster on the clock (about 1.5x if you add up every call, because Jev's lines run in parallel). Its confidence was trustworthy: every line it rated at 0.7 or above was right.
 
 **What it doesn't:** it doesn't show that Jev is more accurate. Read these as signals, not benchmarks:
 - The set is small: 20 orders. There were only two wrong product picks in total, both Jev's, and both were flagged for the rep rather than approved.
@@ -96,6 +96,10 @@ With a production build running (`npm run build && PORT=3100 npm start`), `npx t
 - 5 runs per IP address per hour and 40 a day
 
 The five-order signup limit is stored in Postgres and counts attempted runs, including failed AI calls. The hourly and daily counters are per server instance. The spend limit on the API key is the hard stop, and setting `LIVE_RUNS=off` switches live paste off.
+
+## Live runs: limits and safeguards
+
+Pasting your own order calls paid APIs, so live runs are limited: 5 free orders per visitor (an email unlocks more), 5 per hour per network and 40 per day overall. The per-network and daily limits are kept in Postgres, so they hold across servers and cannot be reset by clearing cookies; the visitor cookie is only an identity. Set spend limits with your Anthropic and TypeSafe accounts as the hard stop, and `LIVE_RUNS=off` switches live runs off. The opening screen's access code is a welcome screen checked in the browser, not access control. Emails are stored only to unlock more runs; set `NEXT_PUBLIC_PRIVACY_CONTACT` to show a deletion contact on the sign-up form.
 
 ## Repo layout
 
