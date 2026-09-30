@@ -14,6 +14,7 @@
   --ok-bg: #eef9f2;
   /* brand yellow: fills and highlights only (too faint as a thin line on white) */
   --brand: #ffca05;
+  --on-brand: #1c1c1e;
   --brand-soft: #fff4c7;
   --brand-deep: #6b5200;
   /* "needs checking" is orange, so it never reads as the brand yellow */
@@ -47,6 +48,7 @@
   --ok: #5bd68a;
   --ok-bg: #12301f;
   --brand: #ffca05;
+  --on-brand: #1c1c1e;
   --brand-soft: #3a3000;
   --brand-deep: #ffdb5c;
   --warn: #fdba74;
@@ -74,6 +76,7 @@
     --ok: #5bd68a;
     --ok-bg: #12301f;
     --brand: #ffca05;
+  --on-brand: #1c1c1e;
     --brand-soft: #3a3000;
     --brand-deep: #ffdb5c;
     --warn: #fdba74;
@@ -101,6 +104,7 @@
   --color-ok: var(--ok);
   --color-okbg: var(--ok-bg);
   --color-brand: var(--brand);
+  --color-onbrand: var(--on-brand);
   --color-brandsoft: var(--brand-soft);
   --color-branddeep: var(--brand-deep);
   --color-warn: var(--warn);

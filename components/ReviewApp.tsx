@@ -7,6 +7,8 @@ import { readOrderStream, type OrderProgress, type OrderStage } from "@/lib/orde
 import { OrderLoading } from "@/components/OrderLoading";
 import type { OrderResult, Sender } from "@/lib/types";
 import Link from "next/link";
+import { setShortcutsEnabled, shortcutsEnabled } from "@/lib/shortcuts";
+import { useDialog } from "@/components/useDialog";
 import { BrandBar, ResultsButton, Wordmark } from "@/components/AppNav";
 import { useAccess } from "@/components/AccessProvider";
 import { generateOrder } from "@/lib/generate";
@@ -219,7 +221,7 @@ export function ReviewApp({ samples, catalog, initialOrder }: { samples: OrderRe
 
   return (
     <div className={`flex h-dvh flex-col overflow-hidden ${walkthroughStep !== null && !loading ? `walkthrough-active walkthrough-${walkthroughStep}` : ""}`}>
-      <div className={`app-shell relative flex min-h-0 flex-1 max-lg:flex-col max-lg:overflow-y-auto ${unlocked ? "app-shell-enter" : "app-shell-locked"}`}>
+      <div inert={!unlocked || undefined} className={`app-shell relative flex min-h-0 flex-1 max-lg:flex-col max-lg:overflow-y-auto ${unlocked ? "app-shell-enter" : "app-shell-locked"}`}>
         {mobileOpen && <button aria-label="Close orders" tabIndex={-1} onClick={() => setMobileOpen(false)} className="sheet-fade fixed inset-0 z-20 bg-black/40 lg:hidden" />}
         {/* wide screens: a left sidebar; phones: a bottom sheet over the page */}
         <aside
@@ -276,7 +278,7 @@ export function ReviewApp({ samples, catalog, initialOrder }: { samples: OrderRe
                       Generate
                     </button>
                     {pasteText.length >= ORDER_COUNTER_THRESHOLD && <span className="text-[12px] text-muted" aria-label={`${pasteText.length} of ${ORDER_TEXT_LIMIT} characters`}>{pasteText.length}/{ORDER_TEXT_LIMIT}</span>}
-                    <button onClick={runLive} disabled={loading || !pasteText.trim()} className={`ml-auto h-8 rounded-lg bg-brand px-3.5 text-[13px] font-semibold text-ink disabled:opacity-40 ${walkthroughStep === 0 && pasteText.trim() && !loading ? "tour-cue" : ""}`}>
+                    <button onClick={runLive} disabled={loading || !pasteText.trim()} className={`ml-auto h-8 rounded-lg bg-brand px-3.5 text-[13px] font-semibold text-onbrand disabled:opacity-40 ${walkthroughStep === 0 && pasteText.trim() && !loading ? "tour-cue" : ""}`}>
                       {loading ? "Reading…" : "Run ⌘↵"}
                     </button>
                   </div>
@@ -334,6 +336,7 @@ export function ReviewApp({ samples, catalog, initialOrder }: { samples: OrderRe
         window.setTimeout(() => {
           unlock();
           setUnlocking(false);
+          window.requestAnimationFrame(() => document.getElementById("review")?.focus());
         }, 550);
       }} />}
       {walkthroughStep !== null && !loading && <Walkthrough step={walkthroughStep} composerReady={!!pasteText.trim()} onBack={() => showWalkthroughStep((walkthroughStep - 1) as WalkthroughStep)} onNext={() => {
@@ -349,7 +352,7 @@ export function ReviewApp({ samples, catalog, initialOrder }: { samples: OrderRe
 
 function AccessLockScreen({ code, setCode, error, unlocking, onSubmit }: { code: string; setCode: (value: string) => void; error: boolean; unlocking: boolean; onSubmit: () => void }) {
   return (
-    <div className={`lock-screen fixed inset-0 z-[70] grid place-items-center p-6 ${unlocking ? "lock-screen-exit" : ""}`}>
+    <div role="dialog" aria-modal="true" aria-label="Enter access code" className={`lock-screen fixed inset-0 z-[70] grid place-items-center p-6 ${unlocking ? "lock-screen-exit" : ""}`}>
       <form onSubmit={(e) => { e.preventDefault(); onSubmit(); }} className="lock-screen-form flex w-full max-w-sm flex-col items-center text-center">
         <div className="action-sheet-handle" aria-hidden />
         <Wordmark large />
@@ -370,7 +373,7 @@ function AccessLockScreen({ code, setCode, error, unlocking, onSubmit }: { code:
           className="mt-4 h-11 w-full rounded-xl bg-panel px-4 text-center tracking-[0.3em] outline-none shadow-[0_0_0_1px_var(--ring)] focus:shadow-[0_0_0_1px_var(--control)]"
         />
         {error && <p id="access-code-error" role="alert" className="mt-2 text-[13px] text-warn">That code doesn&apos;t match.</p>}
-        <button type="submit" disabled={code.length !== 3 || unlocking} className="mt-4 h-10 w-full rounded-xl bg-brand px-4 text-[14px] font-semibold text-ink transition-opacity disabled:cursor-not-allowed disabled:opacity-40">
+        <button type="submit" disabled={code.length !== 3 || unlocking} className="mt-4 h-10 w-full rounded-xl bg-brand px-4 text-[14px] font-semibold text-onbrand transition-opacity disabled:cursor-not-allowed disabled:opacity-40">
           Enter
         </button>
       </form>
@@ -379,9 +382,11 @@ function AccessLockScreen({ code, setCode, error, unlocking, onSubmit }: { code:
 }
 
 function SignupDialog({ email, setEmail, loading, error, onSubmit, onClose }: { email: string; setEmail: (value: string) => void; loading: boolean; error: string | null; onSubmit: () => void; onClose: () => void }) {
+  const dialogRef = useDialog<HTMLElement>(onClose);
   return (
+    <ModalPortal>
     <div className="action-sheet-backdrop fixed inset-0 z-[60] grid place-items-center bg-black/40 p-4" role="presentation">
-      <section role="dialog" aria-modal="true" aria-labelledby="signup-title" className="action-sheet-dialog w-full max-w-md rounded-2xl border border-line bg-panel p-6 shadow-2xl">
+      <section ref={dialogRef} tabIndex={-1} role="dialog" aria-modal="true" aria-labelledby="signup-title" className="action-sheet-dialog outline-none w-full max-w-md rounded-2xl border border-line bg-panel p-6 shadow-2xl">
         <div className="action-sheet-handle" aria-hidden />
         <div className="flex items-start justify-between gap-4">
           <div>
@@ -395,7 +400,7 @@ function SignupDialog({ email, setEmail, loading, error, onSubmit, onClose }: { 
           <label htmlFor="signup-email" className="text-[13px] font-medium">Email address</label>
           <input id="signup-email" type="email" required autoFocus value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" className="mt-1.5 h-11 w-full rounded-lg bg-input px-3.5 outline-none shadow-[inset_0_0_0_1px_var(--ring)] focus:shadow-[inset_0_0_0_1px_var(--control)]" />
           {error && <p role="alert" className="mt-2 text-[13px] text-warn">{error}</p>}
-          <button type="submit" disabled={loading || !email.trim()} className="mt-4 h-10 w-full rounded-lg bg-brand px-4 text-[14px] font-semibold text-ink disabled:opacity-40">{loading ? "Saving…" : "Continue"}</button>
+          <button type="submit" disabled={loading || !email.trim()} className="mt-4 h-10 w-full rounded-lg bg-brand px-4 text-[14px] font-semibold text-onbrand disabled:opacity-40">{loading ? "Saving…" : "Continue"}</button>
         </form>
         <p className="mt-3 text-center text-[11px] leading-relaxed text-muted">
           We store your email only to let you keep generating orders in this demo. It isn’t sold or shared.
@@ -403,11 +408,13 @@ function SignupDialog({ email, setEmail, loading, error, onSubmit, onClose }: { 
         </p>
       </section>
     </div>
+    </ModalPortal>
   );
 }
 
 function Walkthrough({ step, composerReady, onBack, onNext, onClose }: { step: WalkthroughStep; composerReady: boolean; onBack: () => void; onNext: () => void; onClose: () => void }) {
   const cardRef = useRef<HTMLElement>(null);
+  useEffect(() => { cardRef.current?.focus({ preventScroll: true }); }, []);
   const [position, setPosition] = useState<{ left: number; top: number; arrow: number; side: string; visible: boolean } | null>(null);
 
   useEffect(() => {
@@ -469,7 +476,7 @@ function Walkthrough({ step, composerReady, onBack, onNext, onClose }: { step: W
   return (
     <>
       <div className="walkthrough-backdrop fixed inset-0 z-40 bg-black/35" aria-hidden />
-      <section ref={cardRef} role="dialog" aria-labelledby="walkthrough-title" aria-describedby="walkthrough-body" data-side={position?.side} className="walkthrough-card fixed z-50 rounded-2xl bg-panel shadow-2xl" style={{ left: position?.left ?? 0, top: position?.top ?? 0, visibility: position?.visible ? "visible" : "hidden", "--walkthrough-arrow": `${position?.arrow ?? 20}px` } as CSSProperties}>
+      <section ref={cardRef} tabIndex={-1} role="dialog" aria-modal="true" aria-labelledby="walkthrough-title" aria-describedby="walkthrough-body" data-side={position?.side} className="walkthrough-card fixed z-50 rounded-2xl outline-none bg-panel shadow-2xl" style={{ left: position?.left ?? 0, top: position?.top ?? 0, visibility: position?.visible ? "visible" : "hidden", "--walkthrough-arrow": `${position?.arrow ?? 20}px` } as CSSProperties}>
         <span className="walkthrough-arrow" aria-hidden />
         <div className="flex items-center justify-between gap-4">
           <p className="text-[11px] font-semibold uppercase tracking-wider text-muted"><span className="lg:hidden">{step + 1} of 3</span><span className="hidden lg:inline">{content.eyebrow}</span></p>
@@ -479,7 +486,7 @@ function Walkthrough({ step, composerReady, onBack, onNext, onClose }: { step: W
         <p id="walkthrough-body" className="mt-1 text-[13px] leading-snug text-muted lg:mt-1.5 lg:text-[14px] lg:leading-relaxed"><span className="lg:hidden">{content.mobileBody}</span><span className="hidden lg:inline">{content.body}</span></p>
         <div className="mt-2 flex items-center justify-between gap-3 lg:mt-4">
           <button onClick={onBack} disabled={step === 0} className="h-11 rounded-lg px-3 text-[13px] font-medium text-muted hover:bg-bg hover:text-ink disabled:invisible">Back</button>
-          <button onClick={onNext} className="h-11 rounded-lg bg-brand px-4 text-[13px] font-semibold text-ink">{step === 2 ? <><span className="lg:hidden">Done</span><span className="hidden lg:inline">Let&apos;s get to work</span></> : "Next"}</button>
+          <button onClick={onNext} className="h-11 rounded-lg bg-brand px-4 text-[13px] font-semibold text-onbrand">{step === 2 ? <><span className="lg:hidden">Done</span><span className="hidden lg:inline">Let&apos;s get to work</span></> : "Next"}</button>
         </div>
       </section>
     </>
@@ -527,6 +534,7 @@ function SettingsSection(p: Thresholds & { changed: boolean; onReplay: () => voi
         <Slider id="t" label="Product confidence" value={p.T} min={0.5} max={0.99} onChange={p.setT} disabled={p.mode === "claude"} />
         <Slider id="u" label="Quantity clarity" value={p.unitMin} min={0.3} max={0.9} onChange={p.setUnitMin} disabled={p.mode === "claude"} />
       </div>
+      <ShortcutsToggle />
       <button
         onClick={() => {
           p.setT(DEFAULT_T);
@@ -546,10 +554,11 @@ function SettingsSection(p: Thresholds & { changed: boolean; onReplay: () => voi
 }
 
 function SettingsDialog(p: Thresholds & { changed: boolean; onReplay: () => void; onClose: () => void }) {
+  const dialogRef = useDialog<HTMLElement>(p.onClose);
   return (
     <ModalPortal>
       <div className="action-sheet-backdrop fixed inset-0 z-[100] grid place-items-center bg-black/40 p-4" role="presentation" onMouseDown={(e) => { if (e.target === e.currentTarget) p.onClose(); }}>
-        <section role="dialog" aria-modal="true" aria-labelledby="settings-title" className="action-sheet-dialog w-full max-w-md rounded-2xl border border-line bg-panel p-5 shadow-2xl sm:p-6">
+        <section ref={dialogRef} tabIndex={-1} role="dialog" aria-modal="true" aria-labelledby="settings-title" className="action-sheet-dialog outline-none w-full max-w-md rounded-2xl border border-line bg-panel p-5 shadow-2xl sm:p-6">
           <div className="action-sheet-handle" aria-hidden />
           <div className="flex items-start justify-between gap-4">
             <div>
@@ -559,7 +568,7 @@ function SettingsDialog(p: Thresholds & { changed: boolean; onReplay: () => void
             <button onClick={p.onClose} aria-label="Close settings" className="-mr-2 -mt-2 rounded-lg px-2 py-1 text-xl leading-none text-muted hover:bg-bg hover:text-ink">×</button>
           </div>
           <SettingsSection {...p} />
-          <button onClick={p.onClose} className="mt-6 h-9 rounded-lg bg-brand px-4 text-[13px] font-semibold text-ink">Done</button>
+          <button onClick={p.onClose} className="mt-6 h-9 rounded-lg bg-brand px-4 text-[13px] font-semibold text-onbrand">Done</button>
         </section>
       </div>
     </ModalPortal>
@@ -568,6 +577,17 @@ function SettingsDialog(p: Thresholds & { changed: boolean; onReplay: () => void
 
 function ModalPortal({ children }: { children: React.ReactNode }) {
   return typeof document === "undefined" ? null : createPortal(children, document.body);
+}
+
+function ShortcutsToggle() {
+  // Rendered only when Settings is open, so reading storage here is client-side only.
+  const [on, setOn] = useState(() => shortcutsEnabled());
+  return (
+    <label className="mt-4 flex items-start gap-2.5 text-[13px]">
+      <input type="checkbox" checked={on} onChange={(e) => { setOn(e.target.checked); setShortcutsEnabled(e.target.checked); }} className="mt-0.5 h-4 w-4 accent-[var(--ink)]" />
+      <span><span className="font-medium">Keyboard shortcuts</span> <span className="text-muted">Single-key shortcuts in the review. Turn off if they get in the way of speech input or assistive technology.</span></span>
+    </label>
+  );
 }
 
 /** Light / Dark / System. Rendered only when Settings is open, so reading storage here is client-side only. */
@@ -634,7 +654,7 @@ const SidebarIcon = () => (
 function OrderGroup({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="mb-2">
-      <h3 className="px-2 pb-1.5 pt-3 text-[12px] font-medium uppercase tracking-wider text-muted">{label}</h3>
+      <h2 className="px-2 pb-1.5 pt-3 text-[12px] font-medium uppercase tracking-wider text-muted">{label}</h2>
       <ul className="flex flex-col gap-0.5">{children}</ul>
     </div>
   );
@@ -647,7 +667,6 @@ function OrderItem(p: { id: string; tag: string; title: string; preview: string;
       <button
         onClick={() => p.onPick(p.id)}
         aria-current={p.active ? "true" : undefined}
-        aria-label={`${p.tag} ${p.title}`}
         className={`flex w-full items-center gap-3 rounded-r-lg px-2.5 py-2 text-left ${p.active ? "bg-bg shadow-[inset_3px_0_0_var(--brand)]" : "hover:bg-bg"}`}
       >
         <span className="min-w-0 flex-1">
@@ -659,9 +678,9 @@ function OrderItem(p: { id: string; tag: string; title: string; preview: string;
         {p.sent ? (
           <span className="shrink-0 text-[12px] font-medium text-ok">Sent</span>
         ) : p.count > 0 ? (
-          <span className="shrink-0 rounded-full bg-warnbg px-2 py-0.5 text-[12px] font-medium leading-none text-warn" aria-label={`${p.count} to check`}>{p.count}</span>
+          <span className="shrink-0 rounded-full bg-warnbg px-2 py-0.5 text-[12px] font-medium leading-none text-warn"><span aria-hidden>{p.count}</span><span className="sr-only">{p.count} to check</span></span>
         ) : (
-          <span className="shrink-0 text-ok" aria-label="nothing to check"><Check /></span>
+          <span className="shrink-0 text-ok"><span aria-hidden><Check /></span><span className="sr-only">Nothing to check</span></span>
         )}
       </button>
     </li>
@@ -688,10 +707,11 @@ function OrderDetails({ result, isLive, lines, flagged, done, sentAt, onSend }: 
           </div>
         </div>
         <button
+          id="send-order"
           onClick={onSend}
           disabled={!readyToSend}
           title={readyToSend ? undefined : sentAt ? "This order has been sent" : `${flagged - done} ${flagged - done === 1 ? "line" : "lines"} still to check`}
-          className="col-start-2 row-start-1 ml-auto h-11 shrink-0 whitespace-nowrap rounded-lg bg-brand px-3.5 text-[13px] font-semibold text-ink transition-opacity disabled:cursor-not-allowed disabled:opacity-50 sm:h-9"
+          className="col-start-2 row-start-1 ml-auto h-11 shrink-0 whitespace-nowrap rounded-lg bg-brand px-3.5 text-[13px] font-semibold text-onbrand transition-opacity disabled:cursor-not-allowed disabled:opacity-50 sm:h-9"
         >
           {sentAt ? "Sent" : "Send order"}
         </button>
@@ -715,15 +735,28 @@ function Review({ result, isLive, mode, T, unitMin, catalog, resolved, setResolv
   const done = flagged.filter((l) => resolved[l.id]).length;
   const current = active ?? flagged.find((l) => !resolved[l.id])?.id ?? null;
 
+  // A decision removes the button that had focus, so move it on instead of dropping to <body>.
+  const focusAfter = useRef<"next" | string | null>(null);
   const choose = useCallback((lineId: string, sku: string) => {
+    focusAfter.current = "next";
     trackEvent("order_line_reviewed", { mode, decision: sku === NONE ? "not_in_catalog" : "product" });
     setResolved((r) => ({ ...r, [lineId]: sku }));
     onReviewed();
   }, [mode, setResolved, onReviewed]);
   const undo = (lineId: string) => {
+    focusAfter.current = lineId;
     setActive(lineId);
     setResolved((r) => Object.fromEntries(Object.entries(r).filter(([id]) => id !== lineId)));
   };
+
+  useEffect(() => {
+    const target = focusAfter.current;
+    if (!target) return;
+    focusAfter.current = null;
+    const id = target === "next" ? flagged.find((l) => !resolved[l.id])?.id : target;
+    const el = id ? document.getElementById(`line-${id}`) : document.getElementById("send-order");
+    (el ?? document.getElementById("review"))?.focus({ preventScroll: false });
+  }, [resolved, flagged]);
 
   // keyboard: j/k move between flagged lines, 1-3 pick an option, Enter accepts the top pick, x = not in catalog.
   // After a decision the cursor moves to the next line that still needs one.
@@ -731,7 +764,9 @@ function Review({ result, isLive, mode, T, unitMin, catalog, resolved, setResolv
     const onKey = (e: KeyboardEvent) => {
       const t = e.target as HTMLElement;
       const typing = t.closest("textarea, select") || (t.tagName === "INPUT" && (t as HTMLInputElement).type !== "range");
-      if (typing || sentAt || e.metaKey || e.ctrlKey || e.altKey) return;
+      // Only inside the review (or with nothing focused), and only while the Settings toggle is on.
+      const inReview = t === document.body || !!t.closest("#review");
+      if (typing || !inReview || !shortcutsEnabled() || sentAt || e.metaKey || e.ctrlKey || e.altKey) return;
       const ids = flagged.map((l) => l.id);
       const i = current ? ids.indexOf(current) : -1;
       const line = flagged.find((l) => l.id === current);
@@ -846,7 +881,7 @@ function Slider(p: { id: string; label: string; value: number; min: number; max:
         <span>{p.label}</span>
         <span className="text-ink">{p.value.toFixed(2)}</span>
       </label>
-      <input id={p.id} type="range" min={p.min} max={p.max} step={0.01} value={p.value} disabled={p.disabled} onChange={(e) => p.onChange(Number(e.target.value))} className="h-7 w-full accent-[var(--brand)] disabled:opacity-40" />
+      <input id={p.id} type="range" min={p.min} max={p.max} step={0.01} value={p.value} aria-valuetext={`${Math.round(p.value * 100)}%`} disabled={p.disabled} onChange={(e) => p.onChange(Number(e.target.value))} className="h-7 w-full accent-[var(--ink)] disabled:opacity-40" />
     </div>
   );
 }
@@ -864,7 +899,7 @@ function LineRow(props: { l: ViewLine; state: "ok" | "done" | "flag"; pick?: str
     // product is sold ("50 lb" of nails sold by the box), say both rather than silently converting.
     const asked = l.unit && sellUnit && unitKey(l.unit) !== unitKey(sellUnit) ? `${fmtQty(l.qty, l.unit)} · sold per ${sellUnit === "each" ? "piece" : sellUnit}` : qty;
     return (
-      <li id={`line-${l.id}`} onClick={props.onSelect} className={`scroll-mt-44 scroll-mb-8 border-b border-line px-6 py-5 last:border-b-0 ${active ? "tour-choice bg-warnbg" : "bg-warnbg/40"}`} style={{ borderLeft: `${active ? 8 : 4}px solid var(--warn-line)` }}>
+      <li id={`line-${l.id}`} tabIndex={-1} onClick={props.onSelect} className={`outline-none scroll-mt-44 scroll-mb-8 border-b border-line px-6 py-5 last:border-b-0 ${active ? "tour-choice bg-warnbg" : "bg-warnbg/40"}`} style={{ borderLeft: `${active ? 8 : 4}px solid var(--warn-line)` }}>
         <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-0.5">
           <span className="font-mono text-[14px] font-medium">
             <span className="sr-only">Check this: </span>
@@ -888,7 +923,7 @@ function LineRow(props: { l: ViewLine; state: "ok" | "done" | "flag"; pick?: str
             {/* column header over the confidence cells */}
             {shown.some((o) => o.probability != null) && (
               <div aria-hidden className="-mb-1 flex justify-end px-3.5 text-[12px] font-medium text-muted">
-                <span className="w-24 text-center">Confidence</span>
+                <span className="w-16 text-center sm:w-24">Confidence</span>
               </div>
             )}
             {shown.map((o, i) => (
@@ -903,13 +938,13 @@ function LineRow(props: { l: ViewLine; state: "ok" | "done" | "flag"; pick?: str
                 <span className="min-w-0 flex-1">
                   <span className={i === 0 ? "font-semibold" : ""}>{o.name}</span>
                   {i === 0 && shown.length > 1 && (
-                    <span className="ml-2 whitespace-nowrap rounded-full bg-okbg px-2 py-0.5 align-middle text-[11px] font-medium leading-none text-ok">
+                    <span className="ml-2 block w-fit rounded-full bg-okbg px-2 py-0.5 align-middle text-[11px] font-medium leading-none text-ok sm:inline sm:whitespace-nowrap">
                       Suggested{active && pick == null ? " · Enter" : ""}
                     </span>
                   )}
                 </span>
                 {o.probability != null && (
-                  <span className="flex w-24 shrink-0 items-center justify-center self-stretch border-l border-line text-[14px] text-muted">
+                  <span className="flex w-16 shrink-0 items-center justify-center self-stretch sm:w-24 border-l border-line text-[14px] text-muted">
                     <span className="sr-only">confidence </span>
                     {Math.round(o.probability * 100)}%
                   </span>
@@ -925,12 +960,12 @@ function LineRow(props: { l: ViewLine; state: "ok" | "done" | "flag"; pick?: str
 
   const chosen = state === "done" ? (pick === NONE ? "Not in catalog" : (catalog[pick!]?.name ?? pick)) : l.name;
   return (
-    <li id={`line-${l.id}`} onClick={props.onSelect} className={`scroll-mt-44 border-b border-line last:border-b-0 ${active ? "bg-bg" : ""}`}>
+    <li id={`line-${l.id}`} tabIndex={-1} onClick={props.onSelect} className={`outline-none scroll-mt-44 border-b border-line last:border-b-0 ${active ? "bg-bg" : ""}`}>
       <div className="flex min-h-14 items-center gap-3 px-6 py-3">
         <span className={state === "done" && pick === NONE ? "text-warn" : "text-ok"}>{state === "done" ? <Person /> : <Check />}</span>
         <span className="min-w-0 flex-1">
           <span className="block font-mono text-[13px] text-muted">{l.raw}</span>
-          <span className="block text-ink sm:truncate">{chosen}</span>
+          <span className="block break-words text-ink">{chosen}</span>
         </span>
         <span className="shrink-0 text-[14px] text-muted">{qty}</span>
         {state === "done" && (
@@ -1034,7 +1069,7 @@ function CostPanel({ result, samples, mode, T, unitMin, catalog, onMode, setT, s
           </button>
         ))}
 
-        <Link href="/results" className="flex min-h-11 items-center px-1 text-[13px] font-medium underline underline-offset-2 lg:min-h-0">
+        <Link href="/results" className="flex min-h-11 items-center px-1 text-[13px] font-medium underline underline-offset-2">
           See all {samples.length} sample results →
         </Link>
 
@@ -1050,10 +1085,11 @@ function CostPanel({ result, samples, mode, T, unitMin, catalog, onMode, setT, s
 }
 
 function HelpDialog({ onClose }: { onClose: () => void }) {
+  const dialogRef = useDialog<HTMLElement>(onClose);
   return (
     <ModalPortal>
       <div className="action-sheet-backdrop fixed inset-0 z-[60] grid place-items-center bg-black/40 p-4" role="presentation" onMouseDown={(e) => { if (e.target === e.currentTarget) onClose(); }}>
-        <section role="dialog" aria-modal="true" aria-labelledby="help-title" className="action-sheet-dialog w-full max-w-3xl rounded-2xl border border-line bg-panel p-5 shadow-2xl sm:p-6">
+        <section ref={dialogRef} tabIndex={-1} role="dialog" aria-modal="true" aria-labelledby="help-title" className="action-sheet-dialog outline-none w-full max-w-3xl rounded-2xl border border-line bg-panel p-5 shadow-2xl sm:p-6">
           <div className="action-sheet-handle" aria-hidden />
           <div className="flex items-start justify-between gap-4">
             <div>
@@ -1076,7 +1112,7 @@ function HelpDialog({ onClose }: { onClose: () => void }) {
               <p><span className="font-medium text-ink">The savings:</span> The green comparison shows Jev&apos;s matching cost and time against Claude&apos;s matching cost and time for this order. The cards below include the full pipeline, and “per 10,000 orders” scales each run&apos;s total cost.</p>
             </div>
           </div>
-          <button onClick={onClose} className="mt-6 h-9 rounded-lg bg-brand px-4 text-[13px] font-semibold text-ink">Got it</button>
+          <button onClick={onClose} className="mt-6 h-9 rounded-lg bg-brand px-4 text-[13px] font-semibold text-onbrand">Got it</button>
         </section>
       </div>
     </ModalPortal>

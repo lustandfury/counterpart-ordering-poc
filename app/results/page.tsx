@@ -104,7 +104,7 @@ export default function ResultsPage() {
                   <th className="px-3 py-2 text-right font-medium">Claude right</th>
                   <th className="px-3 py-2 text-right font-medium">Jev cost</th>
                   <th className="px-3 py-2 text-right font-medium">Claude cost</th>
-                  <th className="px-6 py-2" />
+                  <th className="px-6 py-2"><span className="sr-only">Open order</span></th>
                 </tr>
               </thead>
               <tbody>
