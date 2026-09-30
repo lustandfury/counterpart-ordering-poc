@@ -166,6 +166,11 @@ Each entry: what we did, what happened, what it changed.
 **Happened:** a first plain logo-on-paper version was dropped for the photo, which says "lumber" before any words do. Getting the type right took several rounds of small calls (size, tracking, tagline fitted to the wordmark's width by measuring it in the page, the text group centred on the logo by its visible ink, the photo nudged down so the wood clears the tagline). On wide screens the form sat straight on the wood and was hard to read, so it became a card, as the phone layout's sheet already was. The photo went from 2.3 MB to a 181 KB copy for the lock screen, since it is the first thing loaded; dark mode dims it.
 **Changed:** the link preview, the lock screen and the app share one look, and the preview is reproducible from a script.
 
+### 30. The analytics were going to the wrong place
+**Did:** set up a dedicated PostHog project for Counterpart, then checked that the live site actually sends to it. The check compares the token compiled into the deployed site (public by design) with the project's own token, comparing only the last few characters.
+**Happened:** the site was sending, but to a different project in another of my PostHog organizations, because the token had been copied while the wrong organization was selected. The new project showed "no events yet", which is what gave it away. A first version of the check was itself wrong: a shell quirk meant it fetched nothing and reported "no analytics at all", and only a sanity check (looking for a known piece of app text in the same files) exposed that. Local development had the same wrong token.
+**Changed:** production now uses the Counterpart project's token (Production and Preview only, so pulling environment variables locally cannot send development events to it), and local development leaves the token blank, as the README advises. Lesson: verify a negative result with a known positive before believing it.
+
 ## Where it stands
 
 | | Claude only | Claude + Jev |
