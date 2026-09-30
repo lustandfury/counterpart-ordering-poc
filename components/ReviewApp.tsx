@@ -1020,7 +1020,7 @@ function CostPanel({ result, samples, mode, T, unitMin, catalog, onMode, setT, s
         {helpOpen && <HelpDialog onClose={() => setHelpOpen(false)} />}
 
         <div className="rounded-xl bg-brandsoft px-4 py-3">
-          <p className="font-mono text-lg font-semibold">{cheaper.toFixed(1)}× this order</p>
+          <p className="font-mono text-lg font-semibold">{cheaper.toFixed(1)}× lower cost per order</p>
           <p className="mt-1 text-[12px] text-muted">{usd(jev.t.usd)} vs {usd(cla.t.usd)} · single run, results vary</p>
         </div>
 
@@ -1040,14 +1040,20 @@ function CostPanel({ result, samples, mode, T, unitMin, catalog, onMode, setT, s
             <span className="font-mono text-[12px] text-muted">{ms(x.t.ms)}</span>
           </div>
           <div className="mt-2 flex h-1.5 overflow-hidden rounded-full" style={{ background: "var(--line)" }} aria-hidden>
-            <span style={{ width: `${(100 * x.t.parseUsd) / maxUsd}%`, background: "var(--bar)" }} />
-            <span style={{ width: `${(100 * x.t.matchUsd) / maxUsd}%`, background: "var(--brand)" }} />
+            <span style={{ width: `${(100 * x.t.parseUsd) / maxUsd}%`, background: "var(--reading)" }} />
+            <span style={{ width: `${(100 * x.t.matchUsd) / maxUsd}%`, background: "var(--matching)" }} />
           </div>
           <dl className="mt-3 grid grid-cols-[1fr_auto_auto] gap-x-3 gap-y-1 text-[12px]">
-            <dt className="text-muted">Reading</dt>
+            <dt className="flex items-center gap-2 text-muted">
+              <span aria-hidden="true" className="h-2 w-2 shrink-0 rounded-full" style={{ background: "var(--reading)" }} />
+              Reading
+            </dt>
             <dd className="text-right font-mono">{usd(x.t.parseUsd)}</dd>
             <dd className="text-right font-mono text-muted">{ms(x.t.parseMs)}</dd>
-            <dt className="text-muted">Matching</dt>
+            <dt className="flex items-center gap-2 text-muted">
+              <span aria-hidden="true" className="h-2 w-2 shrink-0 rounded-full" style={{ background: "var(--matching)" }} />
+              Matching
+            </dt>
             <dd className="text-right font-mono">{usd(x.t.matchUsd)}</dd>
             <dd className="text-right font-mono text-muted">{ms(x.t.matchMs)}</dd>
             <dt className="text-muted">Auto-approved</dt>
