@@ -81,6 +81,11 @@ Each entry: what we did, what happened, what it changed.
 **Happened:** the browser test caught a keyboard regression the change introduced: with the sidebar staying open, clicking an order left focus on that order's button, so the next Enter re-opened the order instead of confirming a line.
 **Changed:** picking an order now hands keyboard focus to the review, so Enter, j and k act on lines straight away.
 
+### 13. Settings behind a button
+**Did:** moved the two threshold sliders out of the toolbar into a Settings panel (Mike's call), with a reset to defaults and a small marker on the button when the thresholds differ from the defaults. The toolbar is now one row: the pipeline toggle and Settings. The paste box got a darker fill so it reads as an input against the white sidebar (text contrast 5.6:1 and above).
+**Happened:** the sliders are the demo's most interesting control, but they are a tuning tool, not something a rep touches on every order. Hiding them made the default view calmer without losing the "move the threshold and watch lines re-route" moment.
+**Changed:** the walkthrough opens Settings to show the trade-off; the browser test now opens it before driving the sliders.
+
 ## Where it stands
 
 | | Claude only | Claude + Jev |
@@ -113,7 +118,7 @@ Read as signals, not benchmarks: 20 orders, tuned in-sample, Claude prices assum
 ## Walking someone through it (about 5 minutes)
 
 1. **The problem (30s).** Show a messy text order. "Reading it is the easy part."
-2. **The screen (90s).** Open the workspace on the default order. Approved lines are quiet; the flagged line says why. Move a slider and watch lines re-route with no API call. Point at the cost panel: same approvals, about 60x cheaper matching. Point at the sidebar: every order with its count of lines to check.
+2. **The screen (90s).** Open the workspace on the default order. Approved lines are quiet; the flagged line says why. Open Settings, move a slider and watch lines re-route with no API call. Point at the cost panel: same approvals, about 60x cheaper matching. Point at the sidebar: every order with its count of lines to check.
 3. **The measurement (90s).** Open `results/eval-summary.md`. Read one number from each side; point at the calibration table.
 4. **The turning points (90s).** Timeline 4 (Jev lost), 5 (our bugs), 7 (the quantity question). "The interesting work was the honest debugging."
 5. **The close (30s).** "The hard part isn't reading the order. It's deciding what the rep doesn't need to check."

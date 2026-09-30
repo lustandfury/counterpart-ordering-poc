@@ -4,6 +4,7 @@
   --bg: #f7f6f2;
   --panel: #ffffff;
   --panel-2: #fbfaf8;
+  --input: #efece5;
   --ink: #1c1c1e;
   --muted: #5c5c61;
   --line: #e8e5de;
@@ -24,6 +25,7 @@
     --bg: #141416;
     --panel: #1c1c1e;
     --panel-2: #18181a;
+    --input: #111113;
     --ink: #ececec;
     --muted: #a3a3a8;
     --line: #2e2e32;
@@ -45,6 +47,7 @@
   --color-bg: var(--bg);
   --color-panel: var(--panel);
   --color-panel2: var(--panel-2);
+  --color-input: var(--input);
   --color-ink: var(--ink);
   --color-muted: var(--muted);
   --color-line: var(--line);

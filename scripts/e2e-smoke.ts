@@ -17,6 +17,10 @@ async function main() {
     const t = await summary();
     return { approved: Number(/(\d+) auto-approved/.exec(t)![1]), flagged: Number(/(\d+) to check/.exec(t)![1]), done: Number(/(\d+) done/.exec(t)?.[1] ?? 0) };
   };
+  const openSettings = async () => {
+    if (!(await page.locator("#t").isVisible())) await page.getByRole("button", { name: "Settings" }).click();
+  };
+  assert.equal(await page.locator("#t").count(), 0, "thresholds are tucked away by default");
   const start = await counts();
   assert.ok(start.flagged >= 1, "the demo order needs at least one flagged line");
   assert.equal(start.done, 0);
@@ -35,6 +39,7 @@ async function main() {
   assert.equal((await counts()).done, start.flagged - 1);
 
   // keys still work after touching a slider
+  await openSettings();
   await page.locator("#t").focus();
   await page.keyboard.press("Enter");
   assert.equal((await counts()).done, start.flagged);
@@ -55,6 +60,7 @@ async function main() {
 
   // Claude only mode disables the slider
   await page.getByRole("button", { name: "Claude only", exact: true }).click();
+  await openSettings();
   assert.equal(await page.locator("#t").isDisabled(), true);
   assert.ok(await page.getByRole("complementary", { name: "Cost assessment" }).isVisible());
   assert.match(await page.getByRole("complementary", { name: "Cost assessment" }).innerText(), /less[\s\S]*faster/);

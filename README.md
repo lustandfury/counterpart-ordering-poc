@@ -33,7 +33,7 @@ A three-pane workspace:
 - **Center:** the contractor's message and the draft order. Approved lines are quiet; flagged lines say why and offer the top alternatives. When only the quantity is in doubt, a flagged line is a one-click confirm.
 - **Right:** a cost assessment of both pipelines for the current order and across all samples.
 
-Two sliders (product confidence and quantity clarity) re-route lines live. Keyboard shortcuts: `j`/`k` move, `1`–`3` pick, `Enter` accepts, `x` marks a line as not in the catalog.
+Two thresholds under **Settings** (product confidence and quantity clarity) re-route lines live. Keyboard shortcuts: `j`/`k` move, `1`–`3` pick, `Enter` accepts, `x` marks a line as not in the catalog.
 
 ## Results
 

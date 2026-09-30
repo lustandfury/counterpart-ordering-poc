@@ -112,7 +112,7 @@ export function ReviewApp({ samples, catalog }: { samples: OrderResult[]; catalo
               </nav>
               <div className="shrink-0 border-t border-line p-4">
                 <label htmlFor="paste" className="sr-only">Paste a text-message order</label>
-                <div className="card focus-within:ring-2 focus-within:ring-[var(--focus)]">
+                <div className="rounded-[14px] bg-input shadow-[inset_0_0_0_1px_var(--ring)] focus-within:ring-2 focus-within:ring-[var(--focus)]">
                   <textarea
                     id="paste"
                     rows={4}
@@ -141,25 +141,18 @@ export function ReviewApp({ samples, catalog }: { samples: OrderResult[]; catalo
         </aside>
 
         <main id="review" tabIndex={-1} className="min-w-0 flex-1 outline-none lg:overflow-y-auto">
-          <div className="sticky top-0 z-10 flex flex-wrap items-end gap-x-8 gap-y-3 border-b border-line bg-bg/90 px-5 py-4 backdrop-blur sm:px-10">
-            <div className={`self-end max-lg:block ${desktopOpen ? "lg:hidden" : "lg:block"}`}>
+          <div className="sticky top-0 z-10 flex items-center gap-3 border-b border-line bg-bg/90 px-5 py-3 backdrop-blur sm:px-10">
+            <div className={`max-lg:block ${desktopOpen ? "lg:hidden" : "lg:block"}`}>
               <SidebarButton label="Show orders" expanded={false} onClick={toggleSidebar} />
             </div>
-            <fieldset>
-              <legend className="mb-1.5 text-[13px] font-medium text-muted">Matching by</legend>
-              <div className="inline-flex gap-1 rounded-xl bg-panel p-1 text-sm shadow-[0_0_0_1px_var(--ring)]" role="group">
-                {(["jev", "claude"] as const).map((m) => (
-                  <button key={m} aria-pressed={mode === m} onClick={() => setMode(m)} className={`h-8 rounded-lg px-3.5 font-medium ${mode === m ? "bg-ink text-bg shadow-sm" : "text-muted hover:bg-bg hover:text-ink"}`}>
-                    {m === "jev" ? "Claude + Jev" : "Claude only"}
-                  </button>
-                ))}
-              </div>
-            </fieldset>
-            <Slider id="t" label="Product confidence" value={T} min={0.5} max={0.99} onChange={setT} disabled={mode === "claude"} />
-            <Slider id="u" label="Quantity clarity" value={unitMin} min={0.3} max={0.9} onChange={setUnitMin} disabled={mode === "claude"} />
-            <p className="basis-full text-[13px] text-muted sm:basis-auto sm:self-center">
-              {mode === "claude" ? "Claude only approves its own “high” ratings." : "Higher = the rep checks more lines."}
-            </p>
+            <div className="inline-flex gap-1 rounded-xl bg-panel p-1 text-sm shadow-[0_0_0_1px_var(--ring)]" role="group" aria-label="Matching by">
+              {(["jev", "claude"] as const).map((m) => (
+                <button key={m} aria-pressed={mode === m} onClick={() => setMode(m)} className={`h-8 rounded-lg px-3.5 font-medium ${mode === m ? "bg-ink text-bg shadow-sm" : "text-muted hover:bg-bg hover:text-ink"}`}>
+                  {m === "jev" ? "Claude + Jev" : "Claude only"}
+                </button>
+              ))}
+            </div>
+            <SettingsMenu mode={mode} T={T} unitMin={unitMin} setT={setT} setUnitMin={setUnitMin} />
           </div>
           <div className="mx-auto max-w-4xl px-5 py-8 sm:px-10">
             <Review key={selected} result={result} isLive={!!live} mode={mode} T={T} unitMin={unitMin} catalog={catalog} />
@@ -173,6 +166,71 @@ export function ReviewApp({ samples, catalog }: { samples: OrderResult[]; catalo
     </div>
   );
 }
+
+const DEFAULT_T = 0.85;
+const DEFAULT_UNIT = 0.8;
+
+/** Review thresholds, tucked behind a button so the toolbar stays calm. */
+function SettingsMenu(p: { mode: Mode; T: number; unitMin: number; setT: (v: number) => void; setUnitMin: (v: number) => void }) {
+  const [open, setOpen] = useState(false);
+  const changed = p.T !== DEFAULT_T || p.unitMin !== DEFAULT_UNIT;
+  useEffect(() => {
+    if (!open) return;
+    const onDown = (e: MouseEvent) => {
+      if (!(e.target as HTMLElement).closest("[data-settings]")) setOpen(false);
+    };
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    document.addEventListener("mousedown", onDown);
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onDown);
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
+  return (
+    <div data-settings className="relative ml-auto">
+      <button
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+        aria-controls="settings"
+        className={`flex h-10 items-center gap-2 rounded-xl px-3 text-sm font-medium ${open ? "bg-panel text-ink shadow-[0_0_0_1px_var(--ring)]" : "text-muted hover:bg-panel hover:text-ink"}`}
+      >
+        <GearIcon />
+        Settings
+        {changed && <span className="h-1.5 w-1.5 rounded-full bg-[var(--warn-line)]" aria-label="thresholds changed" />}
+      </button>
+      {open && (
+        <div id="settings" role="dialog" aria-label="Review thresholds" className="card absolute right-0 top-full z-30 mt-2 w-80 p-5">
+          <h3 className="text-[15px] font-semibold">Review thresholds</h3>
+          <p className="mt-1 text-[13px] text-muted">
+            {p.mode === "claude" ? "Claude only has no thresholds: it approves its own “high” ratings." : "Higher = the rep checks more lines. Lines re-route instantly; no new API calls."}
+          </p>
+          <div className="mt-4 flex flex-col gap-4">
+            <Slider id="t" label="Product confidence" value={p.T} min={0.5} max={0.99} onChange={p.setT} disabled={p.mode === "claude"} />
+            <Slider id="u" label="Quantity clarity" value={p.unitMin} min={0.3} max={0.9} onChange={p.setUnitMin} disabled={p.mode === "claude"} />
+          </div>
+          <button
+            onClick={() => {
+              p.setT(DEFAULT_T);
+              p.setUnitMin(DEFAULT_UNIT);
+            }}
+            disabled={!changed}
+            className="mt-4 text-[13px] text-muted underline hover:text-ink disabled:no-underline disabled:opacity-40"
+          >
+            Reset to defaults
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+const GearIcon = () => (
+  <svg aria-hidden viewBox="0 0 16 16" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.4">
+    <circle cx="8" cy="8" r="2.2" />
+    <path d="M8 1.5v1.8M8 12.7v1.8M1.5 8h1.8M12.7 8h1.8M3.4 3.4l1.3 1.3M11.3 11.3l1.3 1.3M3.4 12.6l1.3-1.3M11.3 4.7l1.3-1.3" strokeLinecap="round" />
+  </svg>
+);
 
 function SidebarButton({ label, expanded, onClick }: { label: string; expanded: boolean; onClick: () => void }) {
   return (
@@ -345,7 +403,7 @@ function Review({ result, isLive, mode, T, unitMin, catalog }: { result: OrderRe
 
 function Slider(p: { id: string; label: string; value: number; min: number; max: number; disabled: boolean; onChange: (v: number) => void }) {
   return (
-    <div className="w-40">
+    <div className="w-full">
       <label htmlFor={p.id} className="mb-1.5 flex justify-between text-[13px] font-medium text-muted">
         <span>{p.label}</span>
         <span className="text-ink">{p.value.toFixed(2)}</span>
