@@ -9,7 +9,6 @@ async function main() {
     const page = await ctx.newPage();
     await page.goto(base);
     if (process.env.ORDER) {
-      await page.keyboard.press("Control+b");
       await page.locator("#orders").getByRole("button", { name: new RegExp(`^${process.env.ORDER}`) }).click();
     }
     if (act) await act(page);
@@ -18,8 +17,8 @@ async function main() {
   };
   await shot("desktop-light", { width: 1280, height: 900 });
   await shot("desktop-dark", { width: 1280, height: 900, dark: true });
-  await shot("desktop-sidebar", { width: 1440, height: 900 }, async (p) => {
-    await p.keyboard.press("Control+b");
+  await shot("desktop-collapsed", { width: 1440, height: 900 }, async (p) => {
+    await p.getByRole("button", { name: "Hide orders" }).click();
   });
   await shot("mobile", { width: 390, height: 844 });
   await browser.close();

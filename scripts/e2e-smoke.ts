@@ -9,9 +9,8 @@ async function main() {
   const openOrder = async (id: string) => {
     if (!(await page.locator("#orders").isVisible())) await page.keyboard.press("Control+b");
     await page.locator("#orders").getByRole("button", { name: new RegExp(`^${id}`) }).click();
-    await page.keyboard.press("Escape");
   };
-  assert.equal(await page.locator("#orders").isVisible(), false, "sidebar is hidden by default");
+  assert.equal(await page.locator("#orders").isVisible(), true, "sidebar is open by default on desktop");
   await openOrder("o13");
   const summary = () => page.locator("[aria-live=polite]").innerText();
   const counts = async () => {
@@ -47,6 +46,12 @@ async function main() {
   const loose = await counts();
   console.log(`flagged: start ${start.flagged}, T=0.99 ${strict.flagged}, T=0.5 ${loose.flagged}`);
   assert.ok(strict.flagged >= start.flagged && loose.flagged <= start.flagged);
+
+  // the sidebar button in the sidebar hides it; the one in the toolbar brings it back
+  await page.getByRole("button", { name: "Hide orders" }).click();
+  assert.equal(await page.locator("#orders").isVisible(), false);
+  await page.getByRole("button", { name: "Show orders" }).click();
+  assert.equal(await page.locator("#orders").isVisible(), true);
 
   // Claude only mode disables the slider
   await page.getByRole("button", { name: "Claude only", exact: true }).click();

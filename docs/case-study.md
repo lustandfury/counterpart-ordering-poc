@@ -76,6 +76,11 @@ Each entry: what we did, what happened, what it changed.
 **Happened:** no secrets anywhere in the history. But the review caught a real company name in one of our own agent instructions, a few lines hinting at private context, and a cost gap: we capped the pasted text at 600 characters and 15 lines, yet a single line can parse into dozens of items, each of which makes paid matching calls. It also pointed out that in-memory rate limits reset per server instance, so they are a brake, not a wall.
 **Changed:** the parsed items are capped at 15 before any paid call, the route only accepts JSON, live runs are limited to 5 per visitor per hour and 40 a day per instance, and the spend limit on the Anthropic key and the prepaid Jev credits are the hard stops. The flagged wording is gone from the repo.
 
+### 12. Fewer bars, the list always at hand
+**Did:** removed the top bar and opened the orders sidebar by default on wide screens (Mike's call), with the same sidebar icon to hide and show it, in the sidebar's header and in the toolbar when it is closed. The "synthetic data, not affiliated" notice moved to the sidebar and the cost panel's footnote. Phones still get the sidebar as an overlay, closed by default.
+**Happened:** the browser test caught a keyboard regression the change introduced: with the sidebar staying open, clicking an order left focus on that order's button, so the next Enter re-opened the order instead of confirming a line.
+**Changed:** picking an order now hands keyboard focus to the review, so Enter, j and k act on lines straight away.
+
 ## Where it stands
 
 | | Claude only | Claude + Jev |
@@ -108,7 +113,7 @@ Read as signals, not benchmarks: 20 orders, tuned in-sample, Claude prices assum
 ## Walking someone through it (about 5 minutes)
 
 1. **The problem (30s).** Show a messy text order. "Reading it is the easy part."
-2. **The screen (90s).** Open the workspace on the default order. Approved lines are quiet; the flagged line says why. Move a slider and watch lines re-route with no API call. Point at the cost panel: same approvals, about 60x cheaper matching. Open the sidebar (⌘B) to show the other orders and their counts.
+2. **The screen (90s).** Open the workspace on the default order. Approved lines are quiet; the flagged line says why. Move a slider and watch lines re-route with no API call. Point at the cost panel: same approvals, about 60x cheaper matching. Point at the sidebar: every order with its count of lines to check.
 3. **The measurement (90s).** Open `results/eval-summary.md`. Read one number from each side; point at the calibration table.
 4. **The turning points (90s).** Timeline 4 (Jev lost), 5 (our bugs), 7 (the quantity question). "The interesting work was the honest debugging."
 5. **The close (30s).** "The hard part isn't reading the order. It's deciding what the rep doesn't need to check."

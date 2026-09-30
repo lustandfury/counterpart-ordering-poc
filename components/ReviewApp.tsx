@@ -36,7 +36,9 @@ export function ReviewApp({ samples, catalog }: { samples: OrderResult[]; catalo
   const [mode, setMode] = useState<Mode>("jev");
   const [T, setT] = useState(0.85);
   const [unitMin, setUnitMin] = useState(0.8);
-  const [sidebar, setSidebar] = useState(false);
+  // The orders sidebar is open by default on wide screens and closed on phones, where it overlays the page.
+  const [desktopOpen, setDesktopOpen] = useState(true);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const [pasteText, setPasteText] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -44,21 +46,26 @@ export function ReviewApp({ samples, catalog }: { samples: OrderResult[]; catalo
   const live = runs.find((r) => `live-${r.runId}` === selected);
   const result = live ?? samples.find((s) => s.orderId === selected) ?? samples[0];
 
-  // Cmd/Ctrl+B toggles the orders sidebar, Escape closes it (as in code editors)
+  const narrow = () => window.matchMedia("(max-width: 1023px)").matches;
+  const toggleSidebar = useCallback(() => (narrow() ? setMobileOpen((v) => !v) : setDesktopOpen((v) => !v)), []);
+
+  // Cmd/Ctrl+B toggles the orders sidebar (as in code editors); Escape closes the phone overlay
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "b") {
         e.preventDefault();
-        setSidebar((v) => !v);
-      } else if (e.key === "Escape") setSidebar(false);
+        toggleSidebar();
+      } else if (e.key === "Escape") setMobileOpen(false);
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, []);
+  }, [toggleSidebar]);
 
   const pick = (id: string) => {
     setSelected(id);
-    if (window.matchMedia("(max-width: 1023px)").matches) setSidebar(false);
+    setMobileOpen(false);
+    // hand the keyboard to the review, so Enter / j / k act on lines rather than re-clicking the order
+    requestAnimationFrame(() => document.getElementById("review")?.focus({ preventScroll: true }));
   };
 
   async function runLive() {
@@ -84,33 +91,16 @@ export function ReviewApp({ samples, catalog }: { samples: OrderResult[]; catalo
 
   return (
     <div className="flex h-dvh flex-col overflow-hidden">
-      <header className="flex h-14 shrink-0 items-center gap-3 border-b border-line bg-panel px-4 text-[15px]">
-        <button
-          onClick={() => setSidebar((v) => !v)}
-          aria-expanded={sidebar}
-          aria-controls="orders"
-          aria-label={sidebar ? "Hide orders" : "Show orders"}
-          title="Orders (⌘B)"
-          className="grid h-9 w-9 place-items-center rounded-lg text-muted hover:bg-bg hover:text-ink"
-        >
-          <SidebarIcon />
-        </button>
-        <strong className="text-base font-semibold tracking-tight">Counterpart</strong>
-        <span className="text-muted" aria-hidden>/</span>
-        <button onClick={() => setSidebar(true)} className="truncate rounded-md px-1.5 py-0.5 text-muted hover:bg-bg hover:text-ink">
-          {live ? "Your order" : `Order ${result.orderId}`}
-        </button>
-        <span className="ml-auto hidden rounded-full bg-bg px-3 py-1 text-[13px] text-muted sm:inline">outside-in sketch · synthetic data · not affiliated with any company</span>
-      </header>
-
       <div className="relative flex min-h-0 flex-1 max-lg:flex-col max-lg:overflow-y-auto">
-        {sidebar && (
-          <>
-            <button aria-label="Close orders" tabIndex={-1} onClick={() => setSidebar(false)} className="fixed inset-0 z-20 bg-black/30 lg:hidden" />
-            <aside id="orders" aria-label="Orders" className="flex w-80 shrink-0 flex-col border-r border-line bg-panel max-lg:fixed max-lg:inset-y-0 max-lg:left-0 max-lg:z-30 max-lg:shadow-xl">
-              <div className="flex h-12 shrink-0 items-center justify-between px-5 text-[13px] font-semibold text-ink">
-                Orders
-                <button onClick={() => setSidebar(false)} aria-label="Hide orders" className="grid h-8 w-8 place-items-center rounded-lg text-lg text-muted hover:bg-bg">×</button>
+        {mobileOpen && <button aria-label="Close orders" tabIndex={-1} onClick={() => setMobileOpen(false)} className="fixed inset-0 z-20 bg-black/30 lg:hidden" />}
+        <aside
+          id="orders"
+          aria-label="Orders"
+          className={`w-80 shrink-0 flex-col border-r border-line bg-panel max-lg:fixed max-lg:inset-y-0 max-lg:left-0 max-lg:z-30 max-lg:shadow-xl ${desktopOpen ? "lg:flex" : "lg:hidden"} ${mobileOpen ? "max-lg:flex" : "max-lg:hidden"}`}
+        >
+              <div className="flex h-16 shrink-0 items-center justify-between px-5">
+                <strong className="text-base font-semibold tracking-tight">Counterpart</strong>
+                <SidebarButton label="Hide orders" expanded onClick={toggleSidebar} />
               </div>
               <nav className="min-h-0 flex-1 overflow-y-auto px-3 pb-3">
                 {runs.length > 0 && <OrderGroup label="Your runs">{runs.map((r) => (
@@ -146,13 +136,15 @@ export function ReviewApp({ samples, catalog }: { samples: OrderResult[]; catalo
                   </div>
                 </div>
                 {error && <p role="alert" className="mt-2 text-[13px] text-warn">{error}</p>}
+                <p className="mt-3 text-[12px] leading-snug text-muted">Outside-in sketch · synthetic data · not affiliated with any company</p>
               </div>
-            </aside>
-          </>
-        )}
+        </aside>
 
-        <main className="min-w-0 flex-1 lg:overflow-y-auto">
+        <main id="review" tabIndex={-1} className="min-w-0 flex-1 outline-none lg:overflow-y-auto">
           <div className="sticky top-0 z-10 flex flex-wrap items-end gap-x-8 gap-y-3 border-b border-line bg-bg/90 px-5 py-4 backdrop-blur sm:px-10">
+            <div className={`self-end max-lg:block ${desktopOpen ? "lg:hidden" : "lg:block"}`}>
+              <SidebarButton label="Show orders" expanded={false} onClick={toggleSidebar} />
+            </div>
             <fieldset>
               <legend className="mb-1.5 text-[13px] font-medium text-muted">Matching by</legend>
               <div className="inline-flex gap-1 rounded-xl bg-panel p-1 text-sm shadow-[0_0_0_1px_var(--ring)]" role="group">
@@ -179,6 +171,21 @@ export function ReviewApp({ samples, catalog }: { samples: OrderResult[]; catalo
         </aside>
       </div>
     </div>
+  );
+}
+
+function SidebarButton({ label, expanded, onClick }: { label: string; expanded: boolean; onClick: () => void }) {
+  return (
+    <button
+      onClick={onClick}
+      aria-expanded={expanded}
+      aria-controls="orders"
+      aria-label={label}
+      title={`${label} (⌘B)`}
+      className="grid h-9 w-9 place-items-center rounded-lg text-muted hover:bg-bg hover:text-ink"
+    >
+      <SidebarIcon />
+    </button>
   );
 }
 
@@ -509,7 +516,7 @@ function CostPanel({ result, samples, mode, T, unitMin, catalog, onMode }: { res
         {diff.length ? `The two pick different products on ${diff.length} line${diff.length > 1 ? "s" : ""}: ${diff.map((l) => `“${l.raw}”`).join(", ")}.` : "Both pick the same product on every line."}
       </p>
       <p className="text-[12px] leading-relaxed text-muted">
-        Claude priced at ${(CLAUDE_INPUT_PER_TOKEN * 1e6).toFixed(0)} / ${(CLAUDE_OUTPUT_PER_TOKEN * 1e6).toFixed(0)} per million input / output tokens (assumed). Jev at ${(JEV_INPUT_PER_TOKEN * 1e9).toFixed(0)} per billion input tokens, output free. Times are measured on one run and vary.
+        Claude priced at ${(CLAUDE_INPUT_PER_TOKEN * 1e6).toFixed(0)} / ${(CLAUDE_OUTPUT_PER_TOKEN * 1e6).toFixed(0)} per million input / output tokens (assumed). Jev at ${(JEV_INPUT_PER_TOKEN * 1e9).toFixed(0)} per billion input tokens, output free. Times are measured on one run and vary. Synthetic data; not affiliated with any company.
       </p>
     </div>
   );

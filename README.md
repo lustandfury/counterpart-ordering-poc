@@ -29,7 +29,7 @@ and rates itself high / medium / low; only "high" lines auto-approve.
 ## The screen
 
 A three-pane workspace:
-- **Left, hidden by default (⌘B):** sample orders, each with the number of lines to check, and a composer to paste your own.
+- **Left, open by default (⌘B or the sidebar icon to hide):** sample orders, each with the number of lines to check, and a composer to paste your own.
 - **Center:** the contractor's message and the draft order. Approved lines are quiet; flagged lines say why and offer the top alternatives. When only the quantity is in doubt, a flagged line is a one-click confirm.
 - **Right:** a cost assessment of both pipelines for the current order and across all samples.
 
