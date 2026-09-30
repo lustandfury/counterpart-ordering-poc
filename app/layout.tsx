@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { DM_Sans, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { THEME_SCRIPT } from "@/lib/theme";
+import { AccessProvider } from "@/components/AccessProvider";
 
 const dmSans = DM_Sans({
   variable: "--font-ui",
@@ -30,7 +31,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         {/* apply the saved theme before first paint, so there is no flash of the wrong one */}
         <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
       </head>
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col"><AccessProvider>{children}</AccessProvider></body>
     </html>
   );
 }

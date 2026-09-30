@@ -1,9 +1,12 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { createPortal } from "react-dom";
+import { trackEvent } from "@/lib/analytics";
 import type { OrderResult, Sender } from "@/lib/types";
 import Link from "next/link";
-import { BrandBar } from "@/components/AppNav";
+import { BrandBar, ResultsButton, Wordmark } from "@/components/AppNav";
+import { useAccess } from "@/components/AccessProvider";
 import { generateOrder } from "@/lib/generate";
 import { applyTheme, readTheme, THEMES, type Theme } from "@/lib/theme";
 import { CLAUDE_INPUT_PER_TOKEN, CLAUDE_OUTPUT_PER_TOKEN, JEV_INPUT_PER_TOKEN } from "@/lib/pricing";
@@ -39,8 +42,11 @@ type Run = OrderResult & { runId: number };
 
 const DEFAULT_SAMPLE = "o13";
 const SAMPLES_SHOWN = 3;
+const WALKTHROUGH_KEY = "counterpart-walkthrough-complete";
 const ORDER_TEXT_LIMIT = 600;
 const ORDER_COUNTER_THRESHOLD = ORDER_TEXT_LIMIT * 0.8;
+
+type WalkthroughStep = 0 | 1 | 2;
 
 export function ReviewApp({ samples, catalog, initialOrder }: { samples: OrderResult[]; catalog: SlimCatalog; initialOrder?: string }) {
   const [runs, setRuns] = useState<Run[]>([]); // live runs from the composer, newest first
@@ -62,6 +68,11 @@ export function ReviewApp({ samples, catalog, initialOrder }: { samples: OrderRe
   // The rep's decisions and mock sends, per order, so they survive switching between orders
   const [decisions, setDecisions] = useState<Record<string, Decisions>>({});
   const [sent, setSent] = useState<Record<string, number>>({}); // order id -> time sent
+  const [walkthroughStep, setWalkthroughStep] = useState<WalkthroughStep | null>(null);
+  const { unlocked, unlock } = useAccess();
+  const [unlocking, setUnlocking] = useState(false);
+  const [accessCode, setAccessCode] = useState("");
+  const [accessError, setAccessError] = useState(false);
 
   const live = runs.find((r) => `live-${r.runId}` === selected);
   const result = live ?? samples.find((s) => s.orderId === selected) ?? samples[0];
@@ -76,6 +87,18 @@ export function ReviewApp({ samples, catalog, initialOrder }: { samples: OrderRe
   const narrow = () => window.matchMedia("(max-width: 1023px)").matches;
   const toggleSidebar = useCallback(() => (narrow() ? setMobileOpen((v) => !v) : setDesktopOpen((v) => !v)), []);
 
+  const showWalkthroughStep = useCallback((step: WalkthroughStep) => {
+    setWalkthroughStep(step);
+    setDesktopOpen(true);
+    const mobile = window.matchMedia("(max-width: 1023px)").matches;
+    setMobileOpen(mobile && step === 0);
+    if (mobile && step > 0) {
+      window.requestAnimationFrame(() => {
+        document.querySelector(step === 1 ? ".tour-review" : ".tour-cost")?.scrollIntoView({ block: "start" });
+      });
+    }
+  }, []);
+
   // Cmd/Ctrl+B toggles the orders sidebar (as in code editors); Escape closes the phone overlay
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -88,7 +111,36 @@ export function ReviewApp({ samples, catalog, initialOrder }: { samples: OrderRe
     return () => window.removeEventListener("keydown", onKey);
   }, [toggleSidebar]);
 
+  // localStorage is deliberately read after mount: the walkthrough is a browser-only preference,
+  // and reading it during render would make the server and client markup disagree.
+  useEffect(() => {
+    const frame = window.requestAnimationFrame(() => {
+      if (window.localStorage.getItem(WALKTHROUGH_KEY) !== "true") {
+        showWalkthroughStep(0);
+      }
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [showWalkthroughStep]);
+
+  const closeWalkthrough = useCallback(() => {
+    window.localStorage.setItem(WALKTHROUGH_KEY, "true");
+    setWalkthroughStep(null);
+  }, []);
+
+  const replayWalkthrough = useCallback(() => {
+    showWalkthroughStep(0);
+  }, [showWalkthroughStep]);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && walkthroughStep !== null) closeWalkthrough();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [walkthroughStep, closeWalkthrough]);
+
   const pick = (id: string) => {
+    trackEvent("order_selected", { source: id.startsWith("live-") ? "live" : "sample" });
     setSelected(id);
     setMobileOpen(false);
     // hand the keyboard to the review, so Enter / j / k act on lines rather than re-clicking the order
@@ -97,23 +149,27 @@ export function ReviewApp({ samples, catalog, initialOrder }: { samples: OrderRe
 
   async function runLive() {
     if (!pasteText.trim() || loading) return;
+    trackEvent("order_run_started");
     setLoading(true);
     setError(null);
     try {
       const res = await fetch("/api/run", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ text: pasteText }) });
       const data = await res.json();
       if (data.code === "SIGNUP_REQUIRED") {
+        trackEvent("signup_required");
         setSignupOpen(true);
         setSignupError(null);
         return;
       }
       if (!res.ok) throw new Error(data.error ?? "The run failed.");
+      trackEvent("order_run_completed", { line_count: (data as OrderResult).parse.lines.length });
       const runId = Date.now();
       setRuns((r) => [{ ...(data as OrderResult), from: pasteFrom, runId }, ...r]);
       setPasteFrom(undefined);
       pick(`live-${runId}`);
       setPasteText("");
     } catch (e) {
+      trackEvent("order_run_failed");
       setError(e instanceof Error ? e.message : "The run failed.");
     } finally {
       setLoading(false);
@@ -128,6 +184,7 @@ export function ReviewApp({ samples, catalog, initialOrder }: { samples: OrderRe
       const res = await fetch("/api/signup", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email: signupEmail }) });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "We couldn't save your email.");
+      trackEvent("signup_completed");
       setSignupOpen(false);
       await runLive();
     } catch (e) {
@@ -140,17 +197,17 @@ export function ReviewApp({ samples, catalog, initialOrder }: { samples: OrderRe
   const toCheck = (r: OrderResult) => computeView(r, mode, T, catalog, unitMin).filter((l) => !l.approved).length;
 
   return (
-    <div className="flex h-dvh flex-col overflow-hidden">
-      <div className="relative flex min-h-0 flex-1 max-lg:flex-col max-lg:overflow-y-auto">
+    <div className={`flex h-dvh flex-col overflow-hidden ${walkthroughStep !== null ? `walkthrough-active walkthrough-${walkthroughStep}` : ""}`}>
+      <div className={`app-shell relative flex min-h-0 flex-1 max-lg:flex-col max-lg:overflow-y-auto ${unlocked ? "app-shell-enter" : "app-shell-locked"}`}>
         {mobileOpen && <button aria-label="Close orders" tabIndex={-1} onClick={() => setMobileOpen(false)} className="sheet-fade fixed inset-0 z-20 bg-black/40 lg:hidden" />}
         {/* wide screens: a left sidebar; phones: a bottom sheet over the page */}
         <aside
           id="orders"
           aria-label="Orders"
-          className={`w-80 shrink-0 flex-col border-r border-line bg-panel max-lg:sheet-up max-lg:fixed max-lg:inset-x-0 max-lg:bottom-0 max-lg:z-30 max-lg:mx-auto max-lg:max-h-[85dvh] max-lg:w-full max-lg:max-w-xl max-lg:rounded-t-2xl max-lg:border-r-0 max-lg:pb-[env(safe-area-inset-bottom)] max-lg:shadow-[0_-8px_30px_rgb(0_0_0/0.18)] ${desktopOpen ? "lg:flex" : "lg:hidden"} ${mobileOpen ? "max-lg:flex" : "max-lg:hidden"}`}
+          className={`tour-orders w-80 shrink-0 flex-col border-r border-line bg-panel max-lg:sheet-up max-lg:fixed max-lg:inset-x-0 max-lg:bottom-0 max-lg:z-30 max-lg:mx-auto max-lg:max-h-[85dvh] max-lg:w-full max-lg:max-w-xl max-lg:rounded-t-2xl max-lg:border-r-0 max-lg:pb-[env(safe-area-inset-bottom)] max-lg:shadow-[0_-8px_30px_rgb(0_0_0/0.18)] ${desktopOpen ? "lg:flex" : "lg:hidden"} ${mobileOpen ? "max-lg:flex" : "max-lg:hidden"}`}
         >
               <div aria-hidden className="mx-auto mt-2 h-1 w-9 shrink-0 rounded-full bg-line lg:hidden" />
-              <BrandBar end={<SidebarButton label="Hide orders" expanded onClick={toggleSidebar} />} />
+              <BrandBar hideResults end={<SidebarButton label="Hide orders" expanded onClick={toggleSidebar} />} />
               <nav className="min-h-0 flex-1 overflow-y-auto px-3 pb-3">
                 {runs.length > 0 && <OrderGroup label="Your runs">{runs.map((r) => (
                   <OrderItem key={r.runId} id={`live-${r.runId}`} tag="live" title={r.from?.company ?? "Pasted order"} preview={r.text} count={toCheck(r)} sent={!!sent[`live-${r.runId}`]} active={selected === `live-${r.runId}`} onPick={pick} />
@@ -190,13 +247,13 @@ export function ReviewApp({ samples, catalog, initialOrder }: { samples: OrderRe
                         requestAnimationFrame(() => document.getElementById("paste")?.focus());
                       }}
                       title="Fill in a random sample order. It always includes at least one line to check."
-                      className="flex h-8 items-center gap-1.5 rounded-lg px-2 text-[13px] font-medium text-muted hover:bg-panel hover:text-ink"
+                      className={`flex h-8 items-center gap-1.5 rounded-lg px-2 text-[13px] font-medium text-muted hover:text-ink ${walkthroughStep === 0 && !pasteText.trim() ? "tour-cue bg-line hover:bg-control/20" : "hover:bg-panel"}`}
                     >
                       <DiceIcon />
                       Generate
                     </button>
                     {pasteText.length >= ORDER_COUNTER_THRESHOLD && <span className="text-[12px] text-muted" aria-label={`${pasteText.length} of ${ORDER_TEXT_LIMIT} characters`}>{pasteText.length}/{ORDER_TEXT_LIMIT}</span>}
-                    <button onClick={runLive} disabled={loading || !pasteText.trim()} className="ml-auto h-8 rounded-lg bg-brand px-3.5 text-[13px] font-semibold text-ink disabled:opacity-40">
+                    <button onClick={runLive} disabled={loading || !pasteText.trim()} className={`ml-auto h-8 rounded-lg bg-brand px-3.5 text-[13px] font-semibold text-ink disabled:opacity-40 ${walkthroughStep === 0 && pasteText.trim() && !loading ? "tour-cue" : ""}`}>
                       {loading ? "Reading…" : "Run ⌘↵"}
                     </button>
                   </div>
@@ -205,7 +262,7 @@ export function ReviewApp({ samples, catalog, initialOrder }: { samples: OrderRe
               </div>
         </aside>
 
-        <main id="review" tabIndex={-1} className="min-w-0 flex-1 outline-none lg:overflow-y-auto">
+        <main id="review" tabIndex={-1} className="tour-review textured-surface min-w-0 flex-1 outline-none lg:overflow-y-auto">
           <div className={`px-3 pt-3 max-lg:block ${desktopOpen ? "lg:hidden" : "lg:block"}`}>
             <SidebarButton label="Show orders" expanded={false} onClick={toggleSidebar} />
           </div>
@@ -221,17 +278,73 @@ export function ReviewApp({ samples, catalog, initialOrder }: { samples: OrderRe
               resolved={decisions[selected] ?? {}}
               setResolved={(f) => setDecisions((d) => ({ ...d, [selected]: f(d[selected] ?? {}) }))}
               sentAt={sent[selected]}
-              onSend={() => setSent((s) => ({ ...s, [selected]: Date.now() }))}
+              onSend={() => {
+                trackEvent("order_sent", { source: live ? "live" : "sample", mode, demo: true });
+                setSent((s) => ({ ...s, [selected]: Date.now() }));
+              }}
               onReopen={() => setSent((s) => Object.fromEntries(Object.entries(s).filter(([id]) => id !== selected)))}
             />
           </div>
         </main>
 
-        <aside aria-label="Cost assessment" className="shrink-0 border-line bg-panel lg:w-80 lg:overflow-y-auto lg:border-l max-lg:border-t">
-          <CostPanel result={result} samples={samples} mode={mode} T={T} unitMin={unitMin} catalog={catalog} onMode={setMode} setT={setT} setUnitMin={setUnitMin} />
+        <aside aria-label="Cost assessment" className="tour-cost shrink-0 border-line bg-panel lg:w-80 lg:overflow-y-auto lg:border-l max-lg:border-t">
+          <CostPanel result={result} samples={samples} mode={mode} T={T} unitMin={unitMin} catalog={catalog} onMode={(nextMode) => {
+            if (nextMode !== mode) trackEvent("comparison_mode_changed", { mode: nextMode });
+            setMode(nextMode);
+          }} setT={setT} setUnitMin={setUnitMin} onReplay={replayWalkthrough} />
         </aside>
       </div>
+      {!unlocked && <AccessLockScreen code={accessCode} setCode={setAccessCode} error={accessError} unlocking={unlocking} onSubmit={() => {
+        if (accessCode !== "007") {
+          setAccessError(true);
+          return;
+        }
+        setAccessError(false);
+        trackEvent("workspace_unlocked");
+        setUnlocking(true);
+        window.setTimeout(() => {
+          unlock();
+          setUnlocking(false);
+        }, 550);
+      }} />}
+      {walkthroughStep !== null && <Walkthrough step={walkthroughStep} composerReady={!!pasteText.trim()} onBack={() => showWalkthroughStep((walkthroughStep - 1) as WalkthroughStep)} onNext={() => {
+        if (walkthroughStep === 2) closeWalkthrough();
+        else {
+          showWalkthroughStep((walkthroughStep + 1) as WalkthroughStep);
+        }
+      }} onClose={closeWalkthrough} />}
       {signupOpen && <SignupDialog email={signupEmail} setEmail={setSignupEmail} loading={signupLoading} error={signupError} onSubmit={signUp} onClose={() => setSignupOpen(false)} />}
+    </div>
+  );
+}
+
+function AccessLockScreen({ code, setCode, error, unlocking, onSubmit }: { code: string; setCode: (value: string) => void; error: boolean; unlocking: boolean; onSubmit: () => void }) {
+  return (
+    <div className={`lock-screen textured-surface fixed inset-0 z-[70] grid place-items-center p-6 ${unlocking ? "lock-screen-exit" : ""}`}>
+      <form onSubmit={(e) => { e.preventDefault(); onSubmit(); }} className="lock-screen-form flex w-full max-w-xs flex-col items-center text-center">
+        <div className="action-sheet-handle" aria-hidden />
+        <Wordmark large />
+        <p className="mt-5 text-lg font-medium tracking-tight">Process orders at the speed of AI</p>
+        <p className="mt-2 text-[14px] text-muted">Enter your access code to continue</p>
+        <label htmlFor="access-code" className="sr-only">Access code</label>
+        <input
+          id="access-code"
+          type="password"
+          inputMode="numeric"
+          maxLength={3}
+          autoFocus
+          value={code}
+          onChange={(e) => { setCode(e.target.value); }}
+          aria-invalid={error}
+          aria-describedby={error ? "access-code-error" : undefined}
+          placeholder="Access code"
+          className="mt-4 h-11 w-full rounded-xl bg-panel px-4 text-center tracking-[0.3em] outline-none shadow-[0_0_0_1px_var(--ring)] focus:shadow-[0_0_0_1px_var(--control)]"
+        />
+        {error && <p id="access-code-error" role="alert" className="mt-2 text-[13px] text-warn">That code doesn&apos;t match.</p>}
+        <button type="submit" disabled={code.length !== 3 || unlocking} className="mt-4 h-10 w-full rounded-xl bg-brand px-4 text-[14px] font-semibold text-ink transition-opacity disabled:cursor-not-allowed disabled:opacity-40">
+          Enter Counterpart
+        </button>
+      </form>
     </div>
   );
 }
@@ -261,6 +374,33 @@ function SignupDialog({ email, setEmail, loading, error, onSubmit, onClose }: { 
   );
 }
 
+function Walkthrough({ step, composerReady, onBack, onNext, onClose }: { step: WalkthroughStep; composerReady: boolean; onBack: () => void; onNext: () => void; onClose: () => void }) {
+  const content = [
+    { eyebrow: "1 of 3 · Make an order", title: "Bring on the lumber lingo.", body: composerReady ? "Now tap Run. We'll do the decoding; you keep the coffee. Or hit Next to explore a saved sample." : "No contractor text handy? Tap Generate. We'll supply the typos. You can also paste your own order, then tap Run." },
+    { eyebrow: "2 of 3 · Make the call", title: "Even AI needs safety glasses.", body: "Check a flagged line and choose the product that fits, confirm the quantity, or select Not in catalog. The glowing choices are yours to make. No rubber stamp required." },
+    { eyebrow: "3 of 3 · Compare the savings", title: "Less waiting. More lumber.", body: "Tap Claude + Jev and Claude only to compare cost and time for this order. Your calculator can take a coffee break." },
+  ][step];
+
+  return (
+    <>
+      <div className="walkthrough-backdrop fixed inset-0 z-40 bg-black/35" aria-hidden />
+      <section role="dialog" aria-modal="true" aria-labelledby="walkthrough-title" className="walkthrough-card fixed bottom-6 left-1/2 z-50 w-[min(420px,calc(100vw-2rem))] sm:-translate-x-1/2 rounded-2xl bg-panel p-5 shadow-2xl">
+        <div className="action-sheet-handle" aria-hidden />
+        <div className="flex items-start justify-between gap-4">
+          <p className="text-[12px] font-semibold uppercase tracking-wider text-muted">{content.eyebrow}</p>
+          <button onClick={onClose} aria-label="Close walkthrough" className="-mr-2 -mt-2 rounded-lg px-2 py-1 text-xl leading-none text-muted hover:bg-bg hover:text-ink">×</button>
+        </div>
+        <h2 id="walkthrough-title" className="mt-2 text-lg font-semibold tracking-tight">{content.title}</h2>
+        <p className="mt-1.5 text-[14px] leading-relaxed text-muted">{content.body}</p>
+        <div className="mt-5 flex items-center justify-between gap-3">
+          <button onClick={onBack} disabled={step === 0} className="h-9 rounded-lg px-3 text-[13px] font-medium text-muted hover:bg-bg hover:text-ink disabled:invisible">Back</button>
+          <button onClick={onNext} className="h-9 rounded-lg bg-brand px-4 text-[13px] font-semibold text-ink">{step === 2 ? "Let's get to work" : "Next"}</button>
+        </div>
+      </section>
+    </>
+  );
+}
+
 const DEFAULT_T = 0.85;
 const DEFAULT_UNIT = 0.8;
 
@@ -274,7 +414,7 @@ function SettingsButton({ open, changed, onToggle }: { open: boolean; changed: b
       aria-controls="settings"
       aria-label={changed ? "Settings (thresholds changed)" : "Settings"}
       title="Settings"
-      className={`relative grid h-8 w-8 place-items-center rounded-lg ${open ? "bg-bg text-ink shadow-[0_0_0_1px_var(--ring)]" : "text-muted hover:bg-bg hover:text-ink"}`}
+      className={`relative grid h-8 w-8 place-items-center rounded-full transition-colors ${open ? "bg-panel text-ink shadow-[0_0_0_1px_var(--ring)]" : "text-muted hover:bg-panel hover:text-ink"}`}
     >
       <SlidersIcon />
       {changed && <span className="absolute right-1 top-1 h-1.5 w-1.5 rounded-full bg-[var(--warn-line)]" aria-hidden />}
@@ -290,10 +430,10 @@ const SlidersIcon = () => (
   </svg>
 );
 
-/** Review thresholds, opened from the cost panel. Inline rather than a popover, which the scrolling panel would clip. */
-function SettingsSection(p: Thresholds & { changed: boolean }) {
+/** Review thresholds and onboarding controls, rendered inside the settings dialog. */
+function SettingsSection(p: Thresholds & { changed: boolean; onReplay: () => void }) {
   return (
-    <section id="settings" aria-label="Review thresholds" className="rounded-xl bg-bg p-5">
+    <section id="settings" aria-label="Review thresholds" className="mt-5">
       <h3 className="text-[15px] font-semibold">Review thresholds</h3>
       <p className="mt-1 text-[13px] text-muted">
         {p.mode === "claude" ? "Claude only has no thresholds: it approves its own “high” ratings." : "Higher = the rep checks more lines. Lines re-route instantly; no new API calls."}
@@ -313,8 +453,36 @@ function SettingsSection(p: Thresholds & { changed: boolean }) {
         Reset to defaults
       </button>
       <ThemeChoice />
+      <button onClick={p.onReplay} className="mt-5 w-full rounded-lg bg-panel px-3 py-2 text-left text-[13px] font-medium shadow-[0_0_0_1px_var(--ring)] hover:bg-panel2">
+        Replay walkthrough
+      </button>
     </section>
   );
+}
+
+function SettingsDialog(p: Thresholds & { changed: boolean; onReplay: () => void; onClose: () => void }) {
+  return (
+    <ModalPortal>
+      <div className="action-sheet-backdrop fixed inset-0 z-[100] grid place-items-center bg-black/40 p-4" role="presentation" onMouseDown={(e) => { if (e.target === e.currentTarget) p.onClose(); }}>
+        <section role="dialog" aria-modal="true" aria-labelledby="settings-title" className="action-sheet-dialog w-full max-w-md rounded-2xl border border-line bg-panel p-5 shadow-2xl sm:p-6">
+          <div className="action-sheet-handle" aria-hidden />
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <p className="text-[12px] font-semibold uppercase tracking-wider text-muted">Counterpart</p>
+              <h2 id="settings-title" className="mt-1 text-xl font-semibold tracking-tight">Settings</h2>
+            </div>
+            <button onClick={p.onClose} aria-label="Close settings" className="-mr-2 -mt-2 rounded-lg px-2 py-1 text-xl leading-none text-muted hover:bg-bg hover:text-ink">×</button>
+          </div>
+          <SettingsSection {...p} />
+          <button onClick={p.onClose} className="mt-6 h-9 rounded-lg bg-brand px-4 text-[13px] font-semibold text-ink">Done</button>
+        </section>
+      </div>
+    </ModalPortal>
+  );
+}
+
+function ModalPortal({ children }: { children: React.ReactNode }) {
+  return typeof document === "undefined" ? null : createPortal(children, document.body);
 }
 
 /** Light / Dark / System. Rendered only when Settings is open, so reading storage here is client-side only. */
@@ -364,7 +532,7 @@ function SidebarButton({ label, expanded, onClick }: { label: string; expanded: 
       aria-controls="orders"
       aria-label={label}
       title={`${label} (⌘B)`}
-      className="grid h-9 w-9 place-items-center rounded-lg text-muted hover:bg-bg hover:text-ink"
+      className="grid h-9 w-9 place-items-center rounded-full text-muted hover:bg-bg hover:text-ink"
     >
       <SidebarIcon />
     </button>
@@ -456,7 +624,10 @@ function Review({ result, isLive, mode, T, unitMin, catalog, resolved, setResolv
   const done = flagged.filter((l) => resolved[l.id]).length;
   const current = active ?? flagged.find((l) => !resolved[l.id])?.id ?? null;
 
-  const choose = useCallback((lineId: string, sku: string) => setResolved((r) => ({ ...r, [lineId]: sku })), [setResolved]);
+  const choose = useCallback((lineId: string, sku: string) => {
+    trackEvent("order_line_reviewed", { mode, decision: sku === NONE ? "not_in_catalog" : "product" });
+    setResolved((r) => ({ ...r, [lineId]: sku }));
+  }, [mode, setResolved]);
   const undo = (lineId: string) => {
     setActive(lineId);
     setResolved((r) => Object.fromEntries(Object.entries(r).filter(([id]) => id !== lineId)));
@@ -601,7 +772,7 @@ function LineRow(props: { l: ViewLine; state: "ok" | "done" | "flag"; pick?: str
     // product is sold ("50 lb" of nails sold by the box), say both rather than silently converting.
     const asked = l.unit && sellUnit && unitKey(l.unit) !== unitKey(sellUnit) ? `${fmtQty(l.qty, l.unit)} · sold per ${sellUnit === "each" ? "piece" : sellUnit}` : qty;
     return (
-      <li id={`line-${l.id}`} onClick={props.onSelect} className={`scroll-mt-44 scroll-mb-8 border-b border-line px-6 py-5 last:border-b-0 ${active ? "bg-warnbg" : "bg-warnbg/40"}`} style={{ borderLeft: "4px solid var(--warn-line)" }}>
+      <li id={`line-${l.id}`} onClick={props.onSelect} className={`scroll-mt-44 scroll-mb-8 border-b border-line px-6 py-5 last:border-b-0 ${active ? "tour-choice bg-warnbg" : "bg-warnbg/40"}`} style={{ borderLeft: "4px solid var(--warn-line)" }}>
         <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-0.5">
           <span className="font-mono text-[14px] font-medium">
             <span className="sr-only">Check this: </span>
@@ -612,10 +783,10 @@ function LineRow(props: { l: ViewLine; state: "ok" | "done" | "flag"; pick?: str
         <p className="mt-1.5 text-[14px] text-warn">{l.reasons.join(" ")}</p>
         {quick ? (
           <div className="mt-4 flex flex-wrap items-center gap-3">
-            <button onClick={(e) => { e.stopPropagation(); props.onChoose(l.sku); }} className="min-h-11 rounded-xl bg-okbg px-4 py-2 text-left font-medium text-ok shadow-[0_0_0_1px_var(--ok)]">
+            <button onClick={(e) => { e.stopPropagation(); props.onChoose(l.sku); }} className="tour-option min-h-11 rounded-xl bg-okbg px-4 py-2 text-left font-medium text-ok shadow-[0_0_0_1px_var(--ok)]">
               {active && <kbd className="mr-2 text-xs">Enter</kbd>}Confirm {qty} of {l.name}
             </button>
-            <button onClick={(e) => { e.stopPropagation(); props.onChoose(NONE); }} className="min-h-11 rounded-xl bg-panel px-4 py-2 font-medium shadow-[0_0_0_1px_var(--control)] hover:bg-panel2">
+            <button onClick={(e) => { e.stopPropagation(); props.onChoose(NONE); }} className="tour-option min-h-11 rounded-xl bg-panel px-4 py-2 font-medium shadow-[0_0_0_1px_var(--control)] hover:bg-panel2" style={{ "--tour-delay": "300ms" } as React.CSSProperties}>
               {active && <kbd className="mr-2 text-xs text-muted">x</kbd>}Not in catalog
             </button>
             <button onClick={(e) => { e.stopPropagation(); setShowAll(true); }} className="text-[13px] text-muted underline hover:text-ink">Other products…</button>
@@ -632,8 +803,9 @@ function LineRow(props: { l: ViewLine; state: "ok" | "done" | "flag"; pick?: str
               <button
                 key={o.sku}
                 aria-pressed={pick === o.sku}
+                style={{ "--tour-delay": `${i * 300}ms` } as React.CSSProperties}
                 onClick={(e) => { e.stopPropagation(); props.onChoose(o.sku); }}
-                className={`flex min-h-11 items-center gap-3 rounded-xl px-3.5 py-2 text-left ${pick === o.sku ? "bg-okbg shadow-[0_0_0_1px_var(--ok)]" : "bg-panel shadow-[0_0_0_1px_var(--control)] hover:bg-panel2"}`}
+                className={`tour-option flex min-h-11 items-center gap-3 rounded-xl px-3.5 py-2 text-left ${pick === o.sku ? "bg-okbg shadow-[0_0_0_1px_var(--ok)]" : "bg-panel shadow-[0_0_0_1px_var(--control)] hover:bg-panel2"}`}
               >
                 <kbd className="w-4 text-center text-xs text-muted">{i + 1}</kbd>
                 <span className="min-w-0 flex-1">{o.name}</span>
@@ -676,8 +848,9 @@ function LineRow(props: { l: ViewLine; state: "ok" | "done" | "flag"; pick?: str
 type Side = { key: Mode; label: string; matcher: string; t: ReturnType<typeof totals>; approved: number; lines: number };
 const PER = 10_000;
 
-function CostPanel({ result, samples, mode, T, unitMin, catalog, onMode, setT, setUnitMin }: { result: OrderResult; samples: OrderResult[]; mode: Mode; T: number; unitMin: number; catalog: SlimCatalog; onMode: (m: Mode) => void; setT: (v: number) => void; setUnitMin: (v: number) => void }) {
+function CostPanel({ result, samples, mode, T, unitMin, catalog, onMode, setT, setUnitMin, onReplay }: { result: OrderResult; samples: OrderResult[]; mode: Mode; T: number; unitMin: number; catalog: SlimCatalog; onMode: (m: Mode) => void; setT: (v: number) => void; setUnitMin: (v: number) => void; onReplay: () => void }) {
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [helpOpen, setHelpOpen] = useState(false);
   const changed = T !== DEFAULT_T || unitMin !== DEFAULT_UNIT;
   const a = computeView(result, "jev", T, catalog, unitMin);
   const b = computeView(result, "claude", T, catalog);
@@ -694,28 +867,41 @@ function CostPanel({ result, samples, mode, T, unitMin, catalog, onMode, setT, s
   const per10k = (usdPerOrder: number) => `$${(usdPerOrder * PER).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
   return (
-    <div className="flex flex-col gap-4 p-5">
-      <div className="flex items-center justify-between gap-2">
+    <div className="flex flex-col">
+      <div className="flex h-16 shrink-0 items-center justify-between gap-2 px-4">
         <h2 className="text-[15px] font-semibold">Cost</h2>
-        <SettingsButton open={settingsOpen} changed={changed} onToggle={() => setSettingsOpen((v) => !v)} />
+        <div className="flex items-center gap-0.5 rounded-full border border-line bg-bg p-0.5 shadow-[0_0_0_1px_var(--ring)] transition-colors hover:bg-panel">
+          <ResultsButton />
+          <SettingsButton open={settingsOpen} changed={changed} onToggle={() => setSettingsOpen((v) => !v)} />
+          <button
+            onClick={() => setHelpOpen(true)}
+            aria-label="About Counterpart"
+            title="About Counterpart"
+            className="grid h-8 w-8 place-items-center rounded-full text-[13px] font-semibold text-muted transition-colors hover:bg-panel hover:text-ink"
+          >
+            ?
+          </button>
+        </div>
       </div>
-      {settingsOpen && <SettingsSection mode={mode} T={T} unitMin={unitMin} setT={setT} setUnitMin={setUnitMin} changed={changed} />}
+      <div className="flex flex-col gap-4 p-5">
+        {settingsOpen && <SettingsDialog mode={mode} T={T} unitMin={unitMin} setT={setT} setUnitMin={setUnitMin} changed={changed} onReplay={() => { setSettingsOpen(false); onReplay(); }} onClose={() => setSettingsOpen(false)} />}
+        {helpOpen && <HelpDialog onClose={() => setHelpOpen(false)} />}
 
-      <div className="rounded-xl bg-okbg px-4 py-3 text-ok">
-        <p className="text-[12px] text-muted">Claude with Jev&apos;s matching is</p>
-        <p className="mt-0.5 font-mono text-[15px] font-semibold">{Math.round(cheaper)}× cheaper · {faster.toFixed(1)}× faster</p>
-      </div>
+        <div className="rounded-xl bg-okbg px-4 py-3 text-ok">
+          <p className="text-[12px] text-ok">Claude with Jev&apos;s matching is</p>
+          <p className="mt-0.5 font-mono text-[15px] font-semibold">{Math.round(cheaper)}× cheaper · {faster.toFixed(1)}× faster</p>
+        </div>
 
-      {sides.map((x) => (
-        <button
-          key={x.key}
-          onClick={() => onMode(x.key)}
-          aria-pressed={mode === x.key}
-          className={`card p-4 text-left ${mode === x.key ? "!shadow-[0_0_0_1px_var(--ink)]" : "hover:!shadow-[0_0_0_1px_var(--control)]"}`}
-        >
+        {sides.map((x) => (
+          <button
+            key={x.key}
+            onClick={() => onMode(x.key)}
+            aria-pressed={mode === x.key}
+            className={`tour-compare card p-4 text-left ${mode === x.key ? "!shadow-[0_0_0_1px_var(--ink)]" : "hover:!shadow-[0_0_0_1px_var(--control)]"}`}
+            style={{ "--tour-delay": x.key === "jev" ? "0ms" : "600ms" } as React.CSSProperties}
+          >
           <div className="flex items-center justify-between gap-2 text-[14px]">
             <span className="font-semibold">{x.label}</span>
-            {mode === x.key && <span className="rounded-full bg-brand px-2 py-0.5 text-[11px] font-semibold leading-none text-ink">showing</span>}
           </div>
           <div className="mt-1.5 flex items-baseline justify-between gap-2">
             <span className="font-mono text-xl font-medium tracking-tight">{usd(x.t.usd)}</span>
@@ -746,19 +932,54 @@ function CostPanel({ result, samples, mode, T, unitMin, catalog, onMode, setT, s
             <span className="text-muted">Per 10,000 orders</span>
             <span className="font-mono text-[14px] font-medium">{per10k(x.t.usd)}</span>
           </div>
-        </button>
-      ))}
+          </button>
+        ))}
 
-      <Link href="/results" className="px-1 text-[13px] font-medium underline underline-offset-2">
-        See all {samples.length} sample results →
-      </Link>
+        <Link href="/results" className="px-1 text-[13px] font-medium underline underline-offset-2">
+          See all {samples.length} sample results →
+        </Link>
 
-      <p className="px-1 text-[12px] text-muted">
-        {diff.length ? `They pick different products on ${diff.length} line${diff.length > 1 ? "s" : ""}: ${diff.map((l) => `“${l.raw}”`).join(", ")}.` : "Both pick the same product on every line."}
-      </p>
-      <p className="px-1 text-[11px] leading-relaxed text-muted">
-        Claude at ${(CLAUDE_INPUT_PER_TOKEN * 1e6).toFixed(0)} / ${(CLAUDE_OUTPUT_PER_TOKEN * 1e6).toFixed(0)} per million tokens in / out (list price); Jev at ${(JEV_INPUT_PER_TOKEN * 1e9).toFixed(0)} per billion input tokens. Times are from one run. Synthetic data.
-      </p>
+        <p className="px-1 text-[12px] text-muted">
+          {diff.length ? `They pick different products on ${diff.length} line${diff.length > 1 ? "s" : ""}: ${diff.map((l) => `“${l.raw}”`).join(", ")}.` : "Both pick the same product on every line."}
+        </p>
+        <p className="px-1 text-[11px] leading-relaxed text-muted">
+          Claude at ${(CLAUDE_INPUT_PER_TOKEN * 1e6).toFixed(0)} / ${(CLAUDE_OUTPUT_PER_TOKEN * 1e6).toFixed(0)} per million tokens in / out (list price); Jev at ${(JEV_INPUT_PER_TOKEN * 1e9).toFixed(0)} per billion input tokens. Times are from one run. Synthetic data.
+        </p>
+      </div>
     </div>
+  );
+}
+
+function HelpDialog({ onClose }: { onClose: () => void }) {
+  return (
+    <ModalPortal>
+      <div className="action-sheet-backdrop fixed inset-0 z-[60] grid place-items-center bg-black/40 p-4" role="presentation" onMouseDown={(e) => { if (e.target === e.currentTarget) onClose(); }}>
+        <section role="dialog" aria-modal="true" aria-labelledby="help-title" className="action-sheet-dialog w-full max-w-3xl rounded-2xl border border-line bg-panel p-5 shadow-2xl sm:p-6">
+          <div className="action-sheet-handle" aria-hidden />
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <p className="text-[12px] font-semibold uppercase tracking-wider text-muted">Counterpart</p>
+              <h2 id="help-title" className="mt-1 text-xl font-semibold tracking-tight">The fast lane for Pro orders</h2>
+            </div>
+            <button onClick={onClose} aria-label="Close help" className="-mr-2 -mt-2 rounded-lg px-2 py-1 text-xl leading-none text-muted hover:bg-bg hover:text-ink">×</button>
+          </div>
+          <div className="mt-5 grid gap-6 text-[14px] leading-relaxed text-muted md:grid-cols-2 md:gap-8">
+            <div className="space-y-4">
+              <h3 className="text-[13px] font-semibold uppercase tracking-wider text-ink">Meet Pros where they order</h3>
+              <p><span className="font-medium text-ink">The common path:</span> Many everyday orders start with a phone call or quick message to the counter. Counterpart turns the rep&apos;s notes or pasted request into a catalog-matched draft.</p>
+              <p><span className="font-medium text-ink">The benefit:</span> The Pro avoids re-keying an order or learning another interface, while your team gets a structured order to review instead of working from messy shorthand.</p>
+              <p><span className="font-medium text-ink">Skip the storefront when it makes sense:</span> Detailed quotes and complex orders can follow the full ordering workflow, while routine requests move straight from the channels Pros already use into a review-ready draft.</p>
+            </div>
+            <div className="space-y-4 border-t border-line pt-5 md:border-l md:border-t-0 md:pl-8 md:pt-0">
+              <h3 className="text-[13px] font-semibold uppercase tracking-wider text-ink">How the comparison works</h3>
+              <p><span className="font-medium text-ink">Claude + Jev:</span> Claude reads the message and extracts the order lines. Jev then evaluates each line against a short catalog shortlist, checking the category, product, and quantity clarity.</p>
+              <p><span className="font-medium text-ink">Claude only:</span> Claude reads the same order, then matches each line against the full catalog in one comparison pass. Both views use the same order and catalog context.</p>
+              <p><span className="font-medium text-ink">The savings:</span> The green comparison shows Jev&apos;s matching cost and time against Claude&apos;s matching cost and time for this order. The cards below include the full pipeline, and “per 10,000 orders” scales each run&apos;s total cost.</p>
+            </div>
+          </div>
+          <button onClick={onClose} className="mt-6 h-9 rounded-lg bg-brand px-4 text-[13px] font-semibold text-ink">Got it</button>
+        </section>
+      </div>
+    </ModalPortal>
   );
 }

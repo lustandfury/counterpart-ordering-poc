@@ -122,6 +122,35 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
+/* A quiet paper-like texture for the entry screen and the review workspace. */
+.textured-surface {
+  background-color: var(--bg);
+  background-image:
+    radial-gradient(ellipse at center, rgb(255 255 255 / 0.44) 0%, rgb(239 234 223 / 0.12) 54%, rgb(201 190 168 / 0.3) 100%),
+    radial-gradient(circle, rgb(166 154 133 / 0.12) 0 1px, transparent 1.2px);
+  background-size: auto, 4px 4px;
+  background-repeat: no-repeat, repeat;
+  background-attachment: fixed;
+}
+
+:root[data-theme="dark"] .textured-surface {
+  background-image:
+    radial-gradient(ellipse at center, rgb(255 255 255 / 0.035) 0%, transparent 58%, rgb(0 0 0 / 0.12) 100%),
+    radial-gradient(circle, rgb(255 255 255 / 0.022) 0 1px, transparent 1.2px);
+  background-size: auto, 4px 4px;
+  background-repeat: no-repeat, repeat;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root[data-theme="system"] .textured-surface {
+    background-image:
+      radial-gradient(ellipse at center, rgb(255 255 255 / 0.035) 0%, transparent 58%, rgb(0 0 0 / 0.12) 100%),
+      radial-gradient(circle, rgb(255 255 255 / 0.022) 0 1px, transparent 1.2px);
+    background-size: auto, 4px 4px;
+    background-repeat: no-repeat, repeat;
+  }
+}
+
 /* One focus style for the whole app: keyboard users only (never on mouse clicks), thin, offset. */
 :focus-visible {
   outline: 1.5px solid var(--focus);
@@ -129,6 +158,24 @@ body {
   border-radius: 4px;
 }
 button { cursor: pointer; }
+
+/* Each character lands like a separate click on a manual counter. */
+.wordmark-letter {
+  display: inline-block;
+  animation: wordmark-click 680ms cubic-bezier(0.22, 0.9, 0.32, 1) calc(var(--letter-index) * 72ms) both;
+  transform-origin: 50% 100%;
+}
+@keyframes wordmark-click {
+  0% { opacity: 0; transform: translateY(-0.55em) scaleY(0.82); }
+  22% { opacity: 1; transform: translateY(0.08em) scaleY(1.04); }
+  36% { transform: translateY(-0.025em) scaleY(0.99); }
+  52%, 100% { opacity: 1; transform: translateY(0) scaleY(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .wordmark-letter {
+    animation: none;
+  }
+}
 
 /* soft card: white surface, faint outline, gentle shadow */
 .card {
@@ -138,14 +185,11 @@ button { cursor: pointer; }
 }
 
 /* phones: the orders panel rises from the bottom as a sheet, over a fading backdrop */
-@keyframes sheet-up {
-  from { transform: translateY(100%); }
-}
 @keyframes sheet-fade {
   from { opacity: 0; }
 }
 @utility sheet-up {
-  animation: sheet-up 240ms cubic-bezier(0.32, 0.72, 0, 1);
+  animation: lock-sheet-in 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 @utility sheet-fade {
   animation: sheet-fade 200ms ease-out;
@@ -158,4 +202,207 @@ button { cursor: pointer; }
 #paste:focus,
 #paste:focus-visible {
   outline: none;
+}
+
+/* The active tour region sits above the dimmed page while retaining its normal layout. */
+.walkthrough-active .tour-review,
+.walkthrough-active .tour-cost {
+  position: relative;
+}
+@media (min-width: 1024px) {
+  .walkthrough-active .tour-orders {
+    position: relative;
+  }
+}
+/* Opacity animations retain a stacking context with fill-mode: both, which
+   would keep every highlighted section underneath the walkthrough backdrop. */
+.walkthrough-active .app-shell-enter {
+  animation: none;
+}
+.walkthrough-0 .tour-orders,
+.walkthrough-1 .tour-review,
+.walkthrough-2 .tour-cost {
+  z-index: 45;
+  box-shadow: 0 0 0 3px var(--brand), 0 0 0 6px rgb(255 255 255 / 0.92);
+}
+.walkthrough-card {
+  border: 1px solid var(--line);
+}
+/* A moving border leads the eye without covering labels or intercepting clicks. */
+@property --tour-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+@keyframes tour-trace {
+  to { --tour-angle: 360deg; }
+}
+.tour-cue,
+.walkthrough-1 .tour-choice .tour-option,
+.walkthrough-2 .tour-compare {
+  position: relative;
+}
+.tour-cue::after,
+.walkthrough-1 .tour-choice .tour-option::after,
+.walkthrough-2 .tour-compare::after {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  padding: 1.5px;
+  border-radius: inherit;
+  pointer-events: none;
+  background: conic-gradient(from var(--tour-angle), rgb(255 202 5 / 0.08) 0%, rgb(255 202 5 / 0.08) 40%, rgb(255 202 5 / 0.2) 65%, rgb(255 202 5 / 0.5) 82%, rgb(255 202 5 / 0.2) 94%, rgb(255 202 5 / 0.08) 100%);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  animation: tour-trace 5s linear var(--tour-delay, 0ms) infinite;
+}
+@media (max-width: 1023px) {
+  .walkthrough-0 .walkthrough-card {
+    top: 1rem;
+    bottom: auto;
+  }
+  .walkthrough-active .app-shell {
+    scroll-padding-bottom: 17rem;
+  }
+  .walkthrough-2 .tour-cost {
+    margin-bottom: 17rem;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tour-cue::after,
+  .walkthrough-1 .tour-choice .tour-option::after,
+  .walkthrough-2 .tour-compare::after {
+    animation: none;
+    background: rgb(255 202 5 / 0.35);
+  }
+}
+.action-sheet-handle {
+  display: none;
+}
+
+/* Entry transition: the workspace stays hidden until the access code is accepted. */
+.app-shell-locked {
+  opacity: 0;
+}
+@keyframes lock-screen-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes lock-sheet-in {
+  from { opacity: 0; transform: translateY(100%); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.lock-screen {
+  transition: opacity 520ms ease;
+  animation: lock-screen-in 500ms ease both;
+}
+.lock-screen-exit {
+  opacity: 0;
+  pointer-events: none;
+}
+@keyframes workspace-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes sidebar-in-left {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes sidebar-in-right {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes card-fade-up {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.app-shell-enter {
+  animation: workspace-in 500ms ease both;
+}
+@media (min-width: 1024px) {
+  .app-shell-enter .tour-orders {
+    animation: sidebar-in-left 650ms cubic-bezier(0.22, 1, 0.36, 1) 100ms both;
+  }
+}
+.app-shell-enter .tour-cost {
+  animation: sidebar-in-right 650ms cubic-bezier(0.22, 1, 0.36, 1) 160ms both;
+}
+.app-shell-enter .tour-review .card {
+  animation: card-fade-up 650ms cubic-bezier(0.22, 1, 0.36, 1) 240ms both;
+}
+@media (max-width: 640px) {
+  .action-sheet-backdrop {
+    align-items: end;
+    padding: 0;
+  }
+  .action-sheet-dialog {
+    width: 100%;
+    max-width: none;
+    max-height: 85dvh;
+    overflow-y: auto;
+    border-top: 0;
+    border-right: 0;
+    border-bottom: 0;
+    border-left: 0;
+    border-radius: 24px 24px 0 0;
+    padding-bottom: calc(1.5rem + env(safe-area-inset-bottom));
+    animation: lock-sheet-in 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .action-sheet-handle {
+    display: block;
+    width: 4.5rem;
+    height: 0.5rem;
+    margin: -0.5rem auto 1.5rem;
+    border-radius: 999px;
+    background: var(--line);
+  }
+  .walkthrough-card {
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    max-height: 85dvh;
+    overflow-y: auto;
+    border-right: 0;
+    border-bottom: 0;
+    border-left: 0;
+    border-radius: 24px 24px 0 0;
+    padding-bottom: calc(1.25rem + env(safe-area-inset-bottom));
+    translate: none;
+    transform: none;
+    animation: lock-sheet-in 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .lock-screen {
+    align-items: end;
+    padding: 0;
+  }
+  .lock-screen-form {
+    max-width: none;
+    border-radius: 24px 24px 0 0;
+    background: var(--panel);
+    padding: 2rem 1.5rem calc(1.5rem + env(safe-area-inset-bottom));
+    box-shadow: 0 -8px 32px rgb(0 0 0 / 0.14);
+    animation: lock-sheet-in 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+}
+@media (max-width: 1023px) {
+  #orders.sheet-up {
+    animation: lock-sheet-in 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .walkthrough-0 .tour-orders {
+    z-index: 45;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  #orders.sheet-up,
+  .lock-screen,
+  .lock-screen-form,
+  .action-sheet-dialog,
+  .walkthrough-card,
+  .app-shell-enter,
+  .app-shell-enter .tour-orders,
+  .app-shell-enter .tour-cost,
+  .app-shell-enter .tour-review .card {
+    animation: none;
+    transition: none;
+  }
 }
