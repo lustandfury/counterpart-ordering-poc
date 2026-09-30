@@ -40,7 +40,9 @@ export function computeView(result: OrderResult, mode: Mode, T: number, cat: Sli
       return {
         id: pl.id, raw: pl.raw, qty: pl.qty, unit: pl.unit, sku: pick, name: nameOf(cat, pick), quantityOnly,
         confidence: j.sku.confidence.toFixed(2), approved: d.approved, reasons,
-        options: others.map((o) => ({ sku: o.sku, name: nameOf(cat, o.sku), probability: o.probability })),
+        // The pick shows the same confidence the routing rule and the reason text use. Jev's per-option probability for the
+        // pick can differ by a point or two, and two numbers for one thing reads as an error.
+        options: others.map((o) => ({ sku: o.sku, name: nameOf(cat, o.sku), probability: o.sku === pick ? j.sku.confidence : o.probability })),
       };
     }
     const c = claude.get(pl.id)!;

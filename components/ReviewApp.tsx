@@ -214,7 +214,8 @@ export function ReviewApp({ samples, catalog, initialOrder }: { samples: OrderRe
     }
   }
 
-  const toCheck = (r: OrderResult) => computeView(r, mode, T, catalog, unitMin).filter((l) => !l.approved).length;
+  // lines still to check in an order: flagged by the current rule and not yet decided by the rep
+  const toCheck = (r: OrderResult, id: string) => computeView(r, mode, T, catalog, unitMin).filter((l) => !l.approved && !decisions[id]?.[l.id]).length;
 
   return (
     <div className={`flex h-dvh flex-col overflow-hidden ${walkthroughStep !== null && !loading ? `walkthrough-active walkthrough-${walkthroughStep}` : ""}`}>
@@ -230,10 +231,10 @@ export function ReviewApp({ samples, catalog, initialOrder }: { samples: OrderRe
               <BrandBar hideResults end={<SidebarButton label="Hide orders" expanded onClick={toggleSidebar} />} />
               <nav className="min-h-0 flex-1 overflow-y-auto px-3 pb-3">
                 {runs.length > 0 && <OrderGroup label="Your runs">{runs.map((r) => (
-                  <OrderItem key={r.runId} id={`live-${r.runId}`} tag="live" title={r.from?.company ?? "Pasted order"} preview={r.text} count={toCheck(r)} sent={!!sent[`live-${r.runId}`]} active={selected === `live-${r.runId}`} onPick={pick} />
+                  <OrderItem key={r.runId} id={`live-${r.runId}`} tag="live" title={r.from?.company ?? "Pasted order"} preview={r.text} count={toCheck(r, `live-${r.runId}`)} sent={!!sent[`live-${r.runId}`]} active={selected === `live-${r.runId}`} onPick={pick} />
                 ))}</OrderGroup>}
                 <OrderGroup label="Samples">{shownSamples.map((s) => (
-                  <OrderItem key={s.orderId} id={s.orderId} tag={s.orderId} title={s.from?.company ?? s.orderId} preview={s.text} count={toCheck(s)} sent={!!sent[s.orderId]} active={selected === s.orderId} onPick={pick} />
+                  <OrderItem key={s.orderId} id={s.orderId} tag={s.orderId} title={s.from?.company ?? s.orderId} preview={s.text} count={toCheck(s, s.orderId)} sent={!!sent[s.orderId]} active={selected === s.orderId} onPick={pick} />
                 ))}</OrderGroup>
               </nav>
               <div className="shrink-0 border-t border-line p-4">
@@ -472,13 +473,13 @@ function Walkthrough({ step, composerReady, onBack, onNext, onClose }: { step: W
         <span className="walkthrough-arrow" aria-hidden />
         <div className="flex items-center justify-between gap-4">
           <p className="text-[11px] font-semibold uppercase tracking-wider text-muted"><span className="lg:hidden">{step + 1} of 3</span><span className="hidden lg:inline">{content.eyebrow}</span></p>
-          <button onClick={onClose} aria-label="Close walkthrough" className="-mr-2 -mt-1 grid h-8 w-8 place-items-center rounded-lg text-xl leading-none text-muted hover:bg-bg hover:text-ink">×</button>
+          <button onClick={onClose} aria-label="Close walkthrough" className="-mr-2 -mt-1 grid h-11 w-11 place-items-center rounded-lg text-xl leading-none text-muted hover:bg-bg hover:text-ink">×</button>
         </div>
         <h2 id="walkthrough-title" className="text-[15px] font-semibold tracking-tight lg:mt-2 lg:text-lg"><span className="lg:hidden">{content.mobileTitle}</span><span className="hidden lg:inline">{content.title}</span></h2>
         <p id="walkthrough-body" className="mt-1 text-[13px] leading-snug text-muted lg:mt-1.5 lg:text-[14px] lg:leading-relaxed"><span className="lg:hidden">{content.mobileBody}</span><span className="hidden lg:inline">{content.body}</span></p>
         <div className="mt-2 flex items-center justify-between gap-3 lg:mt-4">
-          <button onClick={onBack} disabled={step === 0} className="h-9 rounded-lg px-3 text-[13px] font-medium text-muted hover:bg-bg hover:text-ink disabled:invisible">Back</button>
-          <button onClick={onNext} className="h-9 rounded-lg bg-brand px-4 text-[13px] font-semibold text-ink">{step === 2 ? <><span className="lg:hidden">Done</span><span className="hidden lg:inline">Let&apos;s get to work</span></> : "Next"}</button>
+          <button onClick={onBack} disabled={step === 0} className="h-11 rounded-lg px-3 text-[13px] font-medium text-muted hover:bg-bg hover:text-ink disabled:invisible">Back</button>
+          <button onClick={onNext} className="h-11 rounded-lg bg-brand px-4 text-[13px] font-semibold text-ink">{step === 2 ? <><span className="lg:hidden">Done</span><span className="hidden lg:inline">Let&apos;s get to work</span></> : "Next"}</button>
         </div>
       </section>
     </>
@@ -498,7 +499,7 @@ function SettingsButton({ open, changed, onToggle }: { open: boolean; changed: b
       aria-controls="settings"
       aria-label={changed ? "Settings (thresholds changed)" : "Settings"}
       title="Settings"
-      className={`relative grid h-8 w-8 place-items-center rounded-full transition-colors ${open ? "bg-panel text-ink shadow-[0_0_0_1px_var(--ring)]" : "text-muted hover:bg-panel hover:text-ink"}`}
+      className={`relative grid h-11 w-11 place-items-center rounded-full transition-colors lg:h-8 lg:w-8 ${open ? "bg-panel text-ink shadow-[0_0_0_1px_var(--ring)]" : "text-muted hover:bg-panel hover:text-ink"}`}
     >
       <SlidersIcon />
       {changed && <span className="absolute right-1 top-1 h-1.5 w-1.5 rounded-full bg-[var(--warn-line)]" aria-hidden />}
@@ -616,7 +617,7 @@ function SidebarButton({ label, expanded, onClick }: { label: string; expanded: 
       aria-controls="orders"
       aria-label={label}
       title={`${label} (⌘B)`}
-      className="grid h-9 w-9 place-items-center rounded-full text-muted hover:bg-bg hover:text-ink"
+      className="grid h-11 w-11 place-items-center rounded-full text-muted hover:bg-bg hover:text-ink lg:h-9 lg:w-9"
     >
       <SidebarIcon />
     </button>
@@ -686,7 +687,12 @@ function OrderDetails({ result, isLive, lines, flagged, done, sentAt, onSend }: 
             {stats.map((stat) => <span key={stat.label} className={`flex min-w-0 flex-col items-center gap-0.5 px-1 text-[18px] font-semibold sm:block sm:px-3 sm:text-[13px] sm:font-medium ${stat.className}`}>{stat.value}{stat.suffix} <span className="text-[11px] font-normal text-muted sm:text-[13px]">{stat.label}</span></span>)}
           </div>
         </div>
-        <button onClick={onSend} disabled={!readyToSend} className="col-start-2 row-start-1 ml-auto h-11 shrink-0 whitespace-nowrap rounded-lg bg-brand px-3.5 text-[13px] font-semibold text-ink transition-opacity disabled:cursor-not-allowed disabled:opacity-40 sm:h-9">
+        <button
+          onClick={onSend}
+          disabled={!readyToSend}
+          title={readyToSend ? undefined : sentAt ? "This order has been sent" : `${flagged - done} ${flagged - done === 1 ? "line" : "lines"} still to check`}
+          className="col-start-2 row-start-1 ml-auto h-11 shrink-0 whitespace-nowrap rounded-lg bg-brand px-3.5 text-[13px] font-semibold text-ink transition-opacity disabled:cursor-not-allowed disabled:opacity-50 sm:h-9"
+        >
           {sentAt ? "Sent" : "Send order"}
         </button>
       </div>
@@ -858,7 +864,7 @@ function LineRow(props: { l: ViewLine; state: "ok" | "done" | "flag"; pick?: str
     // product is sold ("50 lb" of nails sold by the box), say both rather than silently converting.
     const asked = l.unit && sellUnit && unitKey(l.unit) !== unitKey(sellUnit) ? `${fmtQty(l.qty, l.unit)} · sold per ${sellUnit === "each" ? "piece" : sellUnit}` : qty;
     return (
-      <li id={`line-${l.id}`} onClick={props.onSelect} className={`scroll-mt-44 scroll-mb-8 border-b border-line px-6 py-5 last:border-b-0 ${active ? "tour-choice bg-warnbg" : "bg-warnbg/40"}`} style={{ borderLeft: "4px solid var(--warn-line)" }}>
+      <li id={`line-${l.id}`} onClick={props.onSelect} className={`scroll-mt-44 scroll-mb-8 border-b border-line px-6 py-5 last:border-b-0 ${active ? "tour-choice bg-warnbg" : "bg-warnbg/40"}`} style={{ borderLeft: `${active ? 8 : 4}px solid var(--warn-line)` }}>
         <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-0.5">
           <span className="font-mono text-[14px] font-medium">
             <span className="sr-only">Check this: </span>
@@ -891,10 +897,17 @@ function LineRow(props: { l: ViewLine; state: "ok" | "done" | "flag"; pick?: str
                 aria-pressed={pick === o.sku}
                 style={{ "--tour-delay": `${i * 300}ms` } as React.CSSProperties}
                 onClick={(e) => { e.stopPropagation(); props.onChoose(o.sku); }}
-                className={`tour-option flex min-h-11 items-center gap-3 rounded-xl px-3.5 py-2 text-left ${pick === o.sku ? "bg-okbg shadow-[0_0_0_1px_var(--ok)]" : "bg-panel shadow-[0_0_0_1px_var(--control)] hover:bg-panel2"}`}
+                className={`tour-option flex min-h-11 items-center gap-3 rounded-xl px-3.5 py-2 text-left text-ink ${pick === o.sku ? "bg-okbg shadow-[0_0_0_1px_var(--ok)]" : "bg-panel shadow-[0_0_0_1px_var(--control)] hover:bg-panel2"}`}
               >
                 <kbd className="w-4 text-center text-xs text-muted">{i + 1}</kbd>
-                <span className="min-w-0 flex-1">{o.name}</span>
+                <span className="min-w-0 flex-1">
+                  <span className={i === 0 ? "font-semibold" : ""}>{o.name}</span>
+                  {i === 0 && shown.length > 1 && (
+                    <span className="ml-2 whitespace-nowrap rounded-full bg-okbg px-2 py-0.5 align-middle text-[11px] font-medium leading-none text-ok">
+                      Suggested{active && pick == null ? " · Enter" : ""}
+                    </span>
+                  )}
+                </span>
                 {o.probability != null && (
                   <span className="flex w-24 shrink-0 items-center justify-center self-stretch border-l border-line text-[14px] text-muted">
                     <span className="sr-only">confidence </span>
@@ -963,7 +976,7 @@ function CostPanel({ result, samples, mode, T, unitMin, catalog, onMode, setT, s
             onClick={() => setHelpOpen(true)}
             aria-label="About Counterpart"
             title="About Counterpart"
-            className="grid h-8 w-8 place-items-center rounded-full text-[13px] font-semibold text-muted transition-colors hover:bg-panel hover:text-ink"
+            className="grid h-11 w-11 place-items-center rounded-full text-[13px] font-semibold text-muted transition-colors hover:bg-panel lg:h-8 lg:w-8 hover:text-ink"
           >
             ?
           </button>
@@ -1021,7 +1034,7 @@ function CostPanel({ result, samples, mode, T, unitMin, catalog, onMode, setT, s
           </button>
         ))}
 
-        <Link href="/results" className="px-1 text-[13px] font-medium underline underline-offset-2">
+        <Link href="/results" className="flex min-h-11 items-center px-1 text-[13px] font-medium underline underline-offset-2 lg:min-h-0">
           See all {samples.length} sample results →
         </Link>
 

@@ -5,7 +5,7 @@ export const DEFAULT_T = 0.85;
 /** Plain-language reasons shown to the rep. */
 export const REASON = {
   noMatch: "Needs review. Select an option below.",
-  unsure: (c: number) => `We're not sure which product this is (${Math.round(c * 100)}% on the best guess).`,
+  unsure: (c: number, T: number) => `We're not sure which product this is (${Math.round(c * 100)}% on the best guess, below your ${Math.round(T * 100)}% threshold).`,
   quantity: "The quantity or unit may not fit how this product is sold.",
   noQty: "No quantity was given.",
   large: "This is an unusually large quantity. Confirm it with the customer.",
@@ -33,7 +33,7 @@ export function route(a: {
   const reasons: string[] = [];
   const none = a.skuChoice === "NONE";
   if (none) reasons.push(REASON.noMatch);
-  if (!none && a.skuConfidence < T) reasons.push(REASON.unsure(a.skuConfidence)); // with no match, the confidence is in "none"
+  if (!none && a.skuConfidence < T) reasons.push(REASON.unsure(a.skuConfidence, T)); // with no match, the confidence is in "none"
   // With no product there is no quantity check (it is not asked) and no selling unit to judge size against.
   if (!none && a.unitOk < unitMin) reasons.push(REASON.quantity);
   if (a.qty == null) reasons.push(REASON.noQty);

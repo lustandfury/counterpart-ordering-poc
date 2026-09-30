@@ -32,7 +32,7 @@ export function ResultsButton() {
       href="/results"
       aria-label="Sample results"
       title="Sample results"
-      className="grid h-8 w-8 place-items-center rounded-full text-muted transition-colors hover:bg-panel hover:text-ink"
+      className="grid h-11 w-11 place-items-center rounded-full text-muted transition-colors hover:bg-panel hover:text-ink lg:h-8 lg:w-8"
     >
       <svg aria-hidden viewBox="0 0 16 16" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
         <path d="M2.5 13.5h11" />

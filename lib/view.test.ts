@@ -28,6 +28,19 @@ describe("computeView", () => {
     expect(v.options.map((o) => o.sku)).toEqual(["A", "B"]);
     expect(v.name).toBe("Prod A");
   });
+  it("names the threshold in the reason and follows the slider", () => {
+    const at85 = computeView(result(0.73, 0.96), "jev", 0.85, cat)[0];
+    expect(at85.reasons[0]).toMatch(/73% on the best guess, below your 85% threshold/);
+    const at90 = computeView(result(0.73, 0.96), "jev", 0.9, cat)[0];
+    expect(at90.reasons[0]).toMatch(/below your 90% threshold/);
+  });
+  it("shows one confidence for the pick: the number the routing rule uses", () => {
+    const r = result(0.73, 0.96);
+    r.jev.lines[0].sku.top[0].probability = 0.75; // Jev's raw option probability differs from its confidence
+    const v = computeView(r, "jev", 0.85, cat)[0];
+    expect(v.options[0].probability).toBe(0.73);
+    expect(v.reasons[0]).toContain("73%");
+  });
   it("uses Claude's own rating in claude mode", () => {
     const v = computeView(result(0.1), "claude", 0.99, cat)[0];
     expect(v.approved).toBe(true);

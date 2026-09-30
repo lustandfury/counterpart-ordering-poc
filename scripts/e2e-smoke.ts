@@ -6,7 +6,7 @@ const base = `http://localhost:${process.env.PORT ?? 3100}`;
 
 async function unlock(page: Page) {
   await page.getByLabel("Access code", { exact: true }).fill("007");
-  await page.getByRole("button", { name: "Enter Counterpart" }).click();
+  await page.getByRole("button", { name: "Enter", exact: true }).click();
   await expect(page.locator(".lock-screen")).toHaveCount(0);
 }
 
@@ -51,7 +51,8 @@ async function main() {
       })).toBe(true);
       await page.emulateMedia({ reducedMotion: "reduce" });
       await expect.poll(() => comparison.evaluate((el) => getComputedStyle(el, "::after").animationName)).toBe("none");
-      await page.getByRole("button", { name: "Let's get to work", exact: true }).click();
+      // the final tour button reads "Done" on phones and "Let's get to work" on wide screens
+      await page.getByRole("button", { name: width < 1024 ? "Done" : "Let's get to work", exact: true }).click();
       await expect(page.locator(".walkthrough-card")).toHaveCount(0);
 
       if (width < 1024) await page.getByRole("button", { name: "Show orders", exact: true }).click();
