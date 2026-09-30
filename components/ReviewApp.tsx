@@ -1131,7 +1131,7 @@ function CostPanel({ result, samples, mode, T, unitMin, catalog, onMode, setting
 
         <div className="rounded-xl bg-brandsoft px-4 py-3">
           <p className="font-mono text-base font-semibold">{cheaper.toFixed(1)}× lower cost per order</p>
-          {jev.t.ms > 0 && cla.t.ms > 0 && <p className="mt-1 text-sm text-muted">{Math.abs(timeSaved)}% {timeSaved < 0 ? "more" : "less"} time per order</p>}
+          {jev.t.ms > 0 && cla.t.ms > 0 && <p className="mt-1 font-mono text-sm font-semibold">{Math.abs(timeSaved)}% {timeSaved < 0 ? "more" : "less"} time per order</p>}
           <p className="mt-1 text-[12px] text-muted">{usd(jev.t.usd)} vs {usd(cla.t.usd)} · single run, results vary</p>
         </div>
 

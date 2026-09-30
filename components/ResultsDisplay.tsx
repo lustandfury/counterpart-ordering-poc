@@ -38,7 +38,7 @@ export function ResultsDisplay({ data, samples, senders, onClose, onOpenOrder }:
           {onClose && <ModalCloseButton onClose={onClose} label="Close sample results" />}
         </div>
         <p data-testid="results-headline" className="mt-3 max-w-4xl text-xl font-semibold">{e.headline}</p>
-        {jevMs > 0 && claudeMs > 0 && <p className="mt-1 max-w-4xl text-sm text-muted">Claude + Jev takes {Math.abs(timeSaved)}% {timeSaved < 0 ? "more" : "less"} time per order on average, including reading and matching · saved runs, results vary.</p>}
+        {jevMs > 0 && claudeMs > 0 && <p className="mt-1 max-w-4xl text-base font-semibold">{Math.abs(timeSaved)}% {timeSaved < 0 ? "more" : "less"} time per order on average</p>}
         <p className="mt-2 max-w-3xl text-muted">
           Both pipelines on {data.costs.length} synthetic orders ({lines} lines), scored against a hand-reviewed answer key.
           Thresholds: product confidence <span className="font-mono">{T.toFixed(2)}</span>, quantity clarity <span className="font-mono">{unitMin.toFixed(2)}</span> ({changed ? "custom" : "defaults"}).
