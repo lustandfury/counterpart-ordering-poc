@@ -9,9 +9,6 @@ import { applyTheme, readTheme, THEMES, type Theme } from "@/lib/theme";
 import { CLAUDE_INPUT_PER_TOKEN, CLAUDE_OUTPUT_PER_TOKEN, JEV_INPUT_PER_TOKEN } from "@/lib/pricing";
 import { computeView, displayChoices, NONE, segmentText, totals, type Mode, type SlimCatalog, type ViewLine } from "@/lib/view";
 
-/** Confidence bar colour in three clean steps: green from 85% (the default threshold), orange from 50%, red below. */
-const confColor = (p: number) => (p >= 0.85 ? "var(--ok)" : p >= 0.5 ? "var(--warn-line)" : "var(--over)");
-
 const usd = (n: number) => (n < 0.01 ? `$${n.toFixed(4)}` : `$${n.toFixed(3)}`);
 const ms = (n: number) => (n >= 1000 ? `${(n / 1000).toFixed(1)} s` : `${Math.round(n)} ms`);
 
@@ -56,6 +53,9 @@ export function ReviewApp({ samples, catalog, initialOrder }: { samples: OrderRe
   const [pasteFrom, setPasteFrom] = useState<Sender | undefined>(); // set by Generate, cleared by editing
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // The rep's decisions and mock sends, per order, so they survive switching between orders
+  const [decisions, setDecisions] = useState<Record<string, Decisions>>({});
+  const [sent, setSent] = useState<Record<string, number>>({}); // order id -> time sent
 
   const live = runs.find((r) => `live-${r.runId}` === selected);
   const result = live ?? samples.find((s) => s.orderId === selected) ?? samples[0];
@@ -125,10 +125,10 @@ export function ReviewApp({ samples, catalog, initialOrder }: { samples: OrderRe
               <BrandBar end={<SidebarButton label="Hide orders" expanded onClick={toggleSidebar} />} />
               <nav className="min-h-0 flex-1 overflow-y-auto px-3 pb-3">
                 {runs.length > 0 && <OrderGroup label="Your runs">{runs.map((r) => (
-                  <OrderItem key={r.runId} id={`live-${r.runId}`} tag="live" title={r.from?.company ?? "Pasted order"} preview={r.text} count={toCheck(r)} active={selected === `live-${r.runId}`} onPick={pick} />
+                  <OrderItem key={r.runId} id={`live-${r.runId}`} tag="live" title={r.from?.company ?? "Pasted order"} preview={r.text} count={toCheck(r)} sent={!!sent[`live-${r.runId}`]} active={selected === `live-${r.runId}`} onPick={pick} />
                 ))}</OrderGroup>}
                 <OrderGroup label="Samples">{shownSamples.map((s) => (
-                  <OrderItem key={s.orderId} id={s.orderId} tag={s.orderId} title={s.from?.company ?? s.orderId} preview={s.text} count={toCheck(s)} active={selected === s.orderId} onPick={pick} />
+                  <OrderItem key={s.orderId} id={s.orderId} tag={s.orderId} title={s.from?.company ?? s.orderId} preview={s.text} count={toCheck(s)} sent={!!sent[s.orderId]} active={selected === s.orderId} onPick={pick} />
                 ))}</OrderGroup>
               </nav>
               <div className="shrink-0 border-t border-line p-4">
@@ -182,7 +182,20 @@ export function ReviewApp({ samples, catalog, initialOrder }: { samples: OrderRe
             <SidebarButton label="Show orders" expanded={false} onClick={toggleSidebar} />
           </div>
           <div className="mx-auto max-w-4xl px-5 py-8 sm:px-10">
-            <Review key={selected} result={result} isLive={!!live} mode={mode} T={T} unitMin={unitMin} catalog={catalog} />
+            <Review
+              key={selected}
+              result={result}
+              isLive={!!live}
+              mode={mode}
+              T={T}
+              unitMin={unitMin}
+              catalog={catalog}
+              resolved={decisions[selected] ?? {}}
+              setResolved={(f) => setDecisions((d) => ({ ...d, [selected]: f(d[selected] ?? {}) }))}
+              sentAt={sent[selected]}
+              onSend={() => setSent((s) => ({ ...s, [selected]: Date.now() }))}
+              onReopen={() => setSent((s) => Object.fromEntries(Object.entries(s).filter(([id]) => id !== selected)))}
+            />
           </div>
         </main>
 
@@ -320,7 +333,7 @@ function OrderGroup({ label, children }: { label: string; children: React.ReactN
   );
 }
 
-function OrderItem(p: { id: string; tag: string; title: string; preview: string; count: number; active: boolean; onPick: (id: string) => void }) {
+function OrderItem(p: { id: string; tag: string; title: string; preview: string; count: number; sent: boolean; active: boolean; onPick: (id: string) => void }) {
   const preview = p.preview.replace(/\s+/g, " ").trim();
   return (
     <li>
@@ -328,7 +341,7 @@ function OrderItem(p: { id: string; tag: string; title: string; preview: string;
         onClick={() => p.onPick(p.id)}
         aria-current={p.active ? "true" : undefined}
         aria-label={`${p.tag} ${p.title}`}
-        className={`flex w-full items-center gap-3 rounded-lg px-2.5 py-2 text-left ${p.active ? "bg-bg shadow-[inset_3px_0_0_var(--brand)]" : "hover:bg-bg"}`}
+        className={`flex w-full items-center gap-3 rounded-r-lg px-2.5 py-2 text-left ${p.active ? "bg-bg shadow-[inset_3px_0_0_var(--brand)]" : "hover:bg-bg"}`}
       >
         <span className="min-w-0 flex-1">
           <span className={`block truncate text-[14px] ${p.active ? "font-semibold" : "font-medium"}`}>{p.title}</span>
@@ -336,7 +349,9 @@ function OrderItem(p: { id: string; tag: string; title: string; preview: string;
             <span className="font-mono">{p.tag}</span> · {preview}
           </span>
         </span>
-        {p.count > 0 ? (
+        {p.sent ? (
+          <span className="shrink-0 text-[12px] font-medium text-ok">Sent</span>
+        ) : p.count > 0 ? (
           <span className="shrink-0 rounded-full bg-warnbg px-2 py-0.5 text-[12px] font-medium leading-none text-warn" aria-label={`${p.count} to check`}>{p.count}</span>
         ) : (
           <span className="shrink-0 text-ok" aria-label="nothing to check"><Check /></span>
@@ -346,15 +361,20 @@ function OrderItem(p: { id: string; tag: string; title: string; preview: string;
   );
 }
 
-function Review({ result, isLive, mode, T, unitMin, catalog }: { result: OrderResult; isLive: boolean; mode: Mode; T: number; unitMin: number; catalog: SlimCatalog }) {
-  const [resolved, setResolved] = useState<Record<string, string>>({}); // lineId -> sku chosen by the rep
+type Decisions = Record<string, string>; // lineId -> sku chosen by the rep
+
+function Review({ result, isLive, mode, T, unitMin, catalog, resolved, setResolved, sentAt, onSend, onReopen }: {
+  result: OrderResult; isLive: boolean; mode: Mode; T: number; unitMin: number; catalog: SlimCatalog;
+  resolved: Decisions; setResolved: (f: (r: Decisions) => Decisions) => void;
+  sentAt?: number; onSend: () => void; onReopen: () => void;
+}) {
   const [active, setActive] = useState<string | null>(null);
   const lines = useMemo(() => computeView(result, mode, T, catalog, unitMin), [result, mode, T, catalog, unitMin]);
   const flagged = lines.filter((l) => !l.approved);
   const done = flagged.filter((l) => resolved[l.id]).length;
   const current = active ?? flagged.find((l) => !resolved[l.id])?.id ?? null;
 
-  const choose = useCallback((lineId: string, sku: string) => setResolved((r) => ({ ...r, [lineId]: sku })), []);
+  const choose = useCallback((lineId: string, sku: string) => setResolved((r) => ({ ...r, [lineId]: sku })), [setResolved]);
   const undo = (lineId: string) => {
     setActive(lineId);
     setResolved((r) => Object.fromEntries(Object.entries(r).filter(([id]) => id !== lineId)));
@@ -366,7 +386,7 @@ function Review({ result, isLive, mode, T, unitMin, catalog }: { result: OrderRe
     const onKey = (e: KeyboardEvent) => {
       const t = e.target as HTMLElement;
       const typing = t.closest("textarea, select") || (t.tagName === "INPUT" && (t as HTMLInputElement).type !== "range");
-      if (typing || e.metaKey || e.ctrlKey || e.altKey) return;
+      if (typing || sentAt || e.metaKey || e.ctrlKey || e.altKey) return;
       const ids = flagged.map((l) => l.id);
       const i = current ? ids.indexOf(current) : -1;
       const line = flagged.find((l) => l.id === current);
@@ -387,7 +407,7 @@ function Review({ result, isLive, mode, T, unitMin, catalog }: { result: OrderRe
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [flagged, current, choose, resolved]);
+  }, [flagged, current, choose, resolved, sentAt]);
 
   useEffect(() => {
     if (!active) return; // only follow the cursor after the rep moves it, not on first load
@@ -433,13 +453,24 @@ function Review({ result, isLive, mode, T, unitMin, catalog }: { result: OrderRe
       </div>
 
 
-      {(flagged.length === 0 || done === flagged.length) && (
-        <p role="status" className="mb-6 rounded-xl bg-okbg px-5 py-3.5 font-medium text-ok">
-          {flagged.length === 0 ? "Nothing needs your attention. This order is ready to send." : "All checked. This order is ready to send."}
-        </p>
+      {/* Sending is mocked: it only marks the order as sent in this browser tab */}
+      {sentAt ? (
+        <div role="status" className="mb-6 flex flex-wrap items-center gap-x-4 gap-y-2 rounded-xl bg-okbg px-5 py-3.5">
+          <span className="text-ok"><Check /></span>
+          <p className="flex-1 font-medium text-ok">
+            Sent to {result.from?.name ?? "the contractor"} at {new Date(sentAt).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}
+            <span className="block text-[13px] font-normal text-muted">Demo only: nothing was actually sent.</span>
+          </p>
+          <button onClick={onReopen} className="text-[13px] text-muted underline hover:text-ink">Reopen</button>
+        </div>
+      ) : (flagged.length === 0 || done === flagged.length) && (
+        <div role="status" className="mb-6 flex flex-wrap items-center gap-x-4 gap-y-2 rounded-xl bg-okbg px-5 py-3">
+          <p className="flex-1 font-medium text-ok">{flagged.length === 0 ? "Nothing needs your attention. This order is ready to send." : "All checked. This order is ready to send."}</p>
+          <button onClick={onSend} className="h-9 rounded-lg bg-brand px-4 text-[14px] font-semibold text-ink">Send order</button>
+        </div>
       )}
 
-      <section aria-label="Order" className="card overflow-hidden">
+      <section aria-label="Order" inert={!!sentAt} className={`card overflow-hidden ${sentAt ? "opacity-70" : ""}`}>
         <header className="flex flex-wrap items-center gap-x-3 gap-y-1 border-b border-line px-6 py-4">
           <span className="grid h-8 w-8 place-items-center rounded-full bg-bg text-[11px] font-semibold text-ink" aria-hidden>
             {result.from ? result.from.name.split(" ").map((w) => w[0]).join("").slice(0, 2) : "C"}
@@ -507,21 +538,25 @@ function LineRow(props: { l: ViewLine; state: "ok" | "done" | "flag"; pick?: str
           </div>
         ) : (
           <div role="group" aria-label={`Options for ${l.raw}`} className="mt-3 flex flex-col gap-2">
+            {/* column header over the confidence cells */}
+            {shown.some((o) => o.probability != null) && (
+              <div aria-hidden className="-mb-1 flex justify-end px-3.5 text-[12px] font-medium text-muted">
+                <span className="w-24 text-center">Confidence</span>
+              </div>
+            )}
             {shown.map((o, i) => (
               <button
                 key={o.sku}
                 aria-pressed={pick === o.sku}
                 onClick={(e) => { e.stopPropagation(); props.onChoose(o.sku); }}
-                className={`flex min-h-11 flex-wrap items-center gap-x-3 gap-y-1 rounded-xl px-3.5 py-2 text-left ${pick === o.sku ? "bg-okbg shadow-[0_0_0_1px_var(--ok)]" : "bg-panel shadow-[0_0_0_1px_var(--control)] hover:bg-panel2"}`}
+                className={`flex min-h-11 items-center gap-3 rounded-xl px-3.5 py-2 text-left ${pick === o.sku ? "bg-okbg shadow-[0_0_0_1px_var(--ok)]" : "bg-panel shadow-[0_0_0_1px_var(--control)] hover:bg-panel2"}`}
               >
                 <kbd className="w-4 text-center text-xs text-muted">{i + 1}</kbd>
-                <span className="min-w-[12rem] flex-1">{o.name}</span>
+                <span className="min-w-0 flex-1">{o.name}</span>
                 {o.probability != null && (
-                  <span className="ml-7 flex w-28 shrink-0 items-center gap-1.5 text-xs text-muted sm:ml-0" aria-label={`${Math.round(o.probability * 100)} percent`}>
-                    <span className="h-1.5 flex-1 rounded-full" style={{ background: "var(--line)" }}>
-                      <span className="block h-full rounded-full" style={{ width: `${Math.round(o.probability * 100)}%`, background: confColor(o.probability) }} />
-                    </span>
-                    <span className="w-8 text-right">{Math.round(o.probability * 100)}%</span>
+                  <span className="flex w-24 shrink-0 items-center justify-center self-stretch border-l border-line text-[14px] text-muted">
+                    <span className="sr-only">confidence </span>
+                    {Math.round(o.probability * 100)}%
                   </span>
                 )}
                 {o.probability == null && i === 0 && <span className="text-xs text-muted">Claude: {l.confidence}</span>}

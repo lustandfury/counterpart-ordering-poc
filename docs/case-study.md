@@ -154,7 +154,12 @@ Each entry: what we did, what happened, what it changed.
 ### 27. Phone-shaped orders, and colors that carry the verdict
 **Did:** on phones the orders panel now rises from the bottom as a sheet (with a grab bar, dimmed backdrop and safe-area padding) instead of sliding in from the left; wide screens keep the sidebar. In the cost panel the Claude + Jev bar is solid green, and the Claude-only bar is light red up to the Claude + Jev cost and full red for the overage beyond it. Confidence bars in a flagged line's options use three fixed steps: green from 85% (the default threshold), orange from 50%, red below. The keyboard-shortcut hint under the options was hidden; the shortcuts still work. All of these were Mike's calls.
 **Happened:** a first version blended the confidence colors continuously, and mid-range scores came out a muddy olive; fixed steps read at a glance. A new red token (with a soft variant) keeps red meaning "cost overage or low confidence", distinct from orange "check this".
-**Changed:** on the cost panel the difference between the two pipelines is visible as color, not just numbers, and a rep can tell a strong option from a weak one without reading the percentage.
+**Changed:** on the cost panel the difference between the two pipelines is visible as color, not just numbers. The confidence bars were then removed altogether (Mike's call): they added little and pulled the eye from the product names, so each option now shows just a slightly larger percentage in its own cell, under a single "Confidence" column header.
+
+### 28. Finishing the job: a mock send
+**Did:** once every flagged line is decided (or none needed checking), the "ready to send" banner offers a Send order button (Mike's call, to mirror the real flow). Sending marks the order as sent to the contractor, with the time, says plainly that nothing was actually sent, locks the lines, and shows "Sent" beside the order in the list; Reopen undoes it. The rep's decisions now live per order, so switching orders and coming back no longer loses them.
+**Happened:** a browser run checked that Send only appears after the last decision, that the sent state and the decision survive switching orders, and that Reopen brings Send back.
+**Changed:** a walkthrough now ends with a finished order rather than a green banner.
 
 ## Where it stands
 
