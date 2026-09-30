@@ -86,6 +86,11 @@ Each entry: what we did, what happened, what it changed.
 **Happened:** the sliders are the demo's most interesting control, but they are a tuning tool, not something a rep touches on every order. Hiding them made the default view calmer without losing the "move the threshold and watch lines re-route" moment.
 **Changed:** the walkthrough opens Settings to show the trade-off; the browser test now opens it before driving the sliders.
 
+### 14. One control, one place
+**Did:** removed the Claude + Jev / Claude only switch and the whole toolbar above the order (Mike's call). The cost cards on the right already switched the view, so the switch was a second control for the same thing. Settings moved into the cost panel's header and opens inline there.
+**Happened:** the center is now only the order: the message and the draft. Everything about the comparison (which pipeline, what it cost, how strict it is) lives in one panel. Settings opens inline rather than as a floating menu, because the scrolling panel would clip a popover.
+**Changed:** the panel's subtitle says "Pick a card to see its draft", and the browser test now switches pipelines by clicking the cost card.
+
 ## Where it stands
 
 | | Claude only | Claude + Jev |
@@ -118,7 +123,7 @@ Read as signals, not benchmarks: 20 orders, tuned in-sample, Claude prices assum
 ## Walking someone through it (about 5 minutes)
 
 1. **The problem (30s).** Show a messy text order. "Reading it is the easy part."
-2. **The screen (90s).** Open the workspace on the default order. Approved lines are quiet; the flagged line says why. Open Settings, move a slider and watch lines re-route with no API call. Point at the cost panel: same approvals, about 60x cheaper matching. Point at the sidebar: every order with its count of lines to check.
+2. **The screen (90s).** Open the workspace on the default order. Approved lines are quiet; the flagged line says why. Open Settings in the cost panel, move a slider and watch lines re-route with no API call. Point at the cost panel: same approvals, about 60x cheaper matching; click the Claude-only card to switch the draft. Point at the sidebar: every order with its count of lines to check.
 3. **The measurement (90s).** Open `results/eval-summary.md`. Read one number from each side; point at the calibration table.
 4. **The turning points (90s).** Timeline 4 (Jev lost), 5 (our bugs), 7 (the quantity question). "The interesting work was the honest debugging."
 5. **The close (30s).** "The hard part isn't reading the order. It's deciding what the rep doesn't need to check."

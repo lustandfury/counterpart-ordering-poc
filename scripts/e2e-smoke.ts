@@ -59,7 +59,7 @@ async function main() {
   assert.equal(await page.locator("#orders").isVisible(), true);
 
   // Claude only mode disables the slider
-  await page.getByRole("button", { name: "Claude only", exact: true }).click();
+  await page.getByRole("button", { name: /^Claude only/ }).click(); // the cost card selects the pipeline
   await openSettings();
   assert.equal(await page.locator("#t").isDisabled(), true);
   assert.ok(await page.getByRole("complementary", { name: "Cost assessment" }).isVisible());

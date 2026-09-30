@@ -141,18 +141,8 @@ export function ReviewApp({ samples, catalog }: { samples: OrderResult[]; catalo
         </aside>
 
         <main id="review" tabIndex={-1} className="min-w-0 flex-1 outline-none lg:overflow-y-auto">
-          <div className="sticky top-0 z-10 flex items-center gap-3 border-b border-line bg-bg/90 px-5 py-3 backdrop-blur sm:px-10">
-            <div className={`max-lg:block ${desktopOpen ? "lg:hidden" : "lg:block"}`}>
-              <SidebarButton label="Show orders" expanded={false} onClick={toggleSidebar} />
-            </div>
-            <div className="inline-flex gap-1 rounded-xl bg-panel p-1 text-sm shadow-[0_0_0_1px_var(--ring)]" role="group" aria-label="Matching by">
-              {(["jev", "claude"] as const).map((m) => (
-                <button key={m} aria-pressed={mode === m} onClick={() => setMode(m)} className={`h-8 rounded-lg px-3.5 font-medium ${mode === m ? "bg-ink text-bg shadow-sm" : "text-muted hover:bg-bg hover:text-ink"}`}>
-                  {m === "jev" ? "Claude + Jev" : "Claude only"}
-                </button>
-              ))}
-            </div>
-            <SettingsMenu mode={mode} T={T} unitMin={unitMin} setT={setT} setUnitMin={setUnitMin} />
+          <div className={`px-3 pt-3 max-lg:block ${desktopOpen ? "lg:hidden" : "lg:block"}`}>
+            <SidebarButton label="Show orders" expanded={false} onClick={toggleSidebar} />
           </div>
           <div className="mx-auto max-w-4xl px-5 py-8 sm:px-10">
             <Review key={selected} result={result} isLive={!!live} mode={mode} T={T} unitMin={unitMin} catalog={catalog} />
@@ -160,7 +150,7 @@ export function ReviewApp({ samples, catalog }: { samples: OrderResult[]; catalo
         </main>
 
         <aside aria-label="Cost assessment" className="shrink-0 border-line bg-panel lg:w-[22rem] lg:overflow-y-auto lg:border-l max-lg:border-t">
-          <CostPanel result={result} samples={samples} mode={mode} T={T} unitMin={unitMin} catalog={catalog} onMode={setMode} />
+          <CostPanel result={result} samples={samples} mode={mode} T={T} unitMin={unitMin} catalog={catalog} onMode={setMode} setT={setT} setUnitMin={setUnitMin} />
         </aside>
       </div>
     </div>
@@ -170,58 +160,46 @@ export function ReviewApp({ samples, catalog }: { samples: OrderResult[]; catalo
 const DEFAULT_T = 0.85;
 const DEFAULT_UNIT = 0.8;
 
-/** Review thresholds, tucked behind a button so the toolbar stays calm. */
-function SettingsMenu(p: { mode: Mode; T: number; unitMin: number; setT: (v: number) => void; setUnitMin: (v: number) => void }) {
-  const [open, setOpen] = useState(false);
-  const changed = p.T !== DEFAULT_T || p.unitMin !== DEFAULT_UNIT;
-  useEffect(() => {
-    if (!open) return;
-    const onDown = (e: MouseEvent) => {
-      if (!(e.target as HTMLElement).closest("[data-settings]")) setOpen(false);
-    };
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
-    document.addEventListener("mousedown", onDown);
-    window.addEventListener("keydown", onKey);
-    return () => {
-      document.removeEventListener("mousedown", onDown);
-      window.removeEventListener("keydown", onKey);
-    };
-  }, [open]);
+type Thresholds = { mode: Mode; T: number; unitMin: number; setT: (v: number) => void; setUnitMin: (v: number) => void };
+
+function SettingsButton({ open, changed, onToggle }: { open: boolean; changed: boolean; onToggle: () => void }) {
   return (
-    <div data-settings className="relative ml-auto">
+    <button
+      onClick={onToggle}
+      aria-expanded={open}
+      aria-controls="settings"
+      className={`flex h-9 items-center gap-2 rounded-xl px-3 text-sm font-medium ${open ? "bg-bg text-ink" : "text-muted hover:bg-bg hover:text-ink"}`}
+    >
+      <GearIcon />
+      Settings
+      {changed && <span className="h-1.5 w-1.5 rounded-full bg-[var(--warn-line)]" aria-label="thresholds changed" />}
+    </button>
+  );
+}
+
+/** Review thresholds, opened from the cost panel. Inline rather than a popover, which the scrolling panel would clip. */
+function SettingsSection(p: Thresholds & { changed: boolean }) {
+  return (
+    <section id="settings" aria-label="Review thresholds" className="rounded-xl bg-bg p-5">
+      <h3 className="text-[15px] font-semibold">Review thresholds</h3>
+      <p className="mt-1 text-[13px] text-muted">
+        {p.mode === "claude" ? "Claude only has no thresholds: it approves its own “high” ratings." : "Higher = the rep checks more lines. Lines re-route instantly; no new API calls."}
+      </p>
+      <div className="mt-4 flex flex-col gap-4">
+        <Slider id="t" label="Product confidence" value={p.T} min={0.5} max={0.99} onChange={p.setT} disabled={p.mode === "claude"} />
+        <Slider id="u" label="Quantity clarity" value={p.unitMin} min={0.3} max={0.9} onChange={p.setUnitMin} disabled={p.mode === "claude"} />
+      </div>
       <button
-        onClick={() => setOpen((v) => !v)}
-        aria-expanded={open}
-        aria-controls="settings"
-        className={`flex h-10 items-center gap-2 rounded-xl px-3 text-sm font-medium ${open ? "bg-panel text-ink shadow-[0_0_0_1px_var(--ring)]" : "text-muted hover:bg-panel hover:text-ink"}`}
+        onClick={() => {
+          p.setT(DEFAULT_T);
+          p.setUnitMin(DEFAULT_UNIT);
+        }}
+        disabled={!p.changed}
+        className="mt-4 text-[13px] text-muted underline hover:text-ink disabled:no-underline disabled:opacity-40"
       >
-        <GearIcon />
-        Settings
-        {changed && <span className="h-1.5 w-1.5 rounded-full bg-[var(--warn-line)]" aria-label="thresholds changed" />}
+        Reset to defaults
       </button>
-      {open && (
-        <div id="settings" role="dialog" aria-label="Review thresholds" className="card absolute right-0 top-full z-30 mt-2 w-80 p-5">
-          <h3 className="text-[15px] font-semibold">Review thresholds</h3>
-          <p className="mt-1 text-[13px] text-muted">
-            {p.mode === "claude" ? "Claude only has no thresholds: it approves its own “high” ratings." : "Higher = the rep checks more lines. Lines re-route instantly; no new API calls."}
-          </p>
-          <div className="mt-4 flex flex-col gap-4">
-            <Slider id="t" label="Product confidence" value={p.T} min={0.5} max={0.99} onChange={p.setT} disabled={p.mode === "claude"} />
-            <Slider id="u" label="Quantity clarity" value={p.unitMin} min={0.3} max={0.9} onChange={p.setUnitMin} disabled={p.mode === "claude"} />
-          </div>
-          <button
-            onClick={() => {
-              p.setT(DEFAULT_T);
-              p.setUnitMin(DEFAULT_UNIT);
-            }}
-            disabled={!changed}
-            className="mt-4 text-[13px] text-muted underline hover:text-ink disabled:no-underline disabled:opacity-40"
-          >
-            Reset to defaults
-          </button>
-        </div>
-      )}
-    </div>
+    </section>
   );
 }
 
@@ -497,7 +475,9 @@ function LineRow(props: { l: ViewLine; state: "ok" | "done" | "flag"; pick?: str
 
 type Side = { key: Mode; label: string; matcher: string; t: ReturnType<typeof totals>; approved: number; lines: number; calls: number; matchTokens: string };
 
-function CostPanel({ result, samples, mode, T, unitMin, catalog, onMode }: { result: OrderResult; samples: OrderResult[]; mode: Mode; T: number; unitMin: number; catalog: SlimCatalog; onMode: (m: Mode) => void }) {
+function CostPanel({ result, samples, mode, T, unitMin, catalog, onMode, setT, setUnitMin }: { result: OrderResult; samples: OrderResult[]; mode: Mode; T: number; unitMin: number; catalog: SlimCatalog; onMode: (m: Mode) => void; setT: (v: number) => void; setUnitMin: (v: number) => void }) {
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const changed = T !== DEFAULT_T || unitMin !== DEFAULT_UNIT;
   const a = computeView(result, "jev", T, catalog, unitMin);
   const b = computeView(result, "claude", T, catalog);
   const n = result.parse.lines.length;
@@ -520,9 +500,13 @@ function CostPanel({ result, samples, mode, T, unitMin, catalog, onMode }: { res
   return (
     <div className="flex flex-col gap-5 p-6">
       <div>
-        <h2 className="text-lg font-semibold tracking-tight">Cost assessment</h2>
-        <p className="mt-1 text-[13px] text-muted">This order, {n} lines. Reading is shared; only matching differs.</p>
+        <div className="flex items-center justify-between gap-2">
+          <h2 className="text-lg font-semibold tracking-tight">Cost assessment</h2>
+          <SettingsButton open={settingsOpen} changed={changed} onToggle={() => setSettingsOpen((v) => !v)} />
+        </div>
+        <p className="mt-1 text-[13px] text-muted">This order, {n} lines. Reading is shared; only matching differs. Pick a card to see its draft.</p>
       </div>
+      {settingsOpen && <SettingsSection mode={mode} T={T} unitMin={unitMin} setT={setT} setUnitMin={setUnitMin} changed={changed} />}
 
       <p className="rounded-xl bg-okbg px-4 py-3 text-[14px] leading-snug text-ok">
         Jev&apos;s matching step cost <strong>{Math.round(cheaper)}× less</strong> and ran <strong>{faster.toFixed(1)}× faster</strong> on this order.
