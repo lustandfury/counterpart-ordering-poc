@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { OrderResult, Sender } from "@/lib/types";
 import Link from "next/link";
-import { AppNav } from "@/components/AppNav";
+import { ResultsButton, Wordmark } from "@/components/AppNav";
 import { generateOrder } from "@/lib/generate";
 import { CLAUDE_INPUT_PER_TOKEN, CLAUDE_OUTPUT_PER_TOKEN, JEV_INPUT_PER_TOKEN } from "@/lib/pricing";
 import { computeView, displayChoices, NONE, segmentText, totals, type Mode, type SlimCatalog, type ViewLine } from "@/lib/view";
@@ -103,12 +103,14 @@ export function ReviewApp({ samples, catalog, initialOrder }: { samples: OrderRe
           aria-label="Orders"
           className={`w-80 shrink-0 flex-col border-r border-line bg-panel max-lg:fixed max-lg:inset-y-0 max-lg:left-0 max-lg:z-30 max-lg:shadow-xl ${desktopOpen ? "lg:flex" : "lg:hidden"} ${mobileOpen ? "max-lg:flex" : "max-lg:hidden"}`}
         >
-              <div className="flex h-16 shrink-0 items-center justify-between px-5">
-                <strong className="text-base font-semibold tracking-tight">Counterpart</strong>
-                <SidebarButton label="Hide orders" expanded onClick={toggleSidebar} />
-              </div>
-              <div className="px-4 pb-2">
-                <AppNav current="review" />
+              <div className="flex h-16 shrink-0 items-center gap-1.5 px-4">
+                <Wordmark />
+                <span className="ml-1">
+                  <ResultsButton />
+                </span>
+                <span className="ml-auto">
+                  <SidebarButton label="Hide orders" expanded onClick={toggleSidebar} />
+                </span>
               </div>
               <nav className="min-h-0 flex-1 overflow-y-auto px-3 pb-3">
                 {runs.length > 0 && <OrderGroup label="Your runs">{runs.map((r) => (
@@ -192,14 +194,23 @@ function SettingsButton({ open, changed, onToggle }: { open: boolean; changed: b
       onClick={onToggle}
       aria-expanded={open}
       aria-controls="settings"
-      className={`flex h-9 items-center gap-2 rounded-xl px-3 text-sm font-medium ${open ? "bg-bg text-ink" : "text-muted hover:bg-bg hover:text-ink"}`}
+      aria-label={changed ? "Settings (thresholds changed)" : "Settings"}
+      title="Settings"
+      className={`relative grid h-8 w-8 place-items-center rounded-lg ${open ? "bg-bg text-ink shadow-[0_0_0_1px_var(--ring)]" : "text-muted hover:bg-bg hover:text-ink"}`}
     >
-      <GearIcon />
-      Settings
-      {changed && <span className="h-1.5 w-1.5 rounded-full bg-[var(--warn-line)]" aria-label="thresholds changed" />}
+      <SlidersIcon />
+      {changed && <span className="absolute right-1 top-1 h-1.5 w-1.5 rounded-full bg-[var(--warn-line)]" aria-hidden />}
     </button>
   );
 }
+
+const SlidersIcon = () => (
+  <svg aria-hidden viewBox="0 0 16 16" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+    <path d="M2.5 4.5h11M2.5 11.5h11" />
+    <circle cx="6" cy="4.5" r="1.8" fill="var(--panel)" />
+    <circle cx="10.5" cy="11.5" r="1.8" fill="var(--panel)" />
+  </svg>
+);
 
 /** Review thresholds, opened from the cost panel. Inline rather than a popover, which the scrolling panel would clip. */
 function SettingsSection(p: Thresholds & { changed: boolean }) {
@@ -233,13 +244,6 @@ const DiceIcon = () => (
     <circle cx="5.8" cy="5.8" r="0.9" fill="currentColor" stroke="none" />
     <circle cx="10.2" cy="10.2" r="0.9" fill="currentColor" stroke="none" />
     <circle cx="8" cy="8" r="0.9" fill="currentColor" stroke="none" />
-  </svg>
-);
-
-const GearIcon = () => (
-  <svg aria-hidden viewBox="0 0 16 16" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.4">
-    <circle cx="8" cy="8" r="2.2" />
-    <path d="M8 1.5v1.8M8 12.7v1.8M1.5 8h1.8M12.7 8h1.8M3.4 3.4l1.3 1.3M11.3 11.3l1.3 1.3M3.4 12.6l1.3-1.3M11.3 4.7l1.3-1.3" strokeLinecap="round" />
   </svg>
 );
 
@@ -594,7 +598,7 @@ function CostPanel({ result, samples, mode, T, unitMin, catalog, onMode, setT, s
         {diff.length ? `They pick different products on ${diff.length} line${diff.length > 1 ? "s" : ""}: ${diff.map((l) => `“${l.raw}”`).join(", ")}.` : "Both pick the same product on every line."}
       </p>
       <p className="px-1 text-[11px] leading-relaxed text-muted">
-        Claude at ${(CLAUDE_INPUT_PER_TOKEN * 1e6).toFixed(0)} / ${(CLAUDE_OUTPUT_PER_TOKEN * 1e6).toFixed(0)} per million tokens in / out (assumed); Jev at ${(JEV_INPUT_PER_TOKEN * 1e9).toFixed(0)} per billion input tokens. Times are from one run. Synthetic data.
+        Claude at ${(CLAUDE_INPUT_PER_TOKEN * 1e6).toFixed(0)} / ${(CLAUDE_OUTPUT_PER_TOKEN * 1e6).toFixed(0)} per million tokens in / out (list price); Jev at ${(JEV_INPUT_PER_TOKEN * 1e9).toFixed(0)} per billion input tokens. Times are from one run. Synthetic data.
       </p>
     </div>
   );

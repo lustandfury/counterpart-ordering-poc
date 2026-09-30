@@ -1,20 +1,35 @@
 import Link from "next/link";
 
-/** Switches between the review workspace and the sample-results dashboard. */
-export function AppNav({ current }: { current: "review" | "results" }) {
-  const tab = (href: string, key: "review" | "results", label: string) => (
-    <Link
-      href={href}
-      aria-current={current === key ? "page" : undefined}
-      className={`rounded-lg px-3 py-1.5 text-[13px] font-medium ${current === key ? "bg-panel text-ink shadow-[0_0_0_1px_var(--ring)]" : "text-muted hover:text-ink"}`}
-    >
-      {label}
+/** The Counterpart wordmark: a small mark (a checked line on a counter slip) and the name. Links home. */
+export function Wordmark() {
+  return (
+    <Link href="/" aria-label="Counterpart, review" className="flex items-center gap-2 rounded-lg">
+      <svg aria-hidden viewBox="0 0 24 24" className="h-7 w-7 shrink-0">
+        <rect width="24" height="24" rx="7" fill="var(--ink)" />
+        <path d="M6.5 8.5h7M6.5 12h5M6.5 15.5h4" stroke="var(--bg)" strokeWidth="1.8" strokeLinecap="round" opacity="0.55" />
+        <path d="M14 14.8l1.9 1.9 3.6-4.2" stroke="var(--bg)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+      </svg>
+      <span className="text-[17px] font-bold tracking-[-0.03em] text-ink">
+        counter<span className="font-medium text-muted">part</span>
+      </span>
     </Link>
   );
+}
+
+/** Icon button to the sample-results dashboard. */
+export function ResultsButton({ active = false }: { active?: boolean }) {
   return (
-    <nav aria-label="Pages" className="inline-flex gap-1 rounded-xl bg-bg p-1">
-      {tab("/", "review", "Review")}
-      {tab("/results", "results", "Sample results")}
-    </nav>
+    <Link
+      href="/results"
+      aria-label="Sample results"
+      aria-current={active ? "page" : undefined}
+      title="Sample results"
+      className={`grid h-8 w-8 place-items-center rounded-lg ${active ? "bg-bg text-ink shadow-[0_0_0_1px_var(--ring)]" : "text-muted hover:bg-bg hover:text-ink"}`}
+    >
+      <svg aria-hidden viewBox="0 0 16 16" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+        <path d="M2.5 13.5h11" />
+        <path d="M4.5 11V8.5M8 11V4.5M11.5 11V6.5" strokeWidth="2" />
+      </svg>
+    </Link>
   );
 }

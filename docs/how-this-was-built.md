@@ -20,7 +20,7 @@ The first blind-labeler pass disagreed with my labels wherever a line depended o
 ## Milestone 3: pipeline
 - `lib/pipeline/`: `parse` (Claude structured output, shared), `shortlist` (Fuse.js, top 20), `decide` (one Jev call per line, 5 at a time), `route` (threshold T, `unit_ok` >= 0.8, large-quantity rule), `claude-only` (comparison), `index` (runs both side by side). `npm run pipeline` saves raw scores per order to `results/`, so thresholds are applied afterwards and can be re-tuned without new API calls.
 - Two things the plan did not anticipate: the configured model ID (`claude-3-5-sonnet-20260920`) returned a 404, so it is now `claude-sonnet-5-5`; and this model rejects forced `tool_choice`, so the prompt asks for the tool call instead. I also added a `NONE` option to Jev's `sku` question so lines with no catalog match have somewhere to go.
-- Claude prices in `lib/pricing.ts` are assumed, not verified.
+- Claude prices in `lib/pricing.ts` were first assumed ($3 / $15); later corrected to the published $2 / $10 for the model in use (see the pricing correction below).
 - First informal look (not the evaluation): at T = 0.85 neither pipeline approved a wrong line, but Claude-only auto-approved far more lines than Jev (65 vs 38 of 88) and matched more products (88 vs 84). Jev does not win on this small, house-rules-assisted set. That is a finding to report honestly, and to test properly in milestone 4.
 
 ## Milestone 4: evaluation
@@ -53,3 +53,6 @@ The first blind-labeler pass disagreed with my labels wherever a line depended o
 ## Deployment (milestone 6)
 - Vercel project linked and connected to the GitHub repo; keys stored as sensitive environment variables for preview and production. A protected preview was deployed and tested (page, a live run, the length cap) before production.
 - **What the security-reviewer caught:** no secrets in the tree or history, but a real company name in an agent file, lines hinting at private context, and that one pasted line could parse into many paid items. Fixed: item cap (15) after parsing and before any paid call, JSON-only requests, 600 characters / 15 lines, 5 runs per visitor per hour, 40 per day per instance.
+
+## Pricing correction
+- The API reports tokens, not dollars (billed dollars are only in the Admin API cost report, organization-wide and daily), so costs are token counts at list price. The list price had been assumed at $3 / $15 per million tokens; the model in use is $2 / $10. `npm run reprice` recomputed all saved results from their recorded token counts with no new API calls. Costs now also count cache-write and cache-read tokens.

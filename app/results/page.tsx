@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { AppNav } from "@/components/AppNav";
+import { ResultsButton, Wordmark } from "@/components/AppNav";
 import type { Sender } from "@/lib/types";
 
 export const metadata: Metadata = { title: "Sample results · Counterpart" };
@@ -54,9 +54,14 @@ export default function ResultsPage() {
 
   return (
     <div className="min-h-dvh">
-      <header className="flex flex-wrap items-center gap-4 border-b border-line bg-panel px-5 py-3 sm:px-10">
-        <strong className="text-base font-semibold tracking-tight">Counterpart</strong>
-        <AppNav current="results" />
+      <header className="flex items-center gap-2 border-b border-line bg-panel px-5 py-3 sm:px-10">
+        <Wordmark />
+        <span className="ml-1">
+          <ResultsButton active />
+        </span>
+        <Link href="/" className="ml-auto text-[13px] font-medium text-muted hover:text-ink">
+          ← Back to review
+        </Link>
       </header>
 
       <main className="mx-auto max-w-6xl px-5 py-10 sm:px-10">

@@ -47,15 +47,15 @@ A second page, **Sample results** (`/results`), is a dashboard for the 20 saved 
 | Lines auto-approved | 73.9% | 73.9% |
 | Wrong product among auto-approved lines | 0% | 0% |
 | Matching step, time per order | 2.1 s | 0.4 s |
-| Matching step, cost per order | $0.055 | $0.001 |
-| Whole pipeline, cost per 10,000 orders | $682.60 | $147.30 |
+| Matching step, cost per order | $0.036 | $0.001 |
+| Whole pipeline, cost per 10,000 orders | $455.09 | $101.62 |
 
-**What this supports:** on this set, Jev cleared the same share of lines for auto-approval as Claude alone, with no wrong approvals, and its matching step was roughly 50x cheaper and 5x faster. Its confidence was trustworthy: every line it rated at 0.7 or above was right.
+**What this supports:** on this set, Jev cleared the same share of lines for auto-approval as Claude alone, with no wrong approvals, and its matching step was roughly 35x cheaper and 5x faster. Its confidence was trustworthy: every line it rated at 0.7 or above was right.
 
 **What it doesn't:** it doesn't show that Jev is more accurate. Read these as signals, not benchmarks:
 - The set is small: 20 orders. There were only two wrong product picks in total, both Jev's, and both were flagged for the rep rather than approved.
 - Parts of the pipeline, including Jev's quantity check, were designed after seeing these same orders. The results are in-sample, and no held-out set has been run.
-- Claude prices are assumed (`lib/pricing.ts`).
+- Costs are computed from each call's recorded token counts at published list prices (`lib/pricing.ts`); the API reports tokens, not dollars.
 - The set deliberately includes many products that aren't in the catalog. Those skip Jev's second call, which flatters its cost.
 - Results vary slightly between runs.
 

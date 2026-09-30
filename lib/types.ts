@@ -18,7 +18,7 @@ export type ParsedLine = {
   unit: string | null; // as spoken, e.g. "bags", "lbs"
 };
 
-export type Usage = { inputTokens: number; outputTokens: number };
+export type Usage = { inputTokens: number; outputTokens: number; cacheWriteTokens?: number; cacheReadTokens?: number };
 export type Timed = { ms: number; usage: Usage; costUsd: number };
 
 export type Alternative = { sku: string; probability: number };

@@ -31,7 +31,7 @@
       "inputTokens": 3412,
       "outputTokens": 186
     },
-    "costUsd": 0.013026
+    "costUsd": 0.008683999999999999
   },
   "jev": {
     "lines": [
@@ -218,6 +218,6 @@
       "inputTokens": 17093,
       "outputTokens": 150
     },
-    "costUsd": 0.053529
+    "costUsd": 0.035686
   }
 }

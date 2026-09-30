@@ -72,7 +72,7 @@ Matching step only (parsing is shared and excluded), except the last row.
 | Cost per order, matching step (USD) | ${claUsd.toFixed(5)} | ${jevUsd.toFixed(5)} |
 | Cost per 1,000 orders, whole pipeline (USD) | ${(1000 * (parseUsd + claUsd)).toFixed(2)} | ${(1000 * (parseUsd + jevUsd)).toFixed(2)} |
 
-Whole-pipeline cost includes the shared parse step (${parseUsd.toFixed(4)} USD per order). Claude prices are assumed (see lib/pricing.ts).
+Whole-pipeline cost includes the shared parse step (${parseUsd.toFixed(4)} USD per order). Costs are recorded token counts at list prices (lib/pricing.ts).
 Caveats:
 - Timing: Jev makes up to two calls per line (product, then quantity check), five lines at a time, so its wall-clock time depends on concurrency; the sum of the per-line calls is shown too. Claude-only is one large call (about 17k input tokens). Both ran together in one run, so each includes some contention and network noise.
 - ${noneLines} of ${rows.length} lines chose NONE (no catalog match) and skipped the second Jev call, so their \`jev_unit_ok\` is stored as 0 meaning "not asked". That saves Jev time and cost, but it depends on how many not-in-catalog lines the set has, and this set deliberately has many. Do not average \`unit_ok\` over all lines.
@@ -170,7 +170,7 @@ writeFileSync(
       caveats: [
         `Small sample: ${n} orders and ${rows.length} lines. Read these as signals, not benchmarks.`,
         "Parts of the pipeline, including Jev's quantity check, were designed after seeing these same orders, so the results are in-sample. No held-out set has been run.",
-        "Claude prices are assumed (see lib/pricing.ts).",
+        "Costs are each call's recorded token counts at published list prices (lib/pricing.ts); billed dollars would come from the Admin API cost report.",
         `${noneLines} of ${rows.length} lines had no catalog match and skipped Jev's second call, which flatters Jev's cost; this set deliberately includes many.`,
         "Results vary slightly between runs.",
       ],

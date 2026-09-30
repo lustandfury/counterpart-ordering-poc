@@ -14,7 +14,8 @@
     "gen:catalog": "tsx scripts/gen-catalog.ts",
     "export:review": "tsx scripts/export-review-sheet.ts",
     "pipeline": "tsx scripts/run-all.ts",
-    "eval": "tsx scripts/eval.ts"
+    "eval": "tsx scripts/eval.ts",
+    "reprice": "tsx scripts/reprice.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.129.0",

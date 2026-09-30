@@ -22,7 +22,7 @@ async function main() {
     await p.getByRole("button", { name: "Hide orders" }).click();
   });
   await shot("desktop-settings", { width: 1280, height: 900 }, async (p) => {
-    await p.getByRole("button", { name: "Settings" }).click();
+    await p.getByRole("button", { name: /^Settings/ }).click();
   });
   await shot("desktop-generate", { width: 1280, height: 900 }, async (p) => {
     await p.getByRole("button", { name: "Generate" }).click();

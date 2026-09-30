@@ -131,6 +131,11 @@ Each entry: what we did, what happened, what it changed.
 **Happened:** the dashboard needs scores against the answer key, but the app is not allowed to read the key. The evaluation script now also writes `results/eval.json`, and the page reads that. Making the review screen open a chosen order (`/?order=o07`) turned it from a prebuilt page into one rendered per request, so its sample files had to be bundled explicitly for the server.
 **Changed:** the review screen stays about one order; the numbers for the whole set live in one place.
 
+### 23. The price we assumed was wrong
+**Did:** Mike asked how to get a more accurate Claude cost, and whether the API could report it. The Messages API returns token counts on every response (input, output, cache writes, cache reads), not dollars; billed dollars exist only in the Admin API's cost report, organization-wide and by day. So the accurate per-order cost is the recorded token counts at the published price, and checking that price turned up a mistake: `lib/pricing.ts` had assumed $3 / $15 per million tokens, last generation's Sonnet price, but the model in use costs $2 / $10.
+**Happened:** every saved result keeps its token counts, so a small script repriced all 20 orders with no new calls. Claude's cost fell by a third: Claude-only matching from $0.055 to $0.036 per order, the whole pipeline from about $683 to $455 per 10,000 orders (Jev: $147 to $102). Jev's matching step is about 35× cheaper, not the roughly 50× we had been quoting.
+**Changed:** the pricing file names its source and date, costs now include cache-write and cache-read tokens when present, `npm run reprice` recomputes saved results after any price change, and "assumed" is gone from every caveat. The header also got a wordmark, a chart icon for Sample results and a slider icon for Settings.
+
 ## Where it stands
 
 | | Claude only | Claude + Jev |
@@ -139,9 +144,9 @@ Each entry: what we did, what happened, what it changed.
 | Auto-approved | 73.9% | 73.9% |
 | Wrong product among auto-approved | 0% | 0% |
 | Matching time per order | about 2.1 s | about 0.4 s |
-| Matching cost per order | about $0.055 | about $0.001 |
+| Matching cost per order | about $0.036 | about $0.001 |
 
-Read as signals, not benchmarks: 20 orders, tuned in-sample, Claude prices assumed. What the data supports is that Jev's confidence is well calibrated (every line it was at least 70% sure of was right) and the matching step is roughly 50x cheaper and 5x faster, with the same number of lines safely skipping review. It does not show Jev is more accurate.
+Read as signals, not benchmarks: 20 orders, tuned in-sample, costs from token counts at list prices. What the data supports is that Jev's confidence is well calibrated (every line it was at least 70% sure of was right) and the matching step is roughly 35x cheaper and 5x faster, with the same number of lines safely skipping review. It does not show Jev is more accurate.
 
 ## What the process taught us
 
@@ -156,7 +161,7 @@ Read as signals, not benchmarks: 20 orders, tuned in-sample, Claude prices assum
 ## Open questions
 
 - A held-out set of messier orders (the current set was used to tune).
-- Verify Claude pricing; the cost ratio depends on it.
+- Test the Claude-only pipeline with prompt caching on its catalog prompt, which production would use; it would narrow the cost gap.
 - How the quantity check behaves on real, noisier unit language.
 - A hard, shared cap on live runs (the current limits are per server instance).
 

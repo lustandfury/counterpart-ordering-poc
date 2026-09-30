@@ -25,6 +25,12 @@ export async function callTool<T>(args: {
   });
   const block = res.content.find((b) => b.type === "tool_use");
   if (!block || block.type !== "tool_use") throw new Error("Claude did not return a tool call");
-  const usage = { inputTokens: res.usage.input_tokens, outputTokens: res.usage.output_tokens };
+  // keep every billed token type so the cost is exact even when prompt caching is on
+  const usage = {
+    inputTokens: res.usage.input_tokens,
+    outputTokens: res.usage.output_tokens,
+    cacheWriteTokens: res.usage.cache_creation_input_tokens ?? 0,
+    cacheReadTokens: res.usage.cache_read_input_tokens ?? 0,
+  };
   return { input: block.input as T, ms: performance.now() - t0, usage, costUsd: claudeCost(usage) };
 }

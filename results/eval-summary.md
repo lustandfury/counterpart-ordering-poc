@@ -12,10 +12,10 @@ Matching step only (parsing is shared and excluded), except the last row.
 | Approve/flag agrees with the key (%) | 97.7 | 97.7 |
 | Time per order, matching step (ms, wall clock) | 2081 | 425 |
 | Time per order, matching step (ms, sum of the per-line calls) | 2081 | 1386 |
-| Cost per order, matching step (USD) | 0.05456 | 0.00103 |
-| Cost per 1,000 orders, whole pipeline (USD) | 68.26 | 14.73 |
+| Cost per order, matching step (USD) | 0.03637 | 0.00103 |
+| Cost per 1,000 orders, whole pipeline (USD) | 45.51 | 10.16 |
 
-Whole-pipeline cost includes the shared parse step (0.0137 USD per order). Claude prices are assumed (see lib/pricing.ts).
+Whole-pipeline cost includes the shared parse step (0.0091 USD per order). Costs are recorded token counts at list prices (lib/pricing.ts).
 Caveats:
 - Timing: Jev makes up to two calls per line (product, then quantity check), five lines at a time, so its wall-clock time depends on concurrency; the sum of the per-line calls is shown too. Claude-only is one large call (about 17k input tokens). Both ran together in one run, so each includes some contention and network noise.
 - 14 of 88 lines chose NONE (no catalog match) and skipped the second Jev call, so their `jev_unit_ok` is stored as 0 meaning "not asked". That saves Jev time and cost, but it depends on how many not-in-catalog lines the set has, and this set deliberately has many. Do not average `unit_ok` over all lines.

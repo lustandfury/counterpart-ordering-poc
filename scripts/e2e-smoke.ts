@@ -18,7 +18,7 @@ async function main() {
     return { approved: Number(/(\d+) auto-approved/.exec(t)![1]), flagged: Number(/(\d+) to check/.exec(t)![1]), done: Number(/(\d+) done/.exec(t)?.[1] ?? 0) };
   };
   const openSettings = async () => {
-    if (!(await page.locator("#t").isVisible())) await page.getByRole("button", { name: "Settings" }).click();
+    if (!(await page.locator("#t").isVisible())) await page.getByRole("button", { name: /^Settings/ }).click();
   };
   assert.equal(await page.locator("#t").count(), 0, "thresholds are tucked away by default");
   const start = await counts();
