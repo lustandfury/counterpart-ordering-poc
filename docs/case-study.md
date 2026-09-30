@@ -96,6 +96,11 @@ Each entry: what we did, what happened, what it changed.
 **Happened:** at 10,000 orders the comparison reads as a budget line rather than fractions of a cent: about $147 with Jev versus $683 with Claude alone across the 20 samples.
 **Changed:** the panel is narrower (20rem), and the README's cost row uses the same scale.
 
+### 16. Telling the rep what to do
+**Did:** replaced the keyboard-shortcut line (j/k, 1–3, Enter, x) with plain instructions that appear only when something needs review: how many lines need a look, then three steps (read why it was flagged, pick the product or confirm the quantity, or mark it "Not in catalog"), and a reminder that green lines need nothing. Mike asked what the shortcut line meant, which was the signal it did not explain itself.
+**Happened:** the instructions pointed at the flag reasons, which were still in engineering terms ("product confidence 0.82 below 0.85"). Rewriting them in plain language ("We're not sure which product this is (82% on the best guess)") exposed a contradiction: on a line with no catalog match, that percentage was the confidence in "no match", not in a product.
+**Changed:** reasons are plain sentences kept as shared constants (so tests and the screen stay in sync), and a no-match line shows only "We couldn't find a clear match in the catalog." The shortcuts still work; the card footer mentions Enter and "Not in catalog".
+
 ## Where it stands
 
 | | Claude only | Claude + Jev |

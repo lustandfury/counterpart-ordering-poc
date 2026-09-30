@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { REASON } from "./pipeline/route";
 import type { OrderResult } from "./types";
 import { computeView, segmentText, totals, type SlimCatalog } from "./view";
 
@@ -31,7 +32,7 @@ describe("computeView", () => {
     const v = computeView(result(0.1), "claude", 0.99, cat)[0];
     expect(v.approved).toBe(true);
     expect(v.confidence).toBe("high");
-    expect(computeView(result(0.9, 0.95, null), "claude", 0.85, cat)[0].reasons).toContain("quantity missing");
+    expect(computeView(result(0.9, 0.95, null), "claude", 0.85, cat)[0].reasons).toContain(REASON.noQty);
   });
 });
 

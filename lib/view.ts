@@ -1,4 +1,4 @@
-import { route, routeClaudeOnly } from "./pipeline/route";
+import { REASON, route, routeClaudeOnly } from "./pipeline/route";
 import type { OrderResult } from "./types";
 
 export type Mode = "jev" | "claude";
@@ -33,9 +33,9 @@ export function computeView(result: OrderResult, mode: Mode, T: number, cat: Sli
     if (mode === "jev") {
       const pick = j.sku.choice;
       const d = route({ skuChoice: pick, skuConfidence: j.sku.confidence, unitOk: j.unitOk, qty: pl.qty, productUnit: cat[pick]?.unit ?? null, T, unitOkMin });
-      const quantityOnly = !d.approved && pick !== NONE && j.sku.confidence >= T && d.reasons.length === 1 && d.reasons[0].startsWith("quantity/unit");
+      const quantityOnly = !d.approved && pick !== NONE && j.sku.confidence >= T && d.reasons.length === 1 && d.reasons[0] === REASON.quantity;
       const reasons = quantityOnly
-        ? [`Product looks right (${Math.round(j.sku.confidence * 100)}%). Check the quantity: “${pl.raw}” against how it is sold (per ${cat[pick]?.unit ?? "unit"}).`]
+        ? [`The product looks right (${Math.round(j.sku.confidence * 100)}% sure). Check the quantity: the customer wrote “${pl.raw}”, and this is sold per ${cat[pick]?.unit === "each" ? "piece" : (cat[pick]?.unit ?? "unit")}.`]
         : d.reasons;
       return {
         id: pl.id, raw: pl.raw, qty: pl.qty, unit: pl.unit, sku: pick, name: nameOf(cat, pick), quantityOnly,

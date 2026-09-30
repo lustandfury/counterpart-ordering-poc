@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { isLargeQuantity, route, routeClaudeOnly } from "./route";
+import { isLargeQuantity, REASON, route, routeClaudeOnly } from "./route";
 
 const ok = { skuChoice: "A", skuConfidence: 0.95, unitOk: 0.9, qty: 12, productUnit: "each" };
 
@@ -10,13 +10,13 @@ describe("route (Jev)", () => {
     expect(route({ ...ok, skuConfidence: 0.8, T: 0.7 }).approved).toBe(true);
   });
   it("flags a bad unit check even when the product is certain", () => {
-    expect(route({ ...ok, skuConfidence: 1, unitOk: 0.66 }).reasons[0]).toMatch(/quantity\/unit/);
+    expect(route({ ...ok, skuConfidence: 1, unitOk: 0.66 }).reasons[0]).toBe(REASON.quantity);
   });
   it("flags NONE, missing quantity and large quantities", () => {
     expect(route({ ...ok, skuChoice: "NONE" }).approved).toBe(false);
-    expect(route({ ...ok, skuChoice: "NONE", unitOk: 0, qty: 100, productUnit: null }).reasons).toEqual(["no single product matched"]);
-    expect(route({ ...ok, qty: null }).reasons).toContain("quantity missing");
-    expect(route({ ...ok, qty: 100 }).reasons).toContain("large quantity");
+    expect(route({ ...ok, skuChoice: "NONE", skuConfidence: 0.8, unitOk: 0, qty: 100, productUnit: null }).reasons).toEqual([REASON.noMatch]);
+    expect(route({ ...ok, qty: null }).reasons).toContain(REASON.noQty);
+    expect(route({ ...ok, qty: 100 }).reasons).toContain(REASON.large);
   });
 });
 

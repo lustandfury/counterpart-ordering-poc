@@ -1,6 +1,16 @@
 import type { Decision } from "../types";
 
 export const DEFAULT_T = 0.85;
+
+/** Plain-language reasons shown to the rep. */
+export const REASON = {
+  noMatch: "We couldn't find a clear match in the catalog.",
+  unsure: (c: number) => `We're not sure which product this is (${Math.round(c * 100)}% on the best guess).`,
+  quantity: "The quantity or unit may not fit how this product is sold.",
+  noQty: "No quantity was given.",
+  large: "This is an unusually large quantity. Confirm it with the customer.",
+  claude: (c: string) => `Claude rated its own match “${c}”, not “high”.`,
+};
 export const UNIT_OK_MIN = 0.8;
 
 /** House rule: 100+ pieces/sheets, or 50+ of any other unit, always goes to a rep. */
@@ -22,12 +32,12 @@ export function route(a: {
   const unitMin = a.unitOkMin ?? UNIT_OK_MIN;
   const reasons: string[] = [];
   const none = a.skuChoice === "NONE";
-  if (none) reasons.push("no single product matched");
-  if (a.skuConfidence < T) reasons.push(`product confidence ${a.skuConfidence.toFixed(2)} below ${T}`);
+  if (none) reasons.push(REASON.noMatch);
+  if (!none && a.skuConfidence < T) reasons.push(REASON.unsure(a.skuConfidence)); // with no match, the confidence is in "none"
   // With no product there is no quantity check (it is not asked) and no selling unit to judge size against.
-  if (!none && a.unitOk < unitMin) reasons.push(`quantity/unit unclear (${a.unitOk.toFixed(2)}, needs ${unitMin})`);
-  if (a.qty == null) reasons.push("quantity missing");
-  if (!none && isLargeQuantity(a.qty, a.productUnit)) reasons.push("large quantity");
+  if (!none && a.unitOk < unitMin) reasons.push(REASON.quantity);
+  if (a.qty == null) reasons.push(REASON.noQty);
+  if (!none && isLargeQuantity(a.qty, a.productUnit)) reasons.push(REASON.large);
   return { approved: reasons.length === 0, reasons };
 }
 
@@ -39,9 +49,9 @@ export function routeClaudeOnly(a: {
   productUnit: string | null;
 }): Decision {
   const reasons: string[] = [];
-  if (!a.sku) reasons.push("no single product matched");
-  if (a.confidence !== "high") reasons.push(`Claude confidence ${a.confidence}`);
-  if (a.qty == null) reasons.push("quantity missing");
-  if (isLargeQuantity(a.qty, a.productUnit)) reasons.push("large quantity");
+  if (!a.sku) reasons.push(REASON.noMatch);
+  if (a.confidence !== "high") reasons.push(REASON.claude(a.confidence));
+  if (a.qty == null) reasons.push(REASON.noQty);
+  if (isLargeQuantity(a.qty, a.productUnit)) reasons.push(REASON.large);
   return { approved: reasons.length === 0, reasons };
 }

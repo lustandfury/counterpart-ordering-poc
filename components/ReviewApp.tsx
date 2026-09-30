@@ -268,6 +268,10 @@ function Review({ result, isLive, mode, T, unitMin, catalog }: { result: OrderRe
   const flagged = lines.filter((l) => !l.approved);
   const done = flagged.filter((l) => resolved[l.id]).length;
   const current = active ?? flagged.find((l) => !resolved[l.id])?.id ?? null;
+  const open = flagged.filter((l) => !resolved[l.id]);
+  const remaining = open.length;
+  const anyQuantityOnly = open.some((l) => l.quantityOnly);
+  const anyProductChoice = open.some((l) => !l.quantityOnly);
 
   const choose = useCallback((lineId: string, sku: string) => setResolved((r) => ({ ...r, [lineId]: sku })), []);
   const undo = (lineId: string) => {
@@ -327,8 +331,25 @@ function Review({ result, isLive, mode, T, unitMin, catalog }: { result: OrderRe
         <span className="text-muted">{lines.length} lines</span>
         <span className="font-medium text-ok">{lines.length - flagged.length} auto-approved</span>
         <span className="font-medium text-warn">{flagged.length} to check{flagged.length ? ` · ${done} done` : ""}</span>
-        <span className="basis-full pt-1 text-[13px] text-muted">Keys: <kbd>j</kbd>/<kbd>k</kbd> move · <kbd>1</kbd>–<kbd>3</kbd> pick · <kbd>Enter</kbd> accept · <kbd>x</kbd> not in catalog</span>
       </div>
+
+      {remaining > 0 && (
+        <section aria-label="What to do" className="mb-6 rounded-xl bg-warnbg px-5 py-4">
+          <p className="font-semibold text-warn">
+            {remaining === 1 ? "1 line needs your review before this order can go out." : `${remaining} lines need your review before this order can go out.`}
+          </p>
+          <ol className="mt-2 list-decimal space-y-1 pl-5 text-[14px] text-ink">
+            <li>Read why the highlighted line was flagged.</li>
+            <li>
+              {anyQuantityOnly && !anyProductChoice
+                ? "If the quantity is right, confirm it. If not, check the order with the customer."
+                : "Choose the product the customer meant, or confirm the quantity if the product is already right."}
+            </li>
+            <li>If we don’t carry it, choose “Not in catalog” so it’s left off the order.</li>
+          </ol>
+          <p className="mt-2 text-[13px] text-muted">Green lines are already approved and need nothing from you.</p>
+        </section>
+      )}
 
       {(flagged.length === 0 || done === flagged.length) && (
         <p role="status" className="mb-6 rounded-xl bg-okbg px-5 py-3.5 font-medium text-ok">

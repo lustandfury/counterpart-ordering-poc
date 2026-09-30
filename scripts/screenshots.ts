@@ -9,6 +9,7 @@ async function main() {
     const page = await ctx.newPage();
     await page.goto(base);
     if (process.env.ORDER) {
+      if (!(await page.locator("#orders").isVisible())) await page.keyboard.press("Control+b");
       await page.locator("#orders").getByRole("button", { name: new RegExp(`^${process.env.ORDER}`) }).click();
     }
     if (act) await act(page);
