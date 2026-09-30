@@ -28,9 +28,9 @@
       {
         "id": "4",
         "raw": "Deck screws 3in tan one 25lb box",
-        "item": "Deck screws 3in tan",
+        "item": "Deck screws 3in tan 25lb box",
         "qty": 1,
-        "unit": "25lb box"
+        "unit": "box"
       },
       {
         "id": "5",
@@ -40,12 +40,12 @@
         "unit": null
       }
     ],
-    "ms": 2174.3561670000054,
+    "ms": 2480.0604169999933,
     "usage": {
-      "inputTokens": 3532,
-      "outputTokens": 311
+      "inputTokens": 3428,
+      "outputTokens": 313
     },
-    "costUsd": 0.015261
+    "costUsd": 0.014979
   },
   "jev": {
     "lines": [
@@ -86,22 +86,22 @@
               "probability": 1
             },
             {
-              "sku": "LBR-2X8-16-PT",
+              "sku": "LBR-2X6-12-PT",
               "probability": 0
             },
             {
-              "sku": "LBR-2X6-16-PT",
+              "sku": "LBR-2X8-08-PT",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.92,
-        "ms": 246.57304200000362,
+        "unitOk": 0.96,
+        "ms": 488.56629099999554,
         "usage": {
-          "inputTokens": 4374,
-          "outputTokens": 529
+          "inputTokens": 6456,
+          "outputTokens": 532
         },
-        "costUsd": 0.00018370799999999998
+        "costUsd": 0.000271152
       },
       {
         "lineId": "2",
@@ -149,13 +149,13 @@
             }
           ]
         },
-        "unitOk": 0.9,
-        "ms": 342.03770899999654,
+        "unitOk": 0.97,
+        "ms": 416.35275000000547,
         "usage": {
-          "inputTokens": 4383,
-          "outputTokens": 540
+          "inputTokens": 6462,
+          "outputTokens": 543
         },
-        "costUsd": 0.000184086
+        "costUsd": 0.000271404
       },
       {
         "lineId": "3",
@@ -191,49 +191,49 @@
           "top": [
             {
               "sku": "LBR-4X4-8-PT",
-              "probability": 1
+              "probability": 0.99
             },
             {
-              "sku": "LBR-1X4-8-PINE",
-              "probability": 0
+              "sku": "NONE",
+              "probability": 0.01
             },
             {
-              "sku": "LBR-4X4-12-PT",
+              "sku": "HDW-POST-4X4",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.92,
-        "ms": 292.7171670000098,
+        "unitOk": 0.96,
+        "ms": 387.3460829999967,
         "usage": {
-          "inputTokens": 4094,
-          "outputTokens": 518
+          "inputTokens": 6161,
+          "outputTokens": 521
         },
-        "costUsd": 0.000171948
+        "costUsd": 0.000258762
       },
       {
         "lineId": "4",
         "shortlist": [
-          "FST-DECK-3-TAN-1LB",
-          "FST-DECK-3-TAN-5LB",
           "FST-DECK-3-TAN-25LB",
-          "FST-DECK-25-TAN-1LB",
-          "FST-DECK-25-TAN-5LB",
+          "FST-DECK-3-TAN-5LB",
+          "FST-DECK-3-TAN-1LB",
           "FST-DECK-25-TAN-25LB",
-          "FST-DRY-158-1LB",
-          "FST-DRY-158-5LB",
+          "FST-DECK-25-TAN-5LB",
+          "FST-DECK-25-TAN-1LB",
           "FST-DRY-158-25LB",
-          "FST-DRY-158-FINE-1LB",
-          "FST-DRY-158-FINE-5LB",
+          "FST-DRY-158-5LB",
+          "FST-DRY-158-1LB",
           "FST-DRY-158-FINE-25LB",
-          "FST-DECK-3-GRAY-1LB",
-          "FST-DECK-3-GRAY-5LB",
           "FST-DECK-3-GRAY-25LB",
-          "FST-DECK-25-BRN-1LB",
-          "FST-DECK-25-BRN-5LB",
           "FST-DECK-25-BRN-25LB",
-          "FST-STRC-3-1LB",
-          "FST-STRC-3-5LB"
+          "FST-DECK-3-GRAY-5LB",
+          "FST-DECK-25-BRN-5LB",
+          "FST-DECK-3-GRAY-1LB",
+          "FST-DECK-25-BRN-1LB",
+          "FST-DRY-158-FINE-5LB",
+          "FST-DRY-158-FINE-1LB",
+          "FST-DRY-214-25LB",
+          "FST-STRC-3-1LB"
         ],
         "category": {
           "choice": "fasteners",
@@ -252,18 +252,18 @@
               "probability": 0.02
             },
             {
-              "sku": "FST-DECK-25-TAN-5LB",
+              "sku": "FST-DRY-158-FINE-25LB",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.88,
-        "ms": 293.9784580000123,
+        "unitOk": 0.97,
+        "ms": 338.0685419999936,
         "usage": {
-          "inputTokens": 4538,
-          "outputTokens": 547
+          "inputTokens": 6614,
+          "outputTokens": 553
         },
-        "costUsd": 0.000190596
+        "costUsd": 0.000277788
       },
       {
         "lineId": "5",
@@ -306,26 +306,26 @@
               "probability": 0.02
             },
             {
-              "sku": "LBR-2X12-08-SPF",
+              "sku": "LBR-2X4-16-PT",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.73,
-        "ms": 289.97775000000547,
+        "unitOk": 0.92,
+        "ms": 367.36116700001,
         "usage": {
-          "inputTokens": 4156,
-          "outputTokens": 504
+          "inputTokens": 6231,
+          "outputTokens": 507
         },
-        "costUsd": 0.000174552
+        "costUsd": 0.000261702
       }
     ],
-    "ms": 396.921875,
+    "ms": 516.2769589999953,
     "usage": {
-      "inputTokens": 21545,
-      "outputTokens": 2638
+      "inputTokens": 31924,
+      "outputTokens": 2656
     },
-    "costUsd": 0.00090489
+    "costUsd": 0.001340808
   },
   "claudeOnly": {
     "lines": [
@@ -355,11 +355,11 @@
         "confidence": "high"
       }
     ],
-    "ms": 2645.3847499999974,
+    "ms": 1789.5047499999928,
     "usage": {
-      "inputTokens": 17331,
+      "inputTokens": 17228,
       "outputTokens": 213
     },
-    "costUsd": 0.055188
+    "costUsd": 0.054879
   }
 }

@@ -1,89 +1,89 @@
 order,line,raw,gold_sku,gold_review,jev_sku,jev_conf,jev_unit_ok,jev_approved,jev_correct,claude_sku,claude_conf,claude_approved,claude_correct,in_shortlist
-o01,1,"12 - 2x4x8 SPF",LBR-2X4-08-SPF,false,LBR-2X4-08-SPF,1.000,0.950,true,true,LBR-2X4-08-SPF,high,true,true,true
-o01,2,"8 - 2x6x10 SPF",LBR-2X6-10-SPF,false,LBR-2X6-10-SPF,1.000,0.940,true,true,LBR-2X6-10-SPF,high,true,true,true
-o01,3,"10 - 2x4x12 SPF",LBR-2X4-12-SPF,false,LBR-2X4-12-SPF,1.000,0.940,true,true,LBR-2X4-12-SPF,high,true,true,true
-o01,4,"20 sheets 7/16 OSB",SHT-OSB-716,false,SHT-OSB-716,1.000,0.950,true,true,SHT-OSB-716,high,true,true,true
-o01,5,"1 box 16d common nails 5lb",FST-16D-COM-5LB,false,FST-16D-COM-5LB,0.980,0.850,true,true,FST-16D-COM-5LB,high,true,true,true
+o01,1,"12 - 2x4x8 SPF",LBR-2X4-08-SPF,false,LBR-2X4-08-SPF,1.000,0.970,true,true,LBR-2X4-08-SPF,high,true,true,true
+o01,2,"8 - 2x6x10 SPF",LBR-2X6-10-SPF,false,LBR-2X6-10-SPF,1.000,0.970,true,true,LBR-2X6-10-SPF,high,true,true,true
+o01,3,"10 - 2x4x12 SPF",LBR-2X4-12-SPF,false,LBR-2X4-12-SPF,1.000,0.960,true,true,LBR-2X4-12-SPF,high,true,true,true
+o01,4,"20 sheets 7/16 OSB",SHT-OSB-716,false,SHT-OSB-716,1.000,0.970,true,true,SHT-OSB-716,high,true,true,true
+o01,5,"1 box 16d common nails 5lb",FST-16D-COM-5LB,false,FST-16D-COM-5LB,0.980,0.960,true,true,FST-16D-COM-5LB,high,true,true,true
 o02,1,"30 sheets 1/2 regular drywall 4x8",DRY-12-REG-4X8,false,DRY-12-REG-4X8,1.000,0.960,true,true,DRY-12-REG-4X8,high,true,true,true
-o02,2,"10 sheets 5/8 type X drywall 4x12",DRY-58-X-4X12,false,DRY-58-X-4X12,1.000,0.960,true,true,DRY-58-X-4X12,high,true,true,true
-o02,3,"2 buckets joint compound 4.5 gal",DRY-MUD-45,false,DRY-MUD-45,0.960,0.750,false,true,DRY-MUD-45,high,true,true,true
-o02,4,"3 rolls paper drywall tape",DRY-TAPE-250,false,DRY-TAPE-250,0.970,0.940,true,true,DRY-TAPE-250,high,true,true,true
-o02,5,"2 boxes 5lb 1-5/8 drywall screws",FST-DRY-158-5LB,true,FST-DRY-158-5LB,0.800,0.890,false,true,FST-DRY-158-5LB,medium,false,true,true
-o03,1,"40 bags 30 kg concrete mix",CON-30KG,false,CON-30KG,1.000,0.950,true,true,CON-30KG,high,true,true,true
-o03,2,"10 pcs 15M rebar 3m",CON-REBAR-15M-3M,false,CON-REBAR-15M-3M,1.000,0.920,true,true,CON-REBAR-15M-3M,high,true,true,true
-o03,3,"2 sheets 6x6 welded wire mesh",CON-MESH-5X10,false,CON-MESH-5X10,0.860,0.920,true,true,CON-MESH-5X10,high,true,true,true
-o03,4,"4 12 in tube forms",CON-FORM-SONO-12,false,CON-FORM-SONO-12,0.970,0.880,true,true,CON-FORM-SONO-12,high,true,true,true
-o04,1,"24 bundles architectural shingles onyx black",ROF-SHG-ARCH-BLK,false,ROF-SHG-ARCH-BLK,1.000,0.920,true,true,ROF-SHG-ARCH-BLK,high,true,true,true
-o04,2,"3 rolls synthetic underlayment",ROF-UNDER-SYN,false,ROF-UNDER-SYN,0.960,0.920,true,true,ROF-UNDER-SYN,high,true,true,true
-o04,3,"10 white drip edge 10ft",ROF-DRIP-10,false,ROF-DRIP-10,0.990,0.840,true,true,ROF-DRIP-10,high,true,true,true
-o04,4,"2 rolls ice and water shield 36in",ROF-ICE-36,false,ROF-ICE-36,1.000,0.940,true,true,ROF-ICE-36,high,true,true,true
-o05,1,"2x4x8 PT x 15",LBR-2X4-08-PT,false,LBR-2X4-08-PT,1.000,0.940,true,true,LBR-2X4-08-PT,high,true,true,true
-o05,2,"2x6x12 PT x 10",LBR-2X6-12-PT,false,LBR-2X6-12-PT,1.000,0.910,true,true,LBR-2X6-12-PT,high,true,true,true
-o05,3,"4x4x10 PT x 6",LBR-4X4-10-PT,false,LBR-4X4-10-PT,0.990,0.920,true,true,LBR-4X4-10-PT,high,true,true,true
-o05,4,"3in deck screws 5lb tan x2",FST-DECK-3-TAN-5LB,false,FST-DECK-3-TAN-5LB,0.940,0.690,false,true,FST-DECK-3-TAN-5LB,high,true,true,true
-o05,5,"5/4 decking 16ft x 40",DCK-54-16-PT,false,DCK-54-16-PT,1.000,0.860,true,true,DCK-54-16-PT,high,true,true,true
-o06,1,"5/8 type X 4x8 x 20",DRY-58-X-4X8,false,DRY-58-X-4X8,1.000,0.910,true,true,DRY-58-X-4X8,high,true,true,true
-o06,2,"5/8 rock reg 4x8 x 10",DRY-58-REG-4X8,false,DRY-58-REG-4X8,0.960,0.910,true,true,DRY-58-REG-4X8,high,true,true,true
-o06,3,"greenboard 1/2 4x8 x 6",DRY-12-MR-4X8,false,DRY-12-MR-4X8,1.000,0.900,true,true,DRY-12-MR-4X8,high,true,true,true
-o06,4,"mud 3 buckets",DRY-MUD-45,false,DRY-MUD-45,0.950,0.630,false,true,DRY-MUD-45,high,true,true,true
-o06,5,"mesh tape x2",DRY-TAPE-MESH,false,DRY-TAPE-MESH,0.970,0.690,false,true,DRY-TAPE-MESH,high,true,true,true
-o07,1,"2x6 hangers box x2",HDW-JH-2X6-BOX,false,HDW-JH-2X6-BOX,1.000,0.820,true,true,HDW-JH-2X6-BOX,high,true,true,true
-o07,2,"hurricane ties 50",HDW-HT-H2-5,false,HDW-HT-H2-5,0.960,0.530,false,true,HDW-HT-H2-5,high,true,true,true
-o07,3,"16d sinkers 50lb",FST-16D-SINK-50LB,false,FST-16D-SINK-50LB,0.990,0.610,false,true,FST-16D-SINK-50LB,low,false,true,true
-o07,4,"2x10x16 spf x 12",LBR-2X10-16-SPF,false,LBR-2X10-16-SPF,1.000,0.910,true,true,LBR-2X10-16-SPF,high,true,true,true
-o07,5,"2x10 hangers 30",HDW-JH-2X10,false,HDW-JH-2X10,0.920,0.640,false,true,HDW-JH-2X10,high,true,true,true
-o08,1,"1/2 cdx 12 sheets",SHT-PLY-CDX-12,false,SHT-PLY-CDX-12,1.000,0.910,true,true,SHT-PLY-CDX-12,high,true,true,true
-o08,2,"3/4 tg osb 30",SHT-OSB-2332,false,SHT-OSB-2332,1.000,0.890,true,true,SHT-OSB-2332,high,true,true,true
-o08,3,"3/4 pt ply x 4",SHT-PLY-PT-34,false,SHT-PLY-PT-34,0.870,0.760,false,true,SHT-PLY-PT-34,high,true,true,true
-o08,4,"liquid nails x 12",SUP-ADH-CONST-10,false,SUP-ADH-CONST-10,0.990,0.440,false,true,SUP-ADH-CONST-10,high,true,true,true
-o08,5,"subfloor glue 12",SUP-ADH-SUBFL-28,false,SUP-ADH-SUBFL-28,0.930,0.380,false,true,SUP-ADH-SUBFL-28,high,true,true,true
-o09,1,"r20 15in x 8 bags",INS-R20-15,false,INS-R20-15,0.980,0.900,true,true,INS-R20-15,high,true,true,true
-o09,2,"r12 23in x 4",INS-R12-23,false,INS-R12-23,0.990,0.600,false,true,INS-R12-23,high,true,true,true
-o09,3,"tyvek 9ft x 2",WTH-WRAP-9,false,WTH-WRAP-9,0.990,0.560,false,true,WTH-WRAP-9,high,true,true,true
-o09,4,"flashing tape 6in x 3",WTH-FLASH-6,false,WTH-FLASH-6,0.880,0.410,false,true,WTH-FLASH-6,high,true,true,true
-o09,5,"cap nails 2 boxes",WTH-CAP-1,false,WTH-CAP-1,0.880,0.770,false,true,WTH-CAP-1,high,true,true,true
-o09,6,"6 mil poly x1",WTH-POLY-6,false,WTH-POLY-6,0.940,0.480,false,true,WTH-POLY-6,high,true,true,true
-o10,1,"6x6x10 pt post x 8",LBR-6X6-10-PT,false,LBR-6X6-10-PT,0.990,0.910,true,true,LBR-6X6-10-PT,high,true,true,true
-o10,2,"4x4x8 treated x 10",LBR-4X4-8-PT,false,LBR-4X4-8-PT,0.910,0.880,true,true,LBR-4X4-8-PT,high,true,true,true
-o10,3,"sonotube 12 x 8",CON-FORM-SONO-12,false,CON-FORM-SONO-12,0.850,0.630,false,true,CON-FORM-SONO-12,high,true,true,true
-o10,4,"30kg concrete x 30",CON-30KG,false,CON-30KG,1.000,0.870,true,true,CON-30KG,high,true,true,true
-o10,5,"anchor bolts 1/2 x 8 x 20",FST-ATROD-12-8,false,FST-ATROD-12-8,0.910,0.600,false,true,FST-ATROD-12-8,high,true,true,true
-o10,6,"wedge anchors 1/2 x 1 box",FST-ANCH-12-50,false,FST-ANCH-12-50,0.960,0.760,false,true,FST-ANCH-12-50,high,true,true,true
-o11,1,"20 of the 2x6 (8ft)",LBR-2X6-08-SPF,false,LBR-2X6-08-SPF,1.000,0.940,true,true,LBR-2X6-08-SPF,high,true,true,true
-o11,2,"15 of the 2x4",,true,,0.510,0.790,false,true,,low,false,true,true
-o11,3,"2 of the 4x4 posts",,true,,0.940,0.780,false,true,,low,false,true,true
-o12,1,"a bundle of shingles",,true,,0.630,0.890,false,true,,low,false,true,true
-o12,2,"2 rolls felt",,true,,0.710,0.890,false,true,,low,false,true,true
-o12,3,"a box of screws",,true,,0.970,0.690,false,true,,low,false,true,true
-o12,4,"half a pallet of block",MAS-CMU-8,true,MAS-CMU-8,0.660,0.180,false,true,MAS-CMU-8,low,false,true,true
-o13,1,"50 studs",LBR-2X4-PRECUT-SPF,false,LBR-2X4-PRECUT-SPF,1.000,0.780,false,true,LBR-2X4-PRECUT-SPF,high,true,true,true
-o13,2,"3 sheets of 1/2 plywood",SHT-PLY-CDX-12,false,SHT-PLY-CDX-12,1.000,0.950,true,true,SHT-PLY-CDX-12,high,true,true,true
-o13,3,"6 buckets of mud",DRY-MUD-45,false,DRY-MUD-45,0.870,0.360,false,true,DRY-MUD-45,high,true,true,true
-o13,4,"100 feet of tape",,true,,0.840,0.330,false,true,,low,false,true,true
-o14,1,"10 lbs of 16d nails",,true,,0.840,0.260,false,true,,low,false,true,true
-o14,2,"4 tubes of caulk",,true,,0.840,0.900,false,true,,low,false,true,true
-o14,3,"2 bags cement",,true,MAS-CEM-GU-30KG,0.470,0.880,false,false,,low,false,true,true
-o14,4,"30 m of 15M rebar",,true,,0.670,0.790,false,true,,low,false,true,true
-o15,1,"30 2x4x8",LBR-2X4-08-SPF,false,LBR-2X4-08-SPF,1.000,0.930,true,true,LBR-2X4-08-SPF,high,true,true,true
-o15,2,"12 2x6x8",LBR-2X6-08-SPF,false,LBR-2X6-08-SPF,1.000,0.950,true,true,LBR-2X6-08-SPF,high,true,true,true
-o15,3,"4 sheets of 3/4 ply cdx",SHT-PLY-CDX-34,false,SHT-PLY-CDX-34,0.880,0.960,true,true,SHT-PLY-CDX-34,high,true,true,true
-o16,1,"Same as last time but double the drywall and skip the mud.",,true,,1.000,0.120,false,true,,high,false,true,true
-o17,1,"pressure treated 2x8x12 for the joists, need 14",LBR-2X8-12-PT,false,LBR-2X8-12-PT,1.000,0.920,true,true,LBR-2X8-12-PT,high,true,true,true
-o17,2,"2 of the 2x10x12 PT for the beam",LBR-2X10-12-PT,false,LBR-2X10-12-PT,1.000,0.900,true,true,LBR-2X10-12-PT,high,true,true,true
-o17,3,"9 4x4x8 PT for posts",LBR-4X4-8-PT,false,LBR-4X4-8-PT,0.990,0.920,true,true,LBR-4X4-8-PT,high,true,true,true
-o17,4,"Deck screws 3in tan one 25lb box",FST-DECK-3-TAN-25LB,false,FST-DECK-3-TAN-25LB,0.980,0.880,true,true,FST-DECK-3-TAN-25LB,high,true,true,true
-o17,5,"joist hangers for the 2x8s, 28 of em",HDW-JH-2X8,false,HDW-JH-2X8,0.980,0.730,false,true,HDW-JH-2X8,high,true,true,true
-o18,1,"18 bundles weathered wood shingles",ROF-SHG-ARCH-BRN,false,ROF-SHG-ARCH-BRN,0.940,0.870,true,true,ROF-SHG-ARCH-BRN,high,true,true,true
-o18,2,"2 rolls of the 30# felt",ROF-UNDER-30,false,ROF-UNDER-30,0.990,0.930,true,true,ROF-UNDER-30,high,true,true,true
-o18,3,"6 brown drip edge",ROF-DRIP-10-BRN,false,ROF-DRIP-10-BRN,1.000,0.830,true,true,ROF-DRIP-10-BRN,high,true,true,true
-o18,4,"2 hip and ridge",ROF-SHG-RIDGE,false,ROF-SHG-RIDGE,0.990,0.610,false,true,ROF-SHG-RIDGE,high,true,true,true
-o18,5,"5 ridge vent",ROF-VENT-RIDGE,false,ROF-VENT-RIDGE,0.990,0.720,false,true,ROF-VENT-RIDGE,high,true,true,true
-o18,6,"do you guys rent a dumpster",,true,,1.000,0.100,false,true,,high,false,true,true
-o19,1,"200 2x4x8 spf",LBR-2X4-08-SPF,true,LBR-2X4-08-SPF,1.000,0.880,false,true,LBR-2X4-08-SPF,medium,false,true,true
-o19,2,"5000 sheets of 1/2 drywall",DRY-12-REG-4X8,true,DRY-12-REG-4X8,0.990,0.860,false,true,DRY-12-REG-4X8,low,false,true,true
-o19,3,"3 bobcat rentals",,true,,1.000,0.370,false,true,,high,false,true,true
-o19,4,"1 tile saw",,true,,1.000,0.580,false,true,,high,false,true,true
-o20,1,"9000 pcs 2x6x10 SPF",LBR-2X6-10-SPF,true,LBR-2X6-10-SPF,0.990,0.820,false,true,LBR-2X6-10-SPF,low,false,true,true
-o20,2,"cedar shakes 2 sq",,true,,1.000,0.380,false,true,,high,false,true,true
-o20,3,"marine plywood 3/4 x 60",,true,,0.940,0.460,false,true,,high,false,true,true
-o20,4,"40 5-gal pails deck stain",SUP-SEAL-EXT-5G,false,SUP-SEAL-EXT-5G,0.990,0.700,false,true,SUP-SEAL-EXT-5G,medium,false,true,true
+o02,2,"10 sheets 5/8 type X drywall 4x12",DRY-58-X-4X12,false,DRY-58-X-4X12,1.000,0.970,true,true,DRY-58-X-4X12,high,true,true,true
+o02,3,"2 buckets joint compound 4.5 gal",DRY-MUD-45,false,DRY-MUD-45,0.980,0.950,true,true,DRY-MUD-45,high,true,true,true
+o02,4,"3 rolls paper drywall tape",DRY-TAPE-250,false,DRY-TAPE-250,0.970,0.960,true,true,DRY-TAPE-250,high,true,true,true
+o02,5,"2 boxes 5lb 1-5/8 drywall screws",FST-DRY-158-5LB,true,FST-DRY-158-5LB,0.730,0.960,false,true,FST-DRY-158-5LB,medium,false,true,true
+o03,1,"40 bags 30 kg concrete mix",CON-30KG,false,CON-30KG,1.000,0.940,true,true,CON-30KG,high,true,true,true
+o03,2,"10 pcs 15M rebar 3m",CON-REBAR-15M-3M,false,CON-REBAR-15M-3M,1.000,0.950,true,true,CON-REBAR-15M-3M,high,true,true,true
+o03,3,"2 sheets 6x6 welded wire mesh",CON-MESH-5X10,false,CON-MESH-5X10,0.900,0.950,true,true,CON-MESH-5X10,high,true,true,true
+o03,4,"4 12 in tube forms",CON-FORM-SONO-12,false,CON-FORM-SONO-12,0.980,0.950,true,true,CON-FORM-SONO-12,high,true,true,true
+o04,1,"24 bundles architectural shingles onyx black",ROF-SHG-ARCH-BLK,false,ROF-SHG-ARCH-BLK,1.000,0.940,true,true,ROF-SHG-ARCH-BLK,high,true,true,true
+o04,2,"3 rolls synthetic underlayment",ROF-UNDER-SYN,false,ROF-UNDER-SYN,0.970,0.960,true,true,ROF-UNDER-SYN,high,true,true,true
+o04,3,"10 white drip edge 10ft",ROF-DRIP-10,false,ROF-DRIP-10,0.990,0.960,true,true,ROF-DRIP-10,high,true,true,true
+o04,4,"2 rolls ice and water shield 36in",ROF-ICE-36,false,ROF-ICE-36,1.000,0.970,true,true,ROF-ICE-36,high,true,true,true
+o05,1,"2x4x8 PT x 15",LBR-2X4-08-PT,false,LBR-2X4-08-PT,1.000,0.960,true,true,LBR-2X4-08-PT,high,true,true,true
+o05,2,"2x6x12 PT x 10",LBR-2X6-12-PT,false,LBR-2X6-12-PT,1.000,0.950,true,true,LBR-2X6-12-PT,high,true,true,true
+o05,3,"4x4x10 PT x 6",LBR-4X4-10-PT,false,LBR-4X4-10-PT,1.000,0.960,true,true,LBR-4X4-10-PT,high,true,true,true
+o05,4,"3in deck screws 5lb tan x2",FST-DECK-3-TAN-5LB,false,FST-DECK-3-TAN-5LB,0.960,0.940,true,true,FST-DECK-3-TAN-5LB,high,true,true,true
+o05,5,"5/4 decking 16ft x 40",DCK-54-16-PT,false,DCK-54-16-PT,1.000,0.890,true,true,DCK-54-16-PT,high,true,true,true
+o06,1,"5/8 type X 4x8 x 20",DRY-58-X-4X8,false,DRY-58-X-4X8,1.000,0.950,true,true,DRY-58-X-4X8,high,true,true,true
+o06,2,"5/8 rock reg 4x8 x 10",DRY-58-REG-4X8,false,DRY-58-REG-4X8,0.970,0.960,true,true,DRY-58-REG-4X8,high,true,true,true
+o06,3,"greenboard 1/2 4x8 x 6",DRY-12-MR-4X8,false,DRY-12-MR-4X8,1.000,0.960,true,true,DRY-12-MR-4X8,high,true,true,true
+o06,4,"mud 3 buckets",DRY-MUD-45,false,DRY-MUD-45,0.970,0.940,true,true,DRY-MUD-45,high,true,true,true
+o06,5,"mesh tape x2",DRY-TAPE-MESH,false,DRY-TAPE-MESH,0.980,0.950,true,true,DRY-TAPE-MESH,high,true,true,true
+o07,1,"2x6 hangers box x2",HDW-JH-2X6-BOX,false,HDW-JH-2X6-BOX,1.000,0.940,true,true,HDW-JH-2X6-BOX,high,true,true,true
+o07,2,"hurricane ties 50",HDW-HT-H2-5,false,HDW-HT-H2-5,0.970,0.820,true,true,HDW-HT-H2-5,high,true,true,true
+o07,3,"16d sinkers 50lb",FST-16D-SINK-50LB,false,FST-16D-SINK-50LB,0.990,0.480,false,true,FST-16D-SINK-50LB,medium,false,true,true
+o07,4,"2x10x16 spf x 12",LBR-2X10-16-SPF,false,LBR-2X10-16-SPF,1.000,0.940,true,true,LBR-2X10-16-SPF,high,true,true,true
+o07,5,"2x10 hangers 30",HDW-JH-2X10,false,HDW-JH-2X10,0.900,0.880,true,true,HDW-JH-2X10,high,true,true,true
+o08,1,"1/2 cdx 12 sheets",SHT-PLY-CDX-12,false,SHT-PLY-CDX-12,1.000,0.950,true,true,SHT-PLY-CDX-12,high,true,true,true
+o08,2,"3/4 tg osb 30",SHT-OSB-2332,false,SHT-OSB-2332,1.000,0.940,true,true,SHT-OSB-2332,high,true,true,true
+o08,3,"3/4 pt ply x 4",SHT-PLY-PT-34,false,SHT-PLY-PT-34,0.860,0.940,true,true,SHT-PLY-PT-34,high,true,true,true
+o08,4,"liquid nails x 12",SUP-ADH-CONST-10,false,SUP-ADH-CONST-10,0.990,0.920,true,true,SUP-ADH-CONST-10,high,true,true,true
+o08,5,"subfloor glue 12",SUP-ADH-SUBFL-28,false,SUP-ADH-SUBFL-28,0.940,0.920,true,true,SUP-ADH-SUBFL-28,high,true,true,true
+o09,1,"r20 15in x 8 bags",INS-R20-15,false,INS-R20-15,0.960,0.950,true,true,INS-R20-15,high,true,true,true
+o09,2,"r12 23in x 4",INS-R12-23,false,INS-R12-23,0.990,0.940,true,true,INS-R12-23,high,true,true,true
+o09,3,"tyvek 9ft x 2",WTH-WRAP-9,false,WTH-WRAP-9,0.980,0.890,true,true,WTH-WRAP-9,high,true,true,true
+o09,4,"flashing tape 6in x 3",WTH-FLASH-6,false,WTH-FLASH-6,0.880,0.920,true,true,WTH-FLASH-6,high,true,true,true
+o09,5,"cap nails 2 boxes",WTH-CAP-1,false,WTH-CAP-1,0.850,0.950,true,true,WTH-CAP-1,high,true,true,true
+o09,6,"6 mil poly x1",WTH-POLY-6,false,WTH-POLY-6,0.940,0.960,true,true,WTH-POLY-6,high,true,true,true
+o10,1,"6x6x10 pt post x 8",LBR-6X6-10-PT,false,LBR-6X6-10-PT,0.990,0.940,true,true,LBR-6X6-10-PT,high,true,true,true
+o10,2,"4x4x8 treated x 10",LBR-4X4-8-PT,false,LBR-4X4-8-PT,0.950,0.950,true,true,LBR-4X4-8-PT,high,true,true,true
+o10,3,"sonotube 12 x 8",CON-FORM-SONO-12,false,CON-FORM-SONO-12,0.910,0.930,true,true,CON-FORM-SONO-12,high,true,true,true
+o10,4,"30kg concrete x 30",CON-30KG,false,CON-30KG,1.000,0.900,true,true,CON-30KG,high,true,true,true
+o10,5,"anchor bolts 1/2 x 8 x 20",FST-ATROD-12-8,false,FST-ATROD-12-8,0.940,0.940,true,true,FST-ATROD-12-8,high,true,true,true
+o10,6,"wedge anchors 1/2 x 1 box",FST-ANCH-12-50,false,FST-ANCH-12-50,0.970,0.960,true,true,FST-ANCH-12-50,high,true,true,true
+o11,1,"20 of the 2x6 (8ft)",LBR-2X6-08-SPF,false,LBR-2X6-08-SPF,1.000,0.960,true,true,LBR-2X6-08-SPF,high,true,true,true
+o11,2,"15 of the 2x4",,true,,0.580,0.000,false,true,,low,false,true,true
+o11,3,"2 of the 4x4 posts",,true,,0.950,0.000,false,true,,low,false,true,true
+o12,1,"a bundle of shingles",,true,ROF-SHG-3TAB-GRY,0.470,0.960,false,false,,low,false,true,true
+o12,2,"2 rolls felt",,true,,0.770,0.000,false,true,,low,false,true,true
+o12,3,"a box of screws",,true,,0.970,0.000,false,true,,low,false,true,true
+o12,4,"half a pallet of block",MAS-CMU-8,true,MAS-CMU-8,0.710,0.170,false,true,MAS-CMU-8,low,false,true,true
+o13,1,"50 studs",LBR-2X4-PRECUT-SPF,false,LBR-2X4-PRECUT-SPF,1.000,0.890,true,true,LBR-2X4-PRECUT-SPF,high,true,true,true
+o13,2,"3 sheets of 1/2 plywood",SHT-PLY-CDX-12,false,SHT-PLY-CDX-12,1.000,0.970,true,true,SHT-PLY-CDX-12,high,true,true,true
+o13,3,"6 buckets of mud",DRY-MUD-45,false,DRY-MUD-45,0.920,0.900,true,true,DRY-MUD-45,high,true,true,true
+o13,4,"100 feet of tape",,true,,0.820,0.000,false,true,,low,false,true,true
+o14,1,"10 lbs of 16d nails",,true,,0.850,0.000,false,true,,low,false,true,true
+o14,2,"4 tubes of caulk",,true,,0.820,0.000,false,true,,low,false,true,true
+o14,3,"2 bags cement",,true,MAS-CEM-GU-30KG,0.490,0.970,false,false,,low,false,true,true
+o14,4,"30 m of 15M rebar",,true,,0.660,0.000,false,true,,low,false,true,true
+o15,1,"30 2x4x8",LBR-2X4-08-SPF,false,LBR-2X4-08-SPF,1.000,0.960,true,true,LBR-2X4-08-SPF,high,true,true,true
+o15,2,"12 2x6x8",LBR-2X6-08-SPF,false,LBR-2X6-08-SPF,1.000,0.960,true,true,LBR-2X6-08-SPF,high,true,true,true
+o15,3,"4 sheets of 3/4 ply cdx",SHT-PLY-CDX-34,false,SHT-PLY-CDX-34,0.890,0.970,true,true,SHT-PLY-CDX-34,high,true,true,true
+o16,1,"Same as last time but double the drywall and skip the mud",,true,,1.000,0.000,false,true,,low,false,true,true
+o17,1,"pressure treated 2x8x12 for the joists, need 14",LBR-2X8-12-PT,false,LBR-2X8-12-PT,1.000,0.960,true,true,LBR-2X8-12-PT,high,true,true,true
+o17,2,"2 of the 2x10x12 PT for the beam",LBR-2X10-12-PT,false,LBR-2X10-12-PT,1.000,0.970,true,true,LBR-2X10-12-PT,high,true,true,true
+o17,3,"9 4x4x8 PT for posts",LBR-4X4-8-PT,false,LBR-4X4-8-PT,0.990,0.960,true,true,LBR-4X4-8-PT,high,true,true,true
+o17,4,"Deck screws 3in tan one 25lb box",FST-DECK-3-TAN-25LB,false,FST-DECK-3-TAN-25LB,0.980,0.970,true,true,FST-DECK-3-TAN-25LB,high,true,true,true
+o17,5,"joist hangers for the 2x8s, 28 of em",HDW-JH-2X8,false,HDW-JH-2X8,0.980,0.920,true,true,HDW-JH-2X8,high,true,true,true
+o18,1,"18 bundles weathered wood shingles",ROF-SHG-ARCH-BRN,false,ROF-SHG-ARCH-BRN,0.950,0.930,true,true,ROF-SHG-ARCH-BRN,high,true,true,true
+o18,2,"2 rolls of the 30# felt",ROF-UNDER-30,false,ROF-UNDER-30,0.990,0.960,true,true,ROF-UNDER-30,high,true,true,true
+o18,3,"6 brown drip edge",ROF-DRIP-10-BRN,false,ROF-DRIP-10-BRN,1.000,0.960,true,true,ROF-DRIP-10-BRN,high,true,true,true
+o18,4,"2 hip and ridge",ROF-SHG-RIDGE,false,ROF-SHG-RIDGE,0.990,0.910,true,true,ROF-SHG-RIDGE,high,true,true,true
+o18,5,"5 ridge vent",ROF-VENT-RIDGE,false,ROF-VENT-RIDGE,0.990,0.930,true,true,ROF-VENT-RIDGE,high,true,true,true
+o18,6,"do you guys rent a dumpster",,true,,1.000,0.000,false,true,,high,false,true,true
+o19,1,"200 2x4x8 spf",LBR-2X4-08-SPF,true,LBR-2X4-08-SPF,1.000,0.920,false,true,LBR-2X4-08-SPF,medium,false,true,true
+o19,2,"5000 sheets of 1/2 drywall",DRY-12-REG-4X8,true,DRY-12-REG-4X8,0.990,0.880,false,true,DRY-12-REG-4X8,low,false,true,true
+o19,3,"3 bobcat rentals",,true,,1.000,0.000,false,true,,high,false,true,true
+o19,4,"1 tile saw",,true,,1.000,0.000,false,true,,high,false,true,true
+o20,1,"9000 pcs 2x6x10 SPF",LBR-2X6-10-SPF,true,LBR-2X6-10-SPF,0.980,0.900,false,true,LBR-2X6-10-SPF,low,false,true,true
+o20,2,"cedar shakes 2 sq",,true,,1.000,0.000,false,true,,high,false,true,true
+o20,3,"marine plywood 3/4 x 60",,true,,0.930,0.000,false,true,,high,false,true,true
+o20,4,"40 5-gal pails deck stain",SUP-SEAL-EXT-5G,false,SUP-SEAL-EXT-5G,0.990,0.790,false,true,SUP-SEAL-EXT-5G,medium,false,true,true

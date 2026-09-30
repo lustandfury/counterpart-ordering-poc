@@ -40,12 +40,12 @@
         "unit": null
       }
     ],
-    "ms": 1867.4547500000008,
+    "ms": 1818.9301659999983,
     "usage": {
-      "inputTokens": 3457,
+      "inputTokens": 3353,
       "outputTokens": 247
     },
-    "costUsd": 0.014076
+    "costUsd": 0.013764
   },
   "jev": {
     "lines": [
@@ -86,22 +86,22 @@
               "probability": 1
             },
             {
-              "sku": "FST-ATROD-12-8",
+              "sku": "LBR-2X6-16-SPF",
               "probability": 0
             },
             {
-              "sku": "LBR-2X6-16-PT",
+              "sku": "HDW-JH-2X10",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.82,
-        "ms": 213.28966599999694,
+        "unitOk": 0.94,
+        "ms": 335.0869169999969,
         "usage": {
-          "inputTokens": 4019,
-          "outputTokens": 507
+          "inputTokens": 6090,
+          "outputTokens": 510
         },
-        "costUsd": 0.000168798
+        "costUsd": 0.00025578
       },
       {
         "lineId": "2",
@@ -119,29 +119,29 @@
         },
         "sku": {
           "choice": "HDW-HT-H2-5",
-          "confidence": 0.96,
+          "confidence": 0.97,
           "top": [
             {
               "sku": "HDW-HT-H2-5",
-              "probability": 0.97
+              "probability": 0.98
             },
             {
               "sku": "NONE",
-              "probability": 0.03
+              "probability": 0.02
             },
             {
-              "sku": "ROF-ICE-36",
+              "sku": "DRY-TAPE-MESH",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.53,
-        "ms": 205.42216600000393,
+        "unitOk": 0.82,
+        "ms": 281.8709170000002,
         "usage": {
-          "inputTokens": 2940,
-          "outputTokens": 256
+          "inputTokens": 5000,
+          "outputTokens": 259
         },
-        "costUsd": 0.00012348
+        "costUsd": 0.00020999999999999998
       },
       {
         "lineId": "3",
@@ -177,25 +177,25 @@
           "top": [
             {
               "sku": "FST-16D-SINK-50LB",
-              "probability": 0.99
+              "probability": 1
             },
             {
-              "sku": "NONE",
-              "probability": 0.01
+              "sku": "FST-16D-SINK-5LB",
+              "probability": 0
             },
             {
-              "sku": "FST-STRC-3-1LB",
+              "sku": "HDW-JH-2X6-BOX",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.61,
-        "ms": 239.5585410000058,
+        "unitOk": 0.48,
+        "ms": 265.3600829999996,
         "usage": {
-          "inputTokens": 4162,
-          "outputTokens": 525
+          "inputTokens": 6243,
+          "outputTokens": 528
         },
-        "costUsd": 0.000174804
+        "costUsd": 0.000262206
       },
       {
         "lineId": "4",
@@ -234,22 +234,22 @@
               "probability": 1
             },
             {
-              "sku": "LBR-2X10-16-PT",
+              "sku": "LBR-2X6-16-PT",
               "probability": 0
             },
             {
-              "sku": "LBR-2X10-10-SPF",
+              "sku": "LBR-2X8-16-PT",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.91,
-        "ms": 257.3518330000006,
+        "unitOk": 0.94,
+        "ms": 419.56270799999766,
         "usage": {
-          "inputTokens": 4326,
-          "outputTokens": 540
+          "inputTokens": 6405,
+          "outputTokens": 543
         },
-        "costUsd": 0.000181692
+        "costUsd": 0.00026901
       },
       {
         "lineId": "5",
@@ -281,15 +281,15 @@
         },
         "sku": {
           "choice": "HDW-JH-2X10",
-          "confidence": 0.92,
+          "confidence": 0.9,
           "top": [
             {
               "sku": "HDW-JH-2X10",
-              "probability": 0.93
+              "probability": 0.92
             },
             {
               "sku": "NONE",
-              "probability": 0.03
+              "probability": 0.05
             },
             {
               "sku": "LBR-2X10-16-SPF",
@@ -297,21 +297,21 @@
             }
           ]
         },
-        "unitOk": 0.64,
-        "ms": 215.30912499999977,
+        "unitOk": 0.88,
+        "ms": 299.2562500000022,
         "usage": {
-          "inputTokens": 4194,
-          "outputTokens": 521
+          "inputTokens": 6262,
+          "outputTokens": 524
         },
-        "costUsd": 0.000176148
+        "costUsd": 0.000263004
       }
     ],
-    "ms": 275.87479200000234,
+    "ms": 437.28770799999984,
     "usage": {
-      "inputTokens": 19641,
-      "outputTokens": 2349
+      "inputTokens": 30000,
+      "outputTokens": 2364
     },
-    "costUsd": 0.000824922
+    "costUsd": 0.00126
   },
   "claudeOnly": {
     "lines": [
@@ -328,7 +328,7 @@
       {
         "lineId": "3",
         "sku": "FST-16D-SINK-50LB",
-        "confidence": "low"
+        "confidence": "medium"
       },
       {
         "lineId": "4",
@@ -341,11 +341,11 @@
         "confidence": "high"
       }
     ],
-    "ms": 4056.964458000002,
+    "ms": 5094.104958,
     "usage": {
-      "inputTokens": 17195,
-      "outputTokens": 514
+      "inputTokens": 17091,
+      "outputTokens": 630
     },
-    "costUsd": 0.059295
+    "costUsd": 0.060723
   }
 }

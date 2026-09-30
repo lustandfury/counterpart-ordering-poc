@@ -40,12 +40,12 @@
         "unit": "boxes"
       }
     ],
-    "ms": 2163.896708,
+    "ms": 2190.8765000000003,
     "usage": {
-      "inputTokens": 3508,
+      "inputTokens": 3404,
       "outputTokens": 327
     },
-    "costUsd": 0.015429000000000002
+    "costUsd": 0.015117000000000002
   },
   "jev": {
     "lines": [
@@ -86,22 +86,22 @@
               "probability": 1
             },
             {
-              "sku": "FST-DRY-158-1LB",
+              "sku": "SHT-PLY-PT-34",
               "probability": 0
             },
             {
-              "sku": "SHT-PLY-PT-34",
+              "sku": "FST-DRY-214-1LB",
               "probability": 0
             }
           ]
         },
         "unitOk": 0.96,
-        "ms": 347.85391700000037,
+        "ms": 303.9501249999994,
         "usage": {
-          "inputTokens": 4191,
-          "outputTokens": 519
+          "inputTokens": 6265,
+          "outputTokens": 522
         },
-        "costUsd": 0.000176022
+        "costUsd": 0.00026313
       },
       {
         "lineId": "2",
@@ -140,7 +140,7 @@
               "probability": 1
             },
             {
-              "sku": "LBR-2X4-12-SPF",
+              "sku": "NONE",
               "probability": 0
             },
             {
@@ -149,13 +149,13 @@
             }
           ]
         },
-        "unitOk": 0.96,
-        "ms": 239.81954199999927,
+        "unitOk": 0.97,
+        "ms": 370.6627920000001,
         "usage": {
-          "inputTokens": 4260,
-          "outputTokens": 535
+          "inputTokens": 6341,
+          "outputTokens": 538
         },
-        "costUsd": 0.00017892
+        "costUsd": 0.000266322
       },
       {
         "lineId": "3",
@@ -171,29 +171,29 @@
         },
         "sku": {
           "choice": "DRY-MUD-45",
-          "confidence": 0.96,
+          "confidence": 0.98,
           "top": [
             {
               "sku": "DRY-MUD-45",
-              "probability": 0.97
+              "probability": 0.98
             },
             {
               "sku": "NONE",
-              "probability": 0.03
+              "probability": 0.02
             },
             {
-              "sku": "DRY-TAPE-250",
+              "sku": "FST-16D-COM-5LB",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.75,
-        "ms": 316.13145799999984,
+        "unitOk": 0.95,
+        "ms": 331.49695900000006,
         "usage": {
-          "inputTokens": 2949,
-          "outputTokens": 239
+          "inputTokens": 5019,
+          "outputTokens": 242
         },
-        "costUsd": 0.000123858
+        "costUsd": 0.000210798
       },
       {
         "lineId": "4",
@@ -229,25 +229,25 @@
           "top": [
             {
               "sku": "DRY-TAPE-250",
-              "probability": 0.98
+              "probability": 0.97
             },
             {
               "sku": "NONE",
               "probability": 0.02
             },
             {
-              "sku": "DRY-TAPE-MESH",
-              "probability": 0
+              "sku": "FST-DRY-158-5LB",
+              "probability": 0.01
             }
           ]
         },
-        "unitOk": 0.94,
-        "ms": 310.9255000000003,
+        "unitOk": 0.96,
+        "ms": 271.6259169999994,
         "usage": {
-          "inputTokens": 4276,
-          "outputTokens": 523
+          "inputTokens": 6341,
+          "outputTokens": 526
         },
-        "costUsd": 0.00017959199999999998
+        "costUsd": 0.000266322
       },
       {
         "lineId": "5",
@@ -279,37 +279,37 @@
         },
         "sku": {
           "choice": "FST-DRY-158-5LB",
-          "confidence": 0.8,
+          "confidence": 0.73,
           "top": [
             {
               "sku": "FST-DRY-158-5LB",
-              "probability": 0.8200000000000001
+              "probability": 0.75
             },
             {
               "sku": "NONE",
-              "probability": 0.18
+              "probability": 0.25
             },
             {
-              "sku": "DRY-12-REG-4X12",
+              "sku": "FST-STRC-3-1LB",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.89,
-        "ms": 277.3959160000004,
+        "unitOk": 0.96,
+        "ms": 317.8094169999995,
         "usage": {
-          "inputTokens": 4577,
-          "outputTokens": 545
+          "inputTokens": 6661,
+          "outputTokens": 548
         },
-        "costUsd": 0.000192234
+        "costUsd": 0.00027976199999999997
       }
     ],
-    "ms": 360.7325000000001,
+    "ms": 389.84158300000036,
     "usage": {
-      "inputTokens": 20253,
-      "outputTokens": 2361
+      "inputTokens": 30627,
+      "outputTokens": 2376
     },
-    "costUsd": 0.000850626
+    "costUsd": 0.0012863339999999999
   },
   "claudeOnly": {
     "lines": [
@@ -339,11 +339,11 @@
         "confidence": "medium"
       }
     ],
-    "ms": 4920.143167,
+    "ms": 4090.467667,
     "usage": {
-      "inputTokens": 17318,
-      "outputTokens": 436
+      "inputTokens": 17214,
+      "outputTokens": 512
     },
-    "costUsd": 0.058494
+    "costUsd": 0.059322
   }
 }

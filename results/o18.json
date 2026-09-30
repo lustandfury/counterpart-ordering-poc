@@ -42,17 +42,17 @@
       {
         "id": "6",
         "raw": "do you guys rent a dumpster",
-        "item": "dumpster rental",
+        "item": "do you guys rent a dumpster",
         "qty": null,
         "unit": null
       }
     ],
-    "ms": 2215.0184169999993,
+    "ms": 2250.450250000009,
     "usage": {
-      "inputTokens": 3515,
-      "outputTokens": 285
+      "inputTokens": 3411,
+      "outputTokens": 290
     },
-    "costUsd": 0.01482
+    "costUsd": 0.014583
   },
   "jev": {
     "lines": [
@@ -79,29 +79,29 @@
         },
         "sku": {
           "choice": "ROF-SHG-ARCH-BRN",
-          "confidence": 0.94,
+          "confidence": 0.95,
           "top": [
             {
               "sku": "ROF-SHG-ARCH-BRN",
-              "probability": 0.95
+              "probability": 0.96
             },
             {
               "sku": "NONE",
-              "probability": 0.05
+              "probability": 0.04
             },
             {
-              "sku": "ROF-SHG-3TAB-GRY",
+              "sku": "FST-DRY-158-FINE-5LB",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.87,
-        "ms": 265.36612500000047,
+        "unitOk": 0.93,
+        "ms": 329.1414170000062,
         "usage": {
-          "inputTokens": 3573,
-          "outputTokens": 384
+          "inputTokens": 5655,
+          "outputTokens": 387
         },
-        "costUsd": 0.000150066
+        "costUsd": 0.00023751
       },
       {
         "lineId": "2",
@@ -137,18 +137,18 @@
               "probability": 0.01
             },
             {
-              "sku": "ROF-UNDER-15",
+              "sku": "ROF-UNDER-SYN",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.93,
-        "ms": 289.56354199998896,
+        "unitOk": 0.96,
+        "ms": 345.5327499999985,
         "usage": {
-          "inputTokens": 3555,
-          "outputTokens": 383
+          "inputTokens": 5630,
+          "outputTokens": 386
         },
-        "costUsd": 0.00014931
+        "costUsd": 0.00023646
       },
       {
         "lineId": "3",
@@ -187,22 +187,22 @@
               "probability": 1
             },
             {
-              "sku": "FST-DECK-3-GRAY-1LB",
+              "sku": "FST-DECK-3-GRAY-5LB",
               "probability": 0
             },
             {
-              "sku": "FST-DECK-25-BRN-5LB",
+              "sku": "LBR-2X6-10-SPF",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.83,
-        "ms": 266.8475000000035,
+        "unitOk": 0.96,
+        "ms": 315.5239580000052,
         "usage": {
-          "inputTokens": 4019,
-          "outputTokens": 518
+          "inputTokens": 6079,
+          "outputTokens": 521
         },
-        "costUsd": 0.000168798
+        "costUsd": 0.000255318
       },
       {
         "lineId": "4",
@@ -232,18 +232,18 @@
               "probability": 0.01
             },
             {
-              "sku": "ROF-DRIP-10",
+              "sku": "SUP-SEAL-EXT-5G",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.61,
-        "ms": 242.61629199999152,
+        "unitOk": 0.91,
+        "ms": 282.3043340000004,
         "usage": {
-          "inputTokens": 3015,
-          "outputTokens": 274
+          "inputTokens": 5077,
+          "outputTokens": 277
         },
-        "costUsd": 0.00012663
+        "costUsd": 0.000213234
       },
       {
         "lineId": "5",
@@ -286,30 +286,25 @@
               "probability": 0.01
             },
             {
-              "sku": "LBR-2X8-08-PT",
+              "sku": "DRY-12-MR-4X8",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.72,
-        "ms": 250.135832999993,
+        "unitOk": 0.93,
+        "ms": 324.62112499999057,
         "usage": {
-          "inputTokens": 4052,
-          "outputTokens": 497
+          "inputTokens": 6108,
+          "outputTokens": 500
         },
-        "costUsd": 0.00017018399999999998
+        "costUsd": 0.00025653599999999997
       },
       {
         "lineId": "6",
-        "shortlist": [
-          "DRY-TAPE-250",
-          "ROF-VENT-RIDGE",
-          "SHT-PLY-CDX-34",
-          "ROF-SHG-ARCH-BLK"
-        ],
+        "shortlist": [],
         "category": {
           "choice": "tools_supplies",
-          "confidence": 0.45
+          "confidence": 0.58
         },
         "sku": {
           "choice": "NONE",
@@ -318,32 +313,24 @@
             {
               "sku": "NONE",
               "probability": 1
-            },
-            {
-              "sku": "DRY-TAPE-250",
-              "probability": 0
-            },
-            {
-              "sku": "ROF-SHG-ARCH-BLK",
-              "probability": 0
             }
           ]
         },
-        "unitOk": 0.1,
-        "ms": 149.40379099998972,
+        "unitOk": 0,
+        "ms": 181.48450000000594,
         "usage": {
-          "inputTokens": 2893,
-          "outputTokens": 229
+          "inputTokens": 2571,
+          "outputTokens": 155
         },
-        "costUsd": 0.000121506
+        "costUsd": 0.000107982
       }
     ],
-    "ms": 416.4502919999941,
+    "ms": 493.98858299999847,
     "usage": {
-      "inputTokens": 21107,
-      "outputTokens": 2285
+      "inputTokens": 31120,
+      "outputTokens": 2226
     },
-    "costUsd": 0.0008864939999999999
+    "costUsd": 0.00130704
   },
   "claudeOnly": {
     "lines": [
@@ -378,11 +365,11 @@
         "confidence": "high"
       }
     ],
-    "ms": 1943.749582999997,
+    "ms": 1676.6221249999944,
     "usage": {
-      "inputTokens": 17283,
+      "inputTokens": 17184,
       "outputTokens": 238
     },
-    "costUsd": 0.055418999999999996
+    "costUsd": 0.055122000000000004
   }
 }

@@ -47,12 +47,12 @@
         "unit": "box"
       }
     ],
-    "ms": 2209.152750000001,
+    "ms": 2244.339500000002,
     "usage": {
-      "inputTokens": 3486,
+      "inputTokens": 3382,
       "outputTokens": 314
     },
-    "costUsd": 0.015168000000000001
+    "costUsd": 0.014856000000000001
   },
   "jev": {
     "lines": [
@@ -93,22 +93,22 @@
               "probability": 1
             },
             {
-              "sku": "NONE",
+              "sku": "LBR-2X10-10-PT",
               "probability": 0
             },
             {
-              "sku": "LBR-2X10-16-PT",
+              "sku": "LBR-6X6-8-PT",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.91,
-        "ms": 322.8817909999998,
+        "unitOk": 0.94,
+        "ms": 339.17887500000506,
         "usage": {
-          "inputTokens": 4243,
-          "outputTokens": 529
+          "inputTokens": 6312,
+          "outputTokens": 532
         },
-        "costUsd": 0.000178206
+        "costUsd": 0.000265104
       },
       {
         "lineId": "2",
@@ -140,29 +140,29 @@
         },
         "sku": {
           "choice": "LBR-4X4-8-PT",
-          "confidence": 0.91,
+          "confidence": 0.95,
           "top": [
             {
               "sku": "LBR-4X4-8-PT",
-              "probability": 0.92
+              "probability": 0.96
             },
             {
               "sku": "LBR-2X4-08-PT",
-              "probability": 0.06
+              "probability": 0.03
             },
             {
               "sku": "NONE",
-              "probability": 0.02
+              "probability": 0.01
             }
           ]
         },
-        "unitOk": 0.88,
-        "ms": 195.03395799999998,
+        "unitOk": 0.95,
+        "ms": 282.20995799999946,
         "usage": {
-          "inputTokens": 4134,
-          "outputTokens": 524
+          "inputTokens": 6202,
+          "outputTokens": 527
         },
-        "costUsd": 0.000173628
+        "costUsd": 0.000260484
       },
       {
         "lineId": "3",
@@ -180,15 +180,15 @@
         },
         "sku": {
           "choice": "CON-FORM-SONO-12",
-          "confidence": 0.85,
+          "confidence": 0.91,
           "top": [
             {
               "sku": "CON-FORM-SONO-12",
-              "probability": 0.87
+              "probability": 0.92
             },
             {
               "sku": "NONE",
-              "probability": 0.12
+              "probability": 0.07
             },
             {
               "sku": "CON-FORM-SONO-8",
@@ -196,13 +196,13 @@
             }
           ]
         },
-        "unitOk": 0.63,
-        "ms": 382.04462500000227,
+        "unitOk": 0.93,
+        "ms": 420.04266700000153,
         "usage": {
-          "inputTokens": 3019,
-          "outputTokens": 271
+          "inputTokens": 5083,
+          "outputTokens": 274
         },
-        "costUsd": 0.000126798
+        "costUsd": 0.00021348599999999998
       },
       {
         "lineId": "4",
@@ -229,22 +229,22 @@
               "probability": 1
             },
             {
-              "sku": "MAS-MORT-S-30KG",
+              "sku": "CON-FAST-20KG",
               "probability": 0
             },
             {
-              "sku": "MAS-CMU-8",
+              "sku": "CON-FORM-SONO-12",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.87,
-        "ms": 308.33670800000255,
+        "unitOk": 0.9,
+        "ms": 290.168875000003,
         "usage": {
-          "inputTokens": 3064,
-          "outputTokens": 286
+          "inputTokens": 5125,
+          "outputTokens": 289
         },
-        "costUsd": 0.00012868799999999998
+        "costUsd": 0.00021525
       },
       {
         "lineId": "5",
@@ -273,29 +273,29 @@
         },
         "sku": {
           "choice": "FST-ATROD-12-8",
-          "confidence": 0.91,
+          "confidence": 0.94,
           "top": [
             {
               "sku": "FST-ATROD-12-8",
-              "probability": 0.92
+              "probability": 0.95
             },
             {
               "sku": "NONE",
-              "probability": 0.07
+              "probability": 0.04
             },
             {
-              "sku": "FST-ATROD-58-10",
+              "sku": "FST-ATROD-12-6",
               "probability": 0.01
             }
           ]
         },
-        "unitOk": 0.6,
-        "ms": 199.58566699999938,
+        "unitOk": 0.94,
+        "ms": 249.40266699999484,
         "usage": {
-          "inputTokens": 3695,
-          "outputTokens": 434
+          "inputTokens": 5767,
+          "outputTokens": 437
         },
-        "costUsd": 0.00015518999999999998
+        "costUsd": 0.00024221399999999998
       },
       {
         "lineId": "6",
@@ -314,37 +314,37 @@
         },
         "sku": {
           "choice": "FST-ANCH-12-50",
-          "confidence": 0.96,
+          "confidence": 0.97,
           "top": [
             {
               "sku": "FST-ANCH-12-50",
-              "probability": 0.96
+              "probability": 0.97
             },
             {
               "sku": "NONE",
-              "probability": 0.04
+              "probability": 0.03
             },
             {
-              "sku": "DRY-58-MR-4X12",
+              "sku": "DRY-12-MR-4X12",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.76,
-        "ms": 167.69962499999383,
+        "unitOk": 0.96,
+        "ms": 345.3402500000011,
         "usage": {
-          "inputTokens": 3096,
-          "outputTokens": 297
+          "inputTokens": 5171,
+          "outputTokens": 300
         },
-        "costUsd": 0.000130032
+        "costUsd": 0.00021718199999999998
       }
     ],
-    "ms": 401.1640000000043,
+    "ms": 626.6990420000002,
     "usage": {
-      "inputTokens": 21251,
-      "outputTokens": 2341
+      "inputTokens": 33660,
+      "outputTokens": 2359
     },
-    "costUsd": 0.0008925419999999999
+    "costUsd": 0.0014137199999999998
   },
   "claudeOnly": {
     "lines": [
@@ -379,11 +379,11 @@
         "confidence": "high"
       }
     ],
-    "ms": 1905.348791999997,
+    "ms": 1888.866750000001,
     "usage": {
-      "inputTokens": 17286,
+      "inputTokens": 17182,
       "outputTokens": 235
     },
-    "costUsd": 0.055383
+    "costUsd": 0.055071
   }
 }

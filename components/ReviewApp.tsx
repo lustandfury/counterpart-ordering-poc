@@ -34,7 +34,7 @@ function sampleLabel(r: OrderResult) {
 
 export function ReviewApp({ samples, catalog }: { samples: OrderResult[]; catalog: SlimCatalog }) {
   const [live, setLive] = useState<OrderResult | null>(null);
-  const [sampleId, setSampleId] = useState(samples.find((x) => x.orderId === "o06")?.orderId ?? samples[0].orderId);
+  const [sampleId, setSampleId] = useState(samples.find((x) => x.orderId === "o13")?.orderId ?? samples[0].orderId);
   const [mode, setMode] = useState<Mode>("jev");
   const [T, setT] = useState(0.85);
   const [unitMin, setUnitMin] = useState(0.8);

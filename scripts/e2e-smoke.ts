@@ -6,9 +6,9 @@ async function main() {
   const browser = await chromium.launch();
   const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
   await page.goto(`http://localhost:${process.env.PORT ?? 3100}`);
-  await page.selectOption("#order", "o06");
+  await page.selectOption("#order", "o13");
   const summary = () => page.locator("[aria-live=polite]").innerText();
-  assert.match(await summary(), /3 auto-approved[\s\S]*2 to check[\s\S]*0 done/);
+  assert.match(await summary(), /2 auto-approved[\s\S]*2 to check[\s\S]*0 done/);
 
   await page.keyboard.press("Enter"); // confirm the first flagged line; the cursor moves on by itself
   assert.match(await summary(), /1 done/);
@@ -23,18 +23,18 @@ async function main() {
   assert.match(await summary(), /1 done/);
 
   // keys still work after touching a slider
-  await page.locator("#u").focus();
+  await page.locator("#t").focus();
   await page.keyboard.press("Enter");
   assert.match(await summary(), /2 done/);
 
-  // slider re-routes lines in the browser: the strictest setting flags more
-  await page.locator("#u").fill("0.9");
+  // the product-confidence slider re-routes lines in the browser
+  await page.locator("#t").fill("0.99");
   const strict = await summary();
-  await page.locator("#u").fill("0.3");
+  await page.locator("#t").fill("0.5");
   const loose = await summary();
-  console.log("T=0.99 ->", strict.replace(/\s+/g, " "), "| T=0.5 ->", loose.replace(/\s+/g, " "));
-  assert.match(loose, /5 auto-approved/);
-  assert.match(strict, /[0-3] auto-approved/);
+  console.log("T=0.99 ->", strict.replace(/\s+/g, " ").slice(0, 60), "| T=0.5 ->", loose.replace(/\s+/g, " ").slice(0, 60));
+  assert.match(strict, /[0-2] auto-approved/);
+  assert.match(loose, /3 auto-approved/);
 
   // Claude only mode disables the slider
   await page.getByRole("button", { name: "Claude only", exact: true }).click();

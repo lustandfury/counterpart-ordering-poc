@@ -33,12 +33,12 @@
         "unit": "pallet"
       }
     ],
-    "ms": 1610.9495830000014,
+    "ms": 1540.083792000005,
     "usage": {
-      "inputTokens": 3435,
+      "inputTokens": 3331,
       "outputTokens": 190
     },
-    "costUsd": 0.013155
+    "costUsd": 0.012843
   },
   "jev": {
     "lines": [
@@ -71,30 +71,30 @@
           "confidence": 1
         },
         "sku": {
-          "choice": "NONE",
-          "confidence": 0.63,
+          "choice": "ROF-SHG-3TAB-GRY",
+          "confidence": 0.47,
           "top": [
             {
-              "sku": "NONE",
-              "probability": 0.66
-            },
-            {
               "sku": "ROF-SHG-3TAB-GRY",
-              "probability": 0.34
+              "probability": 0.51
             },
             {
-              "sku": "HDW-JH-2X6",
+              "sku": "NONE",
+              "probability": 0.49
+            },
+            {
+              "sku": "ROF-SHG-ARCH-BLK",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.89,
-        "ms": 180.60050000000047,
+        "unitOk": 0.96,
+        "ms": 291.8663749999978,
         "usage": {
-          "inputTokens": 3712,
-          "outputTokens": 461
+          "inputTokens": 5784,
+          "outputTokens": 472
         },
-        "costUsd": 0.000155904
+        "costUsd": 0.000242928
       },
       {
         "lineId": "2",
@@ -126,15 +126,15 @@
         },
         "sku": {
           "choice": "NONE",
-          "confidence": 0.71,
+          "confidence": 0.77,
           "top": [
             {
               "sku": "NONE",
-              "probability": 0.73
+              "probability": 0.78
             },
             {
               "sku": "ROF-UNDER-15",
-              "probability": 0.24
+              "probability": 0.19
             },
             {
               "sku": "ROF-UNDER-30",
@@ -142,13 +142,13 @@
             }
           ]
         },
-        "unitOk": 0.89,
-        "ms": 188.48187500000495,
+        "unitOk": 0,
+        "ms": 149.58345899999404,
         "usage": {
-          "inputTokens": 4014,
-          "outputTokens": 501
+          "inputTokens": 3882,
+          "outputTokens": 483
         },
-        "costUsd": 0.000168588
+        "costUsd": 0.000163044
       },
       {
         "lineId": "3",
@@ -196,13 +196,13 @@
             }
           ]
         },
-        "unitOk": 0.69,
-        "ms": 191.6645420000059,
+        "unitOk": 0,
+        "ms": 167.18470900000102,
         "usage": {
-          "inputTokens": 4446,
-          "outputTokens": 536
+          "inputTokens": 4314,
+          "outputTokens": 518
         },
-        "costUsd": 0.000186732
+        "costUsd": 0.000181188
       },
       {
         "lineId": "4",
@@ -234,37 +234,37 @@
         },
         "sku": {
           "choice": "MAS-CMU-8",
-          "confidence": 0.66,
+          "confidence": 0.71,
           "top": [
             {
               "sku": "MAS-CMU-8",
-              "probability": 0.68
+              "probability": 0.73
             },
             {
               "sku": "NONE",
-              "probability": 0.32
+              "probability": 0.27
             },
             {
-              "sku": "FST-DECK-3-TAN-25LB",
+              "sku": "MAS-CMU-CAP",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.18,
-        "ms": 238.12316699999792,
+        "unitOk": 0.17,
+        "ms": 410.53549999999814,
         "usage": {
-          "inputTokens": 4333,
-          "outputTokens": 512
+          "inputTokens": 6396,
+          "outputTokens": 515
         },
-        "costUsd": 0.000181986
+        "costUsd": 0.000268632
       }
     ],
-    "ms": 245.97999999999593,
+    "ms": 417.5491669999974,
     "usage": {
-      "inputTokens": 16505,
-      "outputTokens": 2010
+      "inputTokens": 20376,
+      "outputTokens": 1988
     },
-    "costUsd": 0.00069321
+    "costUsd": 0.000855792
   },
   "claudeOnly": {
     "lines": [
@@ -289,11 +289,11 @@
         "confidence": "low"
       }
     ],
-    "ms": 1539.5768749999988,
+    "ms": 1767.1173750000016,
     "usage": {
-      "inputTokens": 17106,
+      "inputTokens": 17002,
       "outputTokens": 143
     },
-    "costUsd": 0.053463000000000004
+    "costUsd": 0.053151000000000004
   }
 }

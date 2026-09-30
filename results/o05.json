@@ -40,12 +40,12 @@
         "unit": null
       }
     ],
-    "ms": 1893.430124999999,
+    "ms": 1860.4714170000007,
     "usage": {
-      "inputTokens": 3473,
+      "inputTokens": 3369,
       "outputTokens": 267
     },
-    "costUsd": 0.014424
+    "costUsd": 0.014112
   },
   "jev": {
     "lines": [
@@ -86,22 +86,22 @@
               "probability": 1
             },
             {
-              "sku": "LBR-2X8-08-PT",
+              "sku": "LBR-2X6-10-PT",
               "probability": 0
             },
             {
-              "sku": "LBR-2X6-08-PT",
+              "sku": "LBR-2X4-16-PT",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.94,
-        "ms": 334.9514999999992,
+        "unitOk": 0.96,
+        "ms": 377.0342500000006,
         "usage": {
-          "inputTokens": 4273,
-          "outputTokens": 527
+          "inputTokens": 6346,
+          "outputTokens": 530
         },
-        "costUsd": 0.000179466
+        "costUsd": 0.000266532
       },
       {
         "lineId": "2",
@@ -140,22 +140,22 @@
               "probability": 1
             },
             {
-              "sku": "LBR-2X6-16-PT",
+              "sku": "LBR-2X12-08-SPF",
               "probability": 0
             },
             {
-              "sku": "LBR-2X6-10-PT",
+              "sku": "LBR-2X4-12-PT",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.91,
-        "ms": 340.07025000000067,
+        "unitOk": 0.95,
+        "ms": 297.8936670000003,
         "usage": {
-          "inputTokens": 4309,
-          "outputTokens": 534
+          "inputTokens": 6384,
+          "outputTokens": 537
         },
-        "costUsd": 0.000180978
+        "costUsd": 0.000268128
       },
       {
         "lineId": "3",
@@ -187,29 +187,29 @@
         },
         "sku": {
           "choice": "LBR-4X4-10-PT",
-          "confidence": 0.99,
+          "confidence": 1,
           "top": [
             {
               "sku": "LBR-4X4-10-PT",
               "probability": 1
             },
             {
-              "sku": "LBR-2X6-10-PT",
+              "sku": "LBR-2X10-12-PT",
               "probability": 0
             },
             {
-              "sku": "LBR-2X4-08-PT",
+              "sku": "LBR-2X10-16-PT",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.92,
-        "ms": 359.1876660000016,
+        "unitOk": 0.96,
+        "ms": 346.31866699999955,
         "usage": {
-          "inputTokens": 4240,
-          "outputTokens": 530
+          "inputTokens": 6308,
+          "outputTokens": 533
         },
-        "costUsd": 0.00017808
+        "costUsd": 0.000264936
       },
       {
         "lineId": "4",
@@ -241,29 +241,29 @@
         },
         "sku": {
           "choice": "FST-DECK-3-TAN-5LB",
-          "confidence": 0.94,
+          "confidence": 0.96,
           "top": [
             {
               "sku": "FST-DECK-3-TAN-5LB",
-              "probability": 0.95
+              "probability": 0.97
             },
             {
               "sku": "NONE",
-              "probability": 0.05
+              "probability": 0.03
             },
             {
-              "sku": "FST-DRY-158-1LB",
+              "sku": "FST-DRY-158-FINE-5LB",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.69,
-        "ms": 337.0825420000001,
+        "unitOk": 0.94,
+        "ms": 270.11595899999884,
         "usage": {
-          "inputTokens": 4486,
-          "outputTokens": 548
+          "inputTokens": 6559,
+          "outputTokens": 551
         },
-        "costUsd": 0.000188412
+        "costUsd": 0.000275478
       },
       {
         "lineId": "5",
@@ -291,7 +291,7 @@
         ],
         "category": {
           "choice": "decking_trim",
-          "confidence": 0.99
+          "confidence": 0.98
         },
         "sku": {
           "choice": "DCK-54-16-PT",
@@ -302,30 +302,30 @@
               "probability": 1
             },
             {
-              "sku": "FST-DECK-25-TAN-25LB",
+              "sku": "DRY-12-REG-4X10",
               "probability": 0
             },
             {
-              "sku": "DRY-58-X-4X12",
+              "sku": "DCK-54-8-PT",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.86,
-        "ms": 498.5147079999988,
+        "unitOk": 0.89,
+        "ms": 325.43495899999834,
         "usage": {
-          "inputTokens": 4066,
-          "outputTokens": 520
+          "inputTokens": 6141,
+          "outputTokens": 523
         },
-        "costUsd": 0.000170772
+        "costUsd": 0.000257922
       }
     ],
-    "ms": 524.695584000001,
+    "ms": 381.74866699999984,
     "usage": {
-      "inputTokens": 21374,
-      "outputTokens": 2659
+      "inputTokens": 31738,
+      "outputTokens": 2674
     },
-    "costUsd": 0.0008977080000000001
+    "costUsd": 0.0013329960000000001
   },
   "claudeOnly": {
     "lines": [
@@ -355,11 +355,11 @@
         "confidence": "high"
       }
     ],
-    "ms": 1906.288625000001,
+    "ms": 2384.475458000001,
     "usage": {
-      "inputTokens": 17235,
+      "inputTokens": 17131,
       "outputTokens": 213
     },
-    "costUsd": 0.054900000000000004
+    "costUsd": 0.054588
   }
 }

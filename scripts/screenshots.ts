@@ -8,7 +8,7 @@ async function main() {
     const ctx = await browser.newContext({ viewport: { width: opts.width, height: opts.height }, colorScheme: opts.dark ? "dark" : "light" });
     const page = await ctx.newPage();
     await page.goto(base);
-    await page.selectOption("#order", process.env.ORDER ?? "o06");
+    await page.selectOption("#order", process.env.ORDER ?? "o13");
     if (act) await act(page);
     await page.screenshot({ path: `shots/${name}.png`, fullPage: true });
     await ctx.close();

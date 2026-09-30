@@ -40,12 +40,12 @@
         "unit": null
       }
     ],
-    "ms": 4128.213292,
+    "ms": 1876.0489159999997,
     "usage": {
-      "inputTokens": 3472,
+      "inputTokens": 3368,
       "outputTokens": 267
     },
-    "costUsd": 0.014421
+    "costUsd": 0.014109
   },
   "jev": {
     "lines": [
@@ -86,22 +86,22 @@
               "probability": 1
             },
             {
-              "sku": "DRY-58-MR-4X12",
+              "sku": "SHT-MDF-34",
               "probability": 0
             },
             {
-              "sku": "MAS-MORT-N-30KG",
+              "sku": "DRY-58-MR-4X12",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.91,
-        "ms": 260.2345830000013,
+        "unitOk": 0.95,
+        "ms": 413.6742919999997,
         "usage": {
-          "inputTokens": 3888,
-          "outputTokens": 497
+          "inputTokens": 5962,
+          "outputTokens": 500
         },
-        "costUsd": 0.000163296
+        "costUsd": 0.00025040399999999997
       },
       {
         "lineId": "2",
@@ -133,29 +133,29 @@
         },
         "sku": {
           "choice": "DRY-58-REG-4X8",
-          "confidence": 0.96,
+          "confidence": 0.97,
           "top": [
             {
               "sku": "DRY-58-REG-4X8",
-              "probability": 0.96
-            },
-            {
-              "sku": "NONE",
-              "probability": 0.02
+              "probability": 0.98
             },
             {
               "sku": "DRY-58-REG-4X10",
               "probability": 0.01
+            },
+            {
+              "sku": "NONE",
+              "probability": 0.01
             }
           ]
         },
-        "unitOk": 0.91,
-        "ms": 258.4535419999993,
+        "unitOk": 0.96,
+        "ms": 335.9539999999979,
         "usage": {
-          "inputTokens": 3992,
-          "outputTokens": 512
+          "inputTokens": 6062,
+          "outputTokens": 515
         },
-        "costUsd": 0.00016766399999999999
+        "costUsd": 0.000254604
       },
       {
         "lineId": "3",
@@ -183,7 +183,7 @@
         ],
         "category": {
           "choice": "drywall",
-          "confidence": 0.95
+          "confidence": 0.94
         },
         "sku": {
           "choice": "DRY-12-MR-4X8",
@@ -194,22 +194,22 @@
               "probability": 1
             },
             {
-              "sku": "SHT-PLY-CDX-12",
+              "sku": "DRY-12-MR-4X12",
               "probability": 0
             },
             {
-              "sku": "DRY-58-MR-4X10",
+              "sku": "DRY-12-MR-4X10",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.9,
-        "ms": 314.4121670000022,
+        "unitOk": 0.96,
+        "ms": 409.07545799999934,
         "usage": {
-          "inputTokens": 3863,
-          "outputTokens": 502
+          "inputTokens": 5942,
+          "outputTokens": 505
         },
-        "costUsd": 0.000162246
+        "costUsd": 0.00024956399999999997
       },
       {
         "lineId": "4",
@@ -234,29 +234,29 @@
         },
         "sku": {
           "choice": "DRY-MUD-45",
-          "confidence": 0.95,
+          "confidence": 0.97,
           "top": [
             {
               "sku": "DRY-MUD-45",
-              "probability": 0.96
+              "probability": 0.97
             },
             {
               "sku": "NONE",
-              "probability": 0.04
+              "probability": 0.03
             },
             {
-              "sku": "ROF-DRIP-10-BRN",
+              "sku": "SHT-MDF-12",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.63,
-        "ms": 274.92812499999854,
+        "unitOk": 0.94,
+        "ms": 293.4703750000008,
         "usage": {
-          "inputTokens": 3465,
-          "outputTokens": 381
+          "inputTokens": 5530,
+          "outputTokens": 384
         },
-        "costUsd": 0.00014553
+        "costUsd": 0.00023226
       },
       {
         "lineId": "5",
@@ -288,37 +288,37 @@
         },
         "sku": {
           "choice": "DRY-TAPE-MESH",
-          "confidence": 0.97,
+          "confidence": 0.98,
           "top": [
             {
               "sku": "DRY-TAPE-MESH",
-              "probability": 0.97
+              "probability": 0.98
             },
             {
               "sku": "NONE",
-              "probability": 0.03
+              "probability": 0.02
             },
             {
-              "sku": "DRY-TAPE-250",
+              "sku": "ROF-SHG-RIDGE",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.69,
-        "ms": 307.50445899999977,
+        "unitOk": 0.95,
+        "ms": 277.3044169999994,
         "usage": {
-          "inputTokens": 3838,
-          "outputTokens": 475
+          "inputTokens": 5901,
+          "outputTokens": 478
         },
-        "costUsd": 0.000161196
+        "costUsd": 0.000247842
       }
     ],
-    "ms": 334.1317080000008,
+    "ms": 427.211041999999,
     "usage": {
-      "inputTokens": 19046,
-      "outputTokens": 2367
+      "inputTokens": 29397,
+      "outputTokens": 2382
     },
-    "costUsd": 0.0007999319999999999
+    "costUsd": 0.001234674
   },
   "claudeOnly": {
     "lines": [
@@ -348,11 +348,11 @@
         "confidence": "high"
       }
     ],
-    "ms": 1787.6349579999987,
+    "ms": 2168.341375,
     "usage": {
-      "inputTokens": 17226,
+      "inputTokens": 17122,
       "outputTokens": 207
     },
-    "costUsd": 0.054783
+    "costUsd": 0.054471000000000006
   }
 }

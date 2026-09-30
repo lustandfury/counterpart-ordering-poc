@@ -1,8 +1,7 @@
 # House defaults
 
 What a counter person at a lumber yard assumes without calling the contractor. These are
-business rules, not answers: they go into both pipelines' prompts and are used to review
-labels. Every rule was checked against `data/catalog.json` (203 products).
+business rules, not answers. Every rule was checked against `data/catalog.json` (203 products).
 
 **Units are Canadian:** bags in kg (30 kg standard), liquids in L / mL, rebar as 10M / 15M in
 metres. Lumber, sheet goods, drywall and fasteners keep the imperial nominal sizes that
@@ -40,7 +39,7 @@ Canadian yards use (2x4, 4x8, 1/2", #10 x 3", lb boxes).
 - **Missing quantity.** Amounts in a unit the catalog does not sell (feet of tape, pounds of nails,
   "half a pallet") also need review.
 - **Large quantities:** 100 or more pieces or sheets, or 50 or more of any other unit (bags, boxes,
-  rolls, bundles, pails). The two thresholds are the numbers to tune.
+  rolls, bundles, pails).
 - **Anything not in the catalog** (equipment rentals, tools, cedar shakes, marine plywood,
   dumpsters) and references to prior orders ("same as last time").
 - **PT with no treatment level:** inert today, because every PT product has exactly one treatment
@@ -82,7 +81,3 @@ it, the phrase is in the "no default" list below.
 "drywall screws" with no thread or box size, deck screws with no color or box size, 16d nails
 with no type or box size, "felt" with no weight, "shingles" with no style or color, "caulk" with no
 type, rebar with no length, batts with no width.
-
-## Left out of the catalog on purpose
-Cedar shakes, marine plywood, equipment rentals, tools and dumpsters. The "deliberately
-impossible" sample orders depend on these being absent.

@@ -7,14 +7,14 @@
       {
         "id": "1",
         "raw": "30 2x4x8",
-        "item": "2x4x8 regular spf not treated",
+        "item": "2x4x8, regular spf not treated",
         "qty": 30,
         "unit": null
       },
       {
         "id": "2",
         "raw": "12 2x6x8",
-        "item": "2x6x8 regular spf not treated",
+        "item": "2x6x8, regular spf not treated",
         "qty": 12,
         "unit": null
       },
@@ -26,12 +26,12 @@
         "unit": "sheets"
       }
     ],
-    "ms": 2018.8866669999989,
+    "ms": 1735.4937920000011,
     "usage": {
-      "inputTokens": 3516,
+      "inputTokens": 3412,
       "outputTokens": 186
     },
-    "costUsd": 0.013338
+    "costUsd": 0.013026
   },
   "jev": {
     "lines": [
@@ -72,22 +72,22 @@
               "probability": 1
             },
             {
-              "sku": "NONE",
+              "sku": "LBR-2X4-10-PT",
               "probability": 0
             },
             {
-              "sku": "LBR-2X6-08-SPF",
+              "sku": "NONE",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.93,
-        "ms": 297.8494589999973,
+        "unitOk": 0.96,
+        "ms": 274.1755420000045,
         "usage": {
-          "inputTokens": 4233,
-          "outputTokens": 524
+          "inputTokens": 6306,
+          "outputTokens": 527
         },
-        "costUsd": 0.000177786
+        "costUsd": 0.000264852
       },
       {
         "lineId": "2",
@@ -98,20 +98,20 @@
           "LBR-2X6-16-PT",
           "LBR-2X8-08-PT",
           "LBR-2X4-08-PT",
+          "LBR-4X4-8-PT",
           "LBR-2X4-10-PT",
           "LBR-2X4-12-PT",
           "LBR-2X4-16-PT",
-          "LBR-2X8-10-PT",
           "LBR-2X6-08-SPF",
           "LBR-2X6-10-SPF",
           "LBR-2X6-12-SPF",
           "LBR-2X6-16-SPF",
           "LBR-2X8-08-SPF",
           "LBR-2X4-08-SPF",
+          "LBR-2X8-10-PT",
           "LBR-2X8-12-PT",
           "LBR-2X8-16-PT",
-          "LBR-2X6-PRECUT-SPF",
-          "LBR-2X10-08-PT"
+          "LBR-2X6-PRECUT-SPF"
         ],
         "category": {
           "choice": "dimensional_lumber",
@@ -126,22 +126,22 @@
               "probability": 1
             },
             {
-              "sku": "LBR-2X10-08-PT",
+              "sku": "LBR-2X8-16-PT",
               "probability": 0
             },
             {
-              "sku": "LBR-2X8-12-PT",
+              "sku": "LBR-4X4-8-PT",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.95,
-        "ms": 192.91616700000304,
+        "unitOk": 0.96,
+        "ms": 295.502542000002,
         "usage": {
-          "inputTokens": 4290,
-          "outputTokens": 526
+          "inputTokens": 6338,
+          "outputTokens": 527
         },
-        "costUsd": 0.00018018
+        "costUsd": 0.000266196
       },
       {
         "lineId": "3",
@@ -163,37 +163,37 @@
         },
         "sku": {
           "choice": "SHT-PLY-CDX-34",
-          "confidence": 0.88,
+          "confidence": 0.89,
           "top": [
             {
               "sku": "SHT-PLY-CDX-34",
-              "probability": 0.89
+              "probability": 0.9
             },
             {
               "sku": "NONE",
-              "probability": 0.11
+              "probability": 0.1
             },
             {
-              "sku": "SHT-PLY-CDX-58",
+              "sku": "SHT-PLY-PT-34",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.96,
-        "ms": 178.67183400000067,
+        "unitOk": 0.97,
+        "ms": 305.4827910000022,
         "usage": {
-          "inputTokens": 3256,
-          "outputTokens": 330
+          "inputTokens": 5326,
+          "outputTokens": 333
         },
-        "costUsd": 0.000136752
+        "costUsd": 0.000223692
       }
     ],
-    "ms": 310.55049999999756,
+    "ms": 337.0564999999988,
     "usage": {
-      "inputTokens": 11779,
-      "outputTokens": 1380
+      "inputTokens": 17970,
+      "outputTokens": 1387
     },
-    "costUsd": 0.000494718
+    "costUsd": 0.0007547400000000001
   },
   "claudeOnly": {
     "lines": [
@@ -213,11 +213,11 @@
         "confidence": "high"
       }
     ],
-    "ms": 1631.433207999995,
+    "ms": 1587.4443749999991,
     "usage": {
-      "inputTokens": 17197,
+      "inputTokens": 17093,
       "outputTokens": 150
     },
-    "costUsd": 0.053841
+    "costUsd": 0.053529
   }
 }

@@ -31,6 +31,8 @@ const parseUsd = mean(results.map((r) => r.parse.costUsd));
 
 // per-line CSV
 const q = (s: unknown) => `"${String(s ?? "").replace(/"/g, '""')}"`;
+const noneLines = rows.filter((r) => r.jev.sku === null).length;
+const gateOnly = rows.filter((r) => jevApprove(T, false)(r) && !jevApprove(T, true)(r)).length;
 const csv = [
   "order,line,raw,gold_sku,gold_review,jev_sku,jev_conf,jev_unit_ok,jev_approved,jev_correct,claude_sku,claude_conf,claude_approved,claude_correct,in_shortlist",
   ...rows.map((r) =>
@@ -71,7 +73,11 @@ Matching step only (parsing is shared and excluded), except the last row.
 
 Whole-pipeline cost includes the shared parse step (${parseUsd.toFixed(4)} USD per order). Claude prices are assumed (see lib/pricing.ts).
 Caveats:
-- Timing: Jev makes one call per line, five at a time, so its wall-clock time depends on concurrency; the sum of the per-line calls is shown too. Claude-only is one large call (about 17k input tokens). Both ran together in one run, so each includes some contention and network noise.
+- Timing: Jev makes up to two calls per line (product, then quantity check), five lines at a time, so its wall-clock time depends on concurrency; the sum of the per-line calls is shown too. Claude-only is one large call (about 17k input tokens). Both ran together in one run, so each includes some contention and network noise.
+- ${noneLines} of ${rows.length} lines chose NONE (no catalog match) and skipped the second Jev call, so their \`jev_unit_ok\` is stored as 0 meaning "not asked". That saves Jev time and cost, but it depends on how many not-in-catalog lines the set has, and this set deliberately has many. Do not average \`unit_ok\` over all lines.
+- The quantity check was the only reason for flagging on ${gateOnly} of ${rows.length} lines. The check adds little on this set with the current wording (eval.csv shows which lines).
+- The second Jev call (its existence, its position after the product choice, and its wording) was designed after seeing this same set of 20 orders fail the first version. The Jev approve rate is therefore in-sample and optimistic, and no held-out set has been run.
+- Results vary a little from run to run (the parse and the Claude-only call are not deterministic): across two clean runs Jev's approve rate was 72.7% and 73.9%.
 - The approval rules differ: Jev has an extra \`unit_ok\` gate that Claude-only lacks, and its cutoffs (T, \`unit_ok\`) were chosen while looking at this data. See the sweeps below.
 - The pipeline (shortlist and option text) was adjusted after a first look at these same 20 orders, and the house rules were written knowing the kinds of cases in them. Both pipelines get the same rules, but absolute accuracy is optimistic.
 - Both pipelines have no wrong auto-approvals, so that row cannot tell them apart; with one wrong line in 88 the accuracy figures cannot either.
@@ -106,7 +112,7 @@ ${sweep.join("\n")}
 
 ## unit_ok cutoff sweep (Jev, T = ${T})
 
-Most lines the key says need no review are held back only by the \`unit_ok\` check, usually when the unit is not stated ("hurricane ties 50"). This shows what relaxing it does.
+The quantity check is asked after the product is known, so its scores are close to all-or-nothing and the cutoff barely matters. (Asked before the product was known, it flagged most lines whose unit was unstated, and this sweep was the main lever.)
 
 | unit_ok cutoff | Approved (%) | Wrong product among approved (%) | Approved lines the key says a rep should see (%) |
 | --- | --- | --- | --- |

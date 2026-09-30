@@ -40,12 +40,12 @@
         "unit": "box"
       }
     ],
-    "ms": 2753.812708,
+    "ms": 2448.155375,
     "usage": {
-      "inputTokens": 3483,
+      "inputTokens": 3379,
       "outputTokens": 275
     },
-    "costUsd": 0.014574
+    "costUsd": 0.014262
   },
   "jev": {
     "lines": [
@@ -86,22 +86,22 @@
               "probability": 1
             },
             {
-              "sku": "LBR-2X8-16-PT",
+              "sku": "LBR-2X4-12-PT",
               "probability": 0
             },
             {
-              "sku": "LBR-2X12-08-PT",
+              "sku": "LBR-2X4-16-PT",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.95,
-        "ms": 362.3017500000001,
+        "unitOk": 0.97,
+        "ms": 374.30116599999974,
         "usage": {
-          "inputTokens": 4275,
-          "outputTokens": 527
+          "inputTokens": 6349,
+          "outputTokens": 530
         },
-        "costUsd": 0.00017955
+        "costUsd": 0.00026665799999999997
       },
       {
         "lineId": "2",
@@ -140,22 +140,22 @@
               "probability": 1
             },
             {
-              "sku": "LBR-2X6-16-SPF",
+              "sku": "LBR-2X6-16-PT",
               "probability": 0
             },
             {
-              "sku": "LBR-2X8-10-PT",
+              "sku": "LBR-2X6-10-PT",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.94,
-        "ms": 378.8167500000004,
+        "unitOk": 0.97,
+        "ms": 417.8065410000004,
         "usage": {
-          "inputTokens": 4309,
-          "outputTokens": 534
+          "inputTokens": 6383,
+          "outputTokens": 537
         },
-        "costUsd": 0.000180978
+        "costUsd": 0.000268086
       },
       {
         "lineId": "3",
@@ -194,22 +194,22 @@
               "probability": 1
             },
             {
-              "sku": "LBR-2X12-16-PT",
+              "sku": "LBR-2X12-10-SPF",
               "probability": 0
             },
             {
-              "sku": "LBR-2X12-10-SPF",
+              "sku": "LBR-2X12-08-PT",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.94,
-        "ms": 373.57791700000007,
+        "unitOk": 0.96,
+        "ms": 374.15162499999997,
         "usage": {
-          "inputTokens": 4311,
-          "outputTokens": 534
+          "inputTokens": 6387,
+          "outputTokens": 537
         },
-        "costUsd": 0.00018106199999999998
+        "costUsd": 0.000268254
       },
       {
         "lineId": "4",
@@ -240,22 +240,22 @@
               "probability": 1
             },
             {
-              "sku": "SHT-OSB-12",
+              "sku": "MAS-CMU-CAP",
               "probability": 0
             },
             {
-              "sku": "SHT-PLY-ZIP-716",
+              "sku": "LBR-2X6-16-SPF",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.95,
-        "ms": 369.9696250000002,
+        "unitOk": 0.97,
+        "ms": 365.5976249999999,
         "usage": {
-          "inputTokens": 3430,
-          "outputTokens": 366
+          "inputTokens": 5503,
+          "outputTokens": 369
         },
-        "costUsd": 0.00014406
+        "costUsd": 0.00023112599999999998
       },
       {
         "lineId": "5",
@@ -303,21 +303,21 @@
             }
           ]
         },
-        "unitOk": 0.85,
-        "ms": 396.9329160000002,
+        "unitOk": 0.96,
+        "ms": 397.33449999999993,
         "usage": {
-          "inputTokens": 3949,
-          "outputTokens": 520
+          "inputTokens": 6027,
+          "outputTokens": 523
         },
-        "costUsd": 0.00016585799999999998
+        "costUsd": 0.000253134
       }
     ],
-    "ms": 439,
+    "ms": 444.25883399999975,
     "usage": {
-      "inputTokens": 20274,
-      "outputTokens": 2481
+      "inputTokens": 30649,
+      "outputTokens": 2496
     },
-    "costUsd": 0.000851508
+    "costUsd": 0.001287258
   },
   "claudeOnly": {
     "lines": [
@@ -347,11 +347,11 @@
         "confidence": "high"
       }
     ],
-    "ms": 1913.4793750000003,
+    "ms": 1862.7335830000002,
     "usage": {
-      "inputTokens": 17249,
+      "inputTokens": 17145,
       "outputTokens": 211
     },
-    "costUsd": 0.054912
+    "costUsd": 0.0546
   }
 }

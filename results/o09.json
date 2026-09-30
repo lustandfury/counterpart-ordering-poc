@@ -47,12 +47,12 @@
         "unit": null
       }
     ],
-    "ms": 1963.087959000004,
+    "ms": 2672.7264579999974,
     "usage": {
-      "inputTokens": 3469,
+      "inputTokens": 3365,
       "outputTokens": 285
     },
-    "costUsd": 0.014682
+    "costUsd": 0.01437
   },
   "jev": {
     "lines": [
@@ -73,29 +73,29 @@
         },
         "sku": {
           "choice": "INS-R20-15",
-          "confidence": 0.98,
+          "confidence": 0.96,
           "top": [
             {
               "sku": "INS-R20-15",
-              "probability": 0.98
+              "probability": 0.97
             },
             {
               "sku": "NONE",
-              "probability": 0.02
+              "probability": 0.03
             },
             {
-              "sku": "INS-R12-23",
+              "sku": "INS-R12-15",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.9,
-        "ms": 197.51716599999781,
+        "unitOk": 0.95,
+        "ms": 343.4292090000017,
         "usage": {
-          "inputTokens": 3103,
-          "outputTokens": 268
+          "inputTokens": 5187,
+          "outputTokens": 271
         },
-        "costUsd": 0.000130326
+        "costUsd": 0.000217854
       },
       {
         "lineId": "2",
@@ -131,13 +131,13 @@
             }
           ]
         },
-        "unitOk": 0.6,
-        "ms": 190.72325000000274,
+        "unitOk": 0.94,
+        "ms": 306.02612500000396,
         "usage": {
-          "inputTokens": 3150,
-          "outputTokens": 283
+          "inputTokens": 5231,
+          "outputTokens": 286
         },
-        "costUsd": 0.0001323
+        "costUsd": 0.000219702
       },
       {
         "lineId": "3",
@@ -169,7 +169,7 @@
         },
         "sku": {
           "choice": "WTH-WRAP-9",
-          "confidence": 0.99,
+          "confidence": 0.98,
           "top": [
             {
               "sku": "WTH-WRAP-9",
@@ -180,18 +180,18 @@
               "probability": 0.01
             },
             {
-              "sku": "MAS-MORT-S-30KG",
+              "sku": "MAS-MORT-N-30KG",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.56,
-        "ms": 204.9994579999984,
+        "unitOk": 0.89,
+        "ms": 364.1434999999983,
         "usage": {
-          "inputTokens": 3902,
-          "outputTokens": 497
+          "inputTokens": 5967,
+          "outputTokens": 500
         },
-        "costUsd": 0.000163884
+        "costUsd": 0.00025061399999999997
       },
       {
         "lineId": "4",
@@ -234,18 +234,18 @@
               "probability": 0.11
             },
             {
-              "sku": "FST-ROOF-114-1LB",
+              "sku": "TRM-LAP-8",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.41,
-        "ms": 186.86645799999678,
+        "unitOk": 0.92,
+        "ms": 318.1263749999998,
         "usage": {
-          "inputTokens": 3758,
-          "outputTokens": 479
+          "inputTokens": 5830,
+          "outputTokens": 482
         },
-        "costUsd": 0.00015783599999999998
+        "costUsd": 0.00024486
       },
       {
         "lineId": "5",
@@ -272,34 +272,34 @@
           "HDW-HT-H2-5"
         ],
         "category": {
-          "choice": "weatherproofing",
-          "confidence": 0.52
+          "choice": "fasteners",
+          "confidence": 0.49
         },
         "sku": {
           "choice": "WTH-CAP-1",
-          "confidence": 0.88,
+          "confidence": 0.85,
           "top": [
             {
               "sku": "WTH-CAP-1",
-              "probability": 0.89
+              "probability": 0.87
             },
             {
               "sku": "NONE",
-              "probability": 0.11
+              "probability": 0.13
             },
             {
-              "sku": "ROF-SHG-RIDGE",
+              "sku": "FST-FRM-3-PAPER-5LB",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.77,
-        "ms": 284.64533400000073,
+        "unitOk": 0.95,
+        "ms": 302.6824579999957,
         "usage": {
-          "inputTokens": 3857,
+          "inputTokens": 5924,
           "outputTokens": 495
         },
-        "costUsd": 0.000161994
+        "costUsd": 0.000248808
       },
       {
         "lineId": "6",
@@ -342,26 +342,26 @@
               "probability": 0.05
             },
             {
-              "sku": "SHT-PLY-CDX-12",
+              "sku": "SHT-PLY-CDX-34",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.48,
-        "ms": 168.325499999999,
+        "unitOk": 0.96,
+        "ms": 388.12537500000326,
         "usage": {
-          "inputTokens": 3715,
-          "outputTokens": 479
+          "inputTokens": 5781,
+          "outputTokens": 482
         },
-        "costUsd": 0.00015603
+        "costUsd": 0.000242802
       }
     ],
-    "ms": 367.1359169999996,
+    "ms": 702.7992089999971,
     "usage": {
-      "inputTokens": 21485,
-      "outputTokens": 2501
+      "inputTokens": 33920,
+      "outputTokens": 2516
     },
-    "costUsd": 0.0009023699999999999
+    "costUsd": 0.0014246399999999998
   },
   "claudeOnly": {
     "lines": [
@@ -396,11 +396,11 @@
         "confidence": "high"
       }
     ],
-    "ms": 2038.6230419999993,
+    "ms": 1802.9034170000014,
     "usage": {
-      "inputTokens": 17234,
+      "inputTokens": 17130,
       "outputTokens": 223
     },
-    "costUsd": 0.055047
+    "costUsd": 0.054735
   }
 }

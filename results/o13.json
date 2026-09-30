@@ -33,12 +33,12 @@
         "unit": "feet"
       }
     ],
-    "ms": 1528.7163749999963,
+    "ms": 1673.4412500000035,
     "usage": {
-      "inputTokens": 3441,
+      "inputTokens": 3337,
       "outputTokens": 196
     },
-    "costUsd": 0.013263
+    "costUsd": 0.012951
   },
   "jev": {
     "lines": [
@@ -68,7 +68,7 @@
         ],
         "category": {
           "choice": "dimensional_lumber",
-          "confidence": 0.9
+          "confidence": 0.92
         },
         "sku": {
           "choice": "LBR-2X4-PRECUT-SPF",
@@ -79,22 +79,22 @@
               "probability": 1
             },
             {
-              "sku": "LBR-4X4-8-PT",
+              "sku": "FST-DRY-158-FINE-1LB",
               "probability": 0
             },
             {
-              "sku": "HDW-STRAP-12",
+              "sku": "TRM-LAP-8",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.78,
-        "ms": 173.38316599999962,
+        "unitOk": 0.89,
+        "ms": 303.8290830000042,
         "usage": {
-          "inputTokens": 3888,
-          "outputTokens": 503
+          "inputTokens": 5959,
+          "outputTokens": 506
         },
-        "costUsd": 0.000163296
+        "costUsd": 0.000250278
       },
       {
         "lineId": "2",
@@ -133,22 +133,22 @@
               "probability": 1
             },
             {
-              "sku": "FST-DECK-25-TAN-5LB",
+              "sku": "DRY-12-LITE-4X12",
               "probability": 0
             },
             {
-              "sku": "ROF-SHG-ARCH-BRN",
+              "sku": "FST-DECK-25-TAN-25LB",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.95,
-        "ms": 184.19137500000215,
+        "unitOk": 0.97,
+        "ms": 288.7363340000011,
         "usage": {
-          "inputTokens": 4004,
-          "outputTokens": 512
+          "inputTokens": 6072,
+          "outputTokens": 515
         },
-        "costUsd": 0.000168168
+        "costUsd": 0.000255024
       },
       {
         "lineId": "3",
@@ -169,33 +169,33 @@
         ],
         "category": {
           "choice": "concrete_masonry",
-          "confidence": 0.89
+          "confidence": 0.93
         },
         "sku": {
           "choice": "DRY-MUD-45",
-          "confidence": 0.87,
+          "confidence": 0.92,
           "top": [
             {
               "sku": "DRY-MUD-45",
-              "probability": 0.88
+              "probability": 0.93
             },
             {
               "sku": "NONE",
-              "probability": 0.12
+              "probability": 0.07
             },
             {
-              "sku": "TRM-BASE-314",
+              "sku": "ROF-DRIP-10",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.36,
-        "ms": 243.37625000000116,
+        "unitOk": 0.9,
+        "ms": 292.09162500000093,
         "usage": {
-          "inputTokens": 3435,
-          "outputTokens": 384
+          "inputTokens": 5500,
+          "outputTokens": 387
         },
-        "costUsd": 0.00014427
+        "costUsd": 0.000231
       },
       {
         "lineId": "4",
@@ -223,19 +223,19 @@
         ],
         "category": {
           "choice": "drywall",
-          "confidence": 0.9
+          "confidence": 0.89
         },
         "sku": {
           "choice": "NONE",
-          "confidence": 0.84,
+          "confidence": 0.82,
           "top": [
             {
               "sku": "NONE",
-              "probability": 0.85
+              "probability": 0.84
             },
             {
               "sku": "DRY-TAPE-250",
-              "probability": 0.13
+              "probability": 0.14
             },
             {
               "sku": "DRY-TAPE-MESH",
@@ -243,21 +243,21 @@
             }
           ]
         },
-        "unitOk": 0.33,
-        "ms": 267.25912499999686,
+        "unitOk": 0,
+        "ms": 187.12225000000035,
         "usage": {
-          "inputTokens": 3850,
-          "outputTokens": 476
+          "inputTokens": 3718,
+          "outputTokens": 458
         },
-        "costUsd": 0.0001617
+        "costUsd": 0.000156156
       }
     ],
-    "ms": 275.0563750000001,
+    "ms": 306.1634999999951,
     "usage": {
-      "inputTokens": 15177,
-      "outputTokens": 1875
+      "inputTokens": 21249,
+      "outputTokens": 1866
     },
-    "costUsd": 0.000637434
+    "costUsd": 0.0008924579999999999
   },
   "claudeOnly": {
     "lines": [
@@ -282,11 +282,11 @@
         "confidence": "low"
       }
     ],
-    "ms": 1937.7667500000025,
+    "ms": 1465.2596669999984,
     "usage": {
-      "inputTokens": 17124,
+      "inputTokens": 17020,
       "outputTokens": 171
     },
-    "costUsd": 0.053937
+    "costUsd": 0.053625
   }
 }

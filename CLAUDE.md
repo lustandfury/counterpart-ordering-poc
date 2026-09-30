@@ -27,12 +27,14 @@ alongside. All data is synthetic. Not affiliated with any company.
 1. parse: Claude turns the order text into line items [{id, raw, qty, unit}] using
    structured output (tool use with a JSON schema)
 2. shortlist: Fuse.js finds the top 20 catalog products per line, searching name + aliases
-3. decide: one Jev call per line with three questions:
+3. decide: two Jev calls per line. Call 1 asks:
    - category: choice over about 12 categories
-   - sku: choice over the shortlist; each option's description is the product name + unit
-   - unit_ok: noul, "Does the quantity and unit make sense for this product?"
-   Run lines in parallel, at most 5 at a time; retry 429/529 errors with
-   exponential backoff
+   - sku: choice over the shortlist; each option's description is the product name + unit + nicknames,
+     plus a NONE option
+   Call 2 (only when a product was chosen) asks unit_ok (noul) with the chosen product and its
+   selling unit named: is the quantity a sensible number of that unit? A bare number means the
+   selling unit. (Asked before the product is known, it flagged most lines with an unstated unit.)
+   Run lines in parallel, at most 5 at a time; retry 429/529 errors with exponential backoff
 4. route: auto-approve a line if sku.confidence >= T and unit_ok >= 0.8; otherwise flag it
    for the rep. T defaults to 0.85 and can be changed in the UI
 5. comparison: a Claude-only version reads the order and matches lines against the full

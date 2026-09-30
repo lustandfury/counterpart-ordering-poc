@@ -33,12 +33,12 @@
         "unit": null
       }
     ],
-    "ms": 1605.435249999995,
+    "ms": 1749.0905419999908,
     "usage": {
-      "inputTokens": 3448,
+      "inputTokens": 3344,
       "outputTokens": 210
     },
-    "costUsd": 0.013494
+    "costUsd": 0.013182000000000001
   },
   "jev": {
     "lines": [
@@ -79,22 +79,22 @@
               "probability": 1
             },
             {
-              "sku": "LBR-2X6-10-PT",
+              "sku": "LBR-2X4-12-PT",
               "probability": 0
             },
             {
-              "sku": "LBR-2X8-12-PT",
+              "sku": "LBR-2X4-10-SPF",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.88,
-        "ms": 159.14333299999998,
+        "unitOk": 0.92,
+        "ms": 335.0962079999881,
         "usage": {
-          "inputTokens": 4249,
-          "outputTokens": 527
+          "inputTokens": 6325,
+          "outputTokens": 530
         },
-        "costUsd": 0.000178458
+        "costUsd": 0.00026565
       },
       {
         "lineId": "2",
@@ -137,18 +137,18 @@
               "probability": 0.01
             },
             {
-              "sku": "DRY-58-REG-4X12",
+              "sku": "FST-DRY-158-1LB",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.86,
-        "ms": 167.66787499999919,
+        "unitOk": 0.88,
+        "ms": 307.4217079999944,
         "usage": {
-          "inputTokens": 4268,
-          "outputTokens": 536
+          "inputTokens": 6342,
+          "outputTokens": 539
         },
-        "costUsd": 0.000179256
+        "costUsd": 0.000266364
       },
       {
         "lineId": "3",
@@ -170,22 +170,22 @@
               "probability": 1
             },
             {
-              "sku": "WTH-CAP-1",
+              "sku": "INS-SPRAY-CAN",
               "probability": 0
             },
             {
-              "sku": "INS-SPRAY-CAN",
+              "sku": "WTH-CAP-1",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.37,
-        "ms": 184.27704200000153,
+        "unitOk": 0,
+        "ms": 204.52479199999652,
         "usage": {
-          "inputTokens": 2797,
-          "outputTokens": 215
+          "inputTokens": 2665,
+          "outputTokens": 197
         },
-        "costUsd": 0.000117474
+        "costUsd": 0.00011193
       },
       {
         "lineId": "4",
@@ -224,30 +224,30 @@
               "probability": 1
             },
             {
-              "sku": "FST-DRY-158-FINE-5LB",
+              "sku": "SUP-CAULK-LAT-WHT",
               "probability": 0
             },
             {
-              "sku": "FST-TAPCON-14-100",
+              "sku": "TRM-LAP-8",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.58,
-        "ms": 221.77733300000546,
+        "unitOk": 0,
+        "ms": 202.5010420000035,
         "usage": {
-          "inputTokens": 3764,
-          "outputTokens": 478
+          "inputTokens": 3632,
+          "outputTokens": 460
         },
-        "costUsd": 0.000158088
+        "costUsd": 0.000152544
       }
     ],
-    "ms": 235.2163750000036,
+    "ms": 338.8921249999985,
     "usage": {
-      "inputTokens": 15078,
-      "outputTokens": 1756
+      "inputTokens": 18964,
+      "outputTokens": 1726
     },
-    "costUsd": 0.000633276
+    "costUsd": 0.0007964879999999999
   },
   "claudeOnly": {
     "lines": [
@@ -272,11 +272,11 @@
         "confidence": "high"
       }
     ],
-    "ms": 4002.6933750000026,
+    "ms": 1730.3604590000032,
     "usage": {
-      "inputTokens": 17150,
-      "outputTokens": 407
+      "inputTokens": 17046,
+      "outputTokens": 159
     },
-    "costUsd": 0.057555
+    "costUsd": 0.053523
   }
 }
