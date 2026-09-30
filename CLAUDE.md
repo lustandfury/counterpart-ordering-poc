@@ -100,6 +100,11 @@ Keep docs/how-this-was-built.md up to date: the setup, which agent did what, wha
 check caught, and what I decided myself. It becomes a README section.
 
 ## Working agreements
+- Keep `docs/case-study.md` current. It is the running narrative and talk track for this project. When a feature lands,
+  a result changes a decision, or the process improves, add a Did / Happened / Changed entry (use the
+  `case-study-scribe` agent or write it directly) in the same change. A commit hook blocks product-changing
+  commits without it; use `[skip-case-study]` in the commit command only for trivial changes. The repo is public: no
+  company names, no outreach details, no keys.
 - Work one milestone at a time. Propose a plan first, then stop for my review when done
 - Commit at the end of each milestone with a clear message
 - Never hardcode keys or commit .env files
