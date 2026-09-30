@@ -44,6 +44,8 @@ type Run = OrderResult & { runId: number };
 
 const DEFAULT_SAMPLE = "o13";
 const SAMPLES_SHOWN = 3;
+// Optional address for deletion requests, set in the environment so no personal address lives in the repo
+const PRIVACY_CONTACT = process.env.NEXT_PUBLIC_PRIVACY_CONTACT;
 const WALKTHROUGH_KEY = "counterpart-walkthrough-complete";
 const ORDER_TEXT_LIMIT = 600;
 const ORDER_COUNTER_THRESHOLD = ORDER_TEXT_LIMIT * 0.8;
@@ -394,7 +396,10 @@ function SignupDialog({ email, setEmail, loading, error, onSubmit, onClose }: { 
           {error && <p role="alert" className="mt-2 text-[13px] text-warn">{error}</p>}
           <button type="submit" disabled={loading || !email.trim()} className="mt-4 h-10 w-full rounded-lg bg-brand px-4 text-[14px] font-semibold text-ink disabled:opacity-40">{loading ? "Saving…" : "Continue"}</button>
         </form>
-        <p className="mt-3 text-center text-[11px] text-muted">We’ll only use this to identify your Counterpart account.</p>
+        <p className="mt-3 text-center text-[11px] leading-relaxed text-muted">
+          We store your email only to let you keep generating orders in this demo. It isn’t sold or shared.
+          {PRIVACY_CONTACT && <> To have it deleted, email <a href={`mailto:${PRIVACY_CONTACT}`} className="underline">{PRIVACY_CONTACT}</a>.</>}
+        </p>
       </section>
     </div>
   );
