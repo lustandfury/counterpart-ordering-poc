@@ -55,14 +55,7 @@ export default function ResultsPage() {
   return (
     <div className="min-h-dvh">
       <header className="border-b border-line bg-panel">
-        <BrandBar
-          active
-          end={
-            <Link href="/" className="text-[13px] font-medium text-muted hover:text-ink">
-              ← Back to review
-            </Link>
-          }
-        />
+        <BrandBar onResults />
       </header>
 
       <main className="mx-auto max-w-6xl px-5 py-10 sm:px-10">

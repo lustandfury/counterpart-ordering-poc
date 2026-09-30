@@ -5,7 +5,7 @@ export function Wordmark() {
   return (
     <Link href="/" aria-label="Counterpart, review" className="flex items-center gap-2 rounded-lg">
       <svg aria-hidden viewBox="0 0 24 24" className="h-7 w-7 shrink-0">
-        <rect width="24" height="24" rx="7" fill="var(--brand)" />
+        <circle cx="12" cy="12" r="12" fill="var(--brand)" />
         <path d="M6.5 8.5h7M6.5 12h5M6.5 15.5h4" stroke="var(--ink)" strokeWidth="1.8" strokeLinecap="round" opacity="0.45" />
         <path d="M14 14.8l1.9 1.9 3.6-4.2" stroke="var(--ink)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none" />
       </svg>
@@ -17,14 +17,13 @@ export function Wordmark() {
 }
 
 /** Icon button to the sample-results dashboard. */
-export function ResultsButton({ active = false }: { active?: boolean }) {
+export function ResultsButton() {
   return (
     <Link
       href="/results"
       aria-label="Sample results"
-      aria-current={active ? "page" : undefined}
       title="Sample results"
-      className={`grid h-8 w-8 place-items-center rounded-lg ${active ? "bg-brandsoft text-ink" : "text-muted hover:bg-bg hover:text-ink"}`}
+      className="grid h-8 w-8 place-items-center rounded-lg text-muted hover:bg-bg hover:text-ink"
     >
       <svg aria-hidden viewBox="0 0 16 16" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
         <path d="M2.5 13.5h11" />
@@ -35,15 +34,22 @@ export function ResultsButton({ active = false }: { active?: boolean }) {
 }
 
 /**
- * The brand row (logo, name, results button), shared by both pages so these sit at exactly the same place
- * when switching between Review and Sample results. `end` fills the right-hand side.
+ * The brand row, shared by both pages so the logo and the page switch sit at exactly the same place
+ * when moving between Review and Sample results. Beside the logo: the results button on Review, and a
+ * way back to Review on Sample results. `end` fills the right-hand side.
  */
-export function BrandBar({ active = false, end }: { active?: boolean; end?: React.ReactNode }) {
+export function BrandBar({ onResults = false, end }: { onResults?: boolean; end?: React.ReactNode }) {
   return (
     <div className="flex h-16 shrink-0 items-center gap-1.5 px-4">
       <Wordmark />
       <span className="ml-1">
-        <ResultsButton active={active} />
+        {onResults ? (
+          <Link href="/" className="flex h-8 items-center rounded-lg px-2 text-[13px] font-medium text-muted hover:bg-bg hover:text-ink">
+            ← Back to review
+          </Link>
+        ) : (
+          <ResultsButton />
+        )}
       </span>
       {end && <span className="ml-auto">{end}</span>}
     </div>

@@ -34,9 +34,12 @@ function fmtQty(qty: number | null, unit: string | null) {
 
 type Run = OrderResult & { runId: number };
 
+const DEFAULT_SAMPLE = "o13";
+const SAMPLES_SHOWN = 3;
+
 export function ReviewApp({ samples, catalog, initialOrder }: { samples: OrderResult[]; catalog: SlimCatalog; initialOrder?: string }) {
   const [runs, setRuns] = useState<Run[]>([]); // live runs from the composer, newest first
-  const [selected, setSelected] = useState(initialOrder ?? samples.find((x) => x.orderId === "o13")?.orderId ?? samples[0].orderId);
+  const [selected, setSelected] = useState(initialOrder ?? samples.find((x) => x.orderId === DEFAULT_SAMPLE)?.orderId ?? samples[0].orderId);
   const [mode, setMode] = useState<Mode>("jev");
   const [T, setT] = useState(0.85);
   const [unitMin, setUnitMin] = useState(0.8);
@@ -50,6 +53,13 @@ export function ReviewApp({ samples, catalog, initialOrder }: { samples: OrderRe
 
   const live = runs.find((r) => `live-${r.runId}` === selected);
   const result = live ?? samples.find((s) => s.orderId === selected) ?? samples[0];
+  // The sidebar lists only a few samples: the default order first, then the next ones in file order.
+  // A sample opened from a link (e.g. from Sample results) is added so the active order is always listed.
+  const shownSamples = useMemo(() => {
+    const ids = new Set([...new Set([DEFAULT_SAMPLE, ...samples.map((s) => s.orderId)])].filter((id) => samples.some((s) => s.orderId === id)).slice(0, SAMPLES_SHOWN));
+    if (initialOrder) ids.add(initialOrder);
+    return [...ids].map((id) => samples.find((s) => s.orderId === id)!);
+  }, [samples, initialOrder]);
 
   const narrow = () => window.matchMedia("(max-width: 1023px)").matches;
   const toggleSidebar = useCallback(() => (narrow() ? setMobileOpen((v) => !v) : setDesktopOpen((v) => !v)), []);
@@ -109,7 +119,7 @@ export function ReviewApp({ samples, catalog, initialOrder }: { samples: OrderRe
                 {runs.length > 0 && <OrderGroup label="Your runs">{runs.map((r) => (
                   <OrderItem key={r.runId} id={`live-${r.runId}`} tag="live" title={r.from?.company ?? "Pasted order"} preview={r.text} count={toCheck(r)} active={selected === `live-${r.runId}`} onPick={pick} />
                 ))}</OrderGroup>}
-                <OrderGroup label="Samples">{samples.map((s) => (
+                <OrderGroup label="Samples">{shownSamples.map((s) => (
                   <OrderItem key={s.orderId} id={s.orderId} tag={s.orderId} title={s.from?.company ?? s.orderId} preview={s.text} count={toCheck(s)} active={selected === s.orderId} onPick={pick} />
                 ))}</OrderGroup>
               </nav>
@@ -574,8 +584,8 @@ function CostPanel({ result, samples, mode, T, unitMin, catalog, onMode, setT, s
       {settingsOpen && <SettingsSection mode={mode} T={T} unitMin={unitMin} setT={setT} setUnitMin={setUnitMin} changed={changed} />}
 
       <div className="rounded-xl bg-okbg px-4 py-3 text-ok">
-        <p className="font-mono text-[15px] font-semibold">{Math.round(cheaper)}× cheaper · {faster.toFixed(1)}× faster</p>
-        <p className="mt-0.5 text-[12px] text-muted">Jev&apos;s matching step vs Claude only, this order</p>
+        <p className="text-[12px] text-muted">Claude with Jev is</p>
+        <p className="mt-0.5 font-mono text-[15px] font-semibold">{Math.round(cheaper)}× cheaper · {faster.toFixed(1)}× faster</p>
       </div>
 
       {sides.map((x) => (
