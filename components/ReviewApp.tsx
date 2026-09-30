@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import type { OrderResult } from "@/lib/types";
+import type { OrderResult, Sender } from "@/lib/types";
 import { generateOrder } from "@/lib/generate";
 import { CLAUDE_INPUT_PER_TOKEN, CLAUDE_OUTPUT_PER_TOKEN, JEV_INPUT_PER_TOKEN } from "@/lib/pricing";
 import { computeView, displayChoices, NONE, segmentText, totals, type Mode, type SlimCatalog, type ViewLine } from "@/lib/view";
@@ -41,6 +41,7 @@ export function ReviewApp({ samples, catalog }: { samples: OrderResult[]; catalo
   const [desktopOpen, setDesktopOpen] = useState(true);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [pasteText, setPasteText] = useState("");
+  const [pasteFrom, setPasteFrom] = useState<Sender | undefined>(); // set by Generate, cleared by editing
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -78,7 +79,8 @@ export function ReviewApp({ samples, catalog }: { samples: OrderResult[]; catalo
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "The run failed.");
       const runId = Date.now();
-      setRuns((r) => [{ ...(data as OrderResult), runId }, ...r]);
+      setRuns((r) => [{ ...(data as OrderResult), from: pasteFrom, runId }, ...r]);
+      setPasteFrom(undefined);
       pick(`live-${runId}`);
       setPasteText("");
     } catch (e) {
@@ -105,10 +107,10 @@ export function ReviewApp({ samples, catalog }: { samples: OrderResult[]; catalo
               </div>
               <nav className="min-h-0 flex-1 overflow-y-auto px-3 pb-3">
                 {runs.length > 0 && <OrderGroup label="Your runs">{runs.map((r) => (
-                  <OrderItem key={r.runId} id={`live-${r.runId}`} title="Pasted order" preview={r.text} count={toCheck(r)} active={selected === `live-${r.runId}`} onPick={pick} />
+                  <OrderItem key={r.runId} id={`live-${r.runId}`} tag="live" title={r.from?.company ?? "Pasted order"} preview={r.text} count={toCheck(r)} active={selected === `live-${r.runId}`} onPick={pick} />
                 ))}</OrderGroup>}
                 <OrderGroup label="Samples">{samples.map((s) => (
-                  <OrderItem key={s.orderId} id={s.orderId} title={s.orderId} preview={s.text} count={toCheck(s)} active={selected === s.orderId} onPick={pick} />
+                  <OrderItem key={s.orderId} id={s.orderId} tag={s.orderId} title={s.from?.company ?? s.orderId} preview={s.text} count={toCheck(s)} active={selected === s.orderId} onPick={pick} />
                 ))}</OrderGroup>
               </nav>
               <div className="shrink-0 border-t border-line p-4">
@@ -119,7 +121,10 @@ export function ReviewApp({ samples, catalog }: { samples: OrderResult[]; catalo
                     rows={7}
                     value={pasteText}
                     maxLength={600}
-                    onChange={(e) => setPasteText(e.target.value)}
+                    onChange={(e) => {
+                      setPasteText(e.target.value);
+                      setPasteFrom(undefined);
+                    }}
                     onKeyDown={(e) => {
                       if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
                         e.preventDefault();
@@ -132,7 +137,9 @@ export function ReviewApp({ samples, catalog }: { samples: OrderResult[]; catalo
                   <div className="flex items-center gap-2 px-3 pb-3">
                     <button
                       onClick={() => {
-                        setPasteText(generateOrder().text);
+                        const g = generateOrder();
+                        setPasteText(g.text);
+                        setPasteFrom(g.from);
                         setError(null);
                         requestAnimationFrame(() => document.getElementById("paste")?.focus());
                       }}
@@ -262,17 +269,22 @@ function OrderGroup({ label, children }: { label: string; children: React.ReactN
   );
 }
 
-function OrderItem(p: { id: string; title: string; preview: string; count: number; active: boolean; onPick: (id: string) => void }) {
+function OrderItem(p: { id: string; tag: string; title: string; preview: string; count: number; active: boolean; onPick: (id: string) => void }) {
   const preview = p.preview.replace(/\s+/g, " ").trim();
   return (
     <li>
       <button
         onClick={() => p.onPick(p.id)}
         aria-current={p.active ? "true" : undefined}
-        className={`flex w-full items-center gap-3 rounded-lg px-2.5 py-2.5 text-left ${p.active ? "bg-bg font-medium" : "hover:bg-bg"}`}
+        aria-label={`${p.tag} ${p.title}`}
+        className={`flex w-full items-center gap-3 rounded-lg px-2.5 py-2 text-left ${p.active ? "bg-bg" : "hover:bg-bg"}`}
       >
-        <span className="w-9 shrink-0 font-mono text-[12px] text-muted">{p.title.startsWith("o") ? p.title : "live"}</span>
-        <span className="min-w-0 flex-1 truncate text-[14px]">{preview}</span>
+        <span className="min-w-0 flex-1">
+          <span className={`block truncate text-[14px] ${p.active ? "font-semibold" : "font-medium"}`}>{p.title}</span>
+          <span className="block truncate text-[12px] text-muted">
+            <span className="font-mono">{p.tag}</span> · {preview}
+          </span>
+        </span>
         {p.count > 0 ? (
           <span className="shrink-0 rounded-full bg-warnbg px-2 py-0.5 text-[12px] font-medium leading-none text-warn" aria-label={`${p.count} to check`}>{p.count}</span>
         ) : (
@@ -361,8 +373,16 @@ function Review({ result, isLive, mode, T, unitMin, catalog }: { result: OrderRe
       <div className="flex flex-col gap-8">
         <section aria-label="Order message" className="max-w-2xl">
           <h2 className="mb-2.5 flex items-center gap-2.5 text-[13px] font-medium text-muted">
-            <span className="grid h-6 w-6 place-items-center rounded-full bg-panel text-[11px] font-semibold text-ink shadow-[0_0_0_1px_var(--ring)]" aria-hidden>C</span>
-            Contractor · text message
+            <span className="grid h-6 w-6 place-items-center rounded-full bg-panel text-[10px] font-semibold text-ink shadow-[0_0_0_1px_var(--ring)]" aria-hidden>
+              {result.from ? result.from.name.split(" ").map((w) => w[0]).join("").slice(0, 2) : "C"}
+            </span>
+            {result.from ? (
+              <span>
+                <span className="text-ink">{result.from.name}</span> · {result.from.company} · text message
+              </span>
+            ) : (
+              "Contractor · text message"
+            )}
           </h2>
           <p className="card whitespace-pre-wrap !rounded-tl-sm px-6 py-5 font-mono text-[14px] leading-7">
             {segments.map((s, i) =>

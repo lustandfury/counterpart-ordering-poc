@@ -10,7 +10,7 @@ async function main() {
     await page.goto(base);
     if (process.env.ORDER) {
       if (!(await page.locator("#orders").isVisible())) await page.keyboard.press("Control+b");
-      await page.locator("#orders").getByRole("button", { name: new RegExp(`^${process.env.ORDER}`) }).click();
+      await page.locator("#orders").getByRole("button", { name: new RegExp(`^${process.env.ORDER} `) }).click();
     }
     if (act) await act(page);
     await page.screenshot({ path: `shots/${name}.png`, fullPage: true });

@@ -4,6 +4,8 @@
  * (data/house-defaults.md), so there is always something for the rep to check.
  */
 
+import type { Sender } from "./types";
+
 type Rng = () => number;
 
 const pick = <T,>(rng: Rng, xs: readonly T[]): T => xs[Math.floor(rng() * xs.length)];
@@ -62,17 +64,28 @@ const CHECK: { kind: CheckKind; line: (rng: Rng) => string }[] = [
   { kind: "missing quantity", line: () => "OSB for the garage roof" },
 ];
 
-const OPENERS = [
-  "",
-  "Hey it's Sam from Northline Framing, need this for Thursday AM:",
-  "Morning! Order for the Birch St job:",
-  "Can you deliver tomorrow before 8?",
-  "Quick order pls",
-  "Hi, new job starting Monday. Need:",
+const SENDERS: Sender[] = [
+  { name: "Sam Whitford", company: "Northline Framing" },
+  { name: "Ana Costa", company: "Costa Build Group" },
+  { name: "Derek Olsen", company: "Olsen Carpentry" },
+  { name: "Mei Lin", company: "Harbourview Renovations" },
+  { name: "Ray Boucher", company: "Boucher Decks" },
+  { name: "Tanya Price", company: "Price Drywall & Paint" },
+  { name: "Jordan Blake", company: "Blake & Co. Contracting" },
+  { name: "Omar Siddiqui", company: "Cedarline Homes" },
+];
+
+const OPENERS: ((s: Sender) => string)[] = [
+  () => "",
+  (s) => `Hey it's ${s.name.split(" ")[0]} from ${s.company}, need this for Thursday AM:`,
+  () => "Morning! Order for the Birch St job:",
+  () => "Can you deliver tomorrow before 8?",
+  () => "Quick order pls",
+  (s) => `Hi, ${s.name.split(" ")[0]} here. New job starting Monday. Need:`,
 ];
 const CLOSERS = ["", "thx", "Thanks!", "Drop at the back gate, call when close", "Same address as last week"];
 
-export type Generated = { text: string; checks: CheckKind[] };
+export type Generated = { text: string; checks: CheckKind[]; from: Sender };
 
 /** A new order each call. Pass a seeded rng for repeatable output (tests). */
 export function generateOrder(rng: Rng = Math.random): Generated {
@@ -81,8 +94,9 @@ export function generateOrder(rng: Rng = Math.random): Generated {
   const kinds = shuffle(rng, [...new Set(CHECK.map((c) => c.kind))]).slice(0, nChecks);
   const checks = kinds.map((k) => pick(rng, CHECK.filter((c) => c.kind === k)));
   const lines = shuffle(rng, [...clean, ...checks.map((c) => c.line(rng))]);
-  const text = [pick(rng, OPENERS), ...lines, pick(rng, CLOSERS)].filter(Boolean).join("\n");
-  return { text, checks: kinds };
+  const from = pick(rng, SENDERS);
+  const text = [pick(rng, OPENERS)(from), ...lines, pick(rng, CLOSERS)].filter(Boolean).join("\n");
+  return { text, checks: kinds, from };
 }
 
 /** Small seeded generator (mulberry32) for repeatable tests and scripts. */

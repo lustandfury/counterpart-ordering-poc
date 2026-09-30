@@ -94,7 +94,7 @@ The counters are per server instance. The spend limit on the API key is the hard
 | `lib/eval/` | Evaluation metrics (unit-tested) |
 | `lib/view.ts` | Turns saved scores into approved or flagged lines at any threshold |
 | `app/`, `components/` | The Next.js app and the review screen |
-| `data/` | Synthetic catalog (203 products), 20 orders, answer key, house rules |
+| `data/` | Synthetic catalog (203 products), 20 orders with fictional senders, answer key, house rules |
 | `results/` | Saved pipeline outputs and the evaluation |
 | `docs/` | The case study and the technical build log |
 

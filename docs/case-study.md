@@ -116,6 +116,11 @@ Each entry: what we did, what happened, what it changed.
 **Happened:** the "current line" marker had been styled like keyboard focus, so it showed for mouse users too, where it read as a stuck highlight. The dev-mode badge from the framework was also covering the Generate button, so it is switched off.
 **Changed:** focus means keyboard focus; selection and "you are here" use quieter backgrounds.
 
+### 20. Orders from people
+**Did:** gave every sample order a fictional sender, a contractor's name and company (Mike's call), shown above the message with their initials and as the title of each order in the sidebar. Where an order already names someone, the sender matches ("Dave from Ridgeline Homes"). Generated orders pick a sender too, and their greeting uses the same name, so the text and the header agree.
+**Happened:** the senders live in `data/contractors.json` as display metadata, not in the order text, so the saved pipeline results, the answer key and the evaluation did not have to be re-run. The sender is never sent to either pipeline.
+**Changed:** the sidebar reads like an inbox (company, then order id and preview) instead of a list of order numbers.
+
 ## Where it stands
 
 | | Claude only | Claude + Jev |

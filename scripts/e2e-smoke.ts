@@ -8,7 +8,7 @@ async function main() {
   await page.goto(`http://localhost:${process.env.PORT ?? 3100}`);
   const openOrder = async (id: string) => {
     if (!(await page.locator("#orders").isVisible())) await page.keyboard.press("Control+b");
-    await page.locator("#orders").getByRole("button", { name: new RegExp(`^${id}`) }).click();
+    await page.locator("#orders").getByRole("button", { name: new RegExp(`^${id} `) }).click();
   };
   assert.equal(await page.locator("#orders").isVisible(), true, "sidebar is open by default on desktop");
   await openOrder("o13");

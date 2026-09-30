@@ -20,6 +20,10 @@ describe("generateOrder", () => {
     expect(generateOrder(seeded(7)).text).toBe(generateOrder(seeded(7)).text);
   });
 
+  it("gives every order a sender", () => {
+    for (const o of orders) expect(o.from.name && o.from.company).toBeTruthy();
+  });
+
   it("covers every kind of check", () => {
     const kinds = new Set(orders.flatMap((o) => o.checks));
     expect(kinds.size).toBe(6);

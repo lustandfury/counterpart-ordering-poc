@@ -1,3 +1,5 @@
+export type Sender = { name: string; company: string };
+
 export type Product = {
   sku: string;
   name: string;
@@ -40,6 +42,7 @@ export type ClaudeOnlyLine = {
 
 export type OrderResult = {
   orderId: string;
+  from?: Sender; // who sent the order (display only; never sent to the pipelines)
   text: string;
   model: string;
   parse: { lines: ParsedLine[] } & Timed;
