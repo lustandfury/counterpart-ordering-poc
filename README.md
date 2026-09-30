@@ -43,21 +43,21 @@ A second page, **Sample results** (`/results`), is a dashboard for the 20 saved 
 
 | | Claude only | Claude + Jev |
 | --- | --- | --- |
-| Lines matched to the right product | 100% | 97.7% |
-| Lines auto-approved | 73.9% | 73.9% |
+| Lines matched to the right product | 98.9% | 98.9% |
+| Lines auto-approved | 75.0% | 75.0% |
 | Wrong product among auto-approved lines | 0% | 0% |
-| Matching step, time per order | 2.1 s | 0.4 s |
-| Matching step, cost per order | $0.036 | $0.001 |
-| Whole pipeline, cost per 10,000 orders | $455.09 | $101.62 |
+| Matching step, time per order | 2.5 s | 0.5 s |
+| Matching step, cost per order | $0.037 | $0.001 |
+| Whole pipeline, cost per 10,000 orders | $456.38 | $101.40 |
 
-**What this supports:** on this set, Jev cleared the same share of lines for auto-approval as Claude alone, with no wrong approvals, and its matching step was roughly 35x cheaper and about 5x faster on the clock (about 1.5x if you add up every call, because Jev's lines run in parallel). Its confidence was trustworthy: every line it rated at 0.7 or above was right.
+**What this supports:** on this set, Jev cleared the same share of lines for auto-approval as Claude alone, with no wrong approvals, and its matching step was roughly 36x cheaper and about 4.7x faster on the clock (about 1.3x if you add up every call, because Jev's lines run in parallel). Its confidence was trustworthy: every line it rated at 0.7 or above was right.
 
 **What it doesn't:** it doesn't show that Jev is more accurate. Read these as signals, not benchmarks:
-- The set is small: 20 orders. There were only two wrong product picks in total, both Jev's, and both were flagged for the rep rather than approved.
+- The set is small: 20 orders. There were only two wrong product picks in total, one from each pipeline (Jev's on "2 bags cement", Claude's on "half a pallet of block"), and both were flagged for the rep rather than approved.
 - Parts of the pipeline, including Jev's quantity check, were designed after seeing these same orders. The results are in-sample, and no held-out set has been run.
 - Costs are computed from each call's recorded token counts at published list prices (`lib/pricing.ts`); the API reports tokens, not dollars.
 - The set deliberately includes many products that aren't in the catalog. Those skip Jev's second call, which flatters its cost.
-- Results vary slightly between runs.
+- Results vary between runs, and one run can flip a single line: Claude-only scored 100% on an earlier run and 98.9% on the latest, while Jev went from 97.7% to 98.9%. The comparison is best read as "level on accuracy", not as a ranking.
 
 ## Run it locally
 

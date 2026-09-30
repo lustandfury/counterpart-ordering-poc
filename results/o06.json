@@ -40,12 +40,14 @@
         "unit": null
       }
     ],
-    "ms": 1876.0489159999997,
+    "ms": 2140.202291999998,
     "usage": {
-      "inputTokens": 3368,
-      "outputTokens": 267
+      "inputTokens": 3360,
+      "outputTokens": 267,
+      "cacheWriteTokens": 0,
+      "cacheReadTokens": 0
     },
-    "costUsd": 0.009406
+    "costUsd": 0.009389999999999999
   },
   "jev": {
     "lines": [
@@ -79,29 +81,29 @@
         },
         "sku": {
           "choice": "DRY-58-X-4X8",
-          "confidence": 1,
+          "confidence": 0.99,
           "top": [
             {
               "sku": "DRY-58-X-4X8",
               "probability": 1
             },
             {
-              "sku": "SHT-MDF-34",
+              "sku": "SHT-PLY-CDX-34",
               "probability": 0
             },
             {
-              "sku": "DRY-58-MR-4X12",
+              "sku": "DRY-58-X-4X12",
               "probability": 0
             }
           ]
         },
         "unitOk": 0.95,
-        "ms": 413.6742919999997,
+        "ms": 330.98975000000064,
         "usage": {
-          "inputTokens": 5962,
+          "inputTokens": 5948,
           "outputTokens": 500
         },
-        "costUsd": 0.00025040399999999997
+        "costUsd": 0.000249816
       },
       {
         "lineId": "2",
@@ -150,12 +152,12 @@
           ]
         },
         "unitOk": 0.96,
-        "ms": 335.9539999999979,
+        "ms": 413.14358300000094,
         "usage": {
-          "inputTokens": 6062,
+          "inputTokens": 6048,
           "outputTokens": 515
         },
-        "costUsd": 0.000254604
+        "costUsd": 0.000254016
       },
       {
         "lineId": "3",
@@ -183,33 +185,33 @@
         ],
         "category": {
           "choice": "drywall",
-          "confidence": 0.94
+          "confidence": 0.93
         },
         "sku": {
           "choice": "DRY-12-MR-4X8",
-          "confidence": 1,
+          "confidence": 0.99,
           "top": [
             {
               "sku": "DRY-12-MR-4X8",
               "probability": 1
             },
             {
-              "sku": "DRY-12-MR-4X12",
+              "sku": "SHT-PLY-BIRCH-34",
               "probability": 0
             },
             {
-              "sku": "DRY-12-MR-4X10",
+              "sku": "NONE",
               "probability": 0
             }
           ]
         },
         "unitOk": 0.96,
-        "ms": 409.07545799999934,
+        "ms": 396.60591699999713,
         "usage": {
-          "inputTokens": 5942,
+          "inputTokens": 5928,
           "outputTokens": 505
         },
-        "costUsd": 0.00024956399999999997
+        "costUsd": 0.000248976
       },
       {
         "lineId": "4",
@@ -234,29 +236,29 @@
         },
         "sku": {
           "choice": "DRY-MUD-45",
-          "confidence": 0.97,
+          "confidence": 0.98,
           "top": [
             {
               "sku": "DRY-MUD-45",
-              "probability": 0.97
+              "probability": 0.98
             },
             {
               "sku": "NONE",
-              "probability": 0.03
+              "probability": 0.02
             },
             {
-              "sku": "SHT-MDF-12",
+              "sku": "LBR-2X4-PRECUT-SPF",
               "probability": 0
             }
           ]
         },
         "unitOk": 0.94,
-        "ms": 293.4703750000008,
+        "ms": 300.24895800000013,
         "usage": {
-          "inputTokens": 5530,
+          "inputTokens": 5516,
           "outputTokens": 384
         },
-        "costUsd": 0.00023226
+        "costUsd": 0.000231672
       },
       {
         "lineId": "5",
@@ -299,26 +301,26 @@
               "probability": 0.02
             },
             {
-              "sku": "ROF-SHG-RIDGE",
+              "sku": "FST-DRY-158-FINE-1LB",
               "probability": 0
             }
           ]
         },
         "unitOk": 0.95,
-        "ms": 277.3044169999994,
+        "ms": 364.34479199999987,
         "usage": {
-          "inputTokens": 5901,
+          "inputTokens": 5887,
           "outputTokens": 478
         },
-        "costUsd": 0.000247842
+        "costUsd": 0.000247254
       }
     ],
-    "ms": 427.211041999999,
+    "ms": 429.36562499999854,
     "usage": {
-      "inputTokens": 29397,
+      "inputTokens": 29327,
       "outputTokens": 2382
     },
-    "costUsd": 0.001234674
+    "costUsd": 0.001231734
   },
   "claudeOnly": {
     "lines": [
@@ -348,11 +350,13 @@
         "confidence": "high"
       }
     ],
-    "ms": 2168.341375,
+    "ms": 2647.3960829999996,
     "usage": {
-      "inputTokens": 17122,
-      "outputTokens": 207
+      "inputTokens": 17114,
+      "outputTokens": 207,
+      "cacheWriteTokens": 0,
+      "cacheReadTokens": 0
     },
-    "costUsd": 0.036314
+    "costUsd": 0.036298000000000004
   }
 }

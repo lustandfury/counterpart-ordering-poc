@@ -33,12 +33,14 @@
         "unit": "pails"
       }
     ],
-    "ms": 1948.6374170000054,
+    "ms": 2431.0995410000032,
     "usage": {
-      "inputTokens": 3356,
-      "outputTokens": 234
+      "inputTokens": 3348,
+      "outputTokens": 234,
+      "cacheWriteTokens": 0,
+      "cacheReadTokens": 0
     },
-    "costUsd": 0.009052000000000001
+    "costUsd": 0.009035999999999999
   },
   "jev": {
     "lines": [
@@ -72,29 +74,29 @@
         },
         "sku": {
           "choice": "LBR-2X6-10-SPF",
-          "confidence": 0.98,
+          "confidence": 1,
           "top": [
             {
               "sku": "LBR-2X6-10-SPF",
-              "probability": 0.99
+              "probability": 1
             },
             {
-              "sku": "NONE",
-              "probability": 0.01
+              "sku": "LBR-2X6-16-SPF",
+              "probability": 0
             },
             {
-              "sku": "LBR-2X6-12-PT",
+              "sku": "LBR-2X6-10-PT",
               "probability": 0
             }
           ]
         },
         "unitOk": 0.9,
-        "ms": 341.42204199999105,
+        "ms": 436.15112500000396,
         "usage": {
-          "inputTokens": 6379,
+          "inputTokens": 6365,
           "outputTokens": 537
         },
-        "costUsd": 0.000267918
+        "costUsd": 0.00026733
       },
       {
         "lineId": "2",
@@ -122,7 +124,7 @@
         ],
         "category": {
           "choice": "roofing",
-          "confidence": 0.84
+          "confidence": 0.87
         },
         "sku": {
           "choice": "NONE",
@@ -133,22 +135,22 @@
               "probability": 1
             },
             {
-              "sku": "SUP-STAKE-24",
+              "sku": "FST-DRY-158-25LB",
               "probability": 0
             },
             {
-              "sku": "SUP-SHIM-42",
+              "sku": "FST-16D-SINK-50LB",
               "probability": 0
             }
           ]
         },
         "unitOk": 0,
-        "ms": 184.07220799999777,
+        "ms": 191.68641700000444,
         "usage": {
-          "inputTokens": 4009,
+          "inputTokens": 4002,
           "outputTokens": 489
         },
-        "costUsd": 0.000168378
+        "costUsd": 0.00016808399999999999
       },
       {
         "lineId": "3",
@@ -167,29 +169,29 @@
         },
         "sku": {
           "choice": "NONE",
-          "confidence": 0.93,
+          "confidence": 0.92,
           "top": [
             {
               "sku": "NONE",
-              "probability": 0.94
+              "probability": 0.9400000000000001
             },
             {
               "sku": "SHT-PLY-CDX-34",
               "probability": 0.06
             },
             {
-              "sku": "SHT-PLY-PT-34",
+              "sku": "SHT-PLY-CDX-58",
               "probability": 0
             }
           ]
         },
         "unitOk": 0,
-        "ms": 165.1137919999892,
+        "ms": 185.22849999999744,
         "usage": {
-          "inputTokens": 2901,
+          "inputTokens": 2894,
           "outputTokens": 256
         },
-        "costUsd": 0.000121842
+        "costUsd": 0.000121548
       },
       {
         "lineId": "4",
@@ -232,26 +234,26 @@
               "probability": 0.01
             },
             {
-              "sku": "FST-DECK-3-TAN-1LB",
+              "sku": "FST-DECK-25-TAN-5LB",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.79,
-        "ms": 281.19225000000733,
+        "unitOk": 0.83,
+        "ms": 341.5292499999923,
         "usage": {
-          "inputTokens": 6206,
+          "inputTokens": 6192,
           "outputTokens": 515
         },
-        "costUsd": 0.000260652
+        "costUsd": 0.000260064
       }
     ],
-    "ms": 346.60137499999837,
+    "ms": 441.2495409999974,
     "usage": {
-      "inputTokens": 19495,
+      "inputTokens": 19453,
       "outputTokens": 1797
     },
-    "costUsd": 0.00081879
+    "costUsd": 0.000817026
   },
   "claudeOnly": {
     "lines": [
@@ -273,14 +275,16 @@
       {
         "lineId": "4",
         "sku": "SUP-SEAL-EXT-5G",
-        "confidence": "medium"
+        "confidence": "high"
       }
     ],
-    "ms": 2407.8750839999993,
+    "ms": 3710.594041999997,
     "usage": {
-      "inputTokens": 17076,
-      "outputTokens": 162
+      "inputTokens": 17068,
+      "outputTokens": 336,
+      "cacheWriteTokens": 0,
+      "cacheReadTokens": 0
     },
-    "costUsd": 0.035772000000000005
+    "costUsd": 0.037496
   }
 }

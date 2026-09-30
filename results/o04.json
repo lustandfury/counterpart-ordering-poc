@@ -33,12 +33,14 @@
         "unit": "rolls"
       }
     ],
-    "ms": 1900.6052909999999,
+    "ms": 1839.273624999998,
     "usage": {
-      "inputTokens": 3368,
-      "outputTokens": 240
+      "inputTokens": 3360,
+      "outputTokens": 240,
+      "cacheWriteTokens": 0,
+      "cacheReadTokens": 0
     },
-    "costUsd": 0.009136
+    "costUsd": 0.00912
   },
   "jev": {
     "lines": [
@@ -69,18 +71,18 @@
               "probability": 0
             },
             {
-              "sku": "NONE",
+              "sku": "ROF-SHG-RIDGE",
               "probability": 0
             }
           ]
         },
         "unitOk": 0.94,
-        "ms": 307.59137499999997,
+        "ms": 427.63866699999926,
         "usage": {
-          "inputTokens": 5166,
+          "inputTokens": 5152,
           "outputTokens": 270
         },
-        "costUsd": 0.00021697199999999998
+        "costUsd": 0.000216384
       },
       {
         "lineId": "2",
@@ -95,15 +97,15 @@
         },
         "sku": {
           "choice": "ROF-UNDER-SYN",
-          "confidence": 0.97,
+          "confidence": 0.98,
           "top": [
             {
               "sku": "ROF-UNDER-SYN",
-              "probability": 0.98
+              "probability": 0.99
             },
             {
               "sku": "NONE",
-              "probability": 0.02
+              "probability": 0.01
             },
             {
               "sku": "ROF-UNDER-15",
@@ -112,12 +114,12 @@
           ]
         },
         "unitOk": 0.96,
-        "ms": 291.63158300000214,
+        "ms": 457.9663330000003,
         "usage": {
-          "inputTokens": 4901,
+          "inputTokens": 4887,
           "outputTokens": 222
         },
-        "costUsd": 0.000205842
+        "costUsd": 0.00020525399999999998
       },
       {
         "lineId": "3",
@@ -160,18 +162,18 @@
               "probability": 0.01
             },
             {
-              "sku": "ROF-DRIP-10-BRN",
+              "sku": "LBR-2X6-08-SPF",
               "probability": 0
             }
           ]
         },
         "unitOk": 0.96,
-        "ms": 315.64166699999987,
+        "ms": 492.82891700000255,
         "usage": {
-          "inputTokens": 6147,
+          "inputTokens": 6133,
           "outputTokens": 523
         },
-        "costUsd": 0.000258174
+        "costUsd": 0.00025758599999999997
       },
       {
         "lineId": "4",
@@ -200,26 +202,26 @@
               "probability": 0
             },
             {
-              "sku": "SHT-PLY-ZIP-716",
+              "sku": "SUP-SEAL-EXT-5G",
               "probability": 0
             }
           ]
         },
         "unitOk": 0.97,
-        "ms": 314.5499579999996,
+        "ms": 399.63054099999863,
         "usage": {
-          "inputTokens": 5062,
+          "inputTokens": 5048,
           "outputTokens": 264
         },
-        "costUsd": 0.000212604
+        "costUsd": 0.00021201599999999998
       }
     ],
-    "ms": 366.47999999999956,
+    "ms": 537.1962910000002,
     "usage": {
-      "inputTokens": 21276,
+      "inputTokens": 21220,
       "outputTokens": 1279
     },
-    "costUsd": 0.000893592
+    "costUsd": 0.00089124
   },
   "claudeOnly": {
     "lines": [
@@ -244,11 +246,13 @@
         "confidence": "high"
       }
     ],
-    "ms": 1644.8309579999986,
+    "ms": 2173.666333000001,
     "usage": {
-      "inputTokens": 17094,
-      "outputTokens": 178
+      "inputTokens": 17086,
+      "outputTokens": 178,
+      "cacheWriteTokens": 0,
+      "cacheReadTokens": 0
     },
-    "costUsd": 0.03596799999999999
+    "costUsd": 0.035952
   }
 }

@@ -181,17 +181,22 @@ Each entry: what we did, what happened, what it changed.
 **Happened:** two of the review's ten findings were not real: the guided tour already remembers that it was finished (the reviewer used fresh browser profiles each time) and already closes on Esc. And the browser smoke test turned out to have been failing on two stale checks (a button label changed on the lock screen, and the tour's last button reads "Done" on phones by design), so it had not been protecting anything for a while; it passes at desktop and phone width again, including the check that the brand row does not move between pages.
 **Changed:** one number per decision, and the screen says why a line was flagged in the rep's own terms. Left for later: moving keyboard focus to Send after the last decision, and labelling the cost bars.
 
+### 33. Re-running everything after one reworded line
+**Did:** the review noted that one heading in the shared house rules reused the answer key's field name (`shouldReview`), which was vocabulary only but too close to the key. Mike chose to reword it and run all 20 orders again rather than leave the saved results tied to old prompt text (about $0.93 for both pipelines and the whole set), then regenerate the evaluation and have the eval-checker recompute every number.
+**Happened:** the numbers moved even though the change was one heading. Claude-only went from 100% to 98.9% right (it changed its answer on "half a pallet of block", from right to "not in catalog", still flagged for the rep) and Jev went from 97.7% to 98.9% (it stopped guessing a shingle product for "a bundle of shingles"). Both now miss exactly one line, different lines, and both misses are flagged rather than approved. Auto-approval rose to 75.0% for both (66 of 88 lines), still with no wrong approvals, and every line either pipeline was confident about was still right. Cost is unchanged (Jev's matching still about 36x cheaper); the wall-clock speed-up is about 4.7x, and about 1.3x if every call is summed. The recompute matched exactly, and the eval script's hard-coded note about run-to-run variation was out of date and now lists all three runs.
+**Changed:** the story got more honest, not worse. On an earlier run Claude looked perfect and Jev slightly behind; on this run they are level. That is the finding the docs already claimed ("does not show Jev is more accurate"), now with evidence that a single run of 88 lines can swing a line either way. The published table now reads "level on accuracy", and the open question worth a few dollars is to run each pipeline several times and report the spread.
+
 ## Where it stands
 
 | | Claude only | Claude + Jev |
 | --- | --- | --- |
-| Right product | 100% | 97.7% |
-| Auto-approved | 73.9% | 73.9% |
+| Right product | 98.9% | 98.9% |
+| Auto-approved | 75.0% | 75.0% |
 | Wrong product among auto-approved | 0% | 0% |
-| Matching time per order | about 2.1 s | about 0.4 s |
-| Matching cost per order | about $0.036 | about $0.001 |
+| Matching time per order | about 2.5 s | about 0.5 s |
+| Matching cost per order | about $0.037 | about $0.001 |
 
-Read as signals, not benchmarks: 20 orders, tuned in-sample, costs from token counts at list prices. What the data supports is that Jev's confidence is well calibrated (every line it was at least 70% sure of was right) and the matching step is roughly 35x cheaper and about 5x faster on the clock (about 1.5x if you add up every call, because Jev's lines run in parallel), with the same number of lines safely skipping review. It does not show Jev is more accurate.
+Read as signals, not benchmarks: 20 orders, tuned in-sample, costs from token counts at list prices. What the data supports is that Jev's confidence is well calibrated (every line it was at least 70% sure of was right) and the matching step is roughly 36x cheaper and about 4.7x faster on the clock (about 1.3x if you add up every call, because Jev's lines run in parallel), with the same number of lines safely skipping review. It does not show Jev is more accurate.
 
 ## What the process taught us
 

@@ -42,17 +42,19 @@
       {
         "id": "6",
         "raw": "do you guys rent a dumpster",
-        "item": "do you guys rent a dumpster",
+        "item": "rent a dumpster",
         "qty": null,
         "unit": null
       }
     ],
-    "ms": 2250.450250000009,
+    "ms": 2125.8158330000006,
     "usage": {
-      "inputTokens": 3411,
-      "outputTokens": 290
+      "inputTokens": 3403,
+      "outputTokens": 286,
+      "cacheWriteTokens": 0,
+      "cacheReadTokens": 0
     },
-    "costUsd": 0.009722
+    "costUsd": 0.009666
   },
   "jev": {
     "lines": [
@@ -79,29 +81,29 @@
         },
         "sku": {
           "choice": "ROF-SHG-ARCH-BRN",
-          "confidence": 0.95,
+          "confidence": 0.97,
           "top": [
             {
               "sku": "ROF-SHG-ARCH-BRN",
-              "probability": 0.96
+              "probability": 0.97
             },
             {
               "sku": "NONE",
-              "probability": 0.04
+              "probability": 0.03
             },
             {
-              "sku": "FST-DRY-158-FINE-5LB",
+              "sku": "FST-STRC-3-1LB",
               "probability": 0
             }
           ]
         },
         "unitOk": 0.93,
-        "ms": 329.1414170000062,
+        "ms": 365.55083300000115,
         "usage": {
-          "inputTokens": 5655,
+          "inputTokens": 5641,
           "outputTokens": 387
         },
-        "costUsd": 0.00023751
+        "costUsd": 0.000236922
       },
       {
         "lineId": "2",
@@ -126,29 +128,29 @@
         },
         "sku": {
           "choice": "ROF-UNDER-30",
-          "confidence": 0.99,
+          "confidence": 1,
           "top": [
             {
               "sku": "ROF-UNDER-30",
-              "probability": 0.99
+              "probability": 1
             },
             {
-              "sku": "NONE",
-              "probability": 0.01
+              "sku": "DRY-TAPE-MESH",
+              "probability": 0
             },
             {
-              "sku": "ROF-UNDER-SYN",
+              "sku": "FST-DECK-3-TAN-25LB",
               "probability": 0
             }
           ]
         },
         "unitOk": 0.96,
-        "ms": 345.5327499999985,
+        "ms": 307.4982500000042,
         "usage": {
-          "inputTokens": 5630,
+          "inputTokens": 5616,
           "outputTokens": 386
         },
-        "costUsd": 0.00023646
+        "costUsd": 0.00023587199999999998
       },
       {
         "lineId": "3",
@@ -187,22 +189,22 @@
               "probability": 1
             },
             {
-              "sku": "FST-DECK-3-GRAY-5LB",
+              "sku": "FST-DECK-3-GRAY-25LB",
               "probability": 0
             },
             {
-              "sku": "LBR-2X6-10-SPF",
+              "sku": "ROF-SHG-ARCH-BRN",
               "probability": 0
             }
           ]
         },
         "unitOk": 0.96,
-        "ms": 315.5239580000052,
+        "ms": 294.06120899999223,
         "usage": {
-          "inputTokens": 6079,
+          "inputTokens": 6065,
           "outputTokens": 521
         },
-        "costUsd": 0.000255318
+        "costUsd": 0.00025473
       },
       {
         "lineId": "4",
@@ -237,13 +239,13 @@
             }
           ]
         },
-        "unitOk": 0.91,
-        "ms": 282.3043340000004,
+        "unitOk": 0.9,
+        "ms": 285.7159580000007,
         "usage": {
-          "inputTokens": 5077,
+          "inputTokens": 5063,
           "outputTokens": 277
         },
-        "costUsd": 0.000213234
+        "costUsd": 0.00021264599999999998
       },
       {
         "lineId": "5",
@@ -291,20 +293,41 @@
             }
           ]
         },
-        "unitOk": 0.93,
-        "ms": 324.62112499999057,
+        "unitOk": 0.94,
+        "ms": 299.3939590000082,
         "usage": {
-          "inputTokens": 6108,
+          "inputTokens": 6094,
           "outputTokens": 500
         },
-        "costUsd": 0.00025653599999999997
+        "costUsd": 0.000255948
       },
       {
         "lineId": "6",
-        "shortlist": [],
+        "shortlist": [
+          "ROF-ICE-36",
+          "LBR-4X4-8-PT",
+          "LBR-4X4-10-PT",
+          "LBR-4X4-12-PT",
+          "FST-TAPCON-14-100",
+          "MAS-MORT-S-30KG",
+          "MAS-MORT-N-30KG",
+          "LBR-6X6-8-PT",
+          "LBR-6X6-10-PT",
+          "LBR-6X6-12-PT",
+          "SHT-PLY-CDX-34",
+          "LBR-2X4-08-SPF",
+          "LBR-2X4-08-PT",
+          "LBR-2X4-10-SPF",
+          "LBR-2X4-10-PT",
+          "LBR-2X4-12-SPF",
+          "LBR-2X4-12-PT",
+          "LBR-2X4-16-SPF",
+          "LBR-2X4-16-PT",
+          "LBR-2X6-08-SPF"
+        ],
         "category": {
           "choice": "tools_supplies",
-          "confidence": 0.58
+          "confidence": 0.52
         },
         "sku": {
           "choice": "NONE",
@@ -313,24 +336,32 @@
             {
               "sku": "NONE",
               "probability": 1
+            },
+            {
+              "sku": "LBR-2X6-08-SPF",
+              "probability": 0
+            },
+            {
+              "sku": "LBR-4X4-10-PT",
+              "probability": 0
             }
           ]
         },
         "unitOk": 0,
-        "ms": 181.48450000000594,
+        "ms": 134.60904100000334,
         "usage": {
-          "inputTokens": 2571,
-          "outputTokens": 155
+          "inputTokens": 3847,
+          "outputTokens": 482
         },
-        "costUsd": 0.000107982
+        "costUsd": 0.000161574
       }
     ],
-    "ms": 493.98858299999847,
+    "ms": 442.69679200000246,
     "usage": {
-      "inputTokens": 31120,
-      "outputTokens": 2226
+      "inputTokens": 32326,
+      "outputTokens": 2553
     },
-    "costUsd": 0.00130704
+    "costUsd": 0.001357692
   },
   "claudeOnly": {
     "lines": [
@@ -365,11 +396,13 @@
         "confidence": "high"
       }
     ],
-    "ms": 1676.6221249999944,
+    "ms": 2254.597000000009,
     "usage": {
-      "inputTokens": 17184,
-      "outputTokens": 238
+      "inputTokens": 17172,
+      "outputTokens": 238,
+      "cacheWriteTokens": 0,
+      "cacheReadTokens": 0
     },
-    "costUsd": 0.036747999999999996
+    "costUsd": 0.036724
   }
 }

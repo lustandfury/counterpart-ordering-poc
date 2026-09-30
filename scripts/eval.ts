@@ -78,7 +78,7 @@ Caveats:
 - ${noneLines} of ${rows.length} lines chose NONE (no catalog match) and skipped the second Jev call, so their \`jev_unit_ok\` is stored as 0 meaning "not asked". That saves Jev time and cost, but it depends on how many not-in-catalog lines the set has, and this set deliberately has many. Do not average \`unit_ok\` over all lines.
 - The quantity check was the only reason for flagging on ${gateOnly} of ${rows.length} lines. The check adds little on this set with the current wording (eval.csv shows which lines).
 - The second Jev call (its existence, its position after the product choice, and its wording) was designed after seeing this same set of 20 orders fail the first version. The Jev approve rate is therefore in-sample and optimistic, and no held-out set has been run.
-- Results vary a little from run to run (the parse and the Claude-only call are not deterministic): across two clean runs Jev's approve rate was 72.7% and 73.9%.
+- Results vary a little from run to run (the parse and the Claude-only call are not deterministic): across three clean runs Jev's approve rate was 72.7%, 73.9% and 75.0% (the last after a one-line reword of a prompt heading).
 - The approval rules differ: Jev has an extra \`unit_ok\` gate that Claude-only lacks, and its cutoffs (T, \`unit_ok\`) were chosen while looking at this data. See the sweeps below.
 - The pipeline (shortlist and option text) was adjusted after a first look at these same 20 orders, and the house rules were written knowing the kinds of cases in them. Both pipelines get the same rules, but absolute accuracy is optimistic.
 - Both pipelines have no wrong auto-approvals, so that row cannot tell them apart; with one wrong line in 88 the accuracy figures cannot either.

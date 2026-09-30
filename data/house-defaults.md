@@ -27,7 +27,7 @@ Canadian yards use (2x4, 4x8, 1/2", #10 x 3", lb boxes).
 9. **Bags are 30 kg.** "Concrete" or "concrete mix" with no size means the 30 kg mix
    (`CON-30KG`); "mortar" means Type S 30 kg. Fast-setting concrete is 20 kg and needs "fast" said.
 
-## No default: always `shouldReview: true`
+## No default: always review
 
 - **Missing length**, when the catalog offers more than one length for that product
   (dimensional lumber 8/10/12/16 ft, 4x4 and 6x6 posts, 1x boards, deck boards, drywall

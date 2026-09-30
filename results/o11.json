@@ -26,12 +26,14 @@
         "unit": null
       }
     ],
-    "ms": 1450.5777910000033,
+    "ms": 1543.1338749999995,
     "usage": {
-      "inputTokens": 3336,
-      "outputTokens": 168
+      "inputTokens": 3328,
+      "outputTokens": 168,
+      "cacheWriteTokens": 0,
+      "cacheReadTokens": 0
     },
-    "costUsd": 0.008352
+    "costUsd": 0.008336
   },
   "jev": {
     "lines": [
@@ -72,22 +74,22 @@
               "probability": 1
             },
             {
-              "sku": "LBR-2X6-10-SPF",
+              "sku": "HDW-JH-2X6-BOX",
               "probability": 0
             },
             {
-              "sku": "LBR-2X4-12-PT",
+              "sku": "LBR-2X6-16-PT",
               "probability": 0
             }
           ]
         },
         "unitOk": 0.96,
-        "ms": 368.0940830000036,
+        "ms": 322.76024999999936,
         "usage": {
-          "inputTokens": 6303,
+          "inputTokens": 6289,
           "outputTokens": 524
         },
-        "costUsd": 0.000264726
+        "costUsd": 0.00026413799999999997
       },
       {
         "lineId": "2",
@@ -119,15 +121,15 @@
         },
         "sku": {
           "choice": "NONE",
-          "confidence": 0.58,
+          "confidence": 0.57,
           "top": [
             {
               "sku": "NONE",
-              "probability": 0.61
+              "probability": 0.59
             },
             {
               "sku": "LBR-2X4-08-SPF",
-              "probability": 0.39
+              "probability": 0.41
             },
             {
               "sku": "LBR-2X6-16-PT",
@@ -136,12 +138,12 @@
           ]
         },
         "unitOk": 0,
-        "ms": 165.9404579999973,
+        "ms": 167.734166000002,
         "usage": {
-          "inputTokens": 4099,
+          "inputTokens": 4092,
           "outputTokens": 496
         },
-        "costUsd": 0.000172158
+        "costUsd": 0.000171864
       },
       {
         "lineId": "3",
@@ -190,20 +192,20 @@
           ]
         },
         "unitOk": 0,
-        "ms": 147.09308299999975,
+        "ms": 163.70724999999948,
         "usage": {
-          "inputTokens": 3828,
+          "inputTokens": 3821,
           "outputTokens": 487
         },
-        "costUsd": 0.000160776
+        "costUsd": 0.00016048199999999999
       }
     ],
-    "ms": 370.6778750000012,
+    "ms": 326.34841700000106,
     "usage": {
-      "inputTokens": 14230,
+      "inputTokens": 14202,
       "outputTokens": 1507
     },
-    "costUsd": 0.0005976600000000001
+    "costUsd": 0.000596484
   },
   "claudeOnly": {
     "lines": [
@@ -223,11 +225,13 @@
         "confidence": "low"
       }
     ],
-    "ms": 1313.7797090000022,
+    "ms": 1364.114207999999,
     "usage": {
-      "inputTokens": 17000,
-      "outputTokens": 126
+      "inputTokens": 16992,
+      "outputTokens": 126,
+      "cacheWriteTokens": 0,
+      "cacheReadTokens": 0
     },
-    "costUsd": 0.03525999999999999
+    "costUsd": 0.035244
   }
 }

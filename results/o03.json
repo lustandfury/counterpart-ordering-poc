@@ -33,12 +33,14 @@
         "unit": null
       }
     ],
-    "ms": 2120.2503340000003,
+    "ms": 1776.0032499999998,
     "usage": {
-      "inputTokens": 3367,
-      "outputTokens": 239
+      "inputTokens": 3359,
+      "outputTokens": 239,
+      "cacheWriteTokens": 0,
+      "cacheReadTokens": 0
     },
-    "costUsd": 0.009124
+    "costUsd": 0.009108
   },
   "jev": {
     "lines": [
@@ -68,22 +70,22 @@
               "probability": 1
             },
             {
-              "sku": "CON-FAST-20KG",
+              "sku": "CON-FORM-SONO-8",
               "probability": 0
             },
             {
-              "sku": "MAS-CMU-8",
+              "sku": "FST-TAPCON-14-100",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.94,
-        "ms": 335.7611249999991,
+        "unitOk": 0.95,
+        "ms": 364.3744999999999,
         "usage": {
-          "inputTokens": 5149,
+          "inputTokens": 5135,
           "outputTokens": 303
         },
-        "costUsd": 0.000216258
+        "costUsd": 0.00021567
       },
       {
         "lineId": "2",
@@ -109,22 +111,22 @@
               "probability": 1
             },
             {
-              "sku": "ROF-UNDER-15",
+              "sku": "MAS-MORT-S-30KG",
               "probability": 0
             },
             {
-              "sku": "CON-REBAR-15M-6M",
+              "sku": "NONE",
               "probability": 0
             }
           ]
         },
         "unitOk": 0.95,
-        "ms": 480.8654580000002,
+        "ms": 367.0881669999999,
         "usage": {
-          "inputTokens": 5155,
+          "inputTokens": 5141,
           "outputTokens": 293
         },
-        "costUsd": 0.00021651
+        "costUsd": 0.00021592199999999998
       },
       {
         "lineId": "3",
@@ -156,7 +158,7 @@
         },
         "sku": {
           "choice": "CON-MESH-5X10",
-          "confidence": 0.9,
+          "confidence": 0.91,
           "top": [
             {
               "sku": "CON-MESH-5X10",
@@ -167,18 +169,18 @@
               "probability": 0.09
             },
             {
-              "sku": "LBR-6X6-10-PT",
+              "sku": "ROF-SHG-ARCH-BRN",
               "probability": 0
             }
           ]
         },
         "unitOk": 0.95,
-        "ms": 343.8216250000005,
+        "ms": 373.4347089999992,
         "usage": {
-          "inputTokens": 6034,
+          "inputTokens": 6020,
           "outputTokens": 506
         },
-        "costUsd": 0.000253428
+        "costUsd": 0.00025284
       },
       {
         "lineId": "4",
@@ -214,21 +216,21 @@
             }
           ]
         },
-        "unitOk": 0.95,
-        "ms": 309.5242500000004,
+        "unitOk": 0.96,
+        "ms": 352.84900000000016,
         "usage": {
-          "inputTokens": 5280,
+          "inputTokens": 5266,
           "outputTokens": 310
         },
-        "costUsd": 0.00022176
+        "costUsd": 0.000221172
       }
     ],
-    "ms": 491.3602499999997,
+    "ms": 395.10370899999907,
     "usage": {
-      "inputTokens": 21618,
+      "inputTokens": 21562,
       "outputTokens": 1412
     },
-    "costUsd": 0.000907956
+    "costUsd": 0.000905604
   },
   "claudeOnly": {
     "lines": [
@@ -253,11 +255,13 @@
         "confidence": "high"
       }
     ],
-    "ms": 1830.7449589999997,
+    "ms": 2619.290167000001,
     "usage": {
-      "inputTokens": 17096,
-      "outputTokens": 172
+      "inputTokens": 17088,
+      "outputTokens": 172,
+      "cacheWriteTokens": 0,
+      "cacheReadTokens": 0
     },
-    "costUsd": 0.035912
+    "costUsd": 0.035896
   }
 }

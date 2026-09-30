@@ -40,12 +40,14 @@
         "unit": null
       }
     ],
-    "ms": 2480.0604169999933,
+    "ms": 2842.413625000001,
     "usage": {
-      "inputTokens": 3428,
-      "outputTokens": 313
+      "inputTokens": 3420,
+      "outputTokens": 313,
+      "cacheWriteTokens": 0,
+      "cacheReadTokens": 0
     },
-    "costUsd": 0.009986
+    "costUsd": 0.00997
   },
   "jev": {
     "lines": [
@@ -86,7 +88,7 @@
               "probability": 1
             },
             {
-              "sku": "LBR-2X6-12-PT",
+              "sku": "LBR-2X6-08-PT",
               "probability": 0
             },
             {
@@ -96,12 +98,12 @@
           ]
         },
         "unitOk": 0.96,
-        "ms": 488.56629099999554,
+        "ms": 361.0066659999866,
         "usage": {
-          "inputTokens": 6456,
+          "inputTokens": 6442,
           "outputTokens": 532
         },
-        "costUsd": 0.000271152
+        "costUsd": 0.000270564
       },
       {
         "lineId": "2",
@@ -140,22 +142,22 @@
               "probability": 1
             },
             {
-              "sku": "LBR-2X6-12-SPF",
+              "sku": "LBR-2X4-12-SPF",
               "probability": 0
             },
             {
-              "sku": "NONE",
+              "sku": "LBR-2X10-12-SPF",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.97,
-        "ms": 416.35275000000547,
+        "unitOk": 0.96,
+        "ms": 1352.6694579999894,
         "usage": {
-          "inputTokens": 6462,
+          "inputTokens": 6448,
           "outputTokens": 543
         },
-        "costUsd": 0.000271404
+        "costUsd": 0.000270816
       },
       {
         "lineId": "3",
@@ -187,29 +189,29 @@
         },
         "sku": {
           "choice": "LBR-4X4-8-PT",
-          "confidence": 0.99,
+          "confidence": 1,
           "top": [
             {
               "sku": "LBR-4X4-8-PT",
-              "probability": 0.99
+              "probability": 1
             },
             {
-              "sku": "NONE",
-              "probability": 0.01
+              "sku": "LBR-4X4-10-PT",
+              "probability": 0
             },
             {
-              "sku": "HDW-POST-4X4",
+              "sku": "LBR-2X4-08-SPF",
               "probability": 0
             }
           ]
         },
         "unitOk": 0.96,
-        "ms": 387.3460829999967,
+        "ms": 1261.1102919999976,
         "usage": {
-          "inputTokens": 6161,
+          "inputTokens": 6147,
           "outputTokens": 521
         },
-        "costUsd": 0.000258762
+        "costUsd": 0.000258174
       },
       {
         "lineId": "4",
@@ -241,29 +243,29 @@
         },
         "sku": {
           "choice": "FST-DECK-3-TAN-25LB",
-          "confidence": 0.98,
+          "confidence": 0.99,
           "top": [
             {
               "sku": "FST-DECK-3-TAN-25LB",
-              "probability": 0.98
+              "probability": 1
             },
             {
-              "sku": "NONE",
-              "probability": 0.02
+              "sku": "FST-DRY-158-5LB",
+              "probability": 0
             },
             {
-              "sku": "FST-DRY-158-FINE-25LB",
+              "sku": "FST-DECK-3-GRAY-25LB",
               "probability": 0
             }
           ]
         },
         "unitOk": 0.97,
-        "ms": 338.0685419999936,
+        "ms": 1370.6371669999935,
         "usage": {
-          "inputTokens": 6614,
+          "inputTokens": 6600,
           "outputTokens": 553
         },
-        "costUsd": 0.000277788
+        "costUsd": 0.0002772
       },
       {
         "lineId": "5",
@@ -299,33 +301,33 @@
           "top": [
             {
               "sku": "HDW-JH-2X8",
-              "probability": 0.98
+              "probability": 0.99
             },
             {
               "sku": "NONE",
-              "probability": 0.02
+              "probability": 0.01
             },
             {
-              "sku": "LBR-2X4-16-PT",
+              "sku": "LBR-2X8-10-SPF",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.92,
-        "ms": 367.36116700001,
+        "unitOk": 0.93,
+        "ms": 1231.4150000000081,
         "usage": {
-          "inputTokens": 6231,
+          "inputTokens": 6217,
           "outputTokens": 507
         },
-        "costUsd": 0.000261702
+        "costUsd": 0.000261114
       }
     ],
-    "ms": 516.2769589999953,
+    "ms": 1435.5645000000077,
     "usage": {
-      "inputTokens": 31924,
+      "inputTokens": 31854,
       "outputTokens": 2656
     },
-    "costUsd": 0.001340808
+    "costUsd": 0.001337868
   },
   "claudeOnly": {
     "lines": [
@@ -355,11 +357,13 @@
         "confidence": "high"
       }
     ],
-    "ms": 1789.5047499999928,
+    "ms": 2413.0224580000067,
     "usage": {
-      "inputTokens": 17228,
-      "outputTokens": 213
+      "inputTokens": 17220,
+      "outputTokens": 213,
+      "cacheWriteTokens": 0,
+      "cacheReadTokens": 0
     },
-    "costUsd": 0.036586
+    "costUsd": 0.03657
   }
 }

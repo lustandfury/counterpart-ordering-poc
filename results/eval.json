@@ -9,33 +9,33 @@
   "summary": {
     "jev": {
       "lines": 88,
-      "accuracy": 97.72727272727273,
-      "approvedPct": 73.86363636363636,
+      "accuracy": 98.86363636363636,
+      "approvedPct": 75,
       "wrongProductAmongApproved": 0,
       "shouldHaveReviewedAmongApproved": 0,
-      "reviewAgreement": 97.72727272727273,
-      "matchMs": 424.9784563999989,
-      "matchUsd": 0.0010254383999999997,
-      "totalUsd": 0.0101616384
+      "reviewAgreement": 98.86363636363636,
+      "matchMs": 531.0188937000004,
+      "matchUsd": 0.0010211879999999997,
+      "totalUsd": 0.010139888
     },
     "claude": {
       "lines": 88,
-      "accuracy": 100,
-      "approvedPct": 73.86363636363636,
+      "accuracy": 98.86363636363636,
+      "approvedPct": 75,
       "wrongProductAmongApproved": 0,
       "shouldHaveReviewedAmongApproved": 0,
-      "reviewAgreement": 97.72727272727273,
-      "matchMs": 2080.50686685,
-      "matchUsd": 0.0363725,
-      "totalUsd": 0.0455087
+      "reviewAgreement": 98.86363636363636,
+      "matchMs": 2480.153527050001,
+      "matchUsd": 0.036519699999999995,
+      "totalUsd": 0.045638399999999996
     },
-    "parseUsd": 0.0091362
+    "parseUsd": 0.0091187
   },
   "bands": {
     "jev": [
       {
         "band": ">= 0.9",
-        "lines": 74,
+        "lines": 75,
         "accuracy": 100
       },
       {
@@ -45,25 +45,25 @@
       },
       {
         "band": "< 0.7",
-        "lines": 4,
-        "accuracy": 50
+        "lines": 3,
+        "accuracy": 66.66666666666667
       }
     ],
     "claude": [
       {
         "band": "high",
-        "lines": 70,
+        "lines": 72,
         "accuracy": 100
       },
       {
         "band": "medium",
-        "lines": 4,
+        "lines": 3,
         "accuracy": 100
       },
       {
         "band": "low",
-        "lines": 14,
-        "accuracy": 100
+        "lines": 13,
+        "accuracy": 92.3076923076923
       }
     ]
   },
@@ -71,10 +71,10 @@
   "wrong": [
     {
       "orderId": "o12",
-      "raw": "a bundle of shingles",
-      "key": null,
-      "jev": "ROF-SHG-3TAB-GRY",
-      "jevConfidence": 0.47,
+      "raw": "half a pallet of block",
+      "key": "MAS-CMU-8",
+      "jev": "MAS-CMU-8",
+      "jevConfidence": 0.78,
       "jevApproved": false,
       "claude": null,
       "claudeConfidence": "low",
@@ -85,7 +85,7 @@
       "raw": "2 bags cement",
       "key": null,
       "jev": "MAS-CEM-GU-30KG",
-      "jevConfidence": 0.49,
+      "jevConfidence": 0.54,
       "jevApproved": false,
       "claude": null,
       "claudeConfidence": "low",
@@ -101,17 +101,17 @@
         "approved": 5,
         "correct": 5,
         "wrongApproved": 0,
-        "matchMs": 444.25883399999975,
-        "matchUsd": 0.001287258,
-        "totalUsd": 0.010795258
+        "matchMs": 537.0591249999998,
+        "matchUsd": 0.001284318,
+        "totalUsd": 0.010776318
       },
       "claude": {
         "approved": 5,
         "correct": 5,
         "wrongApproved": 0,
-        "matchMs": 1862.7335830000002,
-        "matchUsd": 0.0364,
-        "totalUsd": 0.045908000000000004
+        "matchMs": 2255.410583,
+        "matchUsd": 0.036384,
+        "totalUsd": 0.045876
       }
     },
     {
@@ -122,17 +122,17 @@
         "approved": 4,
         "correct": 5,
         "wrongApproved": 0,
-        "matchMs": 389.84158300000036,
-        "matchUsd": 0.0012863339999999999,
-        "totalUsd": 0.011364334
+        "matchMs": 498.3088750000006,
+        "matchUsd": 0.0012833940000000002,
+        "totalUsd": 0.011345394
       },
       "claude": {
         "approved": 4,
         "correct": 5,
         "wrongApproved": 0,
-        "matchMs": 4090.467667,
-        "matchUsd": 0.039548,
-        "totalUsd": 0.049626
+        "matchMs": 3848.6469579999994,
+        "matchUsd": 0.039282,
+        "totalUsd": 0.049344
       }
     },
     {
@@ -143,17 +143,17 @@
         "approved": 4,
         "correct": 4,
         "wrongApproved": 0,
-        "matchMs": 491.3602499999997,
-        "matchUsd": 0.000907956,
-        "totalUsd": 0.010031956
+        "matchMs": 395.10370899999907,
+        "matchUsd": 0.000905604,
+        "totalUsd": 0.010013603999999999
       },
       "claude": {
         "approved": 4,
         "correct": 4,
         "wrongApproved": 0,
-        "matchMs": 1830.7449589999997,
-        "matchUsd": 0.035912,
-        "totalUsd": 0.045036
+        "matchMs": 2619.290167000001,
+        "matchUsd": 0.035896,
+        "totalUsd": 0.045003999999999995
       }
     },
     {
@@ -164,17 +164,17 @@
         "approved": 4,
         "correct": 4,
         "wrongApproved": 0,
-        "matchMs": 366.47999999999956,
-        "matchUsd": 0.000893592,
-        "totalUsd": 0.010029592
+        "matchMs": 537.1962910000002,
+        "matchUsd": 0.00089124,
+        "totalUsd": 0.01001124
       },
       "claude": {
         "approved": 4,
         "correct": 4,
         "wrongApproved": 0,
-        "matchMs": 1644.8309579999986,
-        "matchUsd": 0.03596799999999999,
-        "totalUsd": 0.04510399999999999
+        "matchMs": 2173.666333000001,
+        "matchUsd": 0.035952,
+        "totalUsd": 0.045072
       }
     },
     {
@@ -185,17 +185,17 @@
         "approved": 5,
         "correct": 5,
         "wrongApproved": 0,
-        "matchMs": 381.74866699999984,
-        "matchUsd": 0.0013329960000000001,
-        "totalUsd": 0.010740996
+        "matchMs": 383.79049999999916,
+        "matchUsd": 0.001330056,
+        "totalUsd": 0.010722055999999999
       },
       "claude": {
         "approved": 5,
         "correct": 5,
         "wrongApproved": 0,
-        "matchMs": 2384.475458000001,
-        "matchUsd": 0.036392,
-        "totalUsd": 0.0458
+        "matchMs": 1964.526667000002,
+        "matchUsd": 0.036376,
+        "totalUsd": 0.045767999999999996
       }
     },
     {
@@ -206,17 +206,17 @@
         "approved": 5,
         "correct": 5,
         "wrongApproved": 0,
-        "matchMs": 427.211041999999,
-        "matchUsd": 0.001234674,
-        "totalUsd": 0.010640674
+        "matchMs": 429.36562499999854,
+        "matchUsd": 0.001231734,
+        "totalUsd": 0.010621733999999999
       },
       "claude": {
         "approved": 5,
         "correct": 5,
         "wrongApproved": 0,
-        "matchMs": 2168.341375,
-        "matchUsd": 0.036314,
-        "totalUsd": 0.04572
+        "matchMs": 2647.3960829999996,
+        "matchUsd": 0.036298000000000004,
+        "totalUsd": 0.045688000000000006
       }
     },
     {
@@ -227,17 +227,17 @@
         "approved": 4,
         "correct": 5,
         "wrongApproved": 0,
-        "matchMs": 437.28770799999984,
-        "matchUsd": 0.00126,
-        "totalUsd": 0.010436
+        "matchMs": 1276.1288329999988,
+        "matchUsd": 0.00125706,
+        "totalUsd": 0.010417059999999999
       },
       "claude": {
         "approved": 4,
         "correct": 5,
         "wrongApproved": 0,
-        "matchMs": 5094.104958,
-        "matchUsd": 0.040482,
-        "totalUsd": 0.049657999999999994
+        "matchMs": 4168.454166999996,
+        "matchUsd": 0.039726,
+        "totalUsd": 0.048886
       }
     },
     {
@@ -248,17 +248,17 @@
         "approved": 5,
         "correct": 5,
         "wrongApproved": 0,
-        "matchMs": 456.3792919999978,
-        "matchUsd": 0.0012141359999999998,
-        "totalUsd": 0.010414136
+        "matchMs": 445.9176660000012,
+        "matchUsd": 0.0012111959999999999,
+        "totalUsd": 0.010395195999999999
       },
       "claude": {
         "approved": 5,
         "correct": 5,
         "wrongApproved": 0,
-        "matchMs": 1765.8886669999993,
-        "matchUsd": 0.036326000000000004,
-        "totalUsd": 0.045526000000000004
+        "matchMs": 2097.7139160000006,
+        "matchUsd": 0.03631,
+        "totalUsd": 0.045494
       }
     },
     {
@@ -269,17 +269,17 @@
         "approved": 6,
         "correct": 6,
         "wrongApproved": 0,
-        "matchMs": 702.7992089999971,
-        "matchUsd": 0.0014246399999999998,
-        "totalUsd": 0.01100464
+        "matchMs": 718.3611670000028,
+        "matchUsd": 0.0014211119999999998,
+        "totalUsd": 0.010985112
       },
       "claude": {
         "approved": 6,
         "correct": 6,
         "wrongApproved": 0,
-        "matchMs": 1802.9034170000014,
-        "matchUsd": 0.03649,
-        "totalUsd": 0.04607
+        "matchMs": 2005.7662500000006,
+        "matchUsd": 0.036474,
+        "totalUsd": 0.046037999999999996
       }
     },
     {
@@ -290,17 +290,17 @@
         "approved": 6,
         "correct": 6,
         "wrongApproved": 0,
-        "matchMs": 626.6990420000002,
-        "matchUsd": 0.0014137199999999998,
-        "totalUsd": 0.01131772
+        "matchMs": 693.8287909999999,
+        "matchUsd": 0.0014101920000000002,
+        "totalUsd": 0.011298192000000002
       },
       "claude": {
         "approved": 6,
         "correct": 6,
         "wrongApproved": 0,
-        "matchMs": 1888.866750000001,
-        "matchUsd": 0.036714,
-        "totalUsd": 0.04661799999999999
+        "matchMs": 2393.608042,
+        "matchUsd": 0.036697999999999995,
+        "totalUsd": 0.046585999999999995
       }
     },
     {
@@ -311,17 +311,17 @@
         "approved": 1,
         "correct": 3,
         "wrongApproved": 0,
-        "matchMs": 370.6778750000012,
-        "matchUsd": 0.0005976600000000001,
-        "totalUsd": 0.00894966
+        "matchMs": 326.34841700000106,
+        "matchUsd": 0.000596484,
+        "totalUsd": 0.008932484
       },
       "claude": {
         "approved": 1,
         "correct": 3,
         "wrongApproved": 0,
-        "matchMs": 1313.7797090000022,
-        "matchUsd": 0.03525999999999999,
-        "totalUsd": 0.04361199999999999
+        "matchMs": 1364.114207999999,
+        "matchUsd": 0.035244,
+        "totalUsd": 0.043579999999999994
       }
     },
     {
@@ -330,19 +330,19 @@
       "shouldReview": 4,
       "jev": {
         "approved": 0,
-        "correct": 3,
+        "correct": 4,
         "wrongApproved": 0,
-        "matchMs": 417.5491669999974,
-        "matchUsd": 0.000855792,
-        "totalUsd": 0.009417792
+        "matchMs": 414.64741700000013,
+        "matchUsd": 0.0007617539999999999,
+        "totalUsd": 0.009307754
       },
       "claude": {
         "approved": 0,
-        "correct": 4,
+        "correct": 3,
         "wrongApproved": 0,
-        "matchMs": 1767.1173750000016,
-        "matchUsd": 0.035434,
-        "totalUsd": 0.043996
+        "matchMs": 1613.304750000003,
+        "matchUsd": 0.035337999999999994,
+        "totalUsd": 0.04388399999999999
       }
     },
     {
@@ -353,17 +353,17 @@
         "approved": 3,
         "correct": 4,
         "wrongApproved": 0,
-        "matchMs": 306.1634999999951,
-        "matchUsd": 0.0008924579999999999,
-        "totalUsd": 0.009526458
+        "matchMs": 317.2350000000006,
+        "matchUsd": 0.0008903999999999999,
+        "totalUsd": 0.0095084
       },
       "claude": {
         "approved": 3,
         "correct": 4,
         "wrongApproved": 0,
-        "matchMs": 1465.2596669999984,
-        "matchUsd": 0.035750000000000004,
-        "totalUsd": 0.04438400000000001
+        "matchMs": 2412.052082999995,
+        "matchUsd": 0.035734,
+        "totalUsd": 0.044352
       }
     },
     {
@@ -374,17 +374,17 @@
         "approved": 0,
         "correct": 3,
         "wrongApproved": 0,
-        "matchMs": 480.29812500000116,
-        "matchUsd": 0.0007691040000000001,
-        "totalUsd": 0.009469103999999999
+        "matchMs": 329.484083000003,
+        "matchUsd": 0.0007676339999999999,
+        "totalUsd": 0.009451634
       },
       "claude": {
         "approved": 0,
         "correct": 4,
         "wrongApproved": 0,
-        "matchMs": 2206.8137089999946,
-        "matchUsd": 0.03540599999999999,
-        "totalUsd": 0.04410599999999999
+        "matchMs": 1460.9364169999972,
+        "matchUsd": 0.03539,
+        "totalUsd": 0.044074
       }
     },
     {
@@ -395,17 +395,17 @@
         "approved": 3,
         "correct": 3,
         "wrongApproved": 0,
-        "matchMs": 337.0564999999988,
-        "matchUsd": 0.0007547400000000001,
-        "totalUsd": 0.00943874
+        "matchMs": 346.7288750000007,
+        "matchUsd": 0.0007539420000000001,
+        "totalUsd": 0.009421942
       },
       "claude": {
         "approved": 3,
         "correct": 3,
         "wrongApproved": 0,
-        "matchMs": 1587.4443749999991,
-        "matchUsd": 0.035686,
-        "totalUsd": 0.04437
+        "matchMs": 1775.7836250000037,
+        "matchUsd": 0.03567,
+        "totalUsd": 0.044338
       }
     },
     {
@@ -416,17 +416,17 @@
         "approved": 0,
         "correct": 1,
         "wrongApproved": 0,
-        "matchMs": 167.99929200000042,
-        "matchUsd": 0.00012058199999999999,
-        "totalUsd": 0.007844582
+        "matchMs": 281.3915830000042,
+        "matchUsd": 0.00012033,
+        "totalUsd": 0.00783833
       },
       "claude": {
         "approved": 0,
         "correct": 1,
         "wrongApproved": 0,
-        "matchMs": 1132.0022920000047,
-        "matchUsd": 0.03458,
-        "totalUsd": 0.042304
+        "matchMs": 1383.119000000006,
+        "matchUsd": 0.034566,
+        "totalUsd": 0.042284
       }
     },
     {
@@ -437,17 +437,17 @@
         "approved": 5,
         "correct": 5,
         "wrongApproved": 0,
-        "matchMs": 516.2769589999953,
-        "matchUsd": 0.001340808,
-        "totalUsd": 0.011326808
+        "matchMs": 1435.5645000000077,
+        "matchUsd": 0.001337868,
+        "totalUsd": 0.011307868
       },
       "claude": {
         "approved": 5,
         "correct": 5,
         "wrongApproved": 0,
-        "matchMs": 1789.5047499999928,
-        "matchUsd": 0.036586,
-        "totalUsd": 0.046572
+        "matchMs": 2413.0224580000067,
+        "matchUsd": 0.03657,
+        "totalUsd": 0.04654
       }
     },
     {
@@ -458,17 +458,17 @@
         "approved": 5,
         "correct": 6,
         "wrongApproved": 0,
-        "matchMs": 493.98858299999847,
-        "matchUsd": 0.00130704,
-        "totalUsd": 0.01102904
+        "matchMs": 442.69679200000246,
+        "matchUsd": 0.001357692,
+        "totalUsd": 0.011023692
       },
       "claude": {
         "approved": 5,
         "correct": 6,
         "wrongApproved": 0,
-        "matchMs": 1676.6221249999944,
-        "matchUsd": 0.036747999999999996,
-        "totalUsd": 0.04647
+        "matchMs": 2254.597000000009,
+        "matchUsd": 0.036724,
+        "totalUsd": 0.04639
       }
     },
     {
@@ -479,17 +479,17 @@
         "approved": 0,
         "correct": 4,
         "wrongApproved": 0,
-        "matchMs": 338.8921249999985,
-        "matchUsd": 0.0007964879999999999,
-        "totalUsd": 0.009584488
+        "matchMs": 369.9710839999898,
+        "matchUsd": 0.0007947240000000001,
+        "totalUsd": 0.009566724
       },
       "claude": {
         "approved": 0,
         "correct": 4,
         "wrongApproved": 0,
-        "matchMs": 1730.3604590000032,
-        "matchUsd": 0.035682,
-        "totalUsd": 0.044469999999999996
+        "matchMs": 5041.067792000002,
+        "matchUsd": 0.038265999999999994,
+        "totalUsd": 0.047037999999999996
       }
     },
     {
@@ -497,20 +497,20 @@
       "lines": 4,
       "shouldReview": 3,
       "jev": {
-        "approved": 0,
+        "approved": 1,
         "correct": 4,
         "wrongApproved": 0,
-        "matchMs": 346.60137499999837,
-        "matchUsd": 0.00081879,
-        "totalUsd": 0.00987079
+        "matchMs": 441.2495409999974,
+        "matchUsd": 0.000817026,
+        "totalUsd": 0.009853025999999999
       },
       "claude": {
-        "approved": 0,
+        "approved": 1,
         "correct": 4,
         "wrongApproved": 0,
-        "matchMs": 2407.8750839999993,
-        "matchUsd": 0.035772000000000005,
-        "totalUsd": 0.044824
+        "matchMs": 3710.594041999997,
+        "matchUsd": 0.037496,
+        "totalUsd": 0.046532000000000004
       }
     }
   ],
@@ -518,7 +518,7 @@
     "Small sample: 20 orders and 88 lines. Read these as signals, not benchmarks.",
     "Parts of the pipeline, including Jev's quantity check, were designed after seeing these same orders, so the results are in-sample. No held-out set has been run.",
     "Costs are each call's recorded token counts at published list prices (lib/pricing.ts); billed dollars would come from the Admin API cost report.",
-    "14 of 88 lines had no catalog match and skipped Jev's second call, which flatters Jev's cost; this set deliberately includes many.",
+    "15 of 88 lines had no catalog match and skipped Jev's second call, which flatters Jev's cost; this set deliberately includes many.",
     "Results vary slightly between runs."
   ]
 }

@@ -40,12 +40,14 @@
         "unit": null
       }
     ],
-    "ms": 1808.550292,
+    "ms": 1912.4132920000047,
     "usage": {
-      "inputTokens": 3355,
-      "outputTokens": 249
+      "inputTokens": 3347,
+      "outputTokens": 249,
+      "cacheWriteTokens": 0,
+      "cacheReadTokens": 0
     },
-    "costUsd": 0.0092
+    "costUsd": 0.009184
   },
   "jev": {
     "lines": [
@@ -75,7 +77,7 @@
         ],
         "category": {
           "choice": "sheet_goods",
-          "confidence": 0.87
+          "confidence": 0.85
         },
         "sku": {
           "choice": "SHT-PLY-CDX-12",
@@ -86,22 +88,22 @@
               "probability": 1
             },
             {
-              "sku": "DRY-12-REG-4X8",
+              "sku": "FST-DRY-214-25LB",
               "probability": 0
             },
             {
-              "sku": "LBR-2X12-08-PT",
+              "sku": "FST-DECK-25-TAN-5LB",
               "probability": 0
             }
           ]
         },
         "unitOk": 0.95,
-        "ms": 390.9512079999986,
+        "ms": 370.8954999999987,
         "usage": {
-          "inputTokens": 6365,
+          "inputTokens": 6351,
           "outputTokens": 538
         },
-        "costUsd": 0.00026733
+        "costUsd": 0.000266742
       },
       {
         "lineId": "2",
@@ -140,22 +142,22 @@
               "probability": 1
             },
             {
-              "sku": "MAS-MORT-N-30KG",
+              "sku": "NONE",
               "probability": 0
             },
             {
-              "sku": "DRY-14-FLEX-4X8",
+              "sku": "MAS-MORT-S-30KG",
               "probability": 0
             }
           ]
         },
         "unitOk": 0.94,
-        "ms": 329.3501249999972,
+        "ms": 411.70666699999856,
         "usage": {
-          "inputTokens": 5811,
+          "inputTokens": 5797,
           "outputTokens": 487
         },
-        "costUsd": 0.000244062
+        "costUsd": 0.000243474
       },
       {
         "lineId": "3",
@@ -187,29 +189,29 @@
         },
         "sku": {
           "choice": "SHT-PLY-PT-34",
-          "confidence": 0.86,
+          "confidence": 0.88,
           "top": [
             {
               "sku": "SHT-PLY-PT-34",
-              "probability": 0.87
+              "probability": 0.89
             },
             {
               "sku": "NONE",
-              "probability": 0.11
+              "probability": 0.1
             },
             {
               "sku": "SHT-PLY-CDX-34",
-              "probability": 0.02
+              "probability": 0.01
             }
           ]
         },
         "unitOk": 0.94,
-        "ms": 446.5307499999981,
+        "ms": 327.44837499999994,
         "usage": {
-          "inputTokens": 6024,
+          "inputTokens": 6010,
           "outputTokens": 506
         },
-        "costUsd": 0.000253008
+        "costUsd": 0.00025242
       },
       {
         "lineId": "4",
@@ -249,18 +251,18 @@
               "probability": 0.01
             },
             {
-              "sku": "SUP-SEAL-EXT-5G",
+              "sku": "FST-8D-COM-50LB",
               "probability": 0
             }
           ]
         },
-        "unitOk": 0.92,
-        "ms": 361.8873339999991,
+        "unitOk": 0.94,
+        "ms": 426.2667089999959,
         "usage": {
-          "inputTokens": 5809,
+          "inputTokens": 5795,
           "outputTokens": 468
         },
-        "costUsd": 0.000243978
+        "costUsd": 0.00024338999999999999
       },
       {
         "lineId": "5",
@@ -275,15 +277,15 @@
         },
         "sku": {
           "choice": "SUP-ADH-SUBFL-28",
-          "confidence": 0.94,
+          "confidence": 0.95,
           "top": [
             {
               "sku": "SUP-ADH-SUBFL-28",
-              "probability": 0.95
+              "probability": 0.96
             },
             {
               "sku": "NONE",
-              "probability": 0.05
+              "probability": 0.04
             },
             {
               "sku": "SUP-GLUE-WOOD-16",
@@ -292,20 +294,20 @@
           ]
         },
         "unitOk": 0.92,
-        "ms": 351.78695800000423,
+        "ms": 409.96966699999757,
         "usage": {
-          "inputTokens": 4899,
+          "inputTokens": 4885,
           "outputTokens": 234
         },
-        "costUsd": 0.000205758
+        "costUsd": 0.00020517
       }
     ],
-    "ms": 456.3792919999978,
+    "ms": 445.9176660000012,
     "usage": {
-      "inputTokens": 28908,
+      "inputTokens": 28838,
       "outputTokens": 2233
     },
-    "costUsd": 0.0012141359999999998
+    "costUsd": 0.0012111959999999999
   },
   "claudeOnly": {
     "lines": [
@@ -335,11 +337,13 @@
         "confidence": "high"
       }
     ],
-    "ms": 1765.8886669999993,
+    "ms": 2097.7139160000006,
     "usage": {
-      "inputTokens": 17093,
-      "outputTokens": 214
+      "inputTokens": 17085,
+      "outputTokens": 214,
+      "cacheWriteTokens": 0,
+      "cacheReadTokens": 0
     },
-    "costUsd": 0.036326000000000004
+    "costUsd": 0.03631
   }
 }

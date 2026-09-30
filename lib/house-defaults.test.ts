@@ -17,6 +17,6 @@ describe("house defaults", () => {
       for (const f of files) expect(readFileSync(`${dir}/${f}`, "utf8"), `${dir}/${f}`).not.toMatch(forbidden);
     }
     // The business rules both pipelines receive as a prompt must not carry answers either
-    expect(readFileSync("data/house-defaults.md", "utf8")).not.toMatch(/labels(\.draft)?\.json|blind-labels|review-sheet/);
+    expect(readFileSync("data/house-defaults.md", "utf8")).not.toMatch(/labels(\.draft)?\.json|blind-labels|review-sheet|shouldReview/);
   });
 });
