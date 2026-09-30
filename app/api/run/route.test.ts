@@ -22,10 +22,11 @@ const request = (cookie?: string, stream = false) => new Request("http://localho
 describe("live-run usage gate", () => {
   it("streams progress before the result and retains the visitor cookie", async () => {
     reserveOrder.mockResolvedValue({ allowed: true });
-    const pending = Promise.withResolvers<{ orderId: string }>();
+    let resolvePending!: (v: { orderId: string }) => void;
+    const pending = new Promise<{ orderId: string }>((res) => (resolvePending = res));
     runOrder.mockImplementation((_id, _text, options) => {
       options.onProgress({ stage: "parse", status: "running" });
-      return pending.promise;
+      return pending;
     });
     const { POST } = await import("./route");
     const response = await POST(request("counterpart_visitor=stream-visitor", true));
@@ -34,7 +35,7 @@ describe("live-run usage gate", () => {
     const reader = response.body!.getReader();
     const first = await reader.read();
     expect(JSON.parse(new TextDecoder().decode(first.value))).toMatchObject({ type: "progress", progress: { stage: "access", status: "complete" } });
-    pending.resolve({ orderId: "live" });
+    resolvePending({ orderId: "live" });
     let remaining = "";
     while (true) {
       const chunk = await reader.read();
