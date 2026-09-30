@@ -84,7 +84,7 @@ async function generateOGImage() {
     </svg>
     <div class="wordmark">
       <h1>counter<span class="part">part</span></h1>
-      <p>Process orders at the speed of AI</p>
+      <p>The Fast Lane for Pro Orders</p>
     </div>
   </div>
 </body>

@@ -1,7 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
-import { createPortal } from "react-dom";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore, type CSSProperties } from "react";
 import { useThresholds } from "@/lib/settings";
 import { DEFAULT_T, UNIT_OK_MIN as DEFAULT_UNIT } from "@/lib/pipeline/route";
 import { trackEvent } from "@/lib/analytics";
@@ -9,8 +8,14 @@ import { readOrderStream, type OrderProgress, type OrderStage } from "@/lib/orde
 import { OrderLoading } from "@/components/OrderLoading";
 import type { OrderResult, Sender } from "@/lib/types";
 import Link from "next/link";
+import { ICON_BUTTON, ICON_BUTTON_GROUPED, ICON_GROUP } from "@/components/iconButton";
+import { AdjustmentsHorizontalIcon, BanknotesIcon, CheckIcon, DocumentPlusIcon, SparklesIcon, UserIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { setShortcutsEnabled, shortcutsEnabled } from "@/lib/shortcuts";
-import { useDialog } from "@/components/useDialog";
+import { ActionSheet } from "@/components/ActionSheet";
+import { ModalCloseButton } from "@/components/ModalCloseButton";
+import { ResultsDisplay } from "@/components/ResultsDisplay";
+import type { EvalData } from "@/lib/eval/display";
+import { useSheetPresence } from "@/components/useSheetPresence";
 import { BrandBar, ResultsButton, Wordmark } from "@/components/AppNav";
 import { useAccess } from "@/components/AccessProvider";
 import { generateOrder } from "@/lib/generate";
@@ -21,18 +26,9 @@ import { computeView, displayChoices, NONE, segmentText, totals, type Mode, type
 const usd = (n: number) => `$${n.toFixed(4)}`;
 const ms = (n: number) => (n >= 1000 ? `${(n / 1000).toFixed(1)} s` : `${Math.round(n)} ms`);
 
-const Person = () => (
-  <svg aria-hidden viewBox="0 0 16 16" className="h-4 w-4 shrink-0" fill="none" stroke="currentColor" strokeWidth="1.6">
-    <circle cx="8" cy="5.2" r="2.4" />
-    <path d="M3 13.5c.6-2.6 2.5-3.8 5-3.8s4.4 1.2 5 3.8" strokeLinecap="round" />
-  </svg>
-);
+const Person = () => <UserIcon aria-hidden className="h-4 w-4 shrink-0" />;
 
-const Check = () => (
-  <svg aria-hidden viewBox="0 0 16 16" className="h-4 w-4 shrink-0" fill="none" stroke="currentColor" strokeWidth="2">
-    <path d="M3 8.5l3.2 3L13 4.5" strokeLinecap="round" strokeLinejoin="round" />
-  </svg>
-);
+const Check = () => <CheckIcon aria-hidden strokeWidth={2} className="h-4 w-4 shrink-0" />;
 
 function fmtQty(qty: number | null, unit: string | null) {
   if (qty == null) return "no quantity";
@@ -53,17 +49,30 @@ const PRIVACY_CONTACT = process.env.NEXT_PUBLIC_PRIVACY_CONTACT;
 const WALKTHROUGH_KEY = "counterpart-walkthrough-complete";
 const ORDER_TEXT_LIMIT = 600;
 const ORDER_COUNTER_THRESHOLD = ORDER_TEXT_LIMIT * 0.8;
+const MOBILE_QUERY = "(max-width: 1023px)";
+const subscribeToMobile = (callback: () => void) => {
+  const media = window.matchMedia(MOBILE_QUERY);
+  media.addEventListener("change", callback);
+  return () => media.removeEventListener("change", callback);
+};
 
 type WalkthroughStep = 0 | 1 | 2;
 
-export function ReviewApp({ samples, catalog, initialOrder }: { samples: OrderResult[]; catalog: SlimCatalog; initialOrder?: string }) {
+export function ReviewApp({ samples, catalog, initialOrder, evalData }: { samples: OrderResult[]; catalog: SlimCatalog; initialOrder?: string; evalData: EvalData }) {
   const [runs, setRuns] = useState<Run[]>([]); // live runs from the composer, newest first
+  const nextOrderNumber = useRef(1001);
   const [selected, setSelected] = useState(initialOrder ?? samples.find((x) => x.orderId === DEFAULT_SAMPLE)?.orderId ?? samples[0].orderId);
   const [mode, setMode] = useState<Mode>("jev");
   const { T, unitMin, setT, setUnitMin } = useThresholds();
   // The orders sidebar is open by default on wide screens and closed on phones, where it opens as a bottom sheet.
   const [desktopOpen, setDesktopOpen] = useState(true);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const mobileOrders = useSheetPresence(mobileOpen);
+  const [mobileCostOpen, setMobileCostOpen] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [helpOpen, setHelpOpen] = useState(false);
+  const [resultsOpen, setResultsOpen] = useState(false);
+  const isMobile = useSyncExternalStore(subscribeToMobile, () => window.matchMedia(MOBILE_QUERY).matches, () => false);
   const [pasteText, setPasteText] = useState("");
   const [pasteFrom, setPasteFrom] = useState<Sender | undefined>(); // set by Generate, cleared by editing
   const [loading, setLoading] = useState(false);
@@ -91,11 +100,26 @@ export function ReviewApp({ samples, catalog, initialOrder }: { samples: OrderRe
   const shownSamples = useMemo(() => {
     const ids = new Set([...new Set([DEFAULT_SAMPLE, ...samples.map((s) => s.orderId)])].filter((id) => samples.some((s) => s.orderId === id)).slice(0, SAMPLES_SHOWN));
     if (initialOrder) ids.add(initialOrder);
+    if (samples.some(s => s.orderId === selected)) ids.add(selected);
     return [...ids].map((id) => samples.find((s) => s.orderId === id)!);
-  }, [samples, initialOrder]);
+  }, [samples, initialOrder, selected]);
 
   const narrow = () => window.matchMedia("(max-width: 1023px)").matches;
-  const toggleSidebar = useCallback(() => (narrow() ? setMobileOpen((v) => !v) : setDesktopOpen((v) => !v)), []);
+  const toggleSidebar = useCallback(() => {
+    if (narrow()) {
+      setMobileCostOpen(false);
+      setMobileOpen((v) => !v);
+    } else setDesktopOpen((v) => !v);
+  }, []);
+
+  useEffect(() => {
+    const media = window.matchMedia("(min-width: 1024px)");
+    const onChange = () => { if (media.matches) setMobileCostOpen(false); };
+    media.addEventListener("change", onChange);
+    return () => {
+      media.removeEventListener("change", onChange);
+    };
+  }, []);
 
   const showWalkthroughStep = useCallback((step: WalkthroughStep) => {
     walkthroughStepRef.current = step;
@@ -104,6 +128,7 @@ export function ReviewApp({ samples, catalog, initialOrder }: { samples: OrderRe
     setDesktopOpen(true);
     const mobile = window.matchMedia("(max-width: 1023px)").matches;
     setMobileOpen(mobile && step === 0);
+    setMobileCostOpen(mobile && step === 2);
     if (mobile && step > 0) {
       window.requestAnimationFrame(() => {
         document.querySelector(step === 1 ? ".tour-choice .tour-option" : ".tour-compare")?.scrollIntoView({ block: "center" });
@@ -117,7 +142,9 @@ export function ReviewApp({ samples, catalog, initialOrder }: { samples: OrderRe
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "b") {
         e.preventDefault();
         toggleSidebar();
-      } else if (e.key === "Escape") setMobileOpen(false);
+      } else if (e.key === "Escape") {
+        setMobileOpen(false);
+      }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
@@ -138,6 +165,7 @@ export function ReviewApp({ samples, catalog, initialOrder }: { samples: OrderRe
     walkthroughStepRef.current = null;
     window.localStorage.setItem(WALKTHROUGH_KEY, "true");
     setWalkthroughStep(null);
+    setMobileCostOpen(false);
   }, []);
 
   const replayWalkthrough = useCallback(() => {
@@ -182,7 +210,8 @@ export function ReviewApp({ samples, catalog, initialOrder }: { samples: OrderRe
       if (!res.ok) throw new Error(data.error ?? "The run failed.");
       trackEvent("order_run_completed", { line_count: (data as OrderResult).parse.lines.length });
       const runId = Date.now();
-      setRuns((r) => [{ ...(data as OrderResult), from: pasteFrom, runId }, ...r]);
+      const orderId = String(nextOrderNumber.current++);
+      setRuns((r) => [{ ...(data as OrderResult), orderId, from: pasteFrom, runId }, ...r]);
       setPasteFrom(undefined);
       pick(`live-${runId}`);
       setPasteText("");
@@ -219,22 +248,40 @@ export function ReviewApp({ samples, catalog, initialOrder }: { samples: OrderRe
 
   // lines still to check in an order: flagged by the current rule and not yet decided by the rep
   const toCheck = (r: OrderResult, id: string) => computeView(r, mode, T, catalog, unitMin).filter((l) => !l.approved && !decisions[id]?.[l.id]).length;
+  const costPanelProps = {
+    result, samples, mode, T, unitMin, catalog, settingsOpen,
+    onSettings: () => setSettingsOpen(v => !v),
+    onHelp: () => setHelpOpen(true),
+    onResults: () => setResultsOpen(true),
+    onMode: (nextMode: Mode) => {
+      if (nextMode !== mode) trackEvent("comparison_mode_changed", { mode: nextMode });
+      setMode(nextMode);
+      if (walkthroughStep === 2) {
+        const compared = [...new Set([...walkthroughCompared, nextMode])];
+        setWalkthroughCompared(compared);
+        if (compared.length === 2) closeWalkthrough();
+      }
+    },
+  };
 
   return (
     <div className={`flex h-dvh flex-col overflow-hidden ${walkthroughStep !== null && !loading ? `walkthrough-active walkthrough-${walkthroughStep}` : ""}`}>
-      <div inert={!unlocked || undefined} className={`app-shell relative flex min-h-0 flex-1 max-lg:flex-col max-lg:overflow-y-auto ${unlocked ? "app-shell-enter" : "app-shell-locked"}`}>
-        {mobileOpen && <button aria-label="Close orders" tabIndex={-1} onClick={() => setMobileOpen(false)} className="sheet-fade fixed inset-0 z-20 bg-black/40 lg:hidden" />}
+      <div inert={!unlocked || undefined} className={`app-shell relative flex min-h-0 flex-1 [overflow-anchor:none] max-lg:flex-col max-lg:overflow-y-auto ${unlocked ? "app-shell-enter" : "app-shell-locked"}`}>
+        {mobileOrders.present && <button data-state={mobileOrders.closing ? "closing" : "open"} aria-label="Close orders" tabIndex={-1} onClick={() => setMobileOpen(false)} className="sheet-fade fixed inset-0 z-20 bg-black/40 lg:hidden" />}
         {/* wide screens: a left sidebar; phones: a bottom sheet over the page */}
         <aside
           id="orders"
+          data-state={mobileOrders.closing ? "closing" : "open"}
+          onAnimationEnd={event => { if (mobileOrders.closing && event.target === event.currentTarget) mobileOrders.finish(); }}
           aria-label="Orders"
-          className={`tour-orders w-80 shrink-0 flex-col border-r border-line bg-panel max-lg:sheet-up max-lg:fixed max-lg:inset-x-0 max-lg:bottom-0 max-lg:z-30 max-lg:mx-auto max-lg:max-h-[85dvh] max-lg:w-full max-lg:max-w-xl max-lg:rounded-t-2xl max-lg:border-r-0 max-lg:pb-[env(safe-area-inset-bottom)] max-lg:shadow-[0_-8px_30px_rgb(0_0_0/0.18)] ${desktopOpen ? "lg:flex" : "lg:hidden"} ${mobileOpen ? "max-lg:flex" : "max-lg:hidden"}`}
+          inert={mobileCostOpen || undefined}
+          className={`tour-orders w-80 shrink-0 flex-col border-r border-line bg-panel max-lg:sheet-up max-lg:fixed max-lg:inset-x-0 max-lg:bottom-0 max-lg:z-30 max-lg:mx-auto max-lg:max-h-[85dvh] max-lg:w-full max-lg:rounded-t-2xl max-lg:border-r-0 max-lg:pb-[env(safe-area-inset-bottom)] max-lg:shadow-[0_-8px_30px_rgb(0_0_0/0.18)] ${desktopOpen ? "lg:flex" : "lg:hidden"} ${mobileOrders.present ? "max-lg:flex" : "max-lg:hidden"}`}
         >
               <div aria-hidden className="mx-auto mt-2 h-1 w-9 shrink-0 rounded-full bg-line lg:hidden" />
-              <BrandBar hideResults end={<SidebarButton label="Hide orders" expanded onClick={toggleSidebar} />} />
+              <BrandBar hideResults end={<><ModalCloseButton label="Hide orders" onClose={toggleSidebar} className="lg:hidden" /><span className="hidden lg:block"><SidebarButton label="Hide orders" expanded onClick={toggleSidebar} /></span></>} />
               <nav className="min-h-0 flex-1 overflow-y-auto px-3 pb-3">
                 {runs.length > 0 && <OrderGroup label="Your runs">{runs.map((r) => (
-                  <OrderItem key={r.runId} id={`live-${r.runId}`} tag="live" title={r.from?.company ?? "Pasted order"} preview={r.text} count={toCheck(r, `live-${r.runId}`)} sent={!!sent[`live-${r.runId}`]} active={selected === `live-${r.runId}`} onPick={pick} />
+                  <OrderItem key={r.runId} id={`live-${r.runId}`} tag={r.orderId} title={r.from?.company ?? "Pasted order"} preview={r.text} count={toCheck(r, `live-${r.runId}`)} sent={!!sent[`live-${r.runId}`]} active={selected === `live-${r.runId}`} onPick={pick} />
                 ))}</OrderGroup>}
                 <OrderGroup label="Samples">{shownSamples.map((s) => (
                   <OrderItem key={s.orderId} id={s.orderId} tag={s.orderId} title={s.from?.company ?? s.orderId} preview={s.text} count={toCheck(s, s.orderId)} sent={!!sent[s.orderId]} active={selected === s.orderId} onPick={pick} />
@@ -288,15 +335,22 @@ export function ReviewApp({ samples, catalog, initialOrder }: { samples: OrderRe
               </div>
         </aside>
 
-        <main id="review" tabIndex={-1} className="tour-review textured-surface min-w-0 flex-1 outline-none lg:overflow-y-auto">
-          <div className={`px-3 pt-3 max-lg:block ${desktopOpen ? "lg:hidden" : "lg:block"}`}>
+        <main id="review" tabIndex={-1} inert={mobileCostOpen || undefined} className="tour-review textured-surface relative min-w-0 flex-1 outline-none [overflow-anchor:none] lg:overflow-y-auto">
+          <div className={`flex items-center justify-between px-3 pt-3 lg:absolute lg:left-2 lg:top-2 lg:z-10 lg:p-0 ${desktopOpen ? "lg:hidden" : "lg:flex"}`}>
             <SidebarButton label="Show orders" expanded={false} onClick={toggleSidebar} />
+            <div className={`${ICON_GROUP} lg:hidden`}>
+              <ResultsButton grouped onOpen={() => setResultsOpen(true)} />
+              <SettingsButton open={settingsOpen} changed={T !== DEFAULT_T || unitMin !== DEFAULT_UNIT} onToggle={() => setSettingsOpen(v => !v)} />
+              <button onClick={() => setHelpOpen(true)} aria-label="About Counterpart" title="About Counterpart" className={`${ICON_BUTTON_GROUPED} text-[13px] font-semibold`}>?</button>
+              <button aria-label="Cost comparison" title="Cost comparison" aria-expanded={mobileCostOpen} aria-controls="cost-comparison" onClick={() => { setMobileOpen(false); setMobileCostOpen(true); }} className={ICON_BUTTON_GROUPED}>
+                <BanknotesIcon aria-hidden className="h-4 w-4" />
+              </button>
+            </div>
           </div>
           <div className="mx-auto max-w-4xl px-5 py-8 sm:px-10">
             {loading ? <OrderLoading progress={orderProgress} /> : <Review
               key={selected}
               result={result}
-              isLive={!!live}
               mode={mode}
               T={T}
               unitMin={unitMin}
@@ -314,18 +368,22 @@ export function ReviewApp({ samples, catalog, initialOrder }: { samples: OrderRe
           </div>
         </main>
 
-        <aside aria-label="Cost assessment" className="tour-cost shrink-0 border-line bg-panel lg:w-80 lg:overflow-y-auto lg:border-l max-lg:border-t">
-          {loading ? <p className="px-6 py-8 text-[14px] leading-relaxed text-muted">The cost comparison will appear when both matching checks finish.</p> : <CostPanel result={result} samples={samples} mode={mode} T={T} unitMin={unitMin} catalog={catalog} onMode={(nextMode) => {
-            if (nextMode !== mode) trackEvent("comparison_mode_changed", { mode: nextMode });
-            setMode(nextMode);
-            if (walkthroughStep === 2) {
-              const compared = [...new Set([...walkthroughCompared, nextMode])];
-              setWalkthroughCompared(compared);
-              if (compared.length === 2) closeWalkthrough();
-            }
-          }} setT={setT} setUnitMin={setUnitMin} onReplay={replayWalkthrough} />}
-        </aside>
+        {!isMobile && <aside aria-label="Cost assessment" className="tour-cost hidden w-80 shrink-0 overflow-y-auto border-l border-line bg-panel lg:block">
+          {loading ? <p className="px-6 py-8 text-[14px] leading-relaxed text-muted">The cost comparison will appear when both matching checks finish.</p> : <CostPanel {...costPanelProps} />}
+        </aside>}
       </div>
+      {isMobile && <ActionSheet open={mobileCostOpen} id="cost-comparison" label="Cost assessment" onClose={() => setMobileCostOpen(false)} className="tour-cost max-w-md" modal={walkthroughStep === null} layer={walkthroughStep === 2 ? "tour" : "normal"}>
+        {loading ? <><div className="flex items-start justify-between gap-4"><h2 className="text-xl font-semibold tracking-tight">Cost</h2><ModalCloseButton onClose={() => setMobileCostOpen(false)} label="Close cost comparison" /></div><p className="py-8 text-[14px] text-muted">The cost comparison will appear when both matching checks finish.</p></> : <CostPanel {...costPanelProps} onClose={() => setMobileCostOpen(false)} />}
+      </ActionSheet>}
+      <ActionSheet open={resultsOpen} id="sample-results-sheet" labelledBy="sample-results-title" onClose={() => setResultsOpen(false)} className="max-w-6xl">
+        <ResultsDisplay data={evalData} senders={Object.fromEntries(samples.flatMap(sample => sample.from ? [[sample.orderId, sample.from]] : []))} onClose={() => setResultsOpen(false)} onOpenOrder={id => {
+          pick(id);
+          setResultsOpen(false);
+          setMobileCostOpen(false);
+        }} />
+      </ActionSheet>
+      <SettingsDialog open={settingsOpen} mode={mode} T={T} unitMin={unitMin} setT={setT} setUnitMin={setUnitMin} changed={T !== DEFAULT_T || unitMin !== DEFAULT_UNIT} onReplay={() => { setSettingsOpen(false); replayWalkthrough(); }} onClose={() => setSettingsOpen(false)} />
+      <HelpDialog open={helpOpen} onClose={() => setHelpOpen(false)} />
       {!unlocked && <AccessLockScreen code={accessCode} setCode={setAccessCode} error={accessError} unlocking={unlocking} onSubmit={() => {
         if (accessCode !== "007") {
           setAccessError(true);
@@ -346,7 +404,7 @@ export function ReviewApp({ samples, catalog, initialOrder }: { samples: OrderRe
           showWalkthroughStep((walkthroughStep + 1) as WalkthroughStep);
         }
       }} onClose={closeWalkthrough} />}
-      {signupOpen && <SignupDialog email={signupEmail} setEmail={setSignupEmail} loading={signupLoading} error={signupError} onSubmit={signUp} onClose={() => setSignupOpen(false)} />}
+      <SignupDialog open={signupOpen} email={signupEmail} setEmail={setSignupEmail} loading={signupLoading} error={signupError} onSubmit={signUp} onClose={() => setSignupOpen(false)} />
     </div>
   );
 }
@@ -357,7 +415,7 @@ function AccessLockScreen({ code, setCode, error, unlocking, onSubmit }: { code:
       <form onSubmit={(e) => { e.preventDefault(); onSubmit(); }} className="lock-screen-form flex w-full max-w-sm flex-col items-center text-center">
         <div className="action-sheet-handle" aria-hidden />
         <Wordmark large />
-        <p className="mt-5 text-lg font-medium tracking-tight">Process orders at the speed of AI</p>
+        <p className="mt-5 text-lg font-medium tracking-tight">The Fast Lane for Pro Orders</p>
         <p className="mt-2 text-[14px] text-muted">Enter your access code to continue</p>
         <label htmlFor="access-code" className="sr-only">Access code</label>
         <input
@@ -382,34 +440,28 @@ function AccessLockScreen({ code, setCode, error, unlocking, onSubmit }: { code:
   );
 }
 
-function SignupDialog({ email, setEmail, loading, error, onSubmit, onClose }: { email: string; setEmail: (value: string) => void; loading: boolean; error: string | null; onSubmit: () => void; onClose: () => void }) {
-  const dialogRef = useDialog<HTMLElement>(onClose);
+function SignupDialog({ open, email, setEmail, loading, error, onSubmit, onClose }: { open: boolean; email: string; setEmail: (value: string) => void; loading: boolean; error: string | null; onSubmit: () => void; onClose: () => void }) {
   return (
-    <ModalPortal>
-    <div className="action-sheet-backdrop fixed inset-0 z-[60] grid place-items-center bg-black/40 p-4" role="presentation">
-      <section ref={dialogRef} tabIndex={-1} role="dialog" aria-modal="true" aria-labelledby="signup-title" className="action-sheet-dialog outline-none w-full max-w-md rounded-2xl border border-line bg-panel p-6 shadow-2xl">
-        <div className="action-sheet-handle" aria-hidden />
+    <ActionSheet open={open} onClose={onClose} labelledBy="signup-title" dismissOnBackdrop={false}>
         <div className="flex items-start justify-between gap-4">
           <div>
             <p className="text-[12px] font-semibold uppercase tracking-wider text-muted">Free limit reached</p>
             <h2 id="signup-title" className="mt-1 text-xl font-semibold tracking-tight">Keep generating orders</h2>
           </div>
-          <button onClick={onClose} aria-label="Close sign-up" className="-mr-2 -mt-2 rounded-lg px-2 py-1 text-xl leading-none text-muted hover:bg-bg hover:text-ink">×</button>
+          <ModalCloseButton onClose={onClose} label="Close sign-up" />
         </div>
         <p className="mt-3 text-[14px] leading-relaxed text-muted">You’ve used your 5 free orders. Enter your email to continue using Counterpart.</p>
         <form onSubmit={(e) => { e.preventDefault(); onSubmit(); }} className="mt-5">
           <label htmlFor="signup-email" className="text-[13px] font-medium">Email address</label>
           <input id="signup-email" type="email" required autoFocus value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" className="mt-1.5 h-11 w-full rounded-lg bg-input px-3.5 outline-none shadow-[inset_0_0_0_1px_var(--ring)] focus:shadow-[inset_0_0_0_1px_var(--control)]" />
           {error && <p role="alert" className="mt-2 text-[13px] text-warn">{error}</p>}
-          <button type="submit" disabled={loading || !email.trim()} className="mt-4 h-10 w-full rounded-lg bg-brand px-4 text-[14px] font-semibold text-onbrand disabled:opacity-40">{loading ? "Saving…" : "Continue"}</button>
+          <div className="mt-4 flex justify-end"><button type="submit" disabled={loading || !email.trim()} className={MODAL_PRIMARY}>{loading ? "Saving…" : "Continue"}</button></div>
         </form>
         <p className="mt-3 text-center text-[11px] leading-relaxed text-muted">
           We store your email only to let you keep generating orders in this demo. It isn’t sold or shared.
           {PRIVACY_CONTACT && <> To have it deleted, email <a href={`mailto:${PRIVACY_CONTACT}`} className="underline">{PRIVACY_CONTACT}</a>.</>}
         </p>
-      </section>
-    </div>
-    </ModalPortal>
+    </ActionSheet>
   );
 }
 
@@ -481,7 +533,7 @@ function Walkthrough({ step, composerReady, onBack, onNext, onClose }: { step: W
         <span className="walkthrough-arrow" aria-hidden />
         <div className="flex items-center justify-between gap-4">
           <p className="text-[11px] font-semibold uppercase tracking-wider text-muted"><span className="lg:hidden">{step + 1} of 3</span><span className="hidden lg:inline">{content.eyebrow}</span></p>
-          <button onClick={onClose} aria-label="Close walkthrough" className="-mr-2 -mt-1 grid h-11 w-11 place-items-center rounded-lg text-xl leading-none text-muted hover:bg-bg hover:text-ink">×</button>
+          <ModalCloseButton onClose={onClose} label="Close walkthrough" />
         </div>
         <h2 id="walkthrough-title" className="text-[15px] font-semibold tracking-tight lg:mt-2 lg:text-lg"><span className="lg:hidden">{content.mobileTitle}</span><span className="hidden lg:inline">{content.title}</span></h2>
         <p id="walkthrough-body" className="mt-1 text-[13px] leading-snug text-muted lg:mt-1.5 lg:text-[14px] lg:leading-relaxed"><span className="lg:hidden">{content.mobileBody}</span><span className="hidden lg:inline">{content.body}</span></p>
@@ -505,87 +557,102 @@ function SettingsButton({ open, changed, onToggle }: { open: boolean; changed: b
       aria-controls="settings"
       aria-label={changed ? "Settings (thresholds changed)" : "Settings"}
       title="Settings"
-      className={`relative grid h-11 w-11 place-items-center rounded-full transition-colors lg:h-8 lg:w-8 ${open ? "bg-panel text-ink shadow-[0_0_0_1px_var(--ring)]" : "text-muted hover:bg-panel hover:text-ink"}`}
+      className={`${ICON_BUTTON_GROUPED} relative ${open ? "bg-bg text-ink" : ""}`}
     >
-      <SlidersIcon />
+      {open ? <XMarkIcon aria-hidden className="h-4 w-4" /> : <SlidersIcon />}
       {changed && <span className="absolute right-1 top-1 h-1.5 w-1.5 rounded-full bg-[var(--warn-line)]" aria-hidden />}
     </button>
   );
 }
 
-const SlidersIcon = () => (
-  <svg aria-hidden viewBox="0 0 16 16" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-    <path d="M2.5 4.5h11M2.5 11.5h11" />
-    <circle cx="6" cy="4.5" r="1.8" fill="var(--panel)" />
-    <circle cx="10.5" cy="11.5" r="1.8" fill="var(--panel)" />
-  </svg>
-);
+const SlidersIcon = () => <AdjustmentsHorizontalIcon aria-hidden className="h-4 w-4" />;
 
 /** Review thresholds and onboarding controls, rendered inside the settings dialog. */
 function SettingsSection(p: Thresholds & { changed: boolean; onReplay: () => void }) {
   return (
-    <section id="settings" aria-label="Review thresholds" className="mt-5">
-      <h3 className="text-[15px] font-semibold">Review thresholds</h3>
-      <p className="mt-1 text-[13px] text-muted">
-        {p.mode === "claude" ? "Claude only has no thresholds: it approves its own “high” ratings." : "Higher = the rep checks more lines. Lines re-route instantly; no new API calls."}
-      </p>
-      <div className="mt-4 flex flex-col gap-4">
-        <Slider id="t" label="Product confidence" value={p.T} min={0.5} max={0.99} onChange={p.setT} disabled={p.mode === "claude"} />
-        <Slider id="u" label="Quantity clarity" value={p.unitMin} min={0.3} max={0.9} onChange={p.setUnitMin} disabled={p.mode === "claude"} />
-      </div>
-      <ShortcutsToggle />
-      <button
-        onClick={() => {
-          p.setT(DEFAULT_T);
-          p.setUnitMin(DEFAULT_UNIT);
-        }}
-        disabled={!p.changed}
-        className="mt-4 text-[13px] text-muted underline hover:text-ink disabled:no-underline disabled:opacity-40"
-      >
-        Reset to defaults
-      </button>
-      <ThemeChoice />
-      <button onClick={p.onReplay} className="mt-5 w-full rounded-lg bg-panel px-3 py-2 text-left text-[13px] font-medium shadow-[0_0_0_1px_var(--ring)] hover:bg-panel2">
-        Replay walkthrough
-      </button>
-    </section>
-  );
-}
-
-function SettingsDialog(p: Thresholds & { changed: boolean; onReplay: () => void; onClose: () => void }) {
-  const dialogRef = useDialog<HTMLElement>(p.onClose);
-  return (
-    <ModalPortal>
-      <div className="action-sheet-backdrop fixed inset-0 z-[100] grid place-items-center bg-black/40 p-4" role="presentation" onMouseDown={(e) => { if (e.target === e.currentTarget) p.onClose(); }}>
-        <section ref={dialogRef} tabIndex={-1} role="dialog" aria-modal="true" aria-labelledby="settings-title" className="action-sheet-dialog outline-none w-full max-w-md rounded-2xl border border-line bg-panel p-5 shadow-2xl sm:p-6">
-          <div className="action-sheet-handle" aria-hidden />
-          <div className="flex items-start justify-between gap-4">
-            <div>
-              <p className="text-[12px] font-semibold uppercase tracking-wider text-muted">Counterpart</p>
-              <h2 id="settings-title" className="mt-1 text-xl font-semibold tracking-tight">Settings</h2>
-            </div>
-            <button onClick={p.onClose} aria-label="Close settings" className="-mr-2 -mt-2 rounded-lg px-2 py-1 text-xl leading-none text-muted hover:bg-bg hover:text-ink">×</button>
+    <div id="settings" className="mt-5 divide-y divide-line border-y border-line">
+      <section aria-labelledby="settings-thresholds" className="py-5">
+        <div className="flex items-baseline justify-between gap-4">
+          <h3 id="settings-thresholds" className="text-[15px] font-semibold">Review thresholds</h3>
+          <button
+            onClick={() => {
+              p.setT(DEFAULT_T);
+              p.setUnitMin(DEFAULT_UNIT);
+            }}
+            disabled={!p.changed}
+            className="text-[13px] text-muted underline hover:text-ink disabled:no-underline disabled:opacity-40"
+          >
+            Reset to defaults
+          </button>
+        </div>
+        <p className="mt-1 text-[13px] text-muted">
+          {p.mode === "claude" ? "Claude only has no thresholds: it approves its own “high” ratings." : "Higher = the rep checks more lines. Lines re-route instantly; no new API calls."}
+        </p>
+        <div className="mt-4 flex flex-col gap-4">
+          <Slider id="t" label="Product confidence" value={p.T} min={0.5} max={0.99} onChange={p.setT} disabled={p.mode === "claude"} />
+          <Slider id="u" label="Quantity clarity" value={p.unitMin} min={0.3} max={0.9} onChange={p.setUnitMin} disabled={p.mode === "claude"} />
+        </div>
+      </section>
+      <section aria-labelledby="settings-preferences" className="py-5">
+        <h3 id="settings-preferences" className="text-[15px] font-semibold">Preferences</h3>
+        <div className="mt-3 flex flex-col gap-4">
+          <ThemeChoice />
+          <ShortcutsToggle />
+        </div>
+      </section>
+      <section aria-labelledby="settings-help" className="py-5">
+        <div className="flex items-center justify-between gap-4">
+          <div>
+            <h3 id="settings-help" className="text-[15px] font-semibold">Walkthrough</h3>
+            <p className="mt-1 text-[13px] text-muted">A short tour of the review screen.</p>
           </div>
-          <SettingsSection {...p} />
-          <button onClick={p.onClose} className="mt-6 h-9 rounded-lg bg-brand px-4 text-[13px] font-semibold text-onbrand">Done</button>
-        </section>
-      </div>
-    </ModalPortal>
+          <button onClick={p.onReplay} aria-label="Replay walkthrough" className="h-8 shrink-0 rounded-lg bg-panel px-3 text-[13px] font-medium shadow-[0_0_0_1px_var(--ring)] hover:bg-bg">
+            Replay
+          </button>
+        </div>
+      </section>
+    </div>
   );
 }
 
-function ModalPortal({ children }: { children: React.ReactNode }) {
-  return typeof document === "undefined" ? null : createPortal(children, document.body);
+/** The primary action at the bottom-right of a dialog. Every dialog footer uses this row and button. */
+const MODAL_FOOTER = "mt-6 flex justify-end";
+const MODAL_PRIMARY = "h-9 rounded-lg bg-brand px-5 text-[13px] font-semibold text-onbrand disabled:opacity-40";
+
+function SettingsDialog(p: Thresholds & { open: boolean; changed: boolean; onReplay: () => void; onClose: () => void }) {
+  return (
+    <ActionSheet open={p.open} onClose={p.onClose} labelledBy="settings-title" layer="settings">
+      <div className="flex items-start justify-between gap-4">
+        <h2 id="settings-title" className="text-xl font-semibold tracking-tight">Settings</h2>
+        <ModalCloseButton onClose={p.onClose} label="Close settings" />
+      </div>
+      <SettingsSection {...p} />
+      <div className={MODAL_FOOTER}>
+        <button onClick={p.onClose} className={MODAL_PRIMARY}>Done</button>
+      </div>
+    </ActionSheet>
+  );
 }
 
 function ShortcutsToggle() {
   // Rendered only when Settings is open, so reading storage here is client-side only.
   const [on, setOn] = useState(() => shortcutsEnabled());
   return (
-    <label className="mt-4 flex items-start gap-2.5 text-[13px]">
-      <input type="checkbox" checked={on} onChange={(e) => { setOn(e.target.checked); setShortcutsEnabled(e.target.checked); }} className="mt-0.5 h-4 w-4 accent-[var(--ink)]" />
-      <span><span className="font-medium">Keyboard shortcuts</span> <span className="text-muted">Single-key shortcuts in the review. Turn off if they get in the way of speech input or assistive technology.</span></span>
-    </label>
+    <div className="flex items-center justify-between gap-4">
+      <div>
+        <p id="shortcuts-label" className="text-[13px] font-medium">Keyboard shortcuts</p>
+        <p className="mt-0.5 text-[13px] text-muted">Single-key shortcuts in the review. Turn off if they get in the way of speech input or assistive technology.</p>
+      </div>
+      <button
+        role="switch"
+        aria-checked={on}
+        aria-labelledby="shortcuts-label"
+        onClick={() => { setOn(!on); setShortcutsEnabled(!on); }}
+        className={`relative h-6 w-10 shrink-0 rounded-full shadow-[0_0_0_1px_var(--ring)] transition-colors ${on ? "bg-ink" : "bg-bg"}`}
+      >
+        <span aria-hidden className={`absolute left-0.5 top-0.5 h-5 w-5 rounded-full shadow transition-transform ${on ? "translate-x-4 bg-bg" : "bg-muted"}`} />
+      </button>
+    </div>
   );
 }
 
@@ -594,12 +661,9 @@ function ThemeChoice() {
   const [theme, setTheme] = useState<Theme>(() => readTheme());
   const label: Record<Theme, string> = { light: "Light", dark: "Dark", system: "System" };
   return (
-    <fieldset className="mt-5 border-t border-line pt-4">
-      <legend className="sr-only">Theme</legend>
-      <p className="mb-2 text-[13px] font-medium text-muted" aria-hidden>
-        Theme
-      </p>
-      <div className="inline-flex gap-1 rounded-xl bg-panel p-1 text-[13px] shadow-[0_0_0_1px_var(--ring)]" role="radiogroup" aria-label="Theme">
+    <div className="flex items-center justify-between gap-4">
+      <p id="theme-label" className="text-[13px] font-medium">Theme</p>
+      <div className="inline-flex gap-1 rounded-xl bg-panel p-1 text-[13px] shadow-[0_0_0_1px_var(--ring)]" role="radiogroup" aria-labelledby="theme-label">
         {THEMES.map((t) => (
           <button
             key={t}
@@ -615,18 +679,11 @@ function ThemeChoice() {
           </button>
         ))}
       </div>
-    </fieldset>
+    </div>
   );
 }
 
-const DiceIcon = () => (
-  <svg aria-hidden viewBox="0 0 16 16" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.4">
-    <rect x="2.5" y="2.5" width="11" height="11" rx="2.5" />
-    <circle cx="5.8" cy="5.8" r="0.9" fill="currentColor" stroke="none" />
-    <circle cx="10.2" cy="10.2" r="0.9" fill="currentColor" stroke="none" />
-    <circle cx="8" cy="8" r="0.9" fill="currentColor" stroke="none" />
-  </svg>
-);
+const DiceIcon = () => <SparklesIcon aria-hidden className="h-4 w-4" />;
 
 function SidebarButton({ label, expanded, onClick }: { label: string; expanded: boolean; onClick: () => void }) {
   return (
@@ -636,19 +693,14 @@ function SidebarButton({ label, expanded, onClick }: { label: string; expanded: 
       aria-controls="orders"
       aria-label={label}
       title={`${label} (⌘B)`}
-      className="grid h-11 w-11 place-items-center rounded-full text-muted hover:bg-bg hover:text-ink lg:h-9 lg:w-9"
+      className={ICON_BUTTON}
     >
-      <SidebarIcon />
+      {expanded ? <XMarkIcon aria-hidden className="h-4 w-4" /> : <SidebarIcon />}
     </button>
   );
 }
 
-const SidebarIcon = () => (
-  <svg aria-hidden viewBox="0 0 16 16" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.5">
-    <rect x="2" y="2.5" width="12" height="11" rx="1.5" />
-    <path d="M6 2.5v11" />
-  </svg>
-);
+const SidebarIcon = () => <DocumentPlusIcon aria-hidden className="h-4 w-4" />;
 
 function OrderGroup({ label, children }: { label: string; children: React.ReactNode }) {
   return (
@@ -688,8 +740,9 @@ function OrderItem(p: { id: string; tag: string; title: string; preview: string;
 
 type Decisions = Record<string, string>; // lineId -> sku chosen by the rep
 
-function OrderDetails({ result, isLive, mode, notes, lines, flagged, done, sentAt, onSend }: { result: OrderResult; isLive: boolean; mode: Mode; notes: string; lines: number; flagged: number; done: number; sentAt?: number; onSend: () => void }) {
-  const title = isLive ? "Your order" : `Order ${result.orderId}`;
+function OrderDetails({ result, notes, lines, flagged, done, sentAt, onSend, onReopen }: { result: OrderResult; notes: string; lines: number; flagged: number; done: number; sentAt?: number; onSend: () => void; onReopen: () => void }) {
+  const [sendAttempted, setSendAttempted] = useState(false);
+  const title = `Order ${result.orderId}`;
   const readyToSend = !sentAt && flagged === done;
   const stats = [
     { label: "Lines", value: lines, suffix: "", className: "text-ink" },
@@ -697,24 +750,39 @@ function OrderDetails({ result, isLive, mode, notes, lines, flagged, done, sentA
     { label: "To check", value: Math.max(0, flagged - done), suffix: "", className: "text-warn" },
   ];
   return (
-    <div className="mb-6 rounded-xl border border-line bg-panel px-4 py-3 shadow-[0_0_0_1px_var(--ring)]" aria-live="polite">
-      <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-4 sm:flex sm:flex-wrap sm:gap-x-4 sm:gap-y-3">
-        <div className="contents sm:flex sm:min-w-0 sm:flex-wrap sm:items-center sm:gap-4">
-          <h1 className="min-w-0 break-words text-xl font-semibold tracking-tight">{title}</h1>
-          <div className="col-span-2 row-start-2 grid grid-cols-3 divide-x divide-line rounded-lg bg-bg py-2 sm:flex sm:items-center sm:px-1 sm:py-1">
+    <div className="@container mb-6 rounded-xl border border-line bg-panel px-4 py-3 shadow-[0_0_0_1px_var(--ring)]" aria-live="polite">
+      <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-2 @min-[560px]:grid-cols-[auto_minmax(0,1fr)_auto] @min-[560px]:gap-x-4">
+        <div className="contents">
+            <h1 className="col-start-1 row-start-1 min-w-0 break-words text-xl font-semibold tracking-tight">{title}</h1>
+            {sentAt && (
+              <p role="status" className="col-span-2 col-start-1 row-start-2 w-fit max-w-full rounded-full bg-okbg px-2.5 py-1 text-[12px] font-medium text-ok">
+                Sent to {result.from?.name ?? "the contractor"} at {new Date(sentAt).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}
+              </p>
+            )}
+          <div className={`col-span-2 grid grid-cols-3 divide-x divide-line rounded-lg bg-bg py-2 @min-[560px]:col-span-1 @min-[560px]:col-start-2 @min-[560px]:row-start-1 @min-[560px]:flex @min-[560px]:items-center @min-[560px]:justify-self-start @min-[560px]:px-1 @min-[560px]:py-1 ${sentAt ? "row-start-3" : "row-start-2"}`}>
             {stats.map((stat) => <span key={stat.label} className={`flex min-w-0 flex-col items-center gap-0.5 px-1 text-[18px] font-semibold sm:block sm:px-3 sm:text-[13px] sm:font-medium ${stat.className}`}>{stat.value}{stat.suffix} <span className="text-[11px] font-normal text-muted sm:text-[13px]">{stat.label}</span></span>)}
           </div>
         </div>
         <button
           id="send-order"
-          onClick={onSend}
-          disabled={!readyToSend}
-          title={readyToSend ? undefined : sentAt ? "This order has been sent" : `${flagged - done} ${flagged - done === 1 ? "line" : "lines"} still to check`}
-          className="col-start-2 row-start-1 ml-auto h-11 shrink-0 whitespace-nowrap rounded-lg bg-brand px-3.5 text-[13px] font-semibold text-onbrand transition-opacity disabled:cursor-not-allowed disabled:opacity-50 sm:h-9"
+          onClick={() => {
+            if (sentAt) onReopen();
+            else if (readyToSend) onSend();
+            else setSendAttempted(true);
+          }}
+          aria-disabled={!sentAt && !readyToSend}
+          aria-describedby={sendAttempted && !readyToSend && !sentAt ? "send-order-guidance" : undefined}
+          title={readyToSend || sentAt ? undefined : `${flagged - done} ${flagged - done === 1 ? "line" : "lines"} still to check`}
+          className={`col-start-2 row-start-1 ml-auto h-11 shrink-0 cursor-pointer whitespace-nowrap rounded-lg px-3.5 text-[13px] font-semibold transition-[background-color,opacity] aria-disabled:cursor-not-allowed aria-disabled:opacity-50 @min-[560px]:col-start-3 sm:h-9 ${sentAt ? "border border-line bg-panel text-ink hover:bg-bg" : "bg-brand text-onbrand"}`}
         >
-          {sentAt ? "Sent" : "Send order"}
+          {sentAt ? "Reopen" : "Send order"}
         </button>
       </div>
+      {sendAttempted && !readyToSend && !sentAt && (
+        <p id="send-order-guidance" role="status" className="mt-3 text-[13px] text-warn">
+          Confirm a product and quantity for each remaining item before sending. <a href="#needs-review" className="font-medium underline underline-offset-2">Go to Needs review</a>
+        </p>
+      )}
       <div className="mt-3 grid grid-cols-[2rem_minmax(0,1fr)] items-center gap-x-3 gap-y-2 border-t border-line pt-3 sm:flex sm:flex-wrap sm:gap-y-1">
         <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-bg text-[11px] font-semibold text-ink" aria-hidden>
           {result.from ? result.from.name.split(" ").map((w) => w[0]).join("").slice(0, 2) : "C"}
@@ -723,20 +791,21 @@ function OrderDetails({ result, isLive, mode, notes, lines, flagged, done, sentA
           <span className="block font-semibold sm:inline">{result.from?.name ?? "Contractor"}</span>
           {result.from && <span className="block text-[13px] text-muted sm:inline sm:text-[14px]"><span className="hidden sm:inline"> · </span>{result.from.company}</span>}
         </span>
-        <span className="col-start-2 whitespace-nowrap text-[12px] text-muted sm:ml-auto sm:text-[13px]">{mode === "jev" ? "Claude + Jev" : "Claude only"}</span>
-        {notes && <p className="col-span-2 min-w-0 break-words border-t border-line pt-3 text-[14px] leading-relaxed text-muted sm:basis-full sm:border-t-0 sm:pt-1">“{notes}”</p>}
+        {notes && <p className="col-start-2 min-w-0 break-words text-[14px] leading-relaxed text-muted sm:ml-auto sm:max-w-md">“{notes}”</p>}
       </div>
     </div>
   );
 }
 
-function Review({ result, isLive, mode, T, unitMin, catalog, resolved, setResolved, sentAt, onSend, onReopen, onReviewed }: {
-  result: OrderResult; isLive: boolean; mode: Mode; T: number; unitMin: number; catalog: SlimCatalog;
+function Review({ result, mode, T, unitMin, catalog, resolved, setResolved, sentAt, onSend, onReopen, onReviewed }: {
+  result: OrderResult; mode: Mode; T: number; unitMin: number; catalog: SlimCatalog;
   resolved: Decisions; setResolved: (f: (r: Decisions) => Decisions) => void;
   sentAt?: number; onSend: () => void; onReopen: () => void;
   onReviewed: () => void;
 }) {
   const [active, setActive] = useState<string | null>(null);
+  const [headerSendVisible, setHeaderSendVisible] = useState(true);
+  const floatingSendRef = useRef<HTMLButtonElement>(null);
   const lines = useMemo(() => computeView(result, mode, T, catalog, unitMin), [result, mode, T, catalog, unitMin]);
   // Unmatched lines need triage before product or quantity checks, so keep them at the top of the review list.
   // The original `lines` order stays intact for reconstructing the contractor's message above the list.
@@ -747,11 +816,35 @@ function Review({ result, isLive, mode, T, unitMin, catalog, resolved, setResolv
   const validated = orderedLines.filter((l) => l.approved || (resolved[l.id] && resolved[l.id] !== NONE));
   const excluded = flagged.filter((l) => resolved[l.id] === NONE);
   const current = pending.find((l) => l.id === active)?.id ?? pending[0]?.id ?? null;
+  const showFloatingSend = !sentAt && pending.length === 0 && !headerSendVisible;
+
+  useEffect(() => {
+    const button = document.getElementById("send-order");
+    if (!button) return;
+    const observer = new IntersectionObserver(([entry]) => {
+      const visible = entry.isIntersecting;
+      setHeaderSendVisible(visible);
+      if (visible && document.activeElement === floatingSendRef.current) {
+        button.focus({ preventScroll: true });
+      }
+    });
+    observer.observe(button);
+    return () => observer.disconnect();
+  }, []);
 
   // A decision removes the button that had focus, so move it on instead of dropping to <body>.
   const focusAfter = useRef<"next" | string | null>(null);
+  const scrollAfter = useRef<{ element: HTMLElement; top: number }[]>([]);
   const choose = useCallback((lineId: string, sku: string) => {
     focusAfter.current = "next";
+    const positions: { element: HTMLElement; top: number }[] = [];
+    for (let element = document.getElementById("review"); element; element = element.parentElement) {
+      if (element.scrollHeight > element.clientHeight && /auto|scroll/.test(getComputedStyle(element).overflowY)) {
+        positions.push({ element, top: element.scrollTop });
+      }
+    }
+    scrollAfter.current = positions;
+    setActive(null);
     trackEvent("order_line_reviewed", { mode, decision: sku === NONE ? "not_in_catalog" : "product" });
     setResolved((r) => ({ ...r, [lineId]: sku }));
     onReviewed();
@@ -762,14 +855,17 @@ function Review({ result, isLive, mode, T, unitMin, catalog, resolved, setResolv
     setResolved((r) => Object.fromEntries(Object.entries(r).filter(([id]) => id !== lineId)));
   };
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const target = focusAfter.current;
     if (!target) return;
     focusAfter.current = null;
-    const id = target === "next" ? flagged.find((l) => !resolved[l.id])?.id : target;
-    const el = id ? document.getElementById(`line-${id}`) : document.getElementById("send-order");
-    (el ?? document.getElementById("review"))?.focus({ preventScroll: false });
-  }, [resolved, flagged]);
+    const id = target === "next" ? current : target;
+    const el = id ? document.getElementById(`line-${id}`) : showFloatingSend ? floatingSendRef.current : document.getElementById("send-order");
+    (el ?? document.getElementById("review"))?.focus({ preventScroll: target === "next" });
+    // Restore after focus too: mobile browsers can scroll while focusing a fixed button.
+    for (const { element, top } of scrollAfter.current) element.scrollTo({ top, behavior: "instant" });
+    scrollAfter.current = [];
+  }, [resolved, current, showFloatingSend]);
 
   // keyboard: j/k move between flagged lines, 1-3 pick an option, Enter accepts the top pick, x = not in catalog.
   // After a decision the cursor moves to the next line that still needs one.
@@ -786,12 +882,14 @@ function Review({ result, isLive, mode, T, unitMin, catalog, resolved, setResolv
       const decide = (sku: string) => {
         if (!line || resolved[line.id]) return false; // already decided: use Undo to change
         choose(line.id, sku);
-        const next = flagged.find((l) => l.id !== line.id && !resolved[l.id] && ids.indexOf(l.id) > i) ?? flagged.find((l) => l.id !== line.id && !resolved[l.id]);
-        setActive(next?.id ?? line.id);
         return true;
       };
-      if (e.key === "j" && ids.length) setActive(ids[Math.min(ids.length - 1, i + 1)]);
-      else if (e.key === "k" && ids.length) setActive(ids[Math.max(0, i - 1)]);
+      const navigate = (id: string) => {
+        setActive(id);
+        document.getElementById(`line-${id}`)?.scrollIntoView({ block: "nearest" });
+      };
+      if (e.key === "j" && ids.length) navigate(ids[Math.min(ids.length - 1, i + 1)]);
+      else if (e.key === "k" && ids.length) navigate(ids[Math.max(0, i - 1)]);
       else if (line && !line.quantityOnly && /^[1-4]$/.test(e.key) && displayChoices(line)[Number(e.key) - 1]) decide(displayChoices(line)[Number(e.key) - 1].sku);
       else if (line && e.key === "Enter" && t.tagName !== "BUTTON") decide(line.sku);
       else if (line && e.key === "x") decide(NONE);
@@ -801,13 +899,6 @@ function Review({ result, isLive, mode, T, unitMin, catalog, resolved, setResolv
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [flagged, pending, current, choose, resolved, sentAt]);
-
-  useEffect(() => {
-    if (!active) return; // only follow the cursor after the rep moves it, not on first load
-    const el = document.getElementById(`line-${active}`);
-    const r = el?.getBoundingClientRect();
-    if (el && r && (r.top < 160 || r.bottom > window.innerHeight)) el.scrollIntoView({ block: "nearest" });
-  }, [active]);
 
 
   // What the contractor wrote besides the order lines (greetings, delivery notes), shown with the sender.
@@ -840,28 +931,34 @@ function Review({ result, isLive, mode, T, unitMin, catalog, resolved, setResolv
       )}
       <OrderDetails
         result={result}
-        isLive={isLive}
-        mode={mode}
         notes={notes}
         lines={lines.length}
         flagged={flagged.length}
         done={done}
         sentAt={sentAt}
         onSend={onSend}
+        onReopen={onReopen}
       />
 
+      <div
+        className={`floating-send fixed inset-x-0 bottom-0 z-20 flex justify-center px-5 pt-3 pb-[calc(1rem+env(safe-area-inset-bottom))] ${showFloatingSend ? "floating-send-visible" : ""}`}
+        inert={!showFloatingSend}
+        aria-hidden={!showFloatingSend}
+      >
+        <button
+          ref={floatingSendRef}
+          id="floating-send-order"
+          disabled={!showFloatingSend}
+          onClick={() => {
+            onSend();
+            requestAnimationFrame(() => document.getElementById("send-order")?.focus());
+          }}
+          className="pointer-events-auto flex min-h-12 items-center gap-2 rounded-xl bg-brand px-6 text-[14px] font-semibold text-onbrand shadow-raise"
+        >
+          <Check /> Send order
+        </button>
+      </div>
 
-      {/* Sending is mocked: it only marks the order as sent in this browser tab */}
-      {!!sentAt && (
-        <div role="status" className="mb-6 flex flex-wrap items-center gap-x-4 gap-y-2 rounded-xl bg-okbg px-5 py-3.5">
-          <span className="text-ok"><Check /></span>
-          <p className="flex-1 font-medium text-ok">
-            Sent to {result.from?.name ?? "the contractor"} at {new Date(sentAt).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}
-            <span className="block text-[13px] font-normal text-muted">Demo only: nothing was actually sent.</span>
-          </p>
-          <button onClick={onReopen} className="text-[13px] text-muted underline hover:text-ink">Reopen</button>
-        </div>
-      )}
 
       <section aria-label="Order" inert={!!sentAt} className={sentAt ? "opacity-70" : ""}>
         <div className="space-y-5">
@@ -918,7 +1015,7 @@ function LineRow(props: { l: ViewLine; state: "ok" | "done" | "flag"; pick?: str
     // product is sold ("50 lb" of nails sold by the box), say both rather than silently converting.
     const asked = l.unit && sellUnit && unitKey(l.unit) !== unitKey(sellUnit) ? `${fmtQty(l.qty, l.unit)} · sold per ${sellUnit === "each" ? "piece" : sellUnit}` : qty;
     return (
-      <li id={`line-${l.id}`} tabIndex={-1} onClick={props.onSelect} className={`outline-none scroll-mt-44 scroll-mb-8 border-b border-line bg-panel px-6 py-5 last:border-b-0 ${active ? "tour-choice" : ""}`} style={{ borderLeft: `${active ? 8 : 4}px solid var(--warn-line)` }}>
+      <li id={`line-${l.id}`} tabIndex={-1} onClick={props.onSelect} className={`outline-none scroll-mt-44 scroll-mb-8 border-b border-line bg-panel px-6 py-5 last:border-b-0 ${active ? "tour-choice" : ""}`}>
         <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-0.5">
           <span className="font-mono text-[14px] font-medium">
             <span className="sr-only">Check this: </span>
@@ -926,7 +1023,7 @@ function LineRow(props: { l: ViewLine; state: "ok" | "done" | "flag"; pick?: str
           </span>
           <span className="text-[14px] text-muted">{asked}</span>
         </div>
-        <p className="mt-1.5 text-[14px] text-warn">{l.reasons.join(" ")}</p>
+        <p className="mt-1.5 text-[13px] text-warn">{l.reasons.join(" ")}</p>
         {quick ? (
           <div className="mt-4 flex flex-wrap items-center gap-3">
             <button onClick={(e) => { e.stopPropagation(); props.onChoose(l.sku); }} className="review-option tour-option min-h-11 rounded-xl bg-okbg px-4 py-2 text-left font-medium text-ok shadow-[0_0_0_1px_var(--ok)]">
@@ -996,9 +1093,7 @@ function LineRow(props: { l: ViewLine; state: "ok" | "done" | "flag"; pick?: str
 type Side = { key: Mode; label: string; matcher: string; t: ReturnType<typeof totals>; approved: number; lines: number };
 const PER = 10_000;
 
-function CostPanel({ result, samples, mode, T, unitMin, catalog, onMode, setT, setUnitMin, onReplay }: { result: OrderResult; samples: OrderResult[]; mode: Mode; T: number; unitMin: number; catalog: SlimCatalog; onMode: (m: Mode) => void; setT: (v: number) => void; setUnitMin: (v: number) => void; onReplay: () => void }) {
-  const [settingsOpen, setSettingsOpen] = useState(false);
-  const [helpOpen, setHelpOpen] = useState(false);
+function CostPanel({ result, samples, mode, T, unitMin, catalog, onMode, settingsOpen, onSettings, onHelp, onClose, onResults }: { result: OrderResult; samples: OrderResult[]; mode: Mode; T: number; unitMin: number; catalog: SlimCatalog; onMode: (m: Mode) => void; settingsOpen: boolean; onSettings: () => void; onHelp: () => void; onClose?: () => void; onResults?: () => void }) {
   const changed = T !== DEFAULT_T || unitMin !== DEFAULT_UNIT;
   const a = computeView(result, "jev", T, catalog, unitMin);
   const b = computeView(result, "claude", T, catalog);
@@ -1015,24 +1110,23 @@ function CostPanel({ result, samples, mode, T, unitMin, catalog, onMode, setT, s
 
   return (
     <div className="flex flex-col">
-      <div className="flex h-16 shrink-0 items-center justify-between gap-2 px-4">
-        <h2 className="text-[15px] font-semibold">Cost</h2>
-        <div className="flex items-center gap-0.5 rounded-full border border-line bg-bg p-0.5 shadow-[0_0_0_1px_var(--ring)] transition-colors hover:bg-panel">
-          <ResultsButton />
-          <SettingsButton open={settingsOpen} changed={changed} onToggle={() => setSettingsOpen((v) => !v)} />
+      <div className={`flex shrink-0 justify-between ${onClose ? "items-start gap-4" : "h-16 items-center gap-2 px-4"}`}>
+        <h2 className={onClose ? "text-xl font-semibold tracking-tight" : "text-[15px] font-semibold"}>Cost</h2>
+        <div className={`${ICON_GROUP} max-lg:hidden`}>
+          <ResultsButton grouped onOpen={onResults} />
+          <SettingsButton open={settingsOpen} changed={changed} onToggle={onSettings} />
           <button
-            onClick={() => setHelpOpen(true)}
+            onClick={onHelp}
             aria-label="About Counterpart"
             title="About Counterpart"
-            className="grid h-11 w-11 place-items-center rounded-full text-[13px] font-semibold text-muted transition-colors hover:bg-panel lg:h-8 lg:w-8 hover:text-ink"
+            className={`${ICON_BUTTON_GROUPED} text-[13px] font-semibold`}
           >
             ?
           </button>
         </div>
+        {onClose && <ModalCloseButton onClose={onClose} label="Close cost comparison" />}
       </div>
-      <div className="flex flex-col gap-4 p-5">
-        {settingsOpen && <SettingsDialog mode={mode} T={T} unitMin={unitMin} setT={setT} setUnitMin={setUnitMin} changed={changed} onReplay={() => { setSettingsOpen(false); onReplay(); }} onClose={() => setSettingsOpen(false)} />}
-        {helpOpen && <HelpDialog onClose={() => setHelpOpen(false)} />}
+      <div className={`flex flex-col gap-4 ${onClose ? "pt-4" : "p-5"}`}>
 
         <div className="rounded-xl bg-brandsoft px-4 py-3">
           <p className="font-mono text-base font-semibold">{cheaper.toFixed(1)}× lower cost per order</p>
@@ -1081,7 +1175,7 @@ function CostPanel({ result, samples, mode, T, unitMin, catalog, onMode, setT, s
           </button>
         ))}
 
-        <Link href="/results" className="flex min-h-11 items-center px-1 text-[13px] font-medium underline underline-offset-2">
+        <Link href="/results" onClick={onResults ? event => { event.preventDefault(); onResults(); } : undefined} className="flex min-h-11 items-center px-1 text-[13px] font-medium underline underline-offset-2">
           See results on all {samples.length} sample orders →
         </Link>
 
@@ -1096,19 +1190,15 @@ function CostPanel({ result, samples, mode, T, unitMin, catalog, onMode, setT, s
   );
 }
 
-function HelpDialog({ onClose }: { onClose: () => void }) {
-  const dialogRef = useDialog<HTMLElement>(onClose);
+function HelpDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
   return (
-    <ModalPortal>
-      <div className="action-sheet-backdrop fixed inset-0 z-[60] grid place-items-center bg-black/40 p-4" role="presentation" onMouseDown={(e) => { if (e.target === e.currentTarget) onClose(); }}>
-        <section ref={dialogRef} tabIndex={-1} role="dialog" aria-modal="true" aria-labelledby="help-title" className="action-sheet-dialog outline-none w-full max-w-3xl rounded-2xl border border-line bg-panel p-5 shadow-2xl sm:p-6">
-          <div className="action-sheet-handle" aria-hidden />
+    <ActionSheet open={open} onClose={onClose} labelledBy="help-title" className="max-w-3xl">
           <div className="flex items-start justify-between gap-4">
             <div>
               <p className="text-[12px] font-semibold uppercase tracking-wider text-muted">Counterpart</p>
               <h2 id="help-title" className="mt-1 text-xl font-semibold tracking-tight">The fast lane for Pro orders</h2>
             </div>
-            <button onClick={onClose} aria-label="Close help" className="-mr-2 -mt-2 rounded-lg px-2 py-1 text-xl leading-none text-muted hover:bg-bg hover:text-ink">×</button>
+            <ModalCloseButton onClose={onClose} label="Close help" />
           </div>
           <div className="mt-5 grid gap-6 text-[14px] leading-relaxed text-muted md:grid-cols-2 md:gap-8">
             <div className="space-y-4">
@@ -1124,9 +1214,9 @@ function HelpDialog({ onClose }: { onClose: () => void }) {
               <p><span className="font-medium text-ink">The savings:</span> The headline compares the whole order cost. In both bars, grey is reading and the accent is matching, on the same scale. “Per 10,000 orders” scales this run&apos;s total cost.</p>
             </div>
           </div>
-          <button onClick={onClose} className="mt-6 h-9 rounded-lg bg-brand px-4 text-[13px] font-semibold text-onbrand">Got it</button>
-        </section>
-      </div>
-    </ModalPortal>
+          <div className={MODAL_FOOTER}>
+            <button onClick={onClose} className={MODAL_PRIMARY}>Got it</button>
+          </div>
+    </ActionSheet>
   );
 }

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { BrandBar } from "@/components/AppNav";
+import { ModalCloseButton } from "@/components/ModalCloseButton";
 import type { Sender } from "@/lib/types";
 import { resultsMetrics, type EvalData } from "@/lib/eval/display";
 import { useThresholds } from "@/lib/settings";
@@ -10,7 +11,7 @@ const pct = (n: number | null) => n == null ? "n/a" : `${Math.round(n)}%`;
 const money = (n: number) => `$${n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 const usd = (n: number) => `$${n.toFixed(4)}`;
 
-export function ResultsDisplay({ data, senders }: { data: EvalData; senders: Record<string, Sender> }) {
+export function ResultsDisplay({ data, senders, onClose, onOpenOrder }: { data: EvalData; senders: Record<string, Sender>; onClose?: () => void; onOpenOrder?: (id: string) => void }) {
   const { T, unitMin, changed, reset } = useThresholds();
   const e = resultsMetrics(data, T, unitMin);
   const { jev, claude } = e;
@@ -21,13 +22,16 @@ export function ResultsDisplay({ data, senders }: { data: EvalData; senders: Rec
     { label: "Wrong among auto-approved", key: "wrongApproved" as const, denominator: (side: typeof jev) => side.approved },
   ];
   return (
-    <div className="min-h-dvh">
-      <header className="border-b border-line bg-panel">
+    <div className={onClose ? "" : "min-h-dvh"}>
+      {!onClose && <header className="border-b border-line bg-panel">
         <BrandBar onResults />
-      </header>
+      </header>}
 
-      <main className="mx-auto max-w-6xl px-5 py-10 sm:px-10">
-        <h1 className="text-2xl font-semibold tracking-tight">Sample results</h1>
+      <main className={onClose ? "" : "mx-auto max-w-6xl px-5 py-10 sm:px-10"}>
+        <div className="flex items-start justify-between gap-4">
+          <h1 id={onClose ? "sample-results-title" : undefined} className={`${onClose ? "text-xl" : "text-2xl"} font-semibold tracking-tight`}>Sample results</h1>
+          {onClose && <ModalCloseButton onClose={onClose} label="Close sample results" />}
+        </div>
         <p data-testid="results-headline" className="mt-3 max-w-4xl text-xl font-semibold">{e.headline}</p>
         <p className="mt-2 max-w-3xl text-muted">
           Both pipelines on {data.costs.length} synthetic orders ({lines} lines), scored against a hand-reviewed answer key.
@@ -117,9 +121,9 @@ export function ResultsDisplay({ data, senders }: { data: EvalData; senders: Rec
                     <td className="px-3 py-2.5 text-right font-mono">{usd(o.jevUsd)}</td>
                     <td className="px-3 py-2.5 text-right font-mono text-muted">{usd(o.claudeUsd)}</td>
                     <td className="px-6 py-2.5 text-right">
-                      <Link href={`/?order=${o.orderId}`} className="text-[13px] font-medium underline underline-offset-2">
+                      {onOpenOrder ? <button onClick={() => onOpenOrder(o.orderId)} className="text-[13px] font-medium underline underline-offset-2">Open</button> : <Link href={`/?order=${o.orderId}`} className="text-[13px] font-medium underline underline-offset-2">
                         Open
-                      </Link>
+                      </Link>}
                     </td>
                   </tr>
                 ))}
@@ -184,9 +188,9 @@ export function ResultsDisplay({ data, senders }: { data: EvalData; senders: Rec
                       Answer key: <span className="text-ink">{w.gold.sku ?? "not in catalog"}</span> · Jev: {w.jev.sku ?? "not in catalog"} ({Math.round(w.jev.confidence * 100)}%, {w.jevApproved ? "auto-approved" : "flagged"}) · Claude:{" "}
                       {w.claude.sku ?? "not in catalog"} ({w.claude.confidence}, {w.claudeApproved ? "auto-approved" : "flagged"})
                     </p>
-                    <Link href={`/?order=${w.orderId}`} className="mt-1 inline-block text-[12px] font-medium underline underline-offset-2">
+                    {onOpenOrder ? <button onClick={() => onOpenOrder(w.orderId)} className="mt-1 inline-block text-[12px] font-medium underline underline-offset-2">Open {w.orderId}</button> : <Link href={`/?order=${w.orderId}`} className="mt-1 inline-block text-[12px] font-medium underline underline-offset-2">
                       Open {w.orderId}
-                    </Link>
+                    </Link>}
                   </li>
                 ))}
               </ul>

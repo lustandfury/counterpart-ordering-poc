@@ -119,6 +119,24 @@
   --font-mono: var(--font-geist-mono);
 }
 
+.floating-send {
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(100%);
+  transition: transform 250ms cubic-bezier(0.22, 1, 0.36, 1), opacity 200ms ease;
+}
+
+.floating-send-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .floating-send {
+    transition: none;
+  }
+}
+
 .review-option {
   cursor: pointer;
   transition: background-color 150ms ease, box-shadow 150ms ease;
@@ -372,6 +390,31 @@ button { cursor: pointer; }
 .action-sheet-handle {
   display: none;
 }
+.action-sheet-backdrop {
+  animation: sheet-fade 200ms ease-out both;
+}
+.action-sheet-dialog {
+  /* Taller than the window: the dialog scrolls inside itself rather than running off-screen. */
+  max-height: calc(100dvh - 2rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  animation: sheet-fade 200ms ease-out both;
+}
+@keyframes sheet-fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+@keyframes lock-sheet-out {
+  from { transform: translateY(0); }
+  to { transform: translateY(100%); }
+}
+.action-sheet-backdrop[data-state="closing"],
+.sheet-fade[data-state="closing"] {
+  animation: sheet-fade-out 260ms ease-in both;
+}
+.action-sheet-backdrop[data-state="closing"] .action-sheet-dialog {
+  animation: sheet-fade-out 260ms ease-in both;
+}
 
 /* Entry transition: the workspace stays hidden until the access code is accepted. */
 .app-shell-locked {
@@ -446,7 +489,7 @@ button { cursor: pointer; }
 .app-shell-enter .tour-review .card {
   animation: card-fade-up 650ms cubic-bezier(0.22, 1, 0.36, 1) 240ms both;
 }
-@media (max-width: 640px) {
+@media (max-width: 1023px) {
   .action-sheet-backdrop {
     align-items: end;
     padding: 0;
@@ -472,6 +515,12 @@ button { cursor: pointer; }
     border-radius: 999px;
     background: var(--line);
   }
+  .action-sheet-backdrop[data-state="closing"] .action-sheet-dialog,
+  #orders[data-state="closing"] {
+    animation: lock-sheet-out 260ms cubic-bezier(0.4, 0, 1, 1) both;
+  }
+}
+@media (max-width: 640px) {
   .lock-screen {
     align-items: end;
     padding: 0;
@@ -486,7 +535,7 @@ button { cursor: pointer; }
   }
 }
 @media (max-width: 1023px) {
-  #orders.sheet-up {
+  #orders {
     animation: lock-sheet-in 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
   }
   .walkthrough-0 .tour-orders {
@@ -494,10 +543,15 @@ button { cursor: pointer; }
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  #orders.sheet-up,
+  #orders,
   .lock-screen,
   .lock-screen-form,
   .action-sheet-dialog,
+  .action-sheet-backdrop,
+  .action-sheet-backdrop[data-state="closing"],
+  .action-sheet-backdrop[data-state="closing"] .action-sheet-dialog,
+  #orders[data-state="closing"],
+  .sheet-fade[data-state="closing"],
   .walkthrough-card,
   .app-shell-enter,
   .app-shell-enter .tour-orders,

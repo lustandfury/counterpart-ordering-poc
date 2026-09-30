@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { ICON_BUTTON, ICON_BUTTON_GROUPED } from "@/components/iconButton";
+import { ChartBarIcon } from "@heroicons/react/24/outline";
 
 /** The Counterpart wordmark: a small mark (a checked line on a counter slip) and the name. Links home. */
 export function Wordmark({ large = false }: { large?: boolean }) {
@@ -26,18 +28,21 @@ export function Wordmark({ large = false }: { large?: boolean }) {
 }
 
 /** Icon button to the sample-results dashboard. */
-export function ResultsButton() {
+export function ResultsButton({ grouped = false, onOpen }: { grouped?: boolean; onOpen?: () => void }) {
   return (
     <Link
       href="/results"
       aria-label="Sample results"
       title="Sample results"
-      className="grid h-11 w-11 place-items-center rounded-full text-muted transition-colors hover:bg-panel hover:text-ink lg:h-8 lg:w-8"
+      className={grouped ? ICON_BUTTON_GROUPED : ICON_BUTTON}
+      onClick={onOpen ? event => {
+        if (event.button === 0 && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey) {
+          event.preventDefault();
+          onOpen();
+        }
+      } : undefined}
     >
-      <svg aria-hidden viewBox="0 0 16 16" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-        <path d="M2.5 13.5h11" />
-        <path d="M4.5 11V8.5M8 11V4.5M11.5 11V6.5" strokeWidth="2" />
-      </svg>
+      <ChartBarIcon aria-hidden className="h-4 w-4" />
     </Link>
   );
 }

@@ -72,7 +72,7 @@ async function main() {
       ]);
       await finish();
       await expect(loading).toHaveCount(0);
-      await expect(page.getByRole("heading", { name: "Your order", exact: true })).toBeVisible();
+      await expect(page.getByRole("heading", { name: "Order 1001", exact: true })).toBeVisible();
       await expect(page.locator(".walkthrough-card")).toContainText("2 of 3");
       await page.getByRole("button", { name: "Close walkthrough" }).click();
       if (width === 390) await page.getByRole("button", { name: "Show orders", exact: true }).click();
