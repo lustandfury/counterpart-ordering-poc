@@ -1,16 +1,28 @@
 import { runOrder, TooManyLinesError } from "@/lib/pipeline";
+import { randomUUID } from "node:crypto";
+import { reserveOrder, VISITOR_COOKIE } from "@/lib/usage";
 
 export const maxDuration = 60;
 
 // A typical live run costs about $0.07 (mostly the Claude-only comparison, which sends the whole catalog),
 // so the run caps matter more than the length cap. Worst case at these limits: a few dollars a day per instance.
-export const MAX_CHARS = 600;
+const MAX_CHARS = 600;
 const MAX_LINES = 15; // lines of pasted text
 const MAX_ITEMS = 15; // items after parsing (one line can hold several)
 const PER_IP_PER_HOUR = 5;
 const GLOBAL_PER_DAY = 40;
 const hits = new Map<string, number[]>();
 let day = { key: "", count: 0 };
+
+function visitorId(req: Request) {
+  const match = req.headers.get("cookie")?.match(new RegExp(`(?:^|;\\s*)${VISITOR_COOKIE}=([^;]+)`));
+  return match?.[1] || randomUUID();
+}
+
+function withVisitorCookie(response: Response, id: string) {
+  response.headers.append("Set-Cookie", `${VISITOR_COOKIE}=${id}; Path=/; Max-Age=31536000; HttpOnly; SameSite=Lax${process.env.NODE_ENV === "production" ? "; Secure" : ""}`);
+  return response;
+}
 
 /**
  * Live run on pasted text. Each run makes paid API calls, so it is capped per visitor and per day.
@@ -37,14 +49,27 @@ export async function POST(req: Request) {
   if (recent.length >= PER_IP_PER_HOUR || day.count >= GLOBAL_PER_DAY) {
     return Response.json({ error: "Too many live runs right now. Try a saved sample." }, { status: 429 });
   }
+
+  const visitor = visitorId(req);
+  let reservation: Awaited<ReturnType<typeof reserveOrder>>;
+  try {
+    reservation = await reserveOrder(visitor);
+  } catch (e) {
+    console.error("usage check failed", e);
+    return Response.json({ error: "Live runs are temporarily unavailable. Please try again later." }, { status: 503 });
+  }
+  if (!reservation.allowed) {
+    return withVisitorCookie(Response.json({ code: "SIGNUP_REQUIRED", error: "You’ve used your 5 free orders. Sign up with your email to keep generating orders." }, { status: 402 }), visitor);
+  }
+
   hits.set(ip, [...recent, now]);
   day.count++;
 
   try {
-    return Response.json(await runOrder("live", text, { maxLines: MAX_ITEMS }));
+    return withVisitorCookie(Response.json(await runOrder("live", text, { maxLines: MAX_ITEMS })), visitor);
   } catch (e) {
-    if (e instanceof TooManyLinesError) return Response.json({ error: e.message }, { status: 413 });
+    if (e instanceof TooManyLinesError) return withVisitorCookie(Response.json({ error: e.message }, { status: 413 }), visitor);
     console.error("live run failed", e);
-    return Response.json({ error: "The run failed. Try again, or pick a saved sample." }, { status: 502 });
+    return withVisitorCookie(Response.json({ error: "The run failed. Try again, or pick a saved sample." }, { status: 502 }), visitor);
   }
 }

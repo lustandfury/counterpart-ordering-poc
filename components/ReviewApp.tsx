@@ -55,6 +55,10 @@ export function ReviewApp({ samples, catalog, initialOrder }: { samples: OrderRe
   const [pasteFrom, setPasteFrom] = useState<Sender | undefined>(); // set by Generate, cleared by editing
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [signupOpen, setSignupOpen] = useState(false);
+  const [signupEmail, setSignupEmail] = useState("");
+  const [signupLoading, setSignupLoading] = useState(false);
+  const [signupError, setSignupError] = useState<string | null>(null);
   // The rep's decisions and mock sends, per order, so they survive switching between orders
   const [decisions, setDecisions] = useState<Record<string, Decisions>>({});
   const [sent, setSent] = useState<Record<string, number>>({}); // order id -> time sent
@@ -98,6 +102,11 @@ export function ReviewApp({ samples, catalog, initialOrder }: { samples: OrderRe
     try {
       const res = await fetch("/api/run", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ text: pasteText }) });
       const data = await res.json();
+      if (data.code === "SIGNUP_REQUIRED") {
+        setSignupOpen(true);
+        setSignupError(null);
+        return;
+      }
       if (!res.ok) throw new Error(data.error ?? "The run failed.");
       const runId = Date.now();
       setRuns((r) => [{ ...(data as OrderResult), from: pasteFrom, runId }, ...r]);
@@ -108,6 +117,23 @@ export function ReviewApp({ samples, catalog, initialOrder }: { samples: OrderRe
       setError(e instanceof Error ? e.message : "The run failed.");
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function signUp() {
+    if (!signupEmail.trim() || signupLoading) return;
+    setSignupLoading(true);
+    setSignupError(null);
+    try {
+      const res = await fetch("/api/signup", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email: signupEmail }) });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? "We couldn't save your email.");
+      setSignupOpen(false);
+      await runLive();
+    } catch (e) {
+      setSignupError(e instanceof Error ? e.message : "We couldn't save your email.");
+    } finally {
+      setSignupLoading(false);
     }
   }
 
@@ -205,6 +231,32 @@ export function ReviewApp({ samples, catalog, initialOrder }: { samples: OrderRe
           <CostPanel result={result} samples={samples} mode={mode} T={T} unitMin={unitMin} catalog={catalog} onMode={setMode} setT={setT} setUnitMin={setUnitMin} />
         </aside>
       </div>
+      {signupOpen && <SignupDialog email={signupEmail} setEmail={setSignupEmail} loading={signupLoading} error={signupError} onSubmit={signUp} onClose={() => setSignupOpen(false)} />}
+    </div>
+  );
+}
+
+function SignupDialog({ email, setEmail, loading, error, onSubmit, onClose }: { email: string; setEmail: (value: string) => void; loading: boolean; error: string | null; onSubmit: () => void; onClose: () => void }) {
+  return (
+    <div className="action-sheet-backdrop fixed inset-0 z-[60] grid place-items-center bg-black/40 p-4" role="presentation">
+      <section role="dialog" aria-modal="true" aria-labelledby="signup-title" className="action-sheet-dialog w-full max-w-md rounded-2xl border border-line bg-panel p-6 shadow-2xl">
+        <div className="action-sheet-handle" aria-hidden />
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <p className="text-[12px] font-semibold uppercase tracking-wider text-muted">Free limit reached</p>
+            <h2 id="signup-title" className="mt-1 text-xl font-semibold tracking-tight">Keep generating orders</h2>
+          </div>
+          <button onClick={onClose} aria-label="Close sign-up" className="-mr-2 -mt-2 rounded-lg px-2 py-1 text-xl leading-none text-muted hover:bg-bg hover:text-ink">×</button>
+        </div>
+        <p className="mt-3 text-[14px] leading-relaxed text-muted">You’ve used your 5 free orders. Enter your email to continue using Counterpart.</p>
+        <form onSubmit={(e) => { e.preventDefault(); onSubmit(); }} className="mt-5">
+          <label htmlFor="signup-email" className="text-[13px] font-medium">Email address</label>
+          <input id="signup-email" type="email" required autoFocus value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" className="mt-1.5 h-11 w-full rounded-lg bg-input px-3.5 outline-none shadow-[inset_0_0_0_1px_var(--ring)] focus:shadow-[inset_0_0_0_1px_var(--control)]" />
+          {error && <p role="alert" className="mt-2 text-[13px] text-warn">{error}</p>}
+          <button type="submit" disabled={loading || !email.trim()} className="mt-4 h-10 w-full rounded-lg bg-brand px-4 text-[14px] font-semibold text-ink disabled:opacity-40">{loading ? "Saving…" : "Continue"}</button>
+        </form>
+        <p className="mt-3 text-center text-[11px] text-muted">We’ll only use this to identify your Counterpart account.</p>
+      </section>
     </div>
   );
 }

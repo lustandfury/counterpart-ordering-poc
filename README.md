@@ -69,7 +69,7 @@ cp .env.example .env.local   # then fill in the keys
 npm run dev                  # http://localhost:3000
 ```
 
-`.env.local` needs `ANTHROPIC_API_KEY`, `ANTHROPIC_MODEL` (for example `claude-sonnet-5-5`) and `TYPESAFE_API_KEY`. The saved sample orders work without keys; only live paste and the pipeline scripts call the APIs.
+`.env.local` needs `ANTHROPIC_API_KEY`, `ANTHROPIC_MODEL` (for example `claude-sonnet-5-5`), `TYPESAFE_API_KEY`, and `POSTGRES_URL` for the live-order usage limit and email signups. The saved sample orders work without keys; only live paste and the pipeline scripts call the APIs.
 
 | Command | What it does |
 | --- | --- |
@@ -84,9 +84,10 @@ With a production build running (`npm run build && PORT=3100 npm start`), `npx t
 
 **Live paste is capped:**
 - 600 characters and 15 items per order
-- 5 runs per visitor per hour and 40 a day
+- 5 free orders per visitor, then an email signup is required
+- 5 runs per IP address per hour and 40 a day
 
-The counters are per server instance. The spend limit on the API key is the hard stop, and setting `LIVE_RUNS=off` switches live paste off.
+The five-order signup limit is stored in Postgres and counts attempted runs, including failed AI calls. The hourly and daily counters are per server instance. The spend limit on the API key is the hard stop, and setting `LIVE_RUNS=off` switches live paste off.
 
 ## Repo layout
 
