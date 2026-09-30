@@ -1,6 +1,7 @@
 import { runOrder, TooManyLinesError } from "@/lib/pipeline";
 import { randomUUID } from "node:crypto";
 import { reserveOrder, VISITOR_COOKIE } from "@/lib/usage";
+import type { OrderStreamEvent } from "@/lib/order-progress";
 
 export const maxDuration = 60;
 
@@ -64,6 +65,36 @@ export async function POST(req: Request) {
 
   hits.set(ip, [...recent, now]);
   day.count++;
+
+  // Existing JSON callers keep their response contract; the app opts into live progress.
+  if (req.headers.get("accept")?.includes("application/x-ndjson")) {
+    const encoder = new TextEncoder();
+    let closed = false;
+    const stream = new ReadableStream<Uint8Array>({
+      async start(controller) {
+        const send = (event: OrderStreamEvent) => {
+          if (!closed) controller.enqueue(encoder.encode(JSON.stringify(event) + "\n"));
+        };
+        try {
+          send({ type: "progress", progress: { stage: "access", status: "complete" } });
+          const result = await runOrder("live", text, {
+            maxLines: MAX_ITEMS,
+            onProgress: (progress) => send({ type: "progress", progress }),
+          });
+          send({ type: "result", result });
+        } catch (e) {
+          if (!(e instanceof TooManyLinesError)) console.error("live run failed", e);
+          send({ type: "error", error: e instanceof TooManyLinesError ? e.message : "The run failed. Try again, or pick a saved sample." });
+        } finally {
+          if (!closed) { closed = true; controller.close(); }
+        }
+      },
+      cancel() { closed = true; },
+    });
+    return withVisitorCookie(new Response(stream, {
+      headers: { "Content-Type": "application/x-ndjson; charset=utf-8", "Cache-Control": "no-cache, no-transform", "X-Accel-Buffering": "no" },
+    }), visitor);
+  }
 
   try {
     return withVisitorCookie(Response.json(await runOrder("live", text, { maxLines: MAX_ITEMS })), visitor);

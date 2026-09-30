@@ -1,0 +1,95 @@
+// Browser checks use a controlled response stream; no paid AI calls are made.
+import { chromium, expect } from "@playwright/test";
+import { readFileSync } from "node:fs";
+import type { OrderStreamEvent } from "../lib/order-progress";
+import type { OrderResult } from "../lib/types";
+
+const base = `http://localhost:${process.env.PORT ?? 3100}`;
+const sample = JSON.parse(readFileSync("results/o13.json", "utf8")) as OrderResult;
+
+async function main() {
+  const browser = await chromium.launch();
+  try {
+    for (const width of [1440, 390]) {
+      const page = await browser.newPage({ viewport: { width, height: 1000 } });
+      await page.route(/posthog\.com\//, route => route.abort());
+      await page.addInitScript(() => {
+        const originalFetch = window.fetch.bind(window);
+        let controller: ReadableStreamDefaultController<Uint8Array>;
+        const testingWindow = window as typeof window & { orderTest: { send: (event: unknown) => void; finish: () => void } };
+        testingWindow.orderTest = {
+          send(event) { controller.enqueue(new TextEncoder().encode(JSON.stringify(event) + "\n")); },
+          finish() { controller.close(); },
+        };
+        window.fetch = (input, init) => {
+          if (input === "/api/run") {
+            const stream = new ReadableStream<Uint8Array>({ start(current) { controller = current; } });
+            return Promise.resolve(new Response(stream, { headers: { "Content-Type": "application/x-ndjson" } }));
+          }
+          return originalFetch(input, init);
+        };
+      });
+      const send = (events: OrderStreamEvent[]) => page.evaluate(events => {
+        const testingWindow = window as typeof window & { orderTest: { send: (event: unknown) => void } };
+        events.forEach(event => testingWindow.orderTest.send(event));
+      }, events);
+      const finish = () => page.evaluate(() => {
+        (window as typeof window & { orderTest: { finish: () => void } }).orderTest.finish();
+      });
+      await page.goto(base);
+      await page.getByLabel("Access code", { exact: true }).fill("007");
+      await page.keyboard.press("Enter");
+      await expect(page.locator(".lock-screen")).toHaveCount(0);
+      await page.getByRole("button", { name: "Generate", exact: true }).click();
+      await page.getByRole("button", { name: "Run ⌘↵", exact: true }).click();
+      const loading = page.getByRole("region", { name: "Order processing" });
+      await expect(loading).toBeVisible();
+      await expect(page.locator(".walkthrough-card")).toHaveCount(0);
+      if (width === 390) await expect(page.locator("#orders")).not.toBeVisible();
+      await expect(loading.locator('[data-stage="access"]')).toHaveAttribute("data-status", "running");
+      await send([
+        { type: "progress", progress: { stage: "access", status: "complete" } },
+        { type: "progress", progress: { stage: "parse", status: "running" } },
+      ]);
+      await expect(loading.locator('[data-stage="parse"]')).toHaveAttribute("data-status", "running");
+      await expect(loading.locator('[data-stage="jev"]')).toHaveAttribute("data-status", "waiting");
+      await send([
+        { type: "progress", progress: { stage: "parse", status: "complete", total: 2 } },
+        { type: "progress", progress: { stage: "jev", status: "running", completed: 1, total: 2 } },
+        { type: "progress", progress: { stage: "claude", status: "running" } },
+      ]);
+      await expect(loading).toContainText("1 of 2 lines processed");
+      await expect(loading.locator('[data-stage="claude"]')).toHaveAttribute("data-status", "running");
+      await send([{ type: "progress", progress: { stage: "jev", status: "complete", completed: 2, total: 2 } }]);
+      await expect(loading.locator('[data-stage="jev"]')).toHaveAttribute("data-status", "complete");
+      await expect(loading.locator('[data-stage="claude"]')).toHaveAttribute("data-status", "running");
+      await page.emulateMedia({ reducedMotion: "reduce" });
+      await expect.poll(() => page.locator(".order-loading-spinner").evaluate(el => getComputedStyle(el).animationName)).toBe("none");
+      await expect.poll(() => page.locator(".order-loading-bar").first().evaluate(el => getComputedStyle(el).animationName)).toBe("none");
+      await send([
+        { type: "progress", progress: { stage: "claude", status: "complete" } },
+        { type: "result", result: sample },
+      ]);
+      await finish();
+      await expect(loading).toHaveCount(0);
+      await expect(page.getByRole("heading", { name: "Your order", exact: true })).toBeVisible();
+      await expect(page.locator(".walkthrough-card")).toContainText("2 of 3");
+      await page.getByRole("button", { name: "Close walkthrough" }).click();
+      if (width === 390) await page.getByRole("button", { name: "Show orders", exact: true }).click();
+      await page.getByLabel("Paste a text-message order").fill("12 2x4x8");
+      await page.getByRole("button", { name: "Run ⌘↵", exact: true }).click();
+      await expect(loading).toBeVisible();
+      await send([{ type: "error", error: "Processing failed. Please retry." }]);
+      await expect(loading).toHaveCount(0);
+      await expect(page.getByRole("alert").filter({ hasText: "Processing failed." })).toBeVisible();
+      await expect(page.getByLabel("Paste a text-message order")).toHaveValue("12 2x4x8");
+      await expect(page.getByRole("button", { name: "Run ⌘↵", exact: true })).toBeEnabled();
+      console.log(`Accurate loading progress, completion, and retry checks passed at ${width}px`);
+      await page.close();
+    }
+  } finally {
+    await browser.close();
+  }
+}
+
+main().catch(error => { console.error(error); process.exitCode = 1; });

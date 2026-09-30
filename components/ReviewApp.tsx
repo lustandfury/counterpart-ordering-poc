@@ -3,6 +3,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { trackEvent } from "@/lib/analytics";
+import { readOrderStream, type OrderProgress, type OrderStage } from "@/lib/order-progress";
+import { OrderLoading } from "@/components/OrderLoading";
 import type { OrderResult, Sender } from "@/lib/types";
 import Link from "next/link";
 import { BrandBar, ResultsButton, Wordmark } from "@/components/AppNav";
@@ -60,6 +62,7 @@ export function ReviewApp({ samples, catalog, initialOrder }: { samples: OrderRe
   const [pasteText, setPasteText] = useState("");
   const [pasteFrom, setPasteFrom] = useState<Sender | undefined>(); // set by Generate, cleared by editing
   const [loading, setLoading] = useState(false);
+  const [orderProgress, setOrderProgress] = useState<Partial<Record<OrderStage, OrderProgress>>>({});
   const [error, setError] = useState<string | null>(null);
   const [signupOpen, setSignupOpen] = useState(false);
   const [signupEmail, setSignupEmail] = useState("");
@@ -156,10 +159,15 @@ export function ReviewApp({ samples, catalog, initialOrder }: { samples: OrderRe
     if (!pasteText.trim() || loading) return;
     trackEvent("order_run_started");
     setLoading(true);
+    setOrderProgress({ access: { stage: "access", status: "running" } });
+    setMobileOpen(false);
+    requestAnimationFrame(() => document.getElementById("review")?.scrollIntoView({ block: "start" }));
     setError(null);
     try {
-      const res = await fetch("/api/run", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ text: pasteText }) });
-      const data = await res.json();
+      const res = await fetch("/api/run", { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/x-ndjson" }, body: JSON.stringify({ text: pasteText }) });
+      const data = res.headers.get("content-type")?.includes("application/x-ndjson")
+        ? await readOrderStream(res, progress => setOrderProgress(current => ({ ...current, [progress.stage]: progress })))
+        : await res.json();
       if (data.code === "SIGNUP_REQUIRED") {
         trackEvent("signup_required");
         setSignupOpen(true);
@@ -180,6 +188,7 @@ export function ReviewApp({ samples, catalog, initialOrder }: { samples: OrderRe
     } catch (e) {
       trackEvent("order_run_failed");
       setError(e instanceof Error ? e.message : "The run failed.");
+      if (narrow()) setMobileOpen(true);
     } finally {
       setLoading(false);
     }
@@ -206,7 +215,7 @@ export function ReviewApp({ samples, catalog, initialOrder }: { samples: OrderRe
   const toCheck = (r: OrderResult) => computeView(r, mode, T, catalog, unitMin).filter((l) => !l.approved).length;
 
   return (
-    <div className={`flex h-dvh flex-col overflow-hidden ${walkthroughStep !== null ? `walkthrough-active walkthrough-${walkthroughStep}` : ""}`}>
+    <div className={`flex h-dvh flex-col overflow-hidden ${walkthroughStep !== null && !loading ? `walkthrough-active walkthrough-${walkthroughStep}` : ""}`}>
       <div className={`app-shell relative flex min-h-0 flex-1 max-lg:flex-col max-lg:overflow-y-auto ${unlocked ? "app-shell-enter" : "app-shell-locked"}`}>
         {mobileOpen && <button aria-label="Close orders" tabIndex={-1} onClick={() => setMobileOpen(false)} className="sheet-fade fixed inset-0 z-20 bg-black/40 lg:hidden" />}
         {/* wide screens: a left sidebar; phones: a bottom sheet over the page */}
@@ -231,6 +240,7 @@ export function ReviewApp({ samples, catalog, initialOrder }: { samples: OrderRe
                   <textarea
                     id="paste"
                     rows={7}
+                    disabled={loading}
                     value={pasteText}
                     maxLength={ORDER_TEXT_LIMIT}
                     onChange={(e) => {
@@ -248,6 +258,7 @@ export function ReviewApp({ samples, catalog, initialOrder }: { samples: OrderRe
                   />
                   <div className="flex items-center gap-2 px-3 pb-3">
                     <button
+                      disabled={loading}
                       onClick={() => {
                         const g = generateOrder();
                         setPasteText(g.text);
@@ -276,7 +287,7 @@ export function ReviewApp({ samples, catalog, initialOrder }: { samples: OrderRe
             <SidebarButton label="Show orders" expanded={false} onClick={toggleSidebar} />
           </div>
           <div className="mx-auto max-w-4xl px-5 py-8 sm:px-10">
-            <Review
+            {loading ? <OrderLoading progress={orderProgress} /> : <Review
               key={selected}
               result={result}
               isLive={!!live}
@@ -293,12 +304,12 @@ export function ReviewApp({ samples, catalog, initialOrder }: { samples: OrderRe
                 setSent((s) => ({ ...s, [selected]: Date.now() }));
               }}
               onReopen={() => setSent((s) => Object.fromEntries(Object.entries(s).filter(([id]) => id !== selected)))}
-            />
+            />}
           </div>
         </main>
 
         <aside aria-label="Cost assessment" className="tour-cost shrink-0 border-line bg-panel lg:w-80 lg:overflow-y-auto lg:border-l max-lg:border-t">
-          <CostPanel result={result} samples={samples} mode={mode} T={T} unitMin={unitMin} catalog={catalog} onMode={(nextMode) => {
+          {loading ? <p className="px-6 py-8 text-[14px] leading-relaxed text-muted">The cost comparison will appear when both matching checks finish.</p> : <CostPanel result={result} samples={samples} mode={mode} T={T} unitMin={unitMin} catalog={catalog} onMode={(nextMode) => {
             if (nextMode !== mode) trackEvent("comparison_mode_changed", { mode: nextMode });
             setMode(nextMode);
             if (walkthroughStep === 2) {
@@ -306,7 +317,7 @@ export function ReviewApp({ samples, catalog, initialOrder }: { samples: OrderRe
               setWalkthroughCompared(compared);
               if (compared.length === 2) closeWalkthrough();
             }
-          }} setT={setT} setUnitMin={setUnitMin} onReplay={replayWalkthrough} />
+          }} setT={setT} setUnitMin={setUnitMin} onReplay={replayWalkthrough} />}
         </aside>
       </div>
       {!unlocked && <AccessLockScreen code={accessCode} setCode={setAccessCode} error={accessError} unlocking={unlocking} onSubmit={() => {
@@ -322,7 +333,7 @@ export function ReviewApp({ samples, catalog, initialOrder }: { samples: OrderRe
           setUnlocking(false);
         }, 550);
       }} />}
-      {walkthroughStep !== null && <Walkthrough step={walkthroughStep} composerReady={!!pasteText.trim()} onBack={() => showWalkthroughStep((walkthroughStep - 1) as WalkthroughStep)} onNext={() => {
+      {walkthroughStep !== null && !loading && <Walkthrough step={walkthroughStep} composerReady={!!pasteText.trim()} onBack={() => showWalkthroughStep((walkthroughStep - 1) as WalkthroughStep)} onNext={() => {
         if (walkthroughStep === 2) closeWalkthrough();
         else {
           showWalkthroughStep((walkthroughStep + 1) as WalkthroughStep);

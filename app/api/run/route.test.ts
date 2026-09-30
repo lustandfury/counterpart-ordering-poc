@@ -13,13 +13,49 @@ beforeEach(() => {
 });
 afterEach(() => { vi.unstubAllEnvs(); vi.restoreAllMocks(); });
 
-const request = (cookie?: string) => new Request("http://localhost/api/run", {
+const request = (cookie?: string, stream = false) => new Request("http://localhost/api/run", {
   method: "POST",
-  headers: { "content-type": "application/json", ...(cookie ? { cookie } : {}) },
+  headers: { "content-type": "application/json", ...(stream ? { accept: "application/x-ndjson" } : {}), ...(cookie ? { cookie } : {}) },
   body: JSON.stringify({ text: "12 2x4x8" }),
 });
 
 describe("live-run usage gate", () => {
+  it("streams progress before the result and retains the visitor cookie", async () => {
+    reserveOrder.mockResolvedValue({ allowed: true });
+    const pending = Promise.withResolvers<{ orderId: string }>();
+    runOrder.mockImplementation((_id, _text, options) => {
+      options.onProgress({ stage: "parse", status: "running" });
+      return pending.promise;
+    });
+    const { POST } = await import("./route");
+    const response = await POST(request("counterpart_visitor=stream-visitor", true));
+    expect(response.headers.get("content-type")).toContain("application/x-ndjson");
+    expect(response.headers.get("set-cookie")).toContain("counterpart_visitor=stream-visitor;");
+    const reader = response.body!.getReader();
+    const first = await reader.read();
+    expect(JSON.parse(new TextDecoder().decode(first.value))).toMatchObject({ type: "progress", progress: { stage: "access", status: "complete" } });
+    pending.resolve({ orderId: "live" });
+    let remaining = "";
+    while (true) {
+      const chunk = await reader.read();
+      if (chunk.done) break;
+      remaining += new TextDecoder().decode(chunk.value);
+    }
+    expect(remaining).toContain('"stage":"parse"');
+    expect(remaining).toContain('"type":"result"');
+  });
+
+  it("reports mid-stream AI failures as error events", async () => {
+    reserveOrder.mockResolvedValue({ allowed: true });
+    runOrder.mockRejectedValue(new Error("Provider secret detail"));
+    const { POST } = await import("./route");
+    const response = await POST(request(undefined, true));
+    const body = await response.text();
+    expect(body).toContain('"type":"error"');
+    expect(body).not.toContain("Provider secret detail");
+    expect(response.headers.get("set-cookie")).toContain("counterpart_visitor=");
+  });
+
   it("returns signup-required without calling the AI pipeline", async () => {
     reserveOrder.mockResolvedValue({ allowed: false });
     const { POST } = await import("./route");

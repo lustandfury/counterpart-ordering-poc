@@ -198,6 +198,26 @@ button { cursor: pointer; }
   .sheet-fade, #orders { animation: none; }
 }
 
+/* Motion indicates activity; processing steps advance only from server events. */
+@keyframes order-loading-spin {
+  to { transform: rotate(360deg); }
+}
+@keyframes order-loading-shimmer {
+  from { background-position: 200% 0; }
+  to { background-position: -200% 0; }
+}
+.order-loading-spinner {
+  animation: order-loading-spin 1s linear infinite;
+}
+.order-loading-bar {
+  background: linear-gradient(100deg, var(--line) 30%, var(--panel-2) 50%, var(--line) 70%);
+  background-size: 200% 100%;
+  animation: order-loading-shimmer 1.8s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .order-loading-spinner, .order-loading-bar { animation: none; }
+}
+
 /* the composer marks focus with its container's border, not an outline on the text box */
 #paste:focus,
 #paste:focus-visible {
