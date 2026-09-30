@@ -101,6 +101,11 @@ Each entry: what we did, what happened, what it changed.
 **Happened:** the instructions pointed at the flag reasons, which were still in engineering terms ("product confidence 0.82 below 0.85"). Rewriting them in plain language ("We're not sure which product this is (82% on the best guess)") exposed a contradiction: on a line with no catalog match, that percentage was the confidence in "no match", not in a product.
 **Changed:** reasons are plain sentences kept as shared constants (so tests and the screen stay in sync), and a no-match line shows only "We couldn't find a clear match in the catalog." The shortcuts still work; the card footer mentions Enter and "Not in catalog".
 
+### 17. "Not in catalog" is always a choice
+**Did:** every flagged line now lists "Not in catalog" as one of its numbered choices (Mike's call). Before, it only appeared as a choice when it was among the likely answers; otherwise it was a small text link. Quantity-only lines get it as a button beside "Confirm". The choice list is one shared function, so the numbers on screen and the 1–4 keys always match.
+**Happened:** that shared function also fixed a quiet mismatch: the screen hid options under 5%, but the number keys indexed the unfiltered list, so pressing 2 could pick something not shown.
+**Changed:** the escape hatch is as visible as the products, which matters most on the lines that most need it.
+
 ## Where it stands
 
 | | Claude only | Claude + Jev |

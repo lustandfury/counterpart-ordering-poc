@@ -89,3 +89,14 @@ export function segmentText(text: string, lines: { id: string; raw: string }[]):
   if (pos < text.length) out.push({ text: text.slice(pos) });
   return out;
 }
+
+/**
+ * The choices offered on a flagged line: the likely products in order (the pipeline's pick first, anything under 5%
+ * dropped, at most 3), and always "Not in catalog", which is added last when it isn't already among them.
+ */
+export function displayChoices(l: Pick<ViewLine, "options">): Option[] {
+  const likely = l.options.filter((o, i) => i === 0 || (o.probability ?? 1) >= 0.05).slice(0, 3);
+  if (likely.some((o) => o.sku === NONE)) return likely;
+  const none = l.options.find((o) => o.sku === NONE) ?? { sku: NONE, name: "Not in catalog" };
+  return [...likely, none];
+}

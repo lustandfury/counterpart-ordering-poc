@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { OrderResult } from "@/lib/types";
 import { CLAUDE_INPUT_PER_TOKEN, CLAUDE_OUTPUT_PER_TOKEN, JEV_INPUT_PER_TOKEN } from "@/lib/pricing";
-import { computeView, NONE, segmentText, totals, type Mode, type SlimCatalog, type ViewLine } from "@/lib/view";
+import { computeView, displayChoices, NONE, segmentText, totals, type Mode, type SlimCatalog, type ViewLine } from "@/lib/view";
 
 const usd = (n: number) => (n < 0.01 ? `$${n.toFixed(4)}` : `$${n.toFixed(3)}`);
 const ms = (n: number) => (n >= 1000 ? `${(n / 1000).toFixed(1)} s` : `${Math.round(n)} ms`);
@@ -298,7 +298,7 @@ function Review({ result, isLive, mode, T, unitMin, catalog }: { result: OrderRe
       };
       if (e.key === "j" && ids.length) setActive(ids[Math.min(ids.length - 1, i + 1)]);
       else if (e.key === "k" && ids.length) setActive(ids[Math.max(0, i - 1)]);
-      else if (line && !line.quantityOnly && /^[1-3]$/.test(e.key) && line.options[Number(e.key) - 1]) decide(line.options[Number(e.key) - 1].sku);
+      else if (line && !line.quantityOnly && /^[1-4]$/.test(e.key) && displayChoices(line)[Number(e.key) - 1]) decide(displayChoices(line)[Number(e.key) - 1].sku);
       else if (line && e.key === "Enter" && t.tagName !== "BUTTON") decide(line.sku);
       else if (line && e.key === "x") decide(NONE);
       else return;
@@ -418,8 +418,7 @@ function LineRow(props: { l: ViewLine; state: "ok" | "done" | "flag"; pick?: str
   const qty = fmtQty(l.qty, catalog[l.sku]?.unit ?? l.unit);
 
   if (state === "flag") {
-    const shown = l.options.filter((o, i) => i === 0 || (o.probability ?? 1) >= 0.05).filter((o) => o.sku !== NONE || l.options[0].sku === NONE).slice(0, 3);
-    const noneOpt = l.options.find((o) => o.sku === NONE) ?? { sku: NONE, name: "Not in catalog" };
+    const shown = displayChoices(l);
     const quick = l.quantityOnly && !showAll;
     return (
       <li id={`line-${l.id}`} onClick={props.onSelect} className={`scroll-mt-44 scroll-mb-8 border-b border-line bg-warnbg/50 px-6 py-5 last:border-b-0 ${active ? "ring-2 ring-inset ring-[var(--focus)]" : ""}`} style={{ borderLeft: "4px solid var(--warn-line)" }}>
@@ -436,6 +435,9 @@ function LineRow(props: { l: ViewLine; state: "ok" | "done" | "flag"; pick?: str
           <div className="mt-4 flex flex-wrap items-center gap-3">
             <button onClick={(e) => { e.stopPropagation(); props.onChoose(l.sku); }} className="min-h-11 rounded-xl bg-okbg px-4 py-2 text-left font-medium text-ok shadow-[0_0_0_1px_var(--ok)]">
               <kbd className="mr-2 text-xs">Enter</kbd>Confirm {qty} of {l.name}
+            </button>
+            <button onClick={(e) => { e.stopPropagation(); props.onChoose(NONE); }} className="min-h-11 rounded-xl bg-panel px-4 py-2 font-medium shadow-[0_0_0_1px_var(--control)] hover:bg-panel2">
+              <kbd className="mr-2 text-xs text-muted">x</kbd>Not in catalog
             </button>
             <button onClick={(e) => { e.stopPropagation(); setShowAll(true); }} className="text-[13px] text-muted underline hover:text-ink">Other products…</button>
           </div>
@@ -465,10 +467,7 @@ function LineRow(props: { l: ViewLine; state: "ok" | "done" | "flag"; pick?: str
         )}
         <p className="mt-4 flex flex-wrap items-center gap-x-4 text-[13px] text-muted">
           <span>Quantity: <strong className="text-ink">{qty}</strong></span>
-          {!quick && <span><kbd>Enter</kbd> takes the top pick</span>}
-          {noneOpt.sku !== l.sku && (
-            <button onClick={(e) => { e.stopPropagation(); props.onChoose(NONE); }} className="underline"><kbd>x</kbd> Not in catalog</button>
-          )}
+          {!quick && <span><kbd>Enter</kbd> takes the top pick · <kbd>x</kbd> not in catalog</span>}
         </p>
       </li>
     );

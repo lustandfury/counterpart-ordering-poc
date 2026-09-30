@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { REASON } from "./pipeline/route";
 import type { OrderResult } from "./types";
-import { computeView, segmentText, totals, type SlimCatalog } from "./view";
+import { computeView, displayChoices, NONE, segmentText, totals, type SlimCatalog } from "./view";
 
 const cat: SlimCatalog = { A: { name: "Prod A", unit: "each", price: 1 }, B: { name: "Prod B", unit: "each", price: 1 } };
 const u = { inputTokens: 1, outputTokens: 1 };
@@ -33,6 +33,17 @@ describe("computeView", () => {
     expect(v.approved).toBe(true);
     expect(v.confidence).toBe("high");
     expect(computeView(result(0.9, 0.95, null), "claude", 0.85, cat)[0].reasons).toContain(REASON.noQty);
+  });
+});
+
+describe("displayChoices", () => {
+  const opt = (sku: string, probability?: number) => ({ sku, name: sku, probability });
+  it("always offers Not in catalog, last when it isn't a likely choice", () => {
+    expect(displayChoices({ options: [opt("A", 0.9), opt("B", 0.1)] }).map((o) => o.sku)).toEqual(["A", "B", NONE]);
+    expect(displayChoices({ options: [opt("A", 0.6), opt(NONE, 0.3), opt("B", 0.1)] }).map((o) => o.sku)).toEqual(["A", NONE, "B"]);
+  });
+  it("drops unlikely products but never the pick", () => {
+    expect(displayChoices({ options: [opt("A", 0.02), opt("B", 0.01)] }).map((o) => o.sku)).toEqual(["A", NONE]);
   });
 });
 
