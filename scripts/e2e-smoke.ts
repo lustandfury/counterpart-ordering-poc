@@ -18,6 +18,8 @@ async function main() {
       await page.addInitScript(() => localStorage.setItem("counterpart-walkthrough-complete", "true"));
       await page.goto(base);
       await unlock(page);
+      await expect(page.getByRole("region", { name: "Needs review", exact: true })).toBeVisible();
+      await expect(page.getByRole("region", { name: "Validated items", exact: true })).toBeVisible();
 
       const settings = () => page.getByRole("button", { name: /^Settings/ }).click();
       const closeSettings = () => page.getByRole("button", { name: "Close settings" }).click();
@@ -67,16 +69,34 @@ async function main() {
 
       if (width > 1023) {
         const summary = page.locator("[aria-live=polite]");
+        const reviewItems = page.getByRole("region", { name: "Needs review", exact: true });
+        const validatedItems = page.getByRole("region", { name: "Validated items", exact: true });
+        const lineId = await reviewItems.locator("li").first().getAttribute("id");
         await expect(summary).toContainText("1 To check");
+        await expect(reviewItems.locator("li")).toHaveCount(1);
         await page.locator("#review").focus();
-        await page.keyboard.press("Enter");
+        // The sample suggests Not in catalog first; choose its second option to validate a product.
+        await page.keyboard.press("2");
         await expect(summary).toContainText("0 To check");
+        await expect(reviewItems).toHaveCount(0);
+        await expect(validatedItems.locator(`[id="${lineId}"]`)).toHaveCount(1);
         await expect(page.getByRole("button", { name: "Send order", exact: true })).toBeEnabled();
         await page.getByRole("button", { name: "Send order", exact: true }).click();
         await expect(page.getByRole("status")).toContainText("Demo only");
         await page.getByRole("button", { name: "Reopen", exact: true }).click();
         await page.getByRole("button", { name: "Undo", exact: true }).click();
         await expect(summary).toContainText("1 To check");
+        await expect(reviewItems.locator(`[id="${lineId}"]`)).toHaveCount(1);
+        await expect(validatedItems.locator(`[id="${lineId}"]`)).toHaveCount(0);
+        await page.locator("#review").focus();
+        await page.keyboard.press("x");
+        const excludedItems = page.getByRole("region", { name: "Not in catalog", exact: true });
+        await expect(excludedItems.locator(`[id="${lineId}"]`)).toHaveCount(1);
+        await expect(reviewItems).toHaveCount(0);
+        await expect(validatedItems.locator(`[id="${lineId}"]`)).toHaveCount(0);
+        await excludedItems.getByRole("button", { name: "Undo", exact: true }).click();
+        await expect(reviewItems.locator(`[id="${lineId}"]`)).toHaveCount(1);
+        await expect(excludedItems).toHaveCount(0);
         await settings();
         await page.locator("#t").fill("0.99");
         await expect(page.locator("#t")).toHaveValue("0.99");

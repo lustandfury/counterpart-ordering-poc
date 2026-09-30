@@ -119,6 +119,24 @@
   --font-mono: var(--font-geist-mono);
 }
 
+.review-option {
+  cursor: pointer;
+  transition: background-color 150ms ease, box-shadow 150ms ease;
+}
+
+@media (hover: hover) {
+  .review-option:hover {
+    background-color: var(--bg);
+    box-shadow: 0 0 0 1px var(--ink);
+  }
+}
+
+.review-option:focus-visible {
+  background-color: var(--bg);
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
 body {
   background: var(--bg);
   color: var(--ink);

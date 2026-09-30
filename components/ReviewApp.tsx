@@ -688,7 +688,7 @@ function OrderItem(p: { id: string; tag: string; title: string; preview: string;
 
 type Decisions = Record<string, string>; // lineId -> sku chosen by the rep
 
-function OrderDetails({ result, isLive, lines, flagged, done, sentAt, onSend }: { result: OrderResult; isLive: boolean; lines: number; flagged: number; done: number; sentAt?: number; onSend: () => void }) {
+function OrderDetails({ result, isLive, mode, notes, lines, flagged, done, sentAt, onSend }: { result: OrderResult; isLive: boolean; mode: Mode; notes: string; lines: number; flagged: number; done: number; sentAt?: number; onSend: () => void }) {
   const title = isLive ? "Your order" : `Order ${result.orderId}`;
   const readyToSend = !sentAt && flagged === done;
   const stats = [
@@ -715,6 +715,17 @@ function OrderDetails({ result, isLive, lines, flagged, done, sentAt, onSend }: 
           {sentAt ? "Sent" : "Send order"}
         </button>
       </div>
+      <div className="mt-3 grid grid-cols-[2rem_minmax(0,1fr)] items-center gap-x-3 gap-y-2 border-t border-line pt-3 sm:flex sm:flex-wrap sm:gap-y-1">
+        <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-bg text-[11px] font-semibold text-ink" aria-hidden>
+          {result.from ? result.from.name.split(" ").map((w) => w[0]).join("").slice(0, 2) : "C"}
+        </span>
+        <span className="min-w-0 break-words text-[14px]">
+          <span className="block font-semibold sm:inline">{result.from?.name ?? "Contractor"}</span>
+          {result.from && <span className="block text-[13px] text-muted sm:inline sm:text-[14px]"><span className="hidden sm:inline"> · </span>{result.from.company}</span>}
+        </span>
+        <span className="col-start-2 whitespace-nowrap text-[12px] text-muted sm:ml-auto sm:text-[13px]">{mode === "jev" ? "Claude + Jev" : "Claude only"}</span>
+        {notes && <p className="col-span-2 min-w-0 break-words border-t border-line pt-3 text-[14px] leading-relaxed text-muted sm:basis-full sm:border-t-0 sm:pt-1">“{notes}”</p>}
+      </div>
     </div>
   );
 }
@@ -732,7 +743,10 @@ function Review({ result, isLive, mode, T, unitMin, catalog, resolved, setResolv
   const orderedLines = useMemo(() => [...lines].sort((a, b) => Number(b.sku === NONE) - Number(a.sku === NONE)), [lines]);
   const flagged = orderedLines.filter((l) => !l.approved);
   const done = flagged.filter((l) => resolved[l.id]).length;
-  const current = active ?? flagged.find((l) => !resolved[l.id])?.id ?? null;
+  const pending = flagged.filter((l) => !resolved[l.id]);
+  const validated = orderedLines.filter((l) => l.approved || (resolved[l.id] && resolved[l.id] !== NONE));
+  const excluded = flagged.filter((l) => resolved[l.id] === NONE);
+  const current = pending.find((l) => l.id === active)?.id ?? pending[0]?.id ?? null;
 
   // A decision removes the button that had focus, so move it on instead of dropping to <body>.
   const focusAfter = useRef<"next" | string | null>(null);
@@ -766,7 +780,7 @@ function Review({ result, isLive, mode, T, unitMin, catalog, resolved, setResolv
       // Only inside the review (or with nothing focused), and only while the Settings toggle is on.
       const inReview = t === document.body || !!t.closest("#review");
       if (typing || !inReview || !shortcutsEnabled() || sentAt || e.metaKey || e.ctrlKey || e.altKey) return;
-      const ids = flagged.map((l) => l.id);
+      const ids = pending.map((l) => l.id);
       const i = current ? ids.indexOf(current) : -1;
       const line = flagged.find((l) => l.id === current);
       const decide = (sku: string) => {
@@ -786,7 +800,7 @@ function Review({ result, isLive, mode, T, unitMin, catalog, resolved, setResolv
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [flagged, current, choose, resolved, sentAt]);
+  }, [flagged, pending, current, choose, resolved, sentAt]);
 
   useEffect(() => {
     if (!active) return; // only follow the cursor after the rep moves it, not on first load
@@ -819,14 +833,16 @@ function Review({ result, isLive, mode, T, unitMin, catalog, resolved, setResolv
 
   return (
     <>
-      {flagged.length > 0 && (
-        <a href={`#line-${flagged[0].id}`} className="sr-only focus:not-sr-only focus:mb-2 focus:inline-block focus:rounded focus:bg-panel focus:px-2 focus:py-1">
+      {pending.length > 0 && (
+        <a href={`#line-${pending[0].id}`} className="sr-only focus:not-sr-only focus:mb-2 focus:inline-block focus:rounded focus:bg-panel focus:px-2 focus:py-1">
           Skip to the first line to check
         </a>
       )}
       <OrderDetails
         result={result}
         isLive={isLive}
+        mode={mode}
+        notes={notes}
         lines={lines.length}
         flagged={flagged.length}
         done={done}
@@ -836,7 +852,7 @@ function Review({ result, isLive, mode, T, unitMin, catalog, resolved, setResolv
 
 
       {/* Sending is mocked: it only marks the order as sent in this browser tab */}
-      {sentAt ? (
+      {!!sentAt && (
         <div role="status" className="mb-6 flex flex-wrap items-center gap-x-4 gap-y-2 rounded-xl bg-okbg px-5 py-3.5">
           <span className="text-ok"><Check /></span>
           <p className="flex-1 font-medium text-ok">
@@ -845,29 +861,33 @@ function Review({ result, isLive, mode, T, unitMin, catalog, resolved, setResolv
           </p>
           <button onClick={onReopen} className="text-[13px] text-muted underline hover:text-ink">Reopen</button>
         </div>
-      ) : (flagged.length === 0 || done === flagged.length) && (
-        <div role="status" className="mb-6 flex flex-wrap items-center gap-x-4 gap-y-2 rounded-xl bg-okbg px-5 py-3">
-          <p className="flex-1 font-medium text-ok">{flagged.length === 0 ? "Nothing needs your attention. This order is ready to send." : "All checked. This order is ready to send."}</p>
-        </div>
       )}
 
-      <section aria-label="Order" inert={!!sentAt} className={`card overflow-hidden ${sentAt ? "opacity-70" : ""}`}>
-        <header className="grid grid-cols-[2rem_minmax(0,1fr)] items-center gap-x-3 gap-y-2 border-b border-line px-4 py-4 sm:flex sm:flex-wrap sm:gap-y-1 sm:px-6">
-          <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-bg text-[11px] font-semibold text-ink" aria-hidden>
-            {result.from ? result.from.name.split(" ").map((w) => w[0]).join("").slice(0, 2) : "C"}
-          </span>
-          <span className="min-w-0 break-words text-[14px]">
-            <span className="block font-semibold sm:inline">{result.from?.name ?? "Contractor"}</span>
-            {result.from && <span className="block text-[13px] text-muted sm:inline sm:text-[14px]"><span className="hidden sm:inline"> · </span>{result.from.company}</span>}
-          </span>
-          <span className="col-start-2 whitespace-nowrap text-[12px] text-muted sm:ml-auto sm:text-[13px]">{mode === "jev" ? "Claude + Jev" : "Claude only"}</span>
-          {notes && <p className="col-span-2 min-w-0 break-words border-t border-line pt-3 text-[14px] leading-relaxed text-muted sm:basis-full sm:border-t-0 sm:pt-1">“{notes}”</p>}
-        </header>
-        <ul>
-          {orderedLines.map((l) => (
-            <LineRow key={l.id} l={l} state={status(l)} pick={resolved[l.id]} active={current === l.id} catalog={catalog} onSelect={() => setActive(l.id)} onChoose={(sku) => choose(l.id, sku)} onUndo={() => undo(l.id)} />
+      <section aria-label="Order" inert={!!sentAt} className={sentAt ? "opacity-70" : ""}>
+        <div className="space-y-5">
+          {[
+            ...(pending.length ? [{ id: "needs-review", title: "Needs review", description: "Confirm a product and quantity for each item.", items: pending, color: "bg-panel text-warn", empty: "" }] : []),
+            { id: "validated-items", title: "Validated items", description: "Auto-approved or checked by you.", items: validated, color: "bg-panel text-ok", empty: "Validated items will appear here as you confirm them." },
+            ...(excluded.length ? [{ id: "excluded-items", title: "Not in catalog", description: "Items skipped by you.", items: excluded, color: "bg-bg text-muted", empty: "" }] : []),
+          ].map((group) => (
+            <section key={group.id} aria-labelledby={group.id} className="card overflow-hidden">
+              <header className={`border-b border-line px-4 py-3 sm:px-6 ${group.color}`}>
+                <div className="flex items-center justify-between gap-3">
+                  <h2 id={group.id} className="text-[14px] font-semibold">{group.title}</h2>
+                  <span className="rounded-full bg-line/50 px-2.5 py-0.5 font-mono text-[12px]" aria-label={`${group.items.length} items`}>{group.items.length}</span>
+                </div>
+                <p className="mt-0.5 text-[12px] text-muted">{group.description}</p>
+              </header>
+              {group.items.length ? (
+                <ul>
+                  {group.items.map((l) => (
+                    <LineRow key={l.id} l={l} state={status(l)} pick={resolved[l.id]} active={current === l.id} catalog={catalog} onSelect={() => setActive(l.id)} onChoose={(sku) => choose(l.id, sku)} onUndo={() => undo(l.id)} />
+                  ))}
+                </ul>
+              ) : <p className="px-4 py-5 text-[13px] text-muted sm:px-6">{group.empty}</p>}
+            </section>
           ))}
-        </ul>
+        </div>
       </section>
     </>
   );
@@ -898,7 +918,7 @@ function LineRow(props: { l: ViewLine; state: "ok" | "done" | "flag"; pick?: str
     // product is sold ("50 lb" of nails sold by the box), say both rather than silently converting.
     const asked = l.unit && sellUnit && unitKey(l.unit) !== unitKey(sellUnit) ? `${fmtQty(l.qty, l.unit)} · sold per ${sellUnit === "each" ? "piece" : sellUnit}` : qty;
     return (
-      <li id={`line-${l.id}`} tabIndex={-1} onClick={props.onSelect} className={`outline-none scroll-mt-44 scroll-mb-8 border-b border-line px-6 py-5 last:border-b-0 ${active ? "tour-choice bg-warnbg" : "bg-warnbg/40"}`} style={{ borderLeft: `${active ? 8 : 4}px solid var(--warn-line)` }}>
+      <li id={`line-${l.id}`} tabIndex={-1} onClick={props.onSelect} className={`outline-none scroll-mt-44 scroll-mb-8 border-b border-line bg-panel px-6 py-5 last:border-b-0 ${active ? "tour-choice" : ""}`} style={{ borderLeft: `${active ? 8 : 4}px solid var(--warn-line)` }}>
         <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-0.5">
           <span className="font-mono text-[14px] font-medium">
             <span className="sr-only">Check this: </span>
@@ -909,10 +929,10 @@ function LineRow(props: { l: ViewLine; state: "ok" | "done" | "flag"; pick?: str
         <p className="mt-1.5 text-[14px] text-warn">{l.reasons.join(" ")}</p>
         {quick ? (
           <div className="mt-4 flex flex-wrap items-center gap-3">
-            <button onClick={(e) => { e.stopPropagation(); props.onChoose(l.sku); }} className="tour-option min-h-11 rounded-xl bg-okbg px-4 py-2 text-left font-medium text-ok shadow-[0_0_0_1px_var(--ok)]">
+            <button onClick={(e) => { e.stopPropagation(); props.onChoose(l.sku); }} className="review-option tour-option min-h-11 rounded-xl bg-okbg px-4 py-2 text-left font-medium text-ok shadow-[0_0_0_1px_var(--ok)]">
               {active && <kbd className="mr-2 text-xs">Enter</kbd>}Confirm {qty} of {l.name}
             </button>
-            <button onClick={(e) => { e.stopPropagation(); props.onChoose(NONE); }} className="tour-option min-h-11 rounded-xl bg-panel px-4 py-2 font-medium shadow-[0_0_0_1px_var(--control)] hover:bg-panel2" style={{ "--tour-delay": "300ms" } as React.CSSProperties}>
+            <button onClick={(e) => { e.stopPropagation(); props.onChoose(NONE); }} className="review-option tour-option min-h-11 rounded-xl bg-panel px-4 py-2 font-medium shadow-[0_0_0_1px_var(--control)]" style={{ "--tour-delay": "300ms" } as React.CSSProperties}>
               {active && <kbd className="mr-2 text-xs text-muted">x</kbd>}Not in catalog
             </button>
             <button onClick={(e) => { e.stopPropagation(); setShowAll(true); }} className="text-[13px] text-muted underline hover:text-ink">Other products…</button>
@@ -931,16 +951,11 @@ function LineRow(props: { l: ViewLine; state: "ok" | "done" | "flag"; pick?: str
                 aria-pressed={pick === o.sku}
                 style={{ "--tour-delay": `${i * 300}ms` } as React.CSSProperties}
                 onClick={(e) => { e.stopPropagation(); props.onChoose(o.sku); }}
-                className={`tour-option flex min-h-11 items-center gap-3 rounded-xl px-3.5 py-2 text-left text-ink ${pick === o.sku ? "bg-okbg shadow-[0_0_0_1px_var(--ok)]" : "bg-panel shadow-[0_0_0_1px_var(--control)] hover:bg-panel2"}`}
+                className={`review-option tour-option flex min-h-11 items-center gap-3 rounded-xl px-3.5 py-2 text-left text-ink ${pick === o.sku ? "bg-okbg shadow-[0_0_0_1px_var(--ok)]" : "bg-panel shadow-[0_0_0_1px_var(--control)]"}`}
               >
                 <kbd className="w-4 text-center text-xs text-muted">{i + 1}</kbd>
                 <span className="min-w-0 flex-1">
                   <span className={i === 0 ? "font-semibold" : ""}>{o.name}</span>
-                  {i === 0 && shown.length > 1 && (
-                    <span className="ml-2 block w-fit rounded-full bg-okbg px-2 py-0.5 align-middle text-[11px] font-medium leading-none text-ok sm:inline sm:whitespace-nowrap">
-                      Suggested{active && pick == null ? " · Enter" : ""}
-                    </span>
-                  )}
                 </span>
                 {o.probability != null && (
                   <span className="flex w-16 shrink-0 items-center justify-center self-stretch sm:w-24 border-l border-line text-[14px] text-muted">
@@ -963,8 +978,8 @@ function LineRow(props: { l: ViewLine; state: "ok" | "done" | "flag"; pick?: str
       <div className="flex min-h-14 items-center gap-3 px-6 py-3">
         <span className={state === "done" && pick === NONE ? "text-warn" : "text-ok"}>{state === "done" ? <Person /> : <Check />}</span>
         <span className="min-w-0 flex-1">
-          <span className="block font-mono text-[13px] text-muted">{l.raw}</span>
           <span className="block break-words text-ink">{chosen}</span>
+          <span className="block font-mono text-[13px] text-muted">{l.raw}</span>
         </span>
         <span className="shrink-0 text-[14px] text-muted">{qty}</span>
         {state === "done" && (
@@ -1020,7 +1035,7 @@ function CostPanel({ result, samples, mode, T, unitMin, catalog, onMode, setT, s
         {helpOpen && <HelpDialog onClose={() => setHelpOpen(false)} />}
 
         <div className="rounded-xl bg-brandsoft px-4 py-3">
-          <p className="font-mono text-lg font-semibold">{cheaper.toFixed(1)}× lower cost per order</p>
+          <p className="font-mono text-base font-semibold">{cheaper.toFixed(1)}× lower cost per order</p>
           <p className="mt-1 text-[12px] text-muted">{usd(jev.t.usd)} vs {usd(cla.t.usd)} · single run, results vary</p>
         </div>
 
@@ -1036,7 +1051,7 @@ function CostPanel({ result, samples, mode, T, unitMin, catalog, onMode, setT, s
             <span className={`font-semibold ${x.key === "jev" ? "text-branddeep" : "text-ink"}`}>{x.label}</span>
           </div>
           <div className="mt-1.5 flex items-baseline justify-between gap-2">
-            <span className="font-mono text-xl font-medium tracking-tight">{usd(x.t.usd)}</span>
+            <span className="font-mono text-lg font-medium tracking-tight">{usd(x.t.usd)}</span>
             <span className="font-mono text-[12px] text-muted">{ms(x.t.ms)}</span>
           </div>
           <div className="mt-2 flex h-1.5 overflow-hidden rounded-full" style={{ background: "var(--line)" }} aria-hidden>
