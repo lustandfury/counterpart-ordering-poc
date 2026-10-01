@@ -1,3 +1,4 @@
+import { withPostHogConfig } from "@posthog/nextjs-config";
 import type { NextConfig } from "next";
 
 const dev = process.env.NODE_ENV !== "production";
@@ -42,4 +43,17 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+const postHogApiKey = process.env.POSTHOG_API_KEY;
+const postHogProjectId = process.env.POSTHOG_PROJECT_ID;
+
+export default postHogApiKey && postHogProjectId
+  ? withPostHogConfig(nextConfig, {
+      personalApiKey: postHogApiKey,
+      projectId: postHogProjectId,
+      host: process.env.NEXT_PUBLIC_POSTHOG_HOST,
+      sourcemaps: {
+        enabled: true,
+        deleteAfterUpload: true,
+      },
+    })
+  : nextConfig;

@@ -51,3 +51,4 @@ shots/
 /public/case-study/
 /public/*case-study*.zip
 /scripts/capture-case-study.ts
+.env.local
