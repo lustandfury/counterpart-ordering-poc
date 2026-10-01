@@ -9,6 +9,7 @@ const csp = [
   "default-src 'self'",
   `script-src 'self' 'unsafe-inline'${dev ? " 'unsafe-eval'" : ""} https://us-assets.i.posthog.com`,
   "connect-src 'self' https://us.i.posthog.com https://us-assets.i.posthog.com",
+  "worker-src 'self' blob:",
   "img-src 'self' data: blob:",
   "style-src 'self' 'unsafe-inline'",
   "font-src 'self' data:",

@@ -9,7 +9,6 @@ if (token) {
       defaults: "2026-05-30",
       capture_pageview: "history_change",
       autocapture: false,
-      disable_session_recording: true,
       disable_surveys: true,
       person_profiles: "identified_only",
     });
