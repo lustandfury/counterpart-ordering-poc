@@ -372,3 +372,9 @@ Quality cards show counts first. The time card is removed. Both approval columns
 **Did:** Added a "Demo" pill to the wordmark wherever it appears, so visitors know the orders and prices are synthetic. Gave the order card's Results button a faint outline in the cost bars' blue, which glows twice about a second after an order opens, so the eye moves from the order to the cost comparison. Made text fields 16px on touch screens.
 **Happened:** On iPhone the page loaded slightly zoomed in and off-centre. The cause was the lock screen: its code field was 15px, and iOS Safari zooms any focused field under 16px and keeps the zoom after the field goes away. A mobile-emulated check now shows 16px fields and no horizontal overflow at 390px. The large wordmark also wrapped onto two lines at 320px once the pill was added, so it now scales with the screen width.
 **Changed:** The demo status is visible at all times instead of only being stated in About. The fix also covers the quantity editor and the sign-up email field, which had the same zoom problem.
+
+## The cost result arrives last, in blue — October 2, 2026
+
+**Did:** The Results button in the order card now animates in after the rest of the order (fades and rises in at 0.7s, once the card has settled), then glows twice. Its text is the cost bars' blue (#2563eb; a lighter #93c5fd in dark themes) instead of grey and black.
+**Happened:** With only an outline and a glow, the button still didn't stand out on the phone. The new blue text meets WCAG AA contrast: 4.8:1 on its light background and 10:1 in dark. Opening and closing the comparison doesn't replay the entrance.
+**Changed:** On every order the eye goes order first, then the cost result. Flagged lines keep their warning colour, so the blue doesn't compete with what the rep has to check.

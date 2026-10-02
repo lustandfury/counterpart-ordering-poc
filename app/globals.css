@@ -27,6 +27,7 @@
   --focus: #2456a6;
   --reading: #60a5fa;
   --matching: #2563eb;
+  --results-ink: #2563eb;
   --ring: rgb(0 0 0 / 0.06);
   --shadow-sm: 0 1px 3px #00000014, 0 1px 2px #0000000a;
   --shadow-md: 0 4px 6px -1px #00000014, 0 2px 4px -2px #0000000a;
@@ -60,6 +61,7 @@
   --focus: #8db4ff;
   --reading: #93c5fd;
   --matching: #3b82f6;
+  --results-ink: #93c5fd;
   --ring: rgb(255 255 255 / 0.07);
   --shadow-sm: 0 1px 2px #00000066;
   --shadow-md: 0 4px 10px -2px #00000080;
@@ -89,6 +91,7 @@
   --focus: #8db4ff;
     --reading: #93c5fd;
     --matching: #3b82f6;
+    --results-ink: #93c5fd;
     --ring: rgb(255 255 255 / 0.07);
     --shadow-sm: 0 1px 2px #00000066;
     --shadow-md: 0 4px 10px -2px #00000080;
@@ -219,19 +222,27 @@ button { cursor: pointer; }
   }
 }
 
-/* The "Results" button in the order card: a faint outline in the cost bars' blue, which glows twice
-   once the order has landed, so the eye finds the cost comparison after reading the order. */
+/* The "Results" button in the order card, in the cost bars' blue: it arrives last, after the order,
+   then glows twice, so the eye finds the cost comparison after reading the order. */
 @keyframes results-cue-glow {
   0%, 100% { box-shadow: 0 0 0 1px color-mix(in srgb, var(--matching) 35%, transparent), 0 0 0 0 color-mix(in srgb, var(--matching) 0%, transparent); }
   50% { box-shadow: 0 0 0 1px color-mix(in srgb, var(--matching) 70%, transparent), 0 0 0 5px color-mix(in srgb, var(--matching) 16%, transparent); }
 }
-.results-cue {
-  box-shadow: 0 0 0 1px color-mix(in srgb, var(--matching) 35%, transparent);
-  animation: results-cue-glow 1400ms ease-in-out 1200ms 2;
+@keyframes results-cue-in {
+  from { opacity: 0; transform: translateY(10px) scale(0.96); }
+  to { opacity: 1; transform: none; }
 }
+/* arrives after the order card (.order-enter, 500ms) has settled, then glows */
+.results-cue {
+  color: var(--results-ink);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--matching) 35%, transparent);
+  animation:
+    results-cue-in 550ms cubic-bezier(0.22, 1, 0.36, 1) 700ms backwards,
+    results-cue-glow 1400ms ease-in-out 1300ms 2;
+}
+/* keeps its animations, so closing the comparison doesn't replay the entrance */
 .results-cue[aria-expanded="true"] {
   box-shadow: 0 0 0 1px color-mix(in srgb, var(--matching) 60%, transparent);
-  animation: none;
 }
 @media (prefers-reduced-motion: reduce) {
   .results-cue { animation: none; }

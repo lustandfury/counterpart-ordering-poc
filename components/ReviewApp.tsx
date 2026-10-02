@@ -806,10 +806,10 @@ function OrderDetails({ result, mode, lines, flagged, done, compare }: { result:
           aria-expanded={compare.open}
           aria-controls={compare.controls}
           title={`AI cost: ${usd(save.jevUsd)} vs ${usd(save.claudeUsd)} per order with Claude only, from a single run`}
-          className={`results-cue shrink-0 self-start whitespace-nowrap rounded-lg px-3 py-1.5 text-[13px] font-medium tabular-nums text-ink hover:bg-bg @min-[560px]:ml-auto @min-[560px]:self-center ${compare.open ? "bg-bg" : "bg-bg/60"}`}
+          className={`results-cue shrink-0 self-start whitespace-nowrap rounded-lg px-3 py-1.5 text-[13px] font-medium tabular-nums hover:bg-bg @min-[560px]:ml-auto @min-[560px]:self-center ${compare.open ? "bg-bg" : "bg-bg/60"}`}
         >
-          <span className="text-muted">Results · </span>{save.cheaper.toFixed(1)}× lower cost
-          {save.timeSaved != null && <><span className="text-muted"> | </span>{speedLine(save.timeSaved)}</>}
+          <span className="font-normal">Results · </span>{save.cheaper.toFixed(1)}× lower cost
+          {save.timeSaved != null && <><span className="font-normal"> | </span>{speedLine(save.timeSaved)}</>}
         </button>
       </div>
     </div>
