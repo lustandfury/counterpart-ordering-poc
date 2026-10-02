@@ -82,3 +82,9 @@ The plan calls for a security, evaluation-correctness and usability review befor
 - **What the checks caught along the way:**
   - A unit helper read "bundles" as "bundl", which would have left 24 bundles of shingles unpriced. It now has unit tests.
   - `scripts/screenshots.ts` would have made paid API calls through Generate order. It now uses a mocked response.
+- **Simplified again (Mike's call):**
+  - The AI cost saving moved into the order card, leading with "4.7× lower cost per order". It is labelled "AI cost" so it isn't read as a discount on the contractor's order.
+  - Sample results, Settings and About moved to the foot of the sidebar.
+  - The queue starts with one order, which arrives as the page opens.
+  - The header and the cost panel now share one savings calculation, so they can't disagree.
+

@@ -20,26 +20,34 @@ async function main() {
       await unlock(page);
       await expect(page.getByRole("region", { name: "Needs review", exact: true })).toBeVisible();
       await expect(page.getByRole("region", { name: "Validated items", exact: true })).toBeVisible();
-      // phones open the cost comparison as a sheet; wide screens open the rail, which starts closed
+      // The savings lead the order card, labelled as AI cost. "Compare" opens the details:
+      // a sheet on phones, the rail on wide screens (closed at first).
+      const compare = page.locator("#review h1").locator("xpath=ancestor::*[@aria-live]").getByRole("button", { name: /^(Compare|Hide details)$/ });
+      await expect(page.locator("[aria-live=polite]")).toContainText("AI cost · Claude + Jev");
+      await expect(page.locator("[aria-live=polite]")).toContainText(/\d\.\d× lower cost per order/);
       const openCost = async () => {
         if (width < 1024 && !(await page.locator("#cost-comparison").isVisible())) {
-          await page.getByRole("button", { name: "AI cost comparison", exact: true }).click();
+          await compare.click();
         } else if (width >= 1024 && !(await page.locator("#cost-rail").isVisible())) {
-          await page.getByRole("button", { name: /^AI cost/ }).click();
+          await compare.click();
           await expect(page.locator("#cost-rail")).toBeVisible();
         }
       };
-      if (width >= 1024) {
-        await expect(page.locator("#cost-rail")).toHaveCount(0);
-        await expect(page.getByRole("button", { name: /^AI cost/ })).toContainText("Claude + Jev");
-      }
+      // Secondary tools live in the orders sidebar (a sheet on phones, and hidden once on wide screens below)
+      const openOrders = async () => {
+        // a phone sheet that is still animating closed counts as visible, so let it finish first
+        if (width < 1024) await expect(page.locator('#orders[data-state="closing"]')).toBeHidden();
+        if (!(await page.locator("#orders").isVisible())) await page.getByRole("button", { name: "Show orders", exact: true }).click();
+      };
+      if (width >= 1024) await expect(page.locator("#cost-rail")).toHaveCount(0);
       if (width < 1024) {
         await expect(page.locator("#cost-comparison")).toBeHidden();
-        await expect(page.getByRole("button", { name: "AI cost comparison", exact: true }).locator("..").locator("button, a")).toHaveCount(5); // results, settings, help, cost sheet, and the wide-screen cost summary
+        await openOrders();
         await page.getByRole("button", { name: /^Settings/ }).click();
         await expect(page.getByRole("dialog", { name: "Settings", exact: true })).toBeVisible();
         await expect(page.locator("#cost-comparison")).toBeHidden();
         await page.getByRole("button", { name: "Close settings" }).click();
+        await openOrders();
         await page.getByRole("button", { name: "About Counterpart" }).click();
         await expect(page.getByRole("button", { name: "Close help" })).toBeVisible();
         await expect(page.locator("#cost-comparison")).toBeHidden();
@@ -60,7 +68,7 @@ async function main() {
         await expect(page.locator("#cost-comparison").locator("..")).toHaveAttribute("data-state", "closing");
         await expect.poll(() => page.locator("#cost-comparison").evaluate(el => getComputedStyle(el).animationName)).toBe("lock-sheet-out");
         await expect(page.locator("#cost-comparison")).toBeHidden();
-        await expect(page.getByRole("button", { name: "AI cost comparison", exact: true })).toBeFocused();
+        await expect(compare).toBeFocused();
         await openCost();
         await page.keyboard.press("Escape");
         await expect(page.locator("#cost-comparison")).toBeHidden();
@@ -157,10 +165,12 @@ async function main() {
       };
       const settings = async () => {
         await closeMobileCost();
+        await openOrders();
         await page.getByRole("button", { name: /^Settings/ }).click();
       };
       const goToResults = async () => {
         await closeMobileCost();
+        await openOrders();
         await page.getByRole("link", { name: "Sample results", exact: true }).click();
       };
       const closeSettings = () => page.getByRole("button", { name: "Close settings" }).click();
@@ -246,7 +256,8 @@ async function main() {
         await page.getByRole("button", { name: /^Claude only/ }).click();
         await expect(page.locator("[aria-live=polite]")).toContainText("Showing the Claude-only draft");
         await page.getByRole("button", { name: "Hide AI cost", exact: true }).click();
-        await expect(page.getByRole("button", { name: /^AI cost/ })).toContainText("Claude only");
+        await expect(page.locator("#cost-rail")).toHaveCount(0);
+        await expect(page.locator("[aria-live=polite]")).toContainText("Showing the Claude-only draft");
         await settings();
         await expect(page.locator("#t")).toBeDisabled();
         await closeSettings();

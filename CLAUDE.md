@@ -58,10 +58,13 @@ to either pipeline (a test enforces this in `lib/`, `app/`, `components/`).
 - results/: saved pipeline outputs for the sample orders
 
 ## UI
-- The visitor is the sales rep. Home is an order queue ("Incoming orders"): sample orders
-  load instantly from results/, the default one "arrives" on load, and Generate order
-  simulates a new contractor text and runs it live. There is no paste box
-- Review screen: the contractor's name and their text as a message bubble, then the lines.
+- The visitor is the sales rep. Home is an order queue: one sample order (from results/)
+  "arrives" on load, and Generate order simulates a new contractor text and runs it live.
+  There is no paste box. Secondary tools (Sample results, Settings, About) sit at the foot
+  of the sidebar
+- Review screen: the contractor's name and their text as a message bubble, with the AI cost
+  saving on the right of that card (leading with "N× lower cost per order", labelled as AI
+  cost), then the lines.
   Approved lines collapsed with a check mark; flagged lines expanded with up to 3 product
   options, their confidence and price, and "Leave off order" as a separate action. Picking a
   product sold in a different unit than the contractor wrote opens a quantity editor
@@ -69,9 +72,9 @@ to either pipeline (a test enforces this in `lib/`, `app/`, `components/`).
   a CAD subtotal and "Send to {contractor} for approval" sit at the foot of the order (the
   contractor approves before it goes to the ERP; simulated). Threshold sliders in Settings
   re-route lines in the browser
-- AI cost: a rail (collapsed by default on desktop, a sheet on phones) with time and cost for
-  this order and a toggle to compare Jev vs Claude-only
-- Product name: Counterpart. Banner: "Counterpart · outside-in sketch · synthetic data"
+- AI cost details: "Compare" in the order card opens a rail (desktop) or a sheet (phones) with
+  time and cost for this order and a toggle to compare Jev vs Claude-only
+- Product name: Counterpart
 - The design should be calm and dense, like a rep's work tool. No marketing page
 
 ## Evaluation (scripts/eval.ts)

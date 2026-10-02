@@ -229,6 +229,19 @@ While checking prices across all 20 samples, a unit helper read "bundles" as "bu
 
 The lesson: a keyboard shortcut can decide something the person never saw, so put it under the same rules as a click.
 
+### 37. One card, one order, tools out of the way
+**Did:** Mike asked for a simpler screen. He wanted three changes:
+- Put the cost saving in the order card, leading with "4.7× lower cost per order".
+- Move the technical buttons to the sidebar.
+- Start the queue with a single order that arrives as the page opens.
+
+**Happened:** next to a contractor's name, "4.7× lower cost per order" could read as a discount on the contractor's order, the same confusion the usability test found. So the line has a small "AI cost · Claude + Jev" label above it and "vs Claude only · 50% less time · Compare" below it. The first version included both dollar amounts and wrapped to five lines on a 320 px phone; those amounts moved to a tooltip and to the comparison panel. The cost panel's own savings callout duplicated the header, so it was removed. Both places now use one shared calculation.
+**Changed:**
+- The top-right toolbar is gone. Sample results, Settings and About are quiet rows at the foot of the sidebar.
+- "Compare" in the order card opens the cost rail on desktop or the sheet on phones.
+- The queue holds one order until Generate order adds more. Other samples are reached through Sample results.
+- The smoke tests now find tools in the sidebar and cost details through "Compare". They wait for a closing sheet to finish before reopening it, which was a timing flake the change exposed.
+
 ## Where it stands
 
 | | Claude only | Claude + Jev |

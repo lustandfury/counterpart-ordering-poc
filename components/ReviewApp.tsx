@@ -8,15 +8,15 @@ import { readOrderStream, type OrderProgress, type OrderStage } from "@/lib/orde
 import { OrderLoading } from "@/components/OrderLoading";
 import type { OrderResult } from "@/lib/types";
 import Link from "next/link";
-import { ICON_BUTTON, ICON_BUTTON_GROUPED, ICON_GROUP } from "@/components/iconButton";
-import { AdjustmentsHorizontalIcon, CheckIcon, CpuChipIcon, InboxIcon, SparklesIcon, UserIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { ICON_BUTTON } from "@/components/iconButton";
+import { AdjustmentsHorizontalIcon, ArrowLeftEndOnRectangleIcon, CheckIcon, InboxIcon, QuestionMarkCircleIcon, SparklesIcon, UserIcon } from "@heroicons/react/24/outline";
 import { setShortcutsEnabled, shortcutsEnabled } from "@/lib/shortcuts";
 import { ActionSheet } from "@/components/ActionSheet";
 import { ModalCloseButton } from "@/components/ModalCloseButton";
 import { ResultsDisplay } from "@/components/ResultsDisplay";
 import type { EvalData } from "@/lib/eval/display";
 import { useSheetPresence } from "@/components/useSheetPresence";
-import { BrandBar, ResultsButton, Wordmark } from "@/components/AppNav";
+import { BrandBar, Wordmark } from "@/components/AppNav";
 import { useAccess } from "@/components/AccessProvider";
 import { generateOrder } from "@/lib/generate";
 import { applyTheme, readTheme, THEMES, type Theme } from "@/lib/theme";
@@ -25,6 +25,20 @@ import { computeView, NONE, productChoices, sameQuantityUnit, suggestQuantity, t
 
 const usd = (n: number) => `$${n.toFixed(4)}`;
 const ms = (n: number) => (n >= 1000 ? `${(n / 1000).toFixed(1)} s` : `${Math.round(n)} ms`);
+
+/** How Claude + Jev compares with Claude only on this order's AI cost and time. One place, so the header and the cost panel agree. */
+function savings(result: OrderResult) {
+  const jev = totals(result, "jev");
+  const claude = totals(result, "claude");
+  return {
+    cheaper: claude.usd / jev.usd,
+    // negative when Jev is slower on this order
+    timeSaved: jev.ms > 0 && claude.ms > 0 ? Math.round((1 - jev.ms / claude.ms) * 100) : null,
+    jevUsd: jev.usd,
+    claudeUsd: claude.usd,
+  };
+}
+const timeLine = (saved: number) => `${Math.abs(saved)}% ${saved < 0 ? "more" : "less"} time`;
 
 const Person = () => <UserIcon aria-hidden className="h-4 w-4 shrink-0" />;
 
@@ -62,12 +76,11 @@ function linePrice(l: ViewLine, pick: string | undefined, catalog: SlimCatalog, 
 }
 
 const DEFAULT_SAMPLE = "o13";
-const SAMPLES_SHOWN = 3;
+// The queue starts with one order, which arrives as the page opens. Others come from Generate order or Sample results.
+const SAMPLES_SHOWN = 1;
 // Optional address for deletion requests, set in the environment so no personal address lives in the repo
 const PRIVACY_CONTACT = process.env.NEXT_PUBLIC_PRIVACY_CONTACT;
 const WALKTHROUGH_KEY = "counterpart-walkthrough-complete";
-// When each queued sample "arrived", in minutes before the page loaded. The default order arrives as the page opens.
-const SAMPLE_AGE_MINUTES = [12, 38, 65, 90];
 const ago = (minutes: number) => (minutes < 1 ? "Just now" : minutes < 60 ? `${minutes} min ago` : `${Math.floor(minutes / 60)} h ago`);
 const MOBILE_QUERY = "(max-width: 1023px)";
 const subscribeToMobile = (callback: () => void) => {
@@ -283,9 +296,7 @@ export function ReviewApp({ samples, catalog, initialOrder, evalData }: { sample
   // lines still to check in an order: flagged by the current rule and not yet decided by the rep
   const toCheck = (r: OrderResult, id: string) => computeView(r, mode, T, catalog, unitMin).filter((l) => !l.approved && !decisions[id]?.[l.id]).length;
   const costPanelProps = {
-    result, samples, mode, T, unitMin, catalog, settingsOpen,
-    onSettings: () => setSettingsOpen(v => !v),
-    onHelp: () => setHelpOpen(true),
+    result, samples, mode, T, unitMin, catalog,
     onResults: () => setResultsOpen(true),
     onMode: (nextMode: Mode) => {
       if (nextMode !== mode) trackEvent("comparison_mode_changed", { mode: nextMode });
@@ -297,61 +308,61 @@ export function ReviewApp({ samples, catalog, initialOrder, evalData }: { sample
     <div className={`flex h-dvh flex-col overflow-hidden ${walkthroughStep !== null && !loading ? `walkthrough-active walkthrough-${walkthroughStep}` : ""}`}>
       <div inert={!unlocked || undefined} className={`app-shell relative flex min-h-0 flex-1 [overflow-anchor:none] max-lg:flex-col max-lg:overflow-y-auto ${unlocked ? "app-shell-enter" : "app-shell-locked"}`}>
         {mobileOrders.present && <button data-state={mobileOrders.closing ? "closing" : "open"} aria-label="Close orders" tabIndex={-1} onClick={() => setMobileOpen(false)} className="sheet-fade fixed inset-0 z-20 bg-black/40 lg:hidden" />}
-        {/* wide screens: a left sidebar; phones: a bottom sheet over the page */}
+        {/* wide screens: a left sidebar that slides off the left edge when hidden; phones: a bottom sheet over the page */}
         <aside
           id="orders"
           data-state={mobileOrders.closing ? "closing" : "open"}
           onAnimationEnd={event => { if (mobileOrders.closing && event.target === event.currentTarget) mobileOrders.finish(); }}
           aria-label="Orders"
-          inert={mobileCostOpen || undefined}
-          className={`tour-orders w-80 shrink-0 flex-col border-r border-line bg-panel max-lg:sheet-up max-lg:fixed max-lg:inset-x-0 max-lg:bottom-0 max-lg:z-30 max-lg:mx-auto max-lg:max-h-[85dvh] max-lg:w-full max-lg:rounded-t-2xl max-lg:border-r-0 max-lg:pb-[env(safe-area-inset-bottom)] max-lg:shadow-[0_-8px_30px_rgb(0_0_0/0.18)] ${desktopOpen ? "lg:flex" : "lg:hidden"} ${mobileOrders.present ? "max-lg:flex" : "max-lg:hidden"}`}
+          inert={mobileCostOpen || (!isMobile && !desktopOpen) || undefined}
+          className={`tour-orders w-80 shrink-0 flex-col border-r border-line bg-panel lg:flex lg:transition-[margin-left] lg:duration-300 lg:ease-[cubic-bezier(0.22,1,0.36,1)] lg:motion-reduce:transition-none max-lg:sheet-up max-lg:fixed max-lg:inset-x-0 max-lg:bottom-0 max-lg:z-30 max-lg:mx-auto max-lg:max-h-[85dvh] max-lg:w-full max-lg:rounded-t-2xl max-lg:border-r-0 max-lg:pb-[env(safe-area-inset-bottom)] max-lg:shadow-[0_-8px_30px_rgb(0_0_0/0.18)] ${desktopOpen ? "" : "lg:-ml-80"} ${mobileOrders.present ? "max-lg:flex" : "max-lg:hidden"}`}
         >
               <div aria-hidden className="mx-auto mt-2 h-1 w-9 shrink-0 rounded-full bg-line lg:hidden" />
               <BrandBar hideResults end={<><ModalCloseButton label="Hide orders" onClose={toggleSidebar} className="lg:hidden" /><span className="hidden lg:block"><SidebarButton label="Hide orders" expanded onClick={toggleSidebar} /></span></>} />
-              <div className="flex shrink-0 items-center justify-between gap-2 px-5 pb-1.5 pt-3">
-                <h2 id="queue-title" className="text-[12px] font-medium uppercase tracking-wider text-muted">Incoming orders</h2>
+              <div className="shrink-0 px-4 pb-2 pt-2">
                 <button
                   disabled={loading}
                   onClick={runLive}
                   title="Simulate a contractor texting a new order. Each one includes at least one line to check."
-                  className="flex h-8 items-center gap-1.5 rounded-lg px-2.5 text-[13px] font-medium text-ink shadow-[0_0_0_1px_var(--ring)] hover:bg-bg disabled:opacity-50"
+                  className="flex h-9 w-full items-center justify-center gap-1.5 rounded-lg px-2.5 text-[13px] font-medium text-ink shadow-[0_0_0_1px_var(--ring)] hover:bg-bg disabled:opacity-50"
                 >
                   <DiceIcon />
                   {loading ? "Arriving…" : "Generate order"}
                 </button>
               </div>
               {error && <p role="alert" className="mx-5 mb-2 text-[13px] text-warn">{error}</p>}
-              <nav aria-labelledby="queue-title" className="min-h-0 flex-1 overflow-y-auto px-3 pb-3">
+              <nav aria-label="Incoming orders" className="min-h-0 flex-1 overflow-y-auto px-3 pb-3">
                 <ul className="flex flex-col gap-0.5">
                   {runs.map((r) => (
                     <OrderItem key={r.runId} id={`live-${r.runId}`} tag={r.orderId} title={r.from?.company ?? "New order"} preview={r.text} time={ago(Math.floor((now - r.runId) / 60_000))} count={toCheck(r, `live-${r.runId}`)} sent={!!sent[`live-${r.runId}`]} active={selected === `live-${r.runId}`} arriving onPick={pick} />
                   ))}
                   {shownSamples.map((s, i) => (
-                    <OrderItem key={s.orderId} id={s.orderId} tag={s.orderId} title={s.from?.company ?? s.orderId} preview={s.text} time={i === 0 ? ago(Math.floor((now - loadedAt) / 60_000)) : ago(SAMPLE_AGE_MINUTES[i - 1] ?? 120)} count={toCheck(s, s.orderId)} sent={!!sent[s.orderId]} active={selected === s.orderId} arriving={i === 0} onPick={pick} />
+                    <OrderItem key={s.orderId} id={s.orderId} tag={s.orderId} title={s.from?.company ?? s.orderId} preview={s.text} time={i === 0 ? ago(Math.floor((now - loadedAt) / 60_000)) : "Earlier"} count={toCheck(s, s.orderId)} sent={!!sent[s.orderId]} active={selected === s.orderId} arriving={i === 0} onPick={pick} />
                   ))}
                 </ul>
               </nav>
-              <p className="shrink-0 border-t border-line px-5 py-3 text-[12px] text-muted">Counterpart · outside-in sketch · synthetic data</p>
+              {/* secondary, technical tools */}
+              <div className="shrink-0 border-t border-line px-3 py-2">
+                <button
+                  onClick={() => { setMobileOpen(false); setSettingsOpen((v) => !v); }}
+                  aria-expanded={settingsOpen}
+                  aria-controls="settings"
+                  aria-label={T !== DEFAULT_T || unitMin !== DEFAULT_UNIT ? "Settings (thresholds changed)" : "Settings"}
+                  className={TOOL_ROW}
+                >
+                  <SlidersIcon />Settings
+                  {(T !== DEFAULT_T || unitMin !== DEFAULT_UNIT) && <span className="ml-auto h-1.5 w-1.5 rounded-full bg-[var(--warn-line)]" aria-hidden />}
+                </button>
+                <button onClick={() => { setMobileOpen(false); setHelpOpen(true); }} aria-label="About Counterpart" className={TOOL_ROW}>
+                  <QuestionMarkCircleIcon aria-hidden className="h-4 w-4" />About
+                </button>
+              </div>
         </aside>
 
         <main id="review" tabIndex={-1} inert={mobileCostOpen || undefined} className="tour-review textured-surface relative min-w-0 flex-1 outline-none [overflow-anchor:none] lg:overflow-y-auto">
-          {/* Phones: show orders on the left, tools on the right. Wide screens: the same bar fills in for whichever rail is closed. */}
-          <div className={`flex items-center justify-between px-3 pt-3 lg:px-4 ${desktopOpen && costOpen ? "lg:hidden" : ""}`}>
-            <span className={desktopOpen ? "lg:invisible" : ""}><SidebarButton label="Show orders" expanded={false} onClick={toggleSidebar} /></span>
-            <div className={`${ICON_GROUP} ${costOpen ? "lg:hidden" : ""}`}>
-              <ResultsButton grouped onOpen={() => setResultsOpen(true)} />
-              <SettingsButton open={settingsOpen} changed={T !== DEFAULT_T || unitMin !== DEFAULT_UNIT} onToggle={() => setSettingsOpen(v => !v)} />
-              <button onClick={() => setHelpOpen(true)} aria-label="About Counterpart" title="About Counterpart" className={`${ICON_BUTTON_GROUPED} text-[13px] font-semibold`}>?</button>
-              <button aria-label="AI cost comparison" title="AI cost comparison" aria-expanded={mobileCostOpen} aria-controls="cost-comparison" onClick={() => { setMobileOpen(false); setMobileCostOpen(true); }} className={`${ICON_BUTTON_GROUPED} lg:hidden`}>
-                <CpuChipIcon aria-hidden className="h-4 w-4" />
-              </button>
-              {/* wide screens: a quiet summary that opens the rail, and says which draft is showing */}
-              <button aria-expanded={costOpen} aria-controls="cost-rail" onClick={() => setCostOpen(true)} className="hidden h-9 items-center gap-1.5 rounded-full px-3 text-[13px] text-muted hover:bg-bg hover:text-ink lg:flex">
-                <CpuChipIcon aria-hidden className="h-4 w-4" />
-                <span className="font-medium text-ink">AI cost</span>
-                <span className="tabular-nums">{usd(totals(result, mode).usd)} · {mode === "jev" ? "Claude + Jev" : "Claude only"}</span>
-              </button>
-            </div>
+          {/* Opens the orders sidebar: always on phones (a sheet), on wide screens only once it's hidden */}
+          <div className={`flex items-center px-3 pt-3 lg:px-4 ${desktopOpen ? "lg:hidden" : ""}`}>
+            <SidebarButton label="Show orders" expanded={false} onClick={toggleSidebar} />
           </div>
           <div className="mx-auto max-w-4xl px-5 py-8 sm:px-10">
             {loading ? <OrderLoading progress={orderProgress} /> : <Review
@@ -369,6 +380,13 @@ export function ReviewApp({ samples, catalog, initialOrder, evalData }: { sample
                 return { ...all, [selected]: qty == null ? rest : { ...rest, [lineId]: qty } };
               })}
               phone={isMobile}
+              compare={{
+                open: isMobile ? mobileCostOpen : costOpen,
+                controls: isMobile ? "cost-comparison" : "cost-rail",
+                onToggle: () => {
+                  if (isMobile) { setMobileOpen(false); setMobileCostOpen(true); } else setCostOpen((v) => !v);
+                },
+              }}
               onReviewed={() => { if (walkthroughStep === 1) showWalkthroughStep(2); }}
               sentAt={sent[selected]}
               onSend={() => {
@@ -378,8 +396,6 @@ export function ReviewApp({ samples, catalog, initialOrder, evalData }: { sample
               }}
               onReopen={() => setSent((s) => Object.fromEntries(Object.entries(s).filter(([id]) => id !== selected)))}
             />}
-            {/* on phones the queue (and its banner) is a closed sheet, so the banner also sits under the order */}
-            <p className="mt-8 text-center text-[12px] text-muted lg:hidden">Counterpart · outside-in sketch · synthetic data</p>
           </div>
         </main>
 
@@ -539,7 +555,7 @@ function Walkthrough({ step, onBack, onNext, onClose }: { step: WalkthroughStep;
   const content = [
     { eyebrow: "1 of 3 · A new order", title: "A contractor just texted an order.", body: "You're the sales rep. Counterpart read the text and matched each line to your catalog, so you only check what it isn't sure about. Want another? Tap Generate order any time.", mobileTitle: "A contractor texted an order", mobileBody: "You're the rep. Check only what's flagged." },
     { eyebrow: "2 of 3 · Make the call", title: "Even AI needs safety glasses.", body: "Check a flagged line and choose the product that fits, confirm the quantity, or leave it off the order. The glowing choices are yours to make. No rubber stamp required.", mobileTitle: "Check a flagged line", mobileBody: "Pick the right product, or leave it off." },
-    { eyebrow: "3 of 3 · Send it back", title: "Then send it for approval.", body: "Once every line is checked, send the order back to the contractor. They approve it before it goes to the ERP for purchase. Curious what the AI cost? Open AI cost at the top right.", mobileTitle: "Send it for approval", mobileBody: "They approve it, then it goes to the ERP." },
+    { eyebrow: "3 of 3 · Send it back", title: "Then send it for approval.", body: "Once every line is checked, send the order back to the contractor. They approve it before it goes to the ERP for purchase. Curious what the AI cost? It's at the top of the order.", mobileTitle: "Send it for approval", mobileBody: "They approve it, then it goes to the ERP." },
   ][step];
 
   return (
@@ -564,22 +580,6 @@ function Walkthrough({ step, onBack, onNext, onClose }: { step: WalkthroughStep;
 
 
 type Thresholds = { mode: Mode; T: number; unitMin: number; setT: (v: number) => void; setUnitMin: (v: number) => void };
-
-function SettingsButton({ open, changed, onToggle }: { open: boolean; changed: boolean; onToggle: () => void }) {
-  return (
-    <button
-      onClick={onToggle}
-      aria-expanded={open}
-      aria-controls="settings"
-      aria-label={changed ? "Settings (thresholds changed)" : "Settings"}
-      title="Settings"
-      className={`${ICON_BUTTON_GROUPED} relative ${open ? "bg-bg text-ink" : ""}`}
-    >
-      {open ? <XMarkIcon aria-hidden className="h-4 w-4" /> : <SlidersIcon />}
-      {changed && <span className="absolute right-1 top-1 h-1.5 w-1.5 rounded-full bg-[var(--warn-line)]" aria-hidden />}
-    </button>
-  );
-}
 
 const SlidersIcon = () => <AdjustmentsHorizontalIcon aria-hidden className="h-4 w-4" />;
 
@@ -711,10 +711,12 @@ function SidebarButton({ label, expanded, onClick }: { label: string; expanded: 
       title={`${label} (⌘B)`}
       className={ICON_BUTTON}
     >
-      {expanded ? <XMarkIcon aria-hidden className="h-4 w-4" /> : <SidebarIcon />}
+      {expanded ? <ArrowLeftEndOnRectangleIcon aria-hidden className="h-4 w-4" /> : <SidebarIcon />}
     </button>
   );
 }
+
+const TOOL_ROW = "flex h-9 w-full items-center gap-2.5 rounded-lg px-2 text-left text-[13px] text-muted hover:bg-bg hover:text-ink";
 
 const SidebarIcon = () => <InboxIcon aria-hidden className="h-4 w-4" />;
 
@@ -750,8 +752,9 @@ function OrderItem(p: { id: string; tag: string; title: string; preview: string;
 
 type Decisions = Record<string, string>; // lineId -> sku chosen by the rep
 
-function OrderDetails({ result, mode, lines, flagged, done, sentAt }: { result: OrderResult; mode: Mode; lines: number; flagged: number; done: number; sentAt?: number }) {
+function OrderDetails({ result, mode, lines, flagged, done, sentAt, compare }: { result: OrderResult; mode: Mode; lines: number; flagged: number; done: number; sentAt?: number; compare: Compare }) {
   const who = result.from?.name ?? "the contractor";
+  const save = savings(result);
   const toCheck = Math.max(0, flagged - done);
   const stats = [
     { label: "Lines", value: lines, className: "text-ink" },
@@ -760,7 +763,8 @@ function OrderDetails({ result, mode, lines, flagged, done, sentAt }: { result: 
   ];
   return (
     <div className="@container mb-6 rounded-xl border border-line bg-panel px-4 py-4 shadow-[0_0_0_1px_var(--ring)] sm:px-5" aria-live="polite">
-      <div className="flex items-start gap-3">
+      <div className="flex flex-col gap-3 @min-[560px]:flex-row @min-[560px]:items-start @min-[560px]:justify-between">
+      <div className="flex min-w-0 items-start gap-3">
         <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-bg text-[12px] font-semibold text-ink" aria-hidden>
           {result.from ? result.from.name.split(" ").map((w) => w[0]).join("").slice(0, 2) : "C"}
         </span>
@@ -771,6 +775,18 @@ function OrderDetails({ result, mode, lines, flagged, done, sentAt }: { result: 
           </h1>
           <p className="mt-0.5 text-[13px] text-muted">Texted an order · <span className="font-mono">{result.orderId}</span></p>
         </div>
+      </div>
+      {/* What the AI cost to read and match this order. Labelled as AI cost so it isn't read as a discount on the order. */}
+      <div className="shrink-0 rounded-lg bg-bg px-3 py-2 @min-[560px]:ml-auto @min-[560px]:text-right">
+        <p className="text-[11px] font-medium uppercase tracking-wider text-muted">AI cost · Claude + Jev</p>
+        <p className="mt-0.5 text-[14px] font-semibold">{save.cheaper.toFixed(1)}× lower cost per order</p>
+        <p className="mt-0.5 text-[12px] tabular-nums text-muted" title={`${usd(save.jevUsd)} vs ${usd(save.claudeUsd)} per order, from a single run`}>
+          vs Claude only{save.timeSaved != null && <> · {timeLine(save.timeSaved)}</>} ·{" "}
+          <button onClick={compare.onToggle} aria-expanded={compare.open} aria-controls={compare.controls} className="font-medium text-ink underline underline-offset-2">
+            {compare.open ? "Hide details" : "Compare"}
+          </button>
+        </p>
+      </div>
       </div>
       <figure className="mt-4 @min-[560px]:ml-12">
         <figcaption className="sr-only">Text message from {who}</figcaption>
@@ -839,11 +855,13 @@ function OrderFooter({ result, subtotal, toCheck, sentAt, onSend, onReopen }: { 
   );
 }
 
-function Review({ result, mode, T, unitMin, catalog, resolved, setResolved, quantities, setQuantity, phone, sentAt, onSend, onReopen, onReviewed }: {
+type Compare = { open: boolean; controls: string; onToggle: () => void };
+
+function Review({ result, mode, T, unitMin, catalog, resolved, setResolved, quantities, setQuantity, phone, compare, sentAt, onSend, onReopen, onReviewed }: {
   result: OrderResult; mode: Mode; T: number; unitMin: number; catalog: SlimCatalog;
   resolved: Decisions; setResolved: (f: (r: Decisions) => Decisions) => void;
   quantities: Record<string, number>; setQuantity: (lineId: string, qty: number | undefined) => void;
-  phone: boolean;
+  phone: boolean; compare: Compare;
   sentAt?: number; onSend: () => void; onReopen: () => void;
   onReviewed: () => void;
 }) {
@@ -985,7 +1003,7 @@ function Review({ result, mode, T, unitMin, catalog, resolved, setResolved, quan
           Skip to the first line to check
         </a>
       )}
-      <OrderDetails result={result} mode={mode} lines={lines.length} flagged={flagged.length} done={done} sentAt={sentAt} />
+      <OrderDetails result={result} mode={mode} lines={lines.length} flagged={flagged.length} done={done} sentAt={sentAt} compare={compare} />
 
       <div
         className={`floating-send fixed inset-x-0 bottom-0 z-20 flex justify-center px-5 pt-3 pb-[calc(1rem+env(safe-area-inset-bottom))] ${showFloatingSend ? "floating-send-visible" : ""}`}
@@ -1248,8 +1266,7 @@ function LineRow(props: {
 type Side = { key: Mode; label: string; matcher: string; t: ReturnType<typeof totals>; approved: number; lines: number };
 const PER = 10_000;
 
-function CostPanel({ result, samples, mode, T, unitMin, catalog, onMode, settingsOpen, onSettings, onHelp, onClose, onCollapse, onResults }: { result: OrderResult; samples: OrderResult[]; mode: Mode; T: number; unitMin: number; catalog: SlimCatalog; onMode: (m: Mode) => void; settingsOpen: boolean; onSettings: () => void; onHelp: () => void; onClose?: () => void; onCollapse?: () => void; onResults?: () => void }) {
-  const changed = T !== DEFAULT_T || unitMin !== DEFAULT_UNIT;
+function CostPanel({ result, samples, mode, T, unitMin, catalog, onMode, onClose, onCollapse, onResults }: { result: OrderResult; samples: OrderResult[]; mode: Mode; T: number; unitMin: number; catalog: SlimCatalog; onMode: (m: Mode) => void; onClose?: () => void; onCollapse?: () => void; onResults?: () => void }) {
   const a = computeView(result, "jev", T, catalog, unitMin);
   const b = computeView(result, "claude", T, catalog);
   const n = result.parse.lines.length;
@@ -1258,9 +1275,6 @@ function CostPanel({ result, samples, mode, T, unitMin, catalog, onMode, setting
     { key: "claude", label: "Claude only", matcher: "Claude", t: totals(result, "claude"), approved: b.filter((l) => l.approved).length, lines: n },
   ];
   const maxUsd = Math.max(...sides.map((x) => x.t.usd));
-  const [jev, cla] = sides;
-  const cheaper = cla.t.usd / jev.t.usd;
-  const timeSaved = Math.round((1 - jev.t.ms / cla.t.ms) * 100);
   const diff = a.filter((l, i) => l.sku !== b[i].sku);
   const per10k = (usdPerOrder: number) => `$${(usdPerOrder * PER).toLocaleString("en-US", { minimumFractionDigits: 4, maximumFractionDigits: 4 })}`;
 
@@ -1268,32 +1282,10 @@ function CostPanel({ result, samples, mode, T, unitMin, catalog, onMode, setting
     <div className="flex flex-col">
       <div className={`flex shrink-0 justify-between ${onClose ? "items-start gap-4" : "h-16 items-center gap-2 px-4"}`}>
         <h2 className={onClose ? "text-xl font-semibold tracking-tight" : "text-[15px] font-semibold"}>AI cost</h2>
-        <div className={`${ICON_GROUP} max-lg:hidden`}>
-          <ResultsButton grouped onOpen={onResults} />
-          <SettingsButton open={settingsOpen} changed={changed} onToggle={onSettings} />
-          <button
-            onClick={onHelp}
-            aria-label="About Counterpart"
-            title="About Counterpart"
-            className={`${ICON_BUTTON_GROUPED} text-[13px] font-semibold`}
-          >
-            ?
-          </button>
-          {onCollapse && (
-            <button onClick={onCollapse} aria-label="Hide AI cost" title="Hide AI cost" aria-controls="cost-rail" aria-expanded className={ICON_BUTTON_GROUPED}>
-              <XMarkIcon aria-hidden className="h-4 w-4" />
-            </button>
-          )}
-        </div>
+        {onCollapse && <ModalCloseButton onClose={onCollapse} label="Hide AI cost" />}
         {onClose && <ModalCloseButton onClose={onClose} label="Close AI cost comparison" />}
       </div>
       <div className={`flex flex-col gap-4 ${onClose ? "pt-4" : "p-5"}`}>
-
-        <div className="rounded-xl bg-bg px-4 py-3">
-          <p className="text-[14px] font-semibold">{cheaper.toFixed(1)}× lower cost per order</p>
-          {jev.t.ms > 0 && cla.t.ms > 0 && <p className="mt-0.5 text-[13px] text-muted">{Math.abs(timeSaved)}% {timeSaved < 0 ? "more" : "less"} time per order</p>}
-          <p className="mt-1 text-[12px] text-muted">{usd(jev.t.usd)} vs {usd(cla.t.usd)} · single run, results vary</p>
-        </div>
 
         {sides.map((x) => (
           <button
