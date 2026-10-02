@@ -352,6 +352,21 @@ button { cursor: pointer; }
   padding: 2rem 1.75rem;
   box-shadow: 0 0 0 1px var(--ring), 0 12px 40px rgb(0 0 0 / 0.16);
 }
+/* Lock-screen copy reveals in reading order; .lock-reveal-skip (any key or tap) shows it all at once. */
+@keyframes lock-reveal {
+  from { opacity: 0; transform: translateY(8px); filter: blur(4px); }
+  to { opacity: 1; transform: none; filter: none; }
+}
+.lock-reveal {
+  animation: lock-reveal 650ms cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0ms) both;
+}
+.lock-reveal-skip .lock-reveal,
+.lock-reveal-skip .wordmark-letter {
+  animation: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .lock-reveal { animation: none; }
+}
 .lock-screen-exit {
   animation: lock-screen-out 520ms ease both;
   opacity: 0;

@@ -417,33 +417,66 @@ export function ReviewApp({ samples, catalog, initialOrder, evalData }: { sample
   );
 }
 
+// Lock-screen copy arrives in reading order (pitch, then how it works), and the access code last,
+// so a first-time visitor reads what the app does before being asked for anything.
+// Any key or tap shows everything at once, so returning reps are never held up.
+const LOCK_STEPS = [
+  { title: "A contractor texts an order", body: <span className="mt-1.5 block w-fit rounded-2xl rounded-tl-md bg-bg px-3 py-1.5 font-mono text-[12px] leading-snug text-ink">need 40 2x4x8 PT + 12 sheets 1/2 rock</span> },
+  { title: "AI drafts it from your catalog", body: <span className="mt-0.5 block text-[13px] text-muted">Each line is matched to a product with a confidence score.</span> },
+  { title: "You check only what\u2019s uncertain", body: <span className="mt-0.5 block text-[13px] text-muted">Confident lines are approved; unclear ones are flagged with options.</span> },
+];
+const LOCK_REVEAL_MS = { headline: 900, intro: 1300, steps: 1900, stepGap: 650, form: 3900 };
+
 function AccessLockScreen({ code, setCode, error, unlocking, onSubmit }: { code: string; setCode: (value: string) => void; error: boolean; unlocking: boolean; onSubmit: () => void }) {
+  const [skipped, setSkipped] = useState(false);
+  useEffect(() => {
+    if (skipped) return;
+    const skip = () => setSkipped(true);
+    window.addEventListener("keydown", skip);
+    window.addEventListener("pointerdown", skip);
+    return () => {
+      window.removeEventListener("keydown", skip);
+      window.removeEventListener("pointerdown", skip);
+    };
+  }, [skipped]);
+  const reveal = (ms: number) => ({ "--reveal-delay": `${ms}ms` }) as CSSProperties;
+
   return (
-    <div role="dialog" aria-modal="true" aria-label="Enter access code" className={`lock-screen fixed inset-0 z-[70] grid place-items-center p-6 ${unlocking ? "lock-screen-exit" : ""}`}>
+    <div role="dialog" aria-modal="true" aria-label="Enter access code" className={`lock-screen fixed inset-0 z-[70] grid place-items-center p-6 ${unlocking ? "lock-screen-exit" : ""} ${skipped ? "lock-reveal-skip" : ""}`}>
       <form onSubmit={(e) => { e.preventDefault(); onSubmit(); }} className="lock-screen-form flex w-full max-w-sm flex-col items-center text-center">
         <div className="action-sheet-handle" aria-hidden />
         <Wordmark large />
-        <p className="mt-5 text-lg font-medium tracking-tight">The Fast Lane for Pro Orders</p>
-        <p className="mt-1.5 text-[14px] text-muted">Contractors text their orders. You check only what&apos;s uncertain.</p>
-        <p className="mt-5 text-[13px] text-muted">Enter your access code to continue</p>
-        <label htmlFor="access-code" className="sr-only">Access code</label>
-        <input
-          id="access-code"
-          type="password"
-          inputMode="numeric"
-          maxLength={3}
-          autoFocus
-          value={code}
-          onChange={(e) => { setCode(e.target.value); }}
-          aria-invalid={error}
-          aria-describedby={error ? "access-code-error" : undefined}
-          placeholder="Access code"
-          className="mt-4 h-11 w-full rounded-xl bg-panel px-4 text-center tracking-[0.3em] outline-none shadow-[0_0_0_1px_var(--ring)] focus:shadow-[0_0_0_1px_var(--control)]"
-        />
-        {error && <p id="access-code-error" role="alert" className="mt-2 text-[13px] text-warn">That code doesn&apos;t match.</p>}
-        <button type="submit" disabled={code.length !== 3 || unlocking} className="mt-4 h-10 w-full rounded-xl bg-brand px-4 text-[14px] font-semibold text-onbrand transition-opacity disabled:cursor-not-allowed disabled:opacity-40">
-          Enter
-        </button>
+        <p className="lock-reveal mt-5 text-lg font-medium tracking-tight" style={reveal(LOCK_REVEAL_MS.headline)}>The Fast Lane for Pro Orders</p>
+        <p className="lock-reveal mt-1.5 text-[14px] text-muted" style={reveal(LOCK_REVEAL_MS.intro)}>Contractors&apos; text messages, turned into ready-to-send orders.</p>
+        <ol className="mt-5 flex w-full flex-col gap-3 text-left">
+          {LOCK_STEPS.map((step, i) => (
+            <li key={step.title} className="lock-reveal flex gap-3" style={reveal(LOCK_REVEAL_MS.steps + i * LOCK_REVEAL_MS.stepGap)}>
+              <span aria-hidden className="mt-px grid h-6 w-6 shrink-0 place-items-center rounded-full bg-brandsoft text-[12px] font-semibold text-ink">{i + 1}</span>
+              <span className="min-w-0 text-[14px] font-medium leading-6">{step.title}{step.body}</span>
+            </li>
+          ))}
+        </ol>
+        <div className="lock-reveal mt-6 flex w-full flex-col items-center border-t border-line pt-5" style={reveal(LOCK_REVEAL_MS.form)}>
+          <p className="text-[13px] text-muted">Enter your access code to continue</p>
+          <label htmlFor="access-code" className="sr-only">Access code</label>
+          <input
+            id="access-code"
+            type="password"
+            inputMode="numeric"
+            maxLength={3}
+            autoFocus
+            value={code}
+            onChange={(e) => { setSkipped(true); setCode(e.target.value); }}
+            aria-invalid={error}
+            aria-describedby={error ? "access-code-error" : undefined}
+            placeholder="Access code"
+            className="mt-4 h-11 w-full rounded-xl bg-panel px-4 text-center tracking-[0.3em] outline-none shadow-[0_0_0_1px_var(--ring)] focus:shadow-[0_0_0_1px_var(--control)]"
+          />
+          {error && <p id="access-code-error" role="alert" className="mt-2 text-[13px] text-warn">That code doesn&apos;t match.</p>}
+          <button type="submit" disabled={code.length !== 3 || unlocking} className="mt-4 h-10 w-full rounded-xl bg-brand px-4 text-[14px] font-semibold text-onbrand transition-opacity disabled:cursor-not-allowed disabled:opacity-40">
+            Enter
+          </button>
+        </div>
       </form>
     </div>
   );
