@@ -306,6 +306,29 @@ The lesson: a keyboard shortcut can decide something the person never saw, so pu
 One e2e step had relied, without saying so, on the replay reopening the desktop sidebar. That showed up as soon as the tour was gone.
 **Changed:** the walkthrough, its CSS, the Replay setting and the onboarding smoke test are gone. The tests now open the sidebar themselves. The first-load sequence is unchanged: waiting for orders, then the order arriving in the queue.
 
+### 42. Splitting the review screen into parts
+**Did:** split the 1,355-line `ReviewApp.tsx` by feature, without changing how anything looks:
+- `access/`, `queue/`, `order/`, `cost/`, `settings/` and `help/` folders
+- shared primitives in `components/ui/`: Button, Pill, SheetHeader, Switch, SegmentedControl
+- state moved into hooks: live orders, the rep's decisions and the panel layout
+- pricing, tax and formatting moved to `lib/` with unit tests
+- pixel text sizes replaced by a named type scale
+
+**Happened:**
+- Before and after screenshots of 42 screens were pixel-identical: light, dark and system-dark themes, desktop and phone, plus dialogs and the Generate flow. The comparison first caught a false alarm: Generate order picks a random contractor, so the capture now seeds the randomness.
+- `ReviewApp.tsx` went from 1,355 lines to 205, and no file is now over 222 lines.
+- Naming the primitives made the inconsistencies visible:
+  - four sizes of the primary button, with two corner radii
+  - two disabled opacities
+  - five near-identical pill styles
+- An existing smoke test (`results-smoke`) had been failing since the walkthrough removal. It still expects a cost panel that's open on load.
+- Separately, Mike doubled the lock screen card's maximum width.
+
+**Changed:**
+- A visual change is now usually an edit to one token or one primitive, rather than to dozens of class names.
+- The inconsistencies above are queued for the visual-identity pass, so they get decided rather than carried over by accident.
+- The dark palette is still written out three times in `globals.css`. Folding it into one source changes shadow geometry too, so it waits for that pass.
+
 ## Where it stands
 
 | | Claude only | Claude + Jev |

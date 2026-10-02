@@ -88,3 +88,11 @@ The plan calls for a security, evaluation-correctness and usability review befor
   - The queue starts with one order, which arrives as the page opens.
   - The header and the cost panel now share one savings calculation, so they can't disagree.
 
+## Splitting the review screen into parts
+- **Asked by Mike:** is the app componentized enough to scale? Claude found one 1,355-line file holding about 20 components and 38 pieces of state, and proposed a split that changes nothing visually. Mike approved it, and separately asked for a wider lock screen card.
+- **What Claude did:** made a feature folder per area of the screen, shared primitives in `components/ui/`, hooks for state, and `lib/format.ts` and `lib/order-math.ts` with tests, plus a named type scale and shadow tokens in `globals.css`.
+- **How it was checked:**
+  - Playwright captured 42 screens before and after, and a pixel diff compared them. All were identical once Generate order's random contractor was seeded.
+  - Typecheck, lint and 83 unit tests pass, along with a production build and the e2e and loading smoke tests.
+- **What the checks caught:** `results-smoke` was already failing on `main` (it expects the old always-open cost panel). The case study records it; fixing it is a separate change.
+- **Deferred:** a single source for the dark palette (it changes shadows and textures, not just colours), and normalizing button sizes. Both belong to the visual-identity pass.

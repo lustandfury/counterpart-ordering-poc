@@ -2,8 +2,8 @@
 
 import type { ReactNode } from "react";
 import { createPortal } from "react-dom";
-import { useDialog } from "@/components/useDialog";
-import { useSheetPresence } from "@/components/useSheetPresence";
+import { useDialog } from "@/components/ui/useDialog";
+import { useSheetPresence } from "@/components/ui/useSheetPresence";
 
 export function ActionSheet({ children, open = true, onClose, id, label, labelledBy, className = "max-w-md", layer = "normal", modal = true, dismissOnBackdrop = true }: {
   children: ReactNode;

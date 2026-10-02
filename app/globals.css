@@ -114,8 +114,19 @@
   --color-warnbg: var(--warn-bg);
   --color-warnline: var(--warn-line);
   --font-sans: var(--font-ui);
+  /* The type scale, by role. Use these (text-caption, text-body...) rather than pixel sizes, so the scale changes in one place. */
+  --text-tiny: 11px;
+  --text-caption: 12px;
+  --text-small: 13px;
+  --text-body: 14px;
+  --text-heading: 15px;
+  --text-stat: 18px;
   --shadow-card: var(--shadow-sm);
   --shadow-raise: var(--shadow-md);
+  /* hairline outlines drawn as shadows, so they never change an element's size */
+  --shadow-ring: 0 0 0 1px var(--ring);
+  --shadow-control: 0 0 0 1px var(--control);
+  --shadow-ok: 0 0 0 1px var(--ok);
   --font-mono: var(--font-geist-mono);
 }
 

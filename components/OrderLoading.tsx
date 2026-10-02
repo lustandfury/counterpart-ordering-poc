@@ -14,7 +14,7 @@ export function OrderLoading({ progress }: { progress: Partial<Record<OrderStage
       <div className="card px-4 py-3">
         <div className="flex items-center gap-2">
           <span aria-hidden className="order-loading-spinner h-3.5 w-3.5 shrink-0 rounded-full border-2 border-line border-t-brand" />
-          <h1 className="text-[14px] font-medium">Processing your order</h1>
+          <h1 className="text-body font-medium">Processing your order</h1>
         </div>
         <p role="status" aria-live="polite" aria-atomic="true" className="sr-only">
           {running.length ? running.map(step => step.title).join(" and ") + " in progress." : "Preparing your order review."}
@@ -25,7 +25,7 @@ export function OrderLoading({ progress }: { progress: Partial<Record<OrderStage
             const complete = step?.status === "complete";
             const active = step?.status === "running";
             return (
-              <li key={stage} title={detail} data-stage={stage} data-status={step?.status ?? "waiting"} className="flex min-w-0 items-center gap-1.5 text-[12px]">
+              <li key={stage} title={detail} data-stage={stage} data-status={step?.status ?? "waiting"} className="flex min-w-0 items-center gap-1.5 text-caption">
                 <span aria-hidden className={`grid h-3 w-3 shrink-0 place-items-center ${complete ? "text-ok" : active ? "text-branddeep" : "text-muted/40"}`}>
                   {complete ? "✓" : "·"}
                 </span>

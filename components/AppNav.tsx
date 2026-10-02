@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ICON_BUTTON, ICON_BUTTON_GROUPED } from "@/components/iconButton";
+import { ICON_BUTTON, ICON_BUTTON_GROUPED } from "@/components/ui/iconButton";
 import { ChartBarIcon } from "@heroicons/react/24/outline";
 
 /** The Counterpart wordmark: a small mark (a checked line on a counter slip) and the name. Links home. */
@@ -58,7 +58,7 @@ export function BrandBar({ onResults = false, hideResults = false, end }: { onRe
       <Wordmark />
       {!hideResults && <span className="ml-1">
         {onResults ? (
-          <Link href="/" className="flex h-8 items-center rounded-lg px-2 text-[13px] font-medium text-muted hover:bg-bg hover:text-ink">
+          <Link href="/" className="flex h-8 items-center rounded-lg px-2 text-small font-medium text-muted hover:bg-bg hover:text-ink">
             ← Back to review
           </Link>
         ) : (
