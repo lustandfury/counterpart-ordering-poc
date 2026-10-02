@@ -437,3 +437,21 @@ Read as signals, not benchmarks: 20 orders, tuned in-sample, costs from token co
 The live panel now compares the whole-order costs directly and draws shared reading and matching as grey and accent segments on one scale. The results dashboard leads with the finding: same accuracy and decisions on all 88 lines, at 4.5× lower whole-order cost. At defaults, each pipeline gets 87 products right, auto-approves 66 with zero wrong products, and flags one line unnecessarily. Excluding 15 Jev no-match lines gives an allocated whole-pipeline saving of 4.4× on 73 lines; shared batch costs are divided equally across each order's lines.
 
 Quality cards show counts first. The time card is removed. Both approval columns remain for transparency, with a badge when any line's decision differs. Thresholds persist in a shared browser store and re-route the saved per-line confidences throughout the dashboard without API calls. Table totals, cost means, confidence bands, misses, and headline use the same scoring function. Method notes identify Mike's answer-key review on September 29 and explicitly mark the original run date and resolved Jev version as unrecorded. The older step-only comparisons above describe historical iterations; the current claim is whole-order cost.
+
+## Lock screen explains the product before asking for a code — October 2, 2026
+
+**Did:** The lock screen now reveals its copy in reading order: wordmark, headline, a one-line pitch, then three numbered steps (a contractor texts an order, with a sample message; AI drafts it from the catalog with a confidence score; the rep checks only what's uncertain). The access-code field arrives last, about 4 seconds in.
+**Happened:** The old screen showed a tagline and the code field together, so new visitors went straight to the field and skipped the explanation. Any key press, tap, or typing in the field shows everything immediately, so returning reps don't have to wait. Reduced-motion users see the full screen with no animation. The browser smoke tests still pass at 1440, 768 and 390 px.
+**Changed:** The first screen now explains the product. The access code is the last thing on the screen, not the first.
+
+## Demo label, an iOS zoom fix, and a cue toward the cost results — October 2, 2026
+
+**Did:** Added a "Demo" pill to the wordmark wherever it appears, so visitors know the orders and prices are synthetic. Gave the order card's Results button a faint outline in the cost bars' blue, which glows twice about a second after an order opens, so the eye moves from the order to the cost comparison. Made text fields 16px on touch screens.
+**Happened:** On iPhone the page loaded slightly zoomed in and off-centre. The cause was the lock screen: its code field was 15px, and iOS Safari zooms any focused field under 16px and keeps the zoom after the field goes away. A mobile-emulated check now shows 16px fields and no horizontal overflow at 390px. The large wordmark also wrapped onto two lines at 320px once the pill was added, so it now scales with the screen width.
+**Changed:** The demo status is visible at all times instead of only being stated in About. The fix also covers the quantity editor and the sign-up email field, which had the same zoom problem.
+
+## The cost result arrives last, in blue — October 2, 2026
+
+**Did:** The Results button in the order card now animates in after the rest of the order (fades and rises in at 0.7s, once the card has settled), then glows twice. Its text is the cost bars' blue (#2563eb; a lighter #93c5fd in dark themes) instead of grey and black.
+**Happened:** With only an outline and a glow, the button still didn't stand out on the phone. The new blue text meets WCAG AA contrast: 4.8:1 on its light background and 10:1 in dark. Opening and closing the comparison doesn't replay the entrance.
+**Changed:** On every order the eye goes order first, then the cost result. Flagged lines keep their warning colour, so the blue doesn't compete with what the rep has to check.

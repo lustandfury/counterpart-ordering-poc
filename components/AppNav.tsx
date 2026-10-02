@@ -6,13 +6,13 @@ import { ChartBarIcon } from "@heroicons/react/24/outline";
 export function Wordmark({ large = false }: { large?: boolean }) {
   const name = "counterpart";
   return (
-    <Link href="/" aria-label="Counterpart, review" className={`flex items-center rounded-lg ${large ? "gap-4" : "gap-2"}`}>
-      <svg aria-hidden viewBox="0 0 24 24" className={`${large ? "h-14 w-14" : "h-7 w-7"} shrink-0`}>
+    <Link href="/" aria-label="Counterpart demo, review" className={`flex items-center rounded-lg ${large ? "gap-[clamp(0.5rem,3vw,1rem)]" : "gap-2"}`}>
+      <svg aria-hidden viewBox="0 0 24 24" className={`${large ? "h-[clamp(2.5rem,13vw,3.5rem)] w-[clamp(2.5rem,13vw,3.5rem)]" : "h-7 w-7"} shrink-0`}>
         <circle cx="12" cy="12" r="12" fill="var(--brand)" />
         <path d="M6.5 8.5h7M6.5 12h5M6.5 15.5h4" stroke="var(--ink)" strokeWidth="1.8" strokeLinecap="round" opacity="0.45" />
         <path d="M14 14.8l1.9 1.9 3.6-4.2" stroke="var(--ink)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none" />
       </svg>
-      <span aria-hidden="true" className={`${large ? "text-[34px]" : "text-[17px]"} wordmark-name font-bold tracking-[-0.03em] text-ink`}>
+      <span aria-hidden="true" className={`${large ? "text-[clamp(24px,8vw,34px)]" : "text-[17px]"} wordmark-name whitespace-nowrap font-bold tracking-[-0.03em] text-ink`}>
         {Array.from(name, (letter, index) => (
           <span
             key={`${letter}-${index}`}
@@ -22,6 +22,10 @@ export function Wordmark({ large = false }: { large?: boolean }) {
             {letter}
           </span>
         ))}
+      </span>
+      {/* synthetic data throughout: say so wherever the name appears */}
+      <span aria-hidden="true" className={`wordmark-demo self-center rounded-full border border-line font-semibold uppercase tracking-wider text-muted ${large ? "px-2 py-0.5 text-[10px]" : "px-1.5 text-[9px] leading-4"}`}>
+        Demo
       </span>
     </Link>
   );

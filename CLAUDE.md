@@ -119,6 +119,7 @@ check caught, and what I decided myself. It becomes a README section.
   real company names, nothing personal, no keys.
 - Work one milestone at a time. Propose a plan first, then stop for my review when done
 - Commit at the end of each milestone with a clear message
+- Commit and push straight to `main`; don't leave work on a side branch
 - Never hardcode keys or commit .env files
 - Write tests for the routing logic and for parsing Jev responses
 - Keep it simple: no auth, no database, no state beyond files

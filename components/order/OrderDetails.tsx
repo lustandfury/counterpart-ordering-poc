@@ -57,13 +57,13 @@ export function OrderDetails({ result, mode, lines, flagged, done, compare, phon
         <p className="text-left text-caption font-medium leading-4 text-ink">
           {mode === "claude" && "Showing the Claude-only draft"}
         </p>
-        {/* What the AI cost to read and match this order, vs Claude only. One line; clicking it opens the details. */}
+        {/* What the AI cost to read and match this order, vs Claude only, in the cost bars' blue. It arrives last; clicking it opens the details. */}
         <button
           onClick={compare.onToggle}
           aria-expanded={compare.open}
           aria-controls={compare.controls}
           title={`AI cost: ${usd(save.jevUsd)} vs ${usd(save.claudeUsd)} per order with Claude only, from a single run`}
-          className={`ml-auto shrink-0 whitespace-nowrap rounded-lg px-3 py-1.5 text-small font-medium tabular-nums text-ink hover:bg-bg ${compare.open ? "bg-bg shadow-ring" : "bg-bg/60"}`}
+          className={`results-cue ml-auto shrink-0 whitespace-nowrap rounded-lg px-3 py-1.5 text-small font-medium tabular-nums hover:bg-bg ${compare.open ? "bg-bg" : "bg-bg/60"}`}
         >
           <span className="figures">{save.cheaper.toFixed(1)}×</span> lower AI cost
           {save.timeSaved != null && <><span className="text-muted"> | </span>{speedLine(save.timeSaved)}</>}

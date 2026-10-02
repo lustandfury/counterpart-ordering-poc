@@ -3,12 +3,15 @@ import { createPortal } from "react-dom";
 import { SparklesIcon } from "@heroicons/react/24/outline";
 
 /**
- * Generate order, with a tooltip on hover and keyboard focus that says it's a simulated order and what runs.
- * The tooltip is portalled to <body> so the sidebar can't clip it: beside the button on wide screens, below it on phones.
+ * Generate order, with a tooltip on mouse hover and keyboard focus that says it's a simulated order and what runs.
+ * Never on touch: a tap counts as hover and focus, so the tip would cover the screen just as the order starts.
+ * The tooltip is portalled to <body> so the sidebar can't clip it: beside the button on wide screens, below it otherwise.
  */
 export function GenerateButton({ loading, onGenerate, beside }: { loading: boolean; onGenerate: () => void; beside: boolean }) {
   const [anchor, setAnchor] = useState<DOMRect | null>(null);
   const show = (e: { currentTarget: HTMLElement }) => setAnchor(e.currentTarget.getBoundingClientRect());
+  const showOnMouse = (e: React.PointerEvent<HTMLElement>) => { if (e.pointerType === "mouse") show(e); };
+  const showOnKeyboard = (e: React.FocusEvent<HTMLElement>) => { if (e.currentTarget.matches(":focus-visible")) show(e); };
   const hide = () => setAnchor(null);
   const style: CSSProperties | undefined = anchor ? (beside
     ? { left: anchor.right + 12, top: anchor.top + anchor.height / 2, transform: "translateY(-50%)", width: 288 }
@@ -18,9 +21,9 @@ export function GenerateButton({ loading, onGenerate, beside }: { loading: boole
       <button
         disabled={loading}
         onClick={onGenerate}
-        onMouseEnter={show}
-        onMouseLeave={hide}
-        onFocus={show}
+        onPointerEnter={showOnMouse}
+        onPointerLeave={hide}
+        onFocus={showOnKeyboard}
         onBlur={hide}
         aria-describedby={anchor ? "generate-tip" : undefined}
         className="flex h-9 w-full items-center justify-center gap-1.5 rounded-lg px-2.5 text-small font-medium text-ink shadow-ring transition-colors hover:bg-brand hover:text-onbrand hover:shadow-none focus-visible:bg-brand focus-visible:text-onbrand disabled:opacity-50 disabled:hover:bg-transparent disabled:hover:text-ink"
