@@ -5,7 +5,9 @@ import { SALES_TAX, withTax } from "@/lib/order-math";
 import { Button } from "@/components/ui/Button";
 
 /** The foot of the order: the subtotal, then Send. It comes after the lines, so the rep reaches it once they're checked. */
-export function OrderFooter({ result, subtotal, toCheck, sentAt, onSend, onReopen }: { result: OrderResult; subtotal: { sum: number; unpriced: number }; toCheck: number; sentAt?: number; onSend: () => void; onReopen: () => void }) {
+const clock = (at: number) => new Date(at).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+
+export function OrderFooter({ result, subtotal, toCheck, sentAt, approvedAt, onSend, onReopen }: { result: OrderResult; subtotal: { sum: number; unpriced: number }; toCheck: number; sentAt?: number; approvedAt?: number; onSend: () => void; onReopen: () => void }) {
   const [sendAttempted, setSendAttempted] = useState(false);
   const first = result.from?.name.split(" ")[0] ?? "contractor";
   const ready = !sentAt && toCheck === 0;
@@ -26,12 +28,14 @@ export function OrderFooter({ result, subtotal, toCheck, sentAt, onSend, onReope
       <div className="mt-4 flex flex-col gap-3 border-t border-line pt-4 sm:flex-row sm:items-center sm:justify-end">
         {/* the send status lives here, beside Send: what's left before sending, then the confirmation once sent */}
         <p id="send-order-note" role="status" className={`text-caption leading-4 sm:mr-auto ${sentAt ? "font-medium text-ok" : toCheck > 0 ? "text-warn" : "text-muted"}`}>
-          {sentAt
-            ? `Sent to ${result.from?.name ?? "the contractor"} for approval at ${new Date(sentAt).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}. Waiting for their approval.`
+          {approvedAt
+            ? `Approved by ${result.from?.name ?? "the contractor"} at ${clock(approvedAt)}. Sent to the ERP.`
+            : sentAt
+            ? `Sent to ${result.from?.name ?? "the contractor"} for approval at ${clock(sentAt)}. Waiting for their approval.`
             : toCheck > 0 ? `${toCheck} ${toCheck === 1 ? "line" : "lines"} still to check before sending.` : `${first} approves it before it goes to the ERP.`}
         </p>
-        {/* aria-disabled, not disabled: Send stays clickable before it's ready, to say what's left */}
-        <Button
+        {/* aria-disabled, not disabled: Send stays clickable before it's ready, to say what's left. Once approved, the order has left */}
+        {!approvedAt && <Button
           id="send-order"
           size="md"
           variant={sentAt ? "secondary" : ready ? "primary" : "waiting"}
@@ -45,7 +49,7 @@ export function OrderFooter({ result, subtotal, toCheck, sentAt, onSend, onReope
           className="w-full shrink-0 whitespace-nowrap sm:w-auto"
         >
           {sentAt ? "Reopen" : "Send for approval"}
-        </Button>
+        </Button>}
       </div>
       {sendAttempted && !ready && !sentAt && (
         <p id="send-order-guidance" role="status" className="mt-3 text-small text-warn">

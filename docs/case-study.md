@@ -358,6 +358,31 @@ One e2e step had relied, without saying so, on the replay reopening the desktop 
   - single-line approved rows
   - skip-link and Escape fixes
 
+### 44. Turning point: from a demo screen to a counter tool
+This is the point where Counterpart stopped looking like a template and started behaving like a rep's work tool. Three changes landed on the same day, each made cheaper by the one before it.
+
+**Did:**
+- **Structure (entry 42):** split the 1,355-line screen into feature folders and shared primitives, with zero visual change.
+- **Identity (entry 43):** the pick-ticket look, built mostly as token edits on top of that structure.
+- **Mike's follow-ups:**
+  - Corners down to 2px.
+  - A bare sidebar toggle.
+  - A brand-yellow orders button on phones.
+- **An order lifecycle in the inbox:** a three-step filter, Open, Sent, Approved.
+  - **Mike's choices:** "Approved" rather than closed, completed or processed, because it names what happened and pairs with "Send for approval". The contractor's reply is simulated: five seconds after Send, the order is approved, goes to the ERP and moves tabs.
+  - **Reopen:** works only until the contractor replies. After that, the footer reads "Approved by Owen Park at 3:55 PM. Sent to the ERP."
+
+**Happened:**
+- Before and after, side by side: `public/case-study/evolution/pick-ticket/compare-desktop-order.png` and `compare-mobile-order.png`. The same order (1013) goes from cream paper, four rounded cards and monospace data to one ruled sheet on concrete, with the quantity first and the uncertain line marked by a crayon edge.
+- On a phone, the first line to check moved from below the fold onto the first screen.
+- The lifecycle was tested in a real browser: Open → Send → the Sent tab → about five seconds → the Approved tab, with Reopen gone. The screenshots are in the same folder (`after-desktop-inbox-open`, `-sent`, `-approved`).
+- The pixel-identical refactor is what made this a one-day change: the identity pass touched tokens and a handful of primitives, not hundreds of class names.
+
+**Changed:**
+- The demo now tells the whole story a rep lives through: a text arrives, the rep checks only what's uncertain, sends it for approval, and watches it go to the ERP.
+- The inbox is now organized by where each order is, not just by arrival.
+- **Talk track:** open on the before/after composite, then walk one order through Open → Sent → Approved.
+
 ## Where it stands
 
 | | Claude only | Claude + Jev |

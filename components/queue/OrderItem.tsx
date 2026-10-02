@@ -1,14 +1,15 @@
 import { CheckIcon } from "@heroicons/react/24/outline";
 import { Pill } from "@/components/ui/Pill";
+import type { OrderStatus } from "@/components/order/useOrderDecisions";
 
 /** One order in the queue: its number, the company, the first lines of the text, and what's left to check. */
-export function OrderItem(p: { id: string; tag: string; title: string; preview: string; time: string; count: number; sent: boolean; active: boolean; reading?: boolean; arriving?: boolean; onPick: (id: string) => void }) {
+export function OrderItem(p: { id: string; tag: string; title: string; preview: string; time: string; count: number; status: OrderStatus; active: boolean; reading?: boolean; arriving?: boolean; onPick: (id: string) => void }) {
   // the first two lines of the text, as the contractor wrote them (the same text the message bubble shows)
   const previewLines = p.preview.trim().split("\n");
   const preview = previewLines.slice(0, 2);
   const hasMorePreview = previewLines.length > preview.length;
   // the same crayon edge as a line to check in the review: this order still has some
-  const toCheck = !p.reading && !p.sent && p.count > 0;
+  const toCheck = !p.reading && p.status === "open" && p.count > 0;
   return (
     <li className={p.arriving ? "queue-arrive" : undefined}>
       <button
@@ -28,8 +29,10 @@ export function OrderItem(p: { id: string; tag: string; title: string; preview: 
           <span className="shrink-0 text-tiny text-muted">{p.time}</span>
           {p.reading ? (
             <span className="shrink-0 text-caption text-muted">Reading…</span>
-          ) : p.sent ? (
-            <span className="shrink-0 text-caption font-medium text-ok">Sent<span className="sr-only"> for approval</span></span>
+          ) : p.status === "approved" ? (
+            <span className="shrink-0 text-caption font-medium text-ok">Approved</span>
+          ) : p.status === "sent" ? (
+            <span className="shrink-0 text-caption text-muted">Sent<span className="sr-only"> for approval</span></span>
           ) : p.count > 0 ? (
             <Pill tone="warn" className="shrink-0"><span aria-hidden>{p.count}</span><span className="sr-only">{p.count} to check</span></Pill>
           ) : (

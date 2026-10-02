@@ -20,7 +20,8 @@ import { SignupDialog } from "@/components/access/SignupDialog";
 import { CostPanel } from "@/components/cost/CostPanel";
 import { HelpDialog } from "@/components/help/HelpDialog";
 import { Review } from "@/components/order/Review";
-import { useOrderDecisions } from "@/components/order/useOrderDecisions";
+import { useOrderDecisions, type OrderStatus } from "@/components/order/useOrderDecisions";
+import { SegmentedControl } from "@/components/ui/SegmentedControl";
 import { GenerateButton } from "@/components/queue/GenerateButton";
 import { OrderBadge, OrdersIcon } from "@/components/queue/OrderBadge";
 import { OrderItem } from "@/components/queue/OrderItem";
@@ -34,6 +35,12 @@ const DEFAULT_SAMPLE = "o13";
 // The queue starts with one order, which arrives as the page opens. Others come from Generate order or Sample results.
 const SAMPLES_SHOWN = 1;
 const COST_PENDING = "The cost comparison will appear when both matching checks finish.";
+// The inbox filter follows an order's life: the rep checks it, sends it to the contractor, the contractor approves it.
+const FILTERS: { value: OrderStatus; label: string; empty: string }[] = [
+  { value: "open", label: "Open", empty: "No orders to check." },
+  { value: "sent", label: "Sent", empty: "Orders you send wait here for the contractor's approval." },
+  { value: "approved", label: "Approved", empty: "Orders the contractor approved, on their way to the ERP." },
+];
 
 /** The rep's workspace: the order queue, the open order's review, and the AI cost comparison beside it. */
 export function ReviewApp({ samples, catalog, initialOrder, evalData }: { samples: OrderResult[]; catalog: SlimCatalog; initialOrder?: string; evalData: EvalData }) {
@@ -46,7 +53,8 @@ export function ReviewApp({ samples, catalog, initialOrder, evalData }: { sample
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [helpOpen, setHelpOpen] = useState(false);
   const [resultsOpen, setResultsOpen] = useState(false);
-  const orders = useOrderDecisions();
+  const orders = useOrderDecisions({ onApproved: () => trackEvent("order_approved", { demo: true }) });
+  const [filter, setFilter] = useState<OrderStatus>("open");
   const live = useLiveOrders({
     samples,
     onStart: () => {
@@ -98,6 +106,18 @@ export function ReviewApp({ samples, catalog, initialOrder, evalData }: { sample
     },
   };
   const { pending } = live;
+  // Every order in the inbox, newest first, with where it is in its life. A text still being read is open.
+  const queue = [
+    ...(pending ? [{ key: `order-${pending.orderId}`, id: "pending", tag: pending.orderId, title: pending.from?.company ?? "New order", preview: pending.text, time: minutesSince(pending.at), count: 0, status: "open" as OrderStatus, active: true, reading: true, arriving: true, onPick: () => {} }] : []),
+    ...live.runs.map((r) => {
+      const id = `live-${r.runId}`;
+      return { key: `order-${r.orderId}`, id, tag: r.orderId, title: r.from?.company ?? "New order", preview: r.text, time: minutesSince(r.runId), count: toCheck(r, id), status: orders.status(id), active: !pending && selected === id, arriving: true, onPick: pick };
+    }),
+    ...shownSamples.filter((_, i) => i > 0 || arrival !== "empty").map((s, i) => ({
+      key: s.orderId, id: s.orderId, tag: orderNumber(s.orderId), title: s.from?.company ?? s.orderId, preview: s.text, time: i === 0 ? minutesSince(loadedAt) : "Earlier",
+      count: toCheck(s, s.orderId), status: orders.status(s.orderId), active: !pending && selected === s.orderId, arriving: i === 0, onPick: pick,
+    })),
+  ];
 
   return (
     <div className="flex h-dvh flex-col overflow-hidden">
@@ -118,18 +138,23 @@ export function ReviewApp({ samples, catalog, initialOrder, evalData }: { sample
                 <GenerateButton loading={live.loading} onGenerate={live.runLive} beside={!isMobile} />
               </div>
               {live.error && <p role="alert" className="mx-5 mb-2 text-small text-warn">{live.error}</p>}
+              <div className="shrink-0 px-4 pb-2">
+                <SegmentedControl
+                  fill
+                  label="Show orders that are"
+                  value={filter}
+                  onChange={setFilter}
+                  options={FILTERS.map((f) => {
+                    const n = queue.filter((o) => o.status === f.value).length;
+                    return { value: f.value, label: <>{f.label}{n > 0 && <span className="figures ml-1.5 opacity-70">{n}</span>}</> };
+                  })}
+                />
+              </div>
               <nav aria-label="Incoming orders" className="min-h-0 flex-1 overflow-y-auto px-3 pb-3">
                 <ul className="flex flex-col gap-0.5">
-                  {pending && (
-                    <OrderItem key={`order-${pending.orderId}`} id="pending" tag={pending.orderId} title={pending.from?.company ?? "New order"} preview={pending.text} time={minutesSince(pending.at)} count={0} sent={false} active reading arriving onPick={() => {}} />
-                  )}
-                  {live.runs.map((r) => (
-                    <OrderItem key={`order-${r.orderId}`} id={`live-${r.runId}`} tag={r.orderId} title={r.from?.company ?? "New order"} preview={r.text} time={minutesSince(r.runId)} count={toCheck(r, `live-${r.runId}`)} sent={!!orders.sent[`live-${r.runId}`]} active={!pending && selected === `live-${r.runId}`} arriving onPick={pick} />
-                  ))}
-                  {shownSamples.filter((_, i) => i > 0 || arrival !== "empty").map((s, i) => (
-                    <OrderItem key={s.orderId} id={s.orderId} tag={orderNumber(s.orderId)} title={s.from?.company ?? s.orderId} preview={s.text} time={i === 0 ? minutesSince(loadedAt) : "Earlier"} count={toCheck(s, s.orderId)} sent={!!orders.sent[s.orderId]} active={!pending && selected === s.orderId} arriving={i === 0} onPick={pick} />
-                  ))}
+                  {queue.filter((o) => o.status === filter).map(({ key, ...o }) => <OrderItem key={key} {...o} />)}
                 </ul>
+                {!queue.some((o) => o.status === filter) && arrival !== "empty" && <p className="px-2.5 py-6 text-small text-muted">{FILTERS.find((f) => f.value === filter)!.empty}</p>}
               </nav>
               <SidebarTools
                 settingsOpen={settingsOpen}
@@ -180,10 +205,10 @@ export function ReviewApp({ samples, catalog, initialOrder, evalData }: { sample
           aria-expanded={false}
           aria-controls="orders"
           aria-label={layout.unseen ? `Show orders (${layout.unseen} new)` : "Show orders"}
-          className="orders-fab fixed right-4 bottom-[calc(1rem+env(safe-area-inset-bottom))] z-20 grid h-14 w-14 place-items-center rounded-full bg-panel text-ink shadow-raise shadow-ring lg:hidden"
+          className="orders-fab fixed right-4 bottom-[calc(1rem+env(safe-area-inset-bottom))] z-20 grid h-14 w-14 place-items-center rounded-full bg-brand text-onbrand shadow-raise lg:hidden"
         >
           <OrdersIcon />
-          {layout.unseen > 0 && <OrderBadge count={layout.unseen} className="absolute -right-0.5 -top-0.5" />}
+          {layout.unseen > 0 && <OrderBadge count={layout.unseen} onBrand className="absolute -right-0.5 -top-0.5" />}
         </button>
       )}
       {isMobile && <ActionSheet open={mobileCostOpen} id="cost-comparison" label="Cost assessment" onClose={() => setMobileCostOpen(false)} className="tour-cost max-w-md">

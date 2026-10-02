@@ -111,3 +111,16 @@ The plan calls for a security, evaluation-correctness and usability review befor
 
   The visual and keyboard issues are fixed. The product-level ones wait for Mike.
 - **Verified:** typecheck, lint, 83 unit tests, the e2e and loading smoke tests, and screenshots in light, dark and system-dark themes on desktop and phone.
+
+## The inbox lifecycle, and capturing the turning point
+- **Decided by Mike:**
+  - 2px card corners, a bare sidebar toggle and a yellow orders button on phones.
+  - The three-step inbox filter, named Open, Sent, Approved, with the contractor's approval simulated.
+  - That this day is a turning point for the case study, captured with screenshots.
+- **What Claude did:**
+  - Added the approved state, with the simulated reply, to `useOrderDecisions`.
+  - Added the filter as a full-width `SegmentedControl`, with counts.
+  - Captured before and after screenshots, plus the lifecycle, into `public/case-study/evolution/pick-ticket/` (local media, gitignored like the rest of `public/case-study/`).
+- **Verified:**
+  - A browser script walked one order through Open → Sent → Approved and checked that Reopen disappears once the contractor has approved.
+  - Typecheck, lint, 83 unit tests and the e2e and loading smoke tests all pass.

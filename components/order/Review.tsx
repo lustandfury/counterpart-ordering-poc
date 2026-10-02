@@ -17,12 +17,12 @@ import type { Compare, Decisions } from "@/components/order/types";
  * The review of one order: its header, the lines to check (expanded, with the keyboard on them), the confirmed lines,
  * and the total with Send. Decisions live with the parent so they survive switching orders.
  */
-export function Review({ result, mode, T, unitMin, catalog, resolved, setResolved, quantities, setQuantity, phone, compare, sentAt, onSend, onReopen }: {
+export function Review({ result, mode, T, unitMin, catalog, resolved, setResolved, quantities, setQuantity, phone, compare, sentAt, approvedAt, onSend, onReopen }: {
   result: OrderResult; mode: Mode; T: number; unitMin: number; catalog: SlimCatalog;
   resolved: Decisions; setResolved: (f: (r: Decisions) => Decisions) => void;
   quantities: Record<string, number>; setQuantity: (lineId: string, qty: number | undefined) => void;
   phone: boolean; compare: Compare;
-  sentAt?: number; onSend: () => void; onReopen: () => void;
+  sentAt?: number; approvedAt?: number; onSend: () => void; onReopen: () => void;
 }) {
   const [active, setActive] = useState<string | null>(null);
   // A product the rep picked whose quantity still has to be set in its selling unit (line id -> sku)
@@ -197,7 +197,7 @@ export function Review({ result, mode, T, unitMin, catalog, resolved, setResolve
               </section>
             ))}
           </div>
-          <OrderFooter result={result} subtotal={subtotal} toCheck={pending.length} sentAt={sentAt} onSend={onSend} onReopen={onReopen} />
+          <OrderFooter result={result} subtotal={subtotal} toCheck={pending.length} sentAt={sentAt} approvedAt={approvedAt} onSend={onSend} onReopen={onReopen} />
         </div>
       </section>
       </div>
