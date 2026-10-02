@@ -219,6 +219,30 @@ button { cursor: pointer; }
   }
 }
 
+/* The "Results" button in the order card: a faint outline in the cost bars' blue, which glows twice
+   once the order has landed, so the eye finds the cost comparison after reading the order. */
+@keyframes results-cue-glow {
+  0%, 100% { box-shadow: 0 0 0 1px color-mix(in srgb, var(--matching) 35%, transparent), 0 0 0 0 color-mix(in srgb, var(--matching) 0%, transparent); }
+  50% { box-shadow: 0 0 0 1px color-mix(in srgb, var(--matching) 70%, transparent), 0 0 0 5px color-mix(in srgb, var(--matching) 16%, transparent); }
+}
+.results-cue {
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--matching) 35%, transparent);
+  animation: results-cue-glow 1400ms ease-in-out 1200ms 2;
+}
+.results-cue[aria-expanded="true"] {
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--matching) 60%, transparent);
+  animation: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .results-cue { animation: none; }
+}
+
+/* iOS Safari zooms the page when a focused field is under 16px and leaves it zoomed (the lock screen's
+   code field did this on every visit), so fields are 16px on touch screens. Unlayered, so it beats utilities. */
+@media (pointer: coarse) {
+  input:not([type="range"]), select, textarea { font-size: 16px; }
+}
+
 /* soft card: white surface, faint outline, gentle shadow */
 .card {
   background: var(--panel);

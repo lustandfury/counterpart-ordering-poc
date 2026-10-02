@@ -366,3 +366,9 @@ Quality cards show counts first. The time card is removed. Both approval columns
 **Did:** The lock screen now reveals its copy in reading order: wordmark, headline, a one-line pitch, then three numbered steps (a contractor texts an order, with a sample message; AI drafts it from the catalog with a confidence score; the rep checks only what's uncertain). The access-code field arrives last, about 4 seconds in.
 **Happened:** The old screen showed a tagline and the code field together, so new visitors went straight to the field and skipped the explanation. Any key press, tap, or typing in the field shows everything immediately, so returning reps don't have to wait. Reduced-motion users see the full screen with no animation. The browser smoke tests still pass at 1440, 768 and 390 px.
 **Changed:** The first screen now explains the product. The access code is the last thing on the screen, not the first.
+
+## Demo label, an iOS zoom fix, and a cue toward the cost results — October 2, 2026
+
+**Did:** Added a "Demo" pill to the wordmark wherever it appears, so visitors know the orders and prices are synthetic. Gave the order card's Results button a faint outline in the cost bars' blue, which glows twice about a second after an order opens, so the eye moves from the order to the cost comparison. Made text fields 16px on touch screens.
+**Happened:** On iPhone the page loaded slightly zoomed in and off-centre. The cause was the lock screen: its code field was 15px, and iOS Safari zooms any focused field under 16px and keeps the zoom after the field goes away. A mobile-emulated check now shows 16px fields and no horizontal overflow at 390px. The large wordmark also wrapped onto two lines at 320px once the pill was added, so it now scales with the screen width.
+**Changed:** The demo status is visible at all times instead of only being stated in About. The fix also covers the quantity editor and the sign-up email field, which had the same zoom problem.
