@@ -20,6 +20,15 @@ describe("generateOrder", () => {
     expect(generateOrder(seeded(7)).text).toBe(generateOrder(seeded(7)).text);
   });
 
+  it("gives two lines to check when asked, each of a different kind", () => {
+    for (let i = 1; i <= 50; i++) {
+      const o = generateOrder(seeded(i), { checks: 2 });
+      expect(o.checks).toHaveLength(2);
+      expect(new Set(o.checks).size).toBe(2);
+      expect(generateOrder(seeded(i), { checks: 1 }).checks).toHaveLength(1);
+    }
+  });
+
   it("gives every order a sender", () => {
     for (const o of orders) expect(o.from.name && o.from.company).toBeTruthy();
   });

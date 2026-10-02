@@ -69,6 +69,15 @@ export function suggestQuantity(qty: number | null, written: string | null, prod
   return { qty: n, working: `${qty} ${measure} ÷ ${size} ${measure} per ${sold} = ${n} ${sold}${n === 1 ? "" : sold.endsWith("x") ? "es" : "s"}` };
 }
 
+/**
+ * The number a rep sees for an order. Samples are stored as o01–o20 and shown as 1001–1020, the same
+ * four-digit style as generated orders, which are numbered after them.
+ */
+export function orderNumber(orderId: string): string {
+  const sample = /^o(\d+)$/.exec(orderId);
+  return sample ? String(1000 + Number(sample[1])) : orderId;
+}
+
 /** The product options on a flagged line, in order, without "no match" (leaving a line off is a separate action). */
 export function productChoices(l: Pick<ViewLine, "options">): Option[] {
   return displayChoices(l).filter((o) => o.sku !== NONE);

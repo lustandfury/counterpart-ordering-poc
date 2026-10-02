@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore, type CSSProperties } from "react";
+import { createPortal } from "react-dom";
 import { useThresholds } from "@/lib/settings";
 import { DEFAULT_T, UNIT_OK_MIN as DEFAULT_UNIT } from "@/lib/pipeline/route";
 import { trackEvent } from "@/lib/analytics";
@@ -21,7 +22,7 @@ import { useAccess } from "@/components/AccessProvider";
 import { generateOrder } from "@/lib/generate";
 import { applyTheme, readTheme, THEMES, type Theme } from "@/lib/theme";
 import { CLAUDE_INPUT_PER_TOKEN, CLAUDE_OUTPUT_PER_TOKEN, JEV_INPUT_PER_TOKEN } from "@/lib/pricing";
-import { computeView, NONE, productChoices, sameQuantityUnit, suggestQuantity, totals, type Mode, type SlimCatalog, type ViewLine } from "@/lib/view";
+import { computeView, NONE, orderNumber, productChoices, sameQuantityUnit, suggestQuantity, totals, type Mode, type SlimCatalog, type ViewLine } from "@/lib/view";
 
 const usd = (n: number) => `$${n.toFixed(4)}`;
 const ms = (n: number) => (n >= 1000 ? `${(n / 1000).toFixed(1)} s` : `${Math.round(n)} ms`);
@@ -38,7 +39,7 @@ function savings(result: OrderResult) {
     claudeUsd: claude.usd,
   };
 }
-const timeLine = (saved: number) => `${Math.abs(saved)}% ${saved < 0 ? "more" : "less"} time`;
+const speedLine = (saved: number) => saved === 0 ? "same speed" : `${Math.abs(saved)}% ${saved < 0 ? "slower" : "faster"}`;
 
 const Person = () => <UserIcon aria-hidden className="h-4 w-4 shrink-0" />;
 
@@ -59,6 +60,9 @@ const without = <T,>(record: Record<string, T>, key: string) => Object.fromEntri
 
 const cad = new Intl.NumberFormat("en-CA", { style: "currency", currency: "CAD" });
 const money = (n: number) => cad.format(n);
+// Sales tax on the order total. The demo has no province, so it assumes Ontario's 13% HST.
+const SALES_TAX = { label: "HST", rate: 0.13 };
+const cents = (n: number) => Math.round(n * 100) / 100;
 // "$4.27 / pc", "$18.50 / sheet"
 const perUnit = (price: number, unit: string) => `${money(price)} / ${unit === "each" ? "pc" : unit}`;
 
@@ -91,19 +95,30 @@ const subscribeToMobile = (callback: () => void) => {
 
 type WalkthroughStep = 0 | 1 | 2;
 // What each walkthrough step points at: the contractor's text, the first choice on a flagged line, then Send.
-const TOUR_TARGETS = ["#incoming-message", ".tour-choice .tour-option", "#send-order"];
+const TOUR_TARGETS = ["#orders nav li button", ".tour-choice .tour-option", "#send-order"];
 // How long after the unlock the first order lands in the queue (matches .queue-arrive in globals.css).
-const ARRIVAL_MS = 1400;
+const ARRIVAL_MS = 1600;
+// First load: the centre waits on an empty state, then the first order lands in the queue for the rep to open.
+const QUEUED_MS = 700;
+// Module scope survives client-side navigation, so coming back from Sample results doesn't replay the arrival.
+let firstArrivalShown = false;
 
 export function ReviewApp({ samples, catalog, initialOrder, evalData }: { samples: OrderResult[]; catalog: SlimCatalog; initialOrder?: string; evalData: EvalData }) {
   const [runs, setRuns] = useState<Run[]>([]); // generated orders run live, newest first
-  const nextOrderNumber = useRef(1001);
-  const [selected, setSelected] = useState(initialOrder ?? samples.find((x) => x.orderId === DEFAULT_SAMPLE)?.orderId ?? samples[0].orderId);
+  // A generated order joins the queue as soon as its text "arrives"; it becomes a run once both pipelines finish
+  const [pending, setPending] = useState<{ orderId: string; from: Run["from"]; text: string; at: number } | null>(null);
+  // Generated orders are numbered after the samples (shown as 1001–1020), so the two never collide
+  const nextOrderNumber = useRef(Math.max(1000, ...samples.map((s) => Number(orderNumber(s.orderId)) || 0)) + 1);
+  // Nothing is open until the rep picks an order from the queue (or follows a link to one)
+  const [selected, setSelected] = useState<string | null>(initialOrder ?? null);
   const [mode, setMode] = useState<Mode>("jev");
   const { T, unitMin, setT, setUnitMin } = useThresholds();
   // The orders sidebar is open by default on wide screens and closed on phones, where it opens as a bottom sheet.
   const [desktopOpen, setDesktopOpen] = useState(true);
   const [mobileOpen, setMobileOpen] = useState(false);
+  // Orders that arrived while the queue was out of sight. Shown as a count on the orders button; opening the queue clears it.
+  const [unseen, setUnseen] = useState(0);
+  const queueVisible = useRef(false);
   const mobileOrders = useSheetPresence(mobileOpen);
   const [mobileCostOpen, setMobileCostOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -139,13 +154,13 @@ export function ReviewApp({ samples, catalog, initialOrder, evalData }: { sample
   const [accessError, setAccessError] = useState(false);
 
   const live = runs.find((r) => `live-${r.runId}` === selected);
-  const result = live ?? samples.find((s) => s.orderId === selected) ?? samples[0];
+  const result: OrderResult | undefined = live ?? samples.find((s) => s.orderId === selected);
   // The sidebar lists only a few samples: the default order first, then the next ones in file order.
   // A sample opened from a link (e.g. from Sample results) is added so the active order is always listed.
   const shownSamples = useMemo(() => {
     const ids = new Set([...new Set([DEFAULT_SAMPLE, ...samples.map((s) => s.orderId)])].filter((id) => samples.some((s) => s.orderId === id)).slice(0, SAMPLES_SHOWN));
     if (initialOrder) ids.add(initialOrder);
-    if (samples.some(s => s.orderId === selected)) ids.add(selected);
+    if (selected && samples.some(s => s.orderId === selected)) ids.add(selected);
     return [...ids].map((id) => samples.find((s) => s.orderId === id)!);
   }, [samples, initialOrder, selected]);
 
@@ -171,10 +186,11 @@ export function ReviewApp({ samples, catalog, initialOrder, evalData }: { sample
     setWalkthroughStep(step);
     setDesktopOpen(true);
     const mobile = window.matchMedia("(max-width: 1023px)").matches;
-    setMobileOpen(false);
+    // step 1 points at the order in the queue, which on phones is a sheet
+    setMobileOpen(mobile && step === 0);
     setMobileCostOpen(false);
     // Send sits at the foot of the order, so the last step brings it into view on every screen size
-    if (mobile || step === 2) {
+    if ((mobile && step > 0) || step === 2) {
       window.requestAnimationFrame(() => {
         document.querySelector(TOUR_TARGETS[step])?.scrollIntoView({ block: "center" });
       });
@@ -194,6 +210,23 @@ export function ReviewApp({ samples, catalog, initialOrder, evalData }: { sample
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [toggleSidebar]);
+
+  useEffect(() => {
+    queueVisible.current = isMobile ? mobileOpen : desktopOpen;
+    if (queueVisible.current) setUnseen(0);
+  }, [isMobile, mobileOpen, desktopOpen]);
+  const arrived = useCallback(() => {
+    if (!queueVisible.current) setUnseen((n) => n + 1);
+  }, []);
+  // "empty": waiting for the first order; "queued": it's in the queue. A link straight to an order (?order=) skips the wait.
+  const [arrival, setArrival] = useState<"empty" | "queued">(() => (initialOrder || firstArrivalShown ? "queued" : "empty"));
+  useEffect(() => {
+    if (!unlocked || arrival === "queued") return;
+    const queued = window.setTimeout(() => { firstArrivalShown = true; setArrival("queued"); arrived(); }, QUEUED_MS);
+    return () => window.clearTimeout(queued);
+    // runs once per unlock; the arrival stage only moves forward
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [unlocked, arrived]);
 
   // localStorage is deliberately read after mount: the walkthrough is a browser-only preference,
   // and reading it during render would make the server and client markup disagree.
@@ -231,6 +264,11 @@ export function ReviewApp({ samples, catalog, initialOrder, evalData }: { sample
     trackEvent("order_selected", { source: id.startsWith("live-") ? "live" : "sample" });
     setSelected(id);
     setMobileOpen(false);
+    // the tour's first step asks the rep to open the order; opening it moves on
+    if (walkthroughStepRef.current === 0) {
+      const order = runs.find((r) => `live-${r.runId}` === id) ?? samples.find((s) => s.orderId === id);
+      if (order) showWalkthroughStep(computeView(order, mode, T, catalog, unitMin).some((line) => !line.approved) ? 1 : 2);
+    }
     // hand the keyboard to the review, so Enter / j / k act on lines rather than re-clicking the order
     requestAnimationFrame(() => document.getElementById("review")?.focus({ preventScroll: true }));
   };
@@ -238,8 +276,11 @@ export function ReviewApp({ samples, catalog, initialOrder, evalData }: { sample
   // Generate simulates a new text arriving: a random order is written and run through both pipelines live.
   async function runLive() {
     if (loading) return;
-    const order = generateOrder();
+    // Every second generated order has two lines to check, so a visitor always sees one;
+    // the first has one, which keeps the walkthrough simple
+    const order = generateOrder(Math.random, { checks: runs.length % 2 === 1 ? 2 : 1 });
     trackEvent("order_run_started");
+    setPending({ orderId: String(nextOrderNumber.current), from: order.from, text: order.text, at: Date.now() });
     setLoading(true);
     setOrderProgress({ access: { stage: "access", status: "running" } });
     setMobileOpen(false);
@@ -261,16 +302,14 @@ export function ReviewApp({ samples, catalog, initialOrder, evalData }: { sample
       const runId = Date.now();
       const orderId = String(nextOrderNumber.current++);
       setRuns((r) => [{ ...(data as OrderResult), orderId, from: order.from, runId }, ...r]);
-      pick(`live-${runId}`);
-      if (walkthroughStepRef.current === 0) {
-        const needsReview = computeView(data as OrderResult, mode, T, catalog, unitMin).some((line) => !line.approved);
-        showWalkthroughStep(needsReview ? 1 : 2);
-      }
+      // it lands in the queue for the rep to open, like any incoming text
+      arrived();
     } catch (e) {
       trackEvent("order_run_failed");
       setError(e instanceof Error ? e.message : "The run failed.");
       if (narrow()) setMobileOpen(true);
     } finally {
+      setPending(null);
       setLoading(false);
     }
   }
@@ -295,7 +334,7 @@ export function ReviewApp({ samples, catalog, initialOrder, evalData }: { sample
 
   // lines still to check in an order: flagged by the current rule and not yet decided by the rep
   const toCheck = (r: OrderResult, id: string) => computeView(r, mode, T, catalog, unitMin).filter((l) => !l.approved && !decisions[id]?.[l.id]).length;
-  const costPanelProps = {
+  const costPanelProps = result && {
     result, samples, mode, T, unitMin, catalog,
     onResults: () => setResultsOpen(true),
     onMode: (nextMode: Mode) => {
@@ -315,29 +354,24 @@ export function ReviewApp({ samples, catalog, initialOrder, evalData }: { sample
           onAnimationEnd={event => { if (mobileOrders.closing && event.target === event.currentTarget) mobileOrders.finish(); }}
           aria-label="Orders"
           inert={mobileCostOpen || (!isMobile && !desktopOpen) || undefined}
-          className={`tour-orders w-80 shrink-0 flex-col border-r border-line bg-panel lg:flex lg:transition-[margin-left] lg:duration-300 lg:ease-[cubic-bezier(0.22,1,0.36,1)] lg:motion-reduce:transition-none max-lg:sheet-up max-lg:fixed max-lg:inset-x-0 max-lg:bottom-0 max-lg:z-30 max-lg:mx-auto max-lg:max-h-[85dvh] max-lg:w-full max-lg:rounded-t-2xl max-lg:border-r-0 max-lg:pb-[env(safe-area-inset-bottom)] max-lg:shadow-[0_-8px_30px_rgb(0_0_0/0.18)] ${desktopOpen ? "" : "lg:-ml-80"} ${mobileOrders.present ? "max-lg:flex" : "max-lg:hidden"}`}
+          className={`tour-orders w-80 shrink-0 flex-col border-r border-line bg-panel lg:flex lg:transition-[margin-left,visibility] lg:duration-300 lg:ease-[cubic-bezier(0.22,1,0.36,1)] lg:motion-reduce:transition-none max-lg:sheet-up max-lg:fixed max-lg:inset-x-0 max-lg:bottom-0 max-lg:z-30 max-lg:mx-auto max-lg:max-h-[85dvh] max-lg:w-full max-lg:rounded-t-2xl max-lg:border-r-0 max-lg:pb-[env(safe-area-inset-bottom)] max-lg:shadow-[0_-8px_30px_rgb(0_0_0/0.18)] ${desktopOpen ? "" : "lg:invisible lg:-ml-80"} ${mobileOrders.present ? "max-lg:flex" : "max-lg:hidden"}`}
         >
               <div aria-hidden className="mx-auto mt-2 h-1 w-9 shrink-0 rounded-full bg-line lg:hidden" />
               <BrandBar hideResults end={<><ModalCloseButton label="Hide orders" onClose={toggleSidebar} className="lg:hidden" /><span className="hidden lg:block"><SidebarButton label="Hide orders" expanded onClick={toggleSidebar} /></span></>} />
               <div className="shrink-0 px-4 pb-2 pt-2">
-                <button
-                  disabled={loading}
-                  onClick={runLive}
-                  title="Simulate a contractor texting a new order. Each one includes at least one line to check."
-                  className="flex h-9 w-full items-center justify-center gap-1.5 rounded-lg px-2.5 text-[13px] font-medium text-ink shadow-[0_0_0_1px_var(--ring)] hover:bg-bg disabled:opacity-50"
-                >
-                  <DiceIcon />
-                  {loading ? "Arriving…" : "Generate order"}
-                </button>
+                <GenerateButton loading={loading} onGenerate={runLive} beside={!isMobile} />
               </div>
               {error && <p role="alert" className="mx-5 mb-2 text-[13px] text-warn">{error}</p>}
               <nav aria-label="Incoming orders" className="min-h-0 flex-1 overflow-y-auto px-3 pb-3">
                 <ul className="flex flex-col gap-0.5">
+                  {pending && (
+                    <OrderItem key={`order-${pending.orderId}`} id="pending" tag={pending.orderId} title={pending.from?.company ?? "New order"} preview={pending.text} time={ago(Math.floor((now - pending.at) / 60_000))} count={0} sent={false} active reading arriving onPick={() => {}} />
+                  )}
                   {runs.map((r) => (
-                    <OrderItem key={r.runId} id={`live-${r.runId}`} tag={r.orderId} title={r.from?.company ?? "New order"} preview={r.text} time={ago(Math.floor((now - r.runId) / 60_000))} count={toCheck(r, `live-${r.runId}`)} sent={!!sent[`live-${r.runId}`]} active={selected === `live-${r.runId}`} arriving onPick={pick} />
+                    <OrderItem key={`order-${r.orderId}`} id={`live-${r.runId}`} tag={r.orderId} title={r.from?.company ?? "New order"} preview={r.text} time={ago(Math.floor((now - r.runId) / 60_000))} count={toCheck(r, `live-${r.runId}`)} sent={!!sent[`live-${r.runId}`]} active={!pending && selected === `live-${r.runId}`} arriving onPick={pick} />
                   ))}
-                  {shownSamples.map((s, i) => (
-                    <OrderItem key={s.orderId} id={s.orderId} tag={s.orderId} title={s.from?.company ?? s.orderId} preview={s.text} time={i === 0 ? ago(Math.floor((now - loadedAt) / 60_000)) : "Earlier"} count={toCheck(s, s.orderId)} sent={!!sent[s.orderId]} active={selected === s.orderId} arriving={i === 0} onPick={pick} />
+                  {shownSamples.filter((_, i) => i > 0 || arrival !== "empty").map((s, i) => (
+                    <OrderItem key={s.orderId} id={s.orderId} tag={orderNumber(s.orderId)} title={s.from?.company ?? s.orderId} preview={s.text} time={i === 0 ? ago(Math.floor((now - loadedAt) / 60_000)) : "Earlier"} count={toCheck(s, s.orderId)} sent={!!sent[s.orderId]} active={!pending && selected === s.orderId} arriving={i === 0} onPick={pick} />
                   ))}
                 </ul>
               </nav>
@@ -360,12 +394,12 @@ export function ReviewApp({ samples, catalog, initialOrder, evalData }: { sample
         </aside>
 
         <main id="review" tabIndex={-1} inert={mobileCostOpen || undefined} className="tour-review textured-surface relative min-w-0 flex-1 outline-none [overflow-anchor:none] lg:overflow-y-auto">
-          {/* Opens the orders sidebar: always on phones (a sheet), on wide screens only once it's hidden */}
-          <div className={`flex items-center px-3 pt-3 lg:px-4 ${desktopOpen ? "lg:hidden" : ""}`}>
-            <SidebarButton label="Show orders" expanded={false} onClick={toggleSidebar} />
+          {/* Wide screens: opens the orders sidebar once it's hidden. Phones use the floating button below. */}
+          <div className={desktopOpen ? "hidden" : "hidden px-4 pt-3 lg:flex"}>
+            <SidebarButton label="Show orders" expanded={false} unseen={unseen} onClick={toggleSidebar} />
           </div>
-          <div className="mx-auto max-w-4xl px-5 py-8 sm:px-10">
-            {loading ? <OrderLoading progress={orderProgress} /> : <Review
+          <div className="mx-auto max-w-4xl px-5 py-8 sm:px-10 xl:max-w-6xl">
+            {loading ? <OrderLoading progress={orderProgress} /> : !result || !selected ? <WaitingForOrders arrived={arrival === "queued"} phone={isMobile} /> : <div className="order-enter"><Review
               key={selected}
               result={result}
               mode={mode}
@@ -395,16 +429,28 @@ export function ReviewApp({ samples, catalog, initialOrder, evalData }: { sample
                 setSent((s) => ({ ...s, [selected]: Date.now() }));
               }}
               onReopen={() => setSent((s) => Object.fromEntries(Object.entries(s).filter(([id]) => id !== selected)))}
-            />}
+            /></div>}
           </div>
         </main>
 
         {!isMobile && costOpen && <aside id="cost-rail" aria-label="Cost assessment" className="tour-cost hidden w-80 shrink-0 overflow-y-auto border-l border-line bg-panel lg:block">
-          {loading ? <p className="px-6 py-8 text-[14px] leading-relaxed text-muted">The cost comparison will appear when both matching checks finish.</p> : <CostPanel {...costPanelProps} onCollapse={() => setCostOpen(false)} />}
+          {loading ? <p className="px-6 py-8 text-[14px] leading-relaxed text-muted">The cost comparison will appear when both matching checks finish.</p> : costPanelProps && <CostPanel {...costPanelProps} onCollapse={() => setCostOpen(false)} />}
         </aside>}
       </div>
+      {isMobile && !mobileOrders.present && (
+        <button
+          onClick={toggleSidebar}
+          aria-expanded={false}
+          aria-controls="orders"
+          aria-label={unseen ? `Show orders (${unseen} new)` : "Show orders"}
+          className="orders-fab fixed right-4 bottom-[calc(1rem+env(safe-area-inset-bottom))] z-20 grid h-14 w-14 place-items-center rounded-full bg-panel text-ink shadow-raise shadow-[0_0_0_1px_var(--ring)] lg:hidden"
+        >
+          <SidebarIcon />
+          {unseen > 0 && <OrderBadge count={unseen} className="absolute -right-0.5 -top-0.5" />}
+        </button>
+      )}
       {isMobile && <ActionSheet open={mobileCostOpen} id="cost-comparison" label="Cost assessment" onClose={() => setMobileCostOpen(false)} className="tour-cost max-w-md">
-        {loading ? <><div className="flex items-start justify-between gap-4"><h2 className="text-xl font-semibold tracking-tight">Cost</h2><ModalCloseButton onClose={() => setMobileCostOpen(false)} label="Close cost comparison" /></div><p className="py-8 text-[14px] text-muted">The cost comparison will appear when both matching checks finish.</p></> : <CostPanel {...costPanelProps} onClose={() => setMobileCostOpen(false)} />}
+        {loading ? <><div className="flex items-start justify-between gap-4"><h2 className="text-xl font-semibold tracking-tight">Cost</h2><ModalCloseButton onClose={() => setMobileCostOpen(false)} label="Close cost comparison" /></div><p className="py-8 text-[14px] text-muted">The cost comparison will appear when both matching checks finish.</p></> : costPanelProps && <CostPanel {...costPanelProps} onClose={() => setMobileCostOpen(false)} />}
       </ActionSheet>}
       <ActionSheet open={resultsOpen} id="sample-results-sheet" labelledBy="sample-results-title" onClose={() => setResultsOpen(false)} className="max-w-6xl">
         <ResultsDisplay data={evalData} samples={samples} senders={Object.fromEntries(samples.flatMap(sample => sample.from ? [[sample.orderId, sample.from]] : []))} onClose={() => setResultsOpen(false)} onOpenOrder={id => {
@@ -414,7 +460,7 @@ export function ReviewApp({ samples, catalog, initialOrder, evalData }: { sample
         }} />
       </ActionSheet>
       <SettingsDialog open={settingsOpen} mode={mode} T={T} unitMin={unitMin} setT={setT} setUnitMin={setUnitMin} changed={T !== DEFAULT_T || unitMin !== DEFAULT_UNIT} onReplay={() => { setSettingsOpen(false); replayWalkthrough(); }} onClose={() => setSettingsOpen(false)} />
-      <HelpDialog open={helpOpen} onClose={() => setHelpOpen(false)} />
+      <HelpDialog open={helpOpen} onClose={() => setHelpOpen(false)} onResults={() => { setHelpOpen(false); setResultsOpen(true); }} />
       {!unlocked && <AccessLockScreen code={accessCode} setCode={setAccessCode} error={accessError} unlocking={unlocking} onSubmit={() => {
         if (accessCode !== "007") {
           setAccessError(true);
@@ -431,6 +477,8 @@ export function ReviewApp({ samples, catalog, initialOrder, evalData }: { sample
       }} />}
       {walkthroughStep !== null && !loading && <Walkthrough step={walkthroughStep} onBack={() => showWalkthroughStep((walkthroughStep - 1) as WalkthroughStep)} onNext={() => {
         if (walkthroughStep === 2) closeWalkthrough();
+        // Next on the first step opens the newest order for the rep, which moves the tour on
+        else if (walkthroughStep === 0 && !selected) pick(runs[0] ? `live-${runs[0].runId}` : shownSamples[0].orderId);
         else {
           showWalkthroughStep((walkthroughStep + 1) as WalkthroughStep);
         }
@@ -553,7 +601,7 @@ function Walkthrough({ step, onBack, onNext, onClose }: { step: WalkthroughStep;
   }, [step]);
 
   const content = [
-    { eyebrow: "1 of 3 · A new order", title: "A contractor just texted an order.", body: "You're the sales rep. Counterpart read the text and matched each line to your catalog, so you only check what it isn't sure about. Want another? Tap Generate order any time.", mobileTitle: "A contractor texted an order", mobileBody: "You're the rep. Check only what's flagged." },
+    { eyebrow: "1 of 3 · A new order", title: "A contractor just texted an order.", body: "You're the sales rep. Open it from your queue: Counterpart has matched each line to your catalog, so you only check what it isn't sure about. Want another? Tap Generate order any time.", mobileTitle: "A contractor texted an order", mobileBody: "You're the rep. Tap the order to open it." },
     { eyebrow: "2 of 3 · Make the call", title: "Even AI needs safety glasses.", body: "Check a flagged line and choose the product that fits, confirm the quantity, or leave it off the order. The glowing choices are yours to make. No rubber stamp required.", mobileTitle: "Check a flagged line", mobileBody: "Pick the right product, or leave it off." },
     { eyebrow: "3 of 3 · Send it back", title: "Then send it for approval.", body: "Once every line is checked, send the order back to the contractor. They approve it before it goes to the ERP for purchase. Curious what the AI cost? It's at the top of the order.", mobileTitle: "Send it for approval", mobileBody: "They approve it, then it goes to the ERP." },
   ][step];
@@ -701,18 +749,102 @@ function ThemeChoice() {
 
 const DiceIcon = () => <SparklesIcon aria-hidden className="h-4 w-4" />;
 
-function SidebarButton({ label, expanded, onClick }: { label: string; expanded: boolean; onClick: () => void }) {
+/** What the rep sees before the first order lands: an empty queue, and a text on its way. */
+function WaitingForOrders({ arrived, phone }: { arrived: boolean; phone: boolean }) {
+  if (arrived) {
+    return (
+      <div className="waiting-orders mx-auto flex max-w-sm flex-col items-center pt-[14vh] text-center">
+        <div className="relative grid h-14 w-14 place-items-center rounded-full bg-panel text-ink shadow-[0_0_0_1px_var(--ring)]">
+          <InboxIcon aria-hidden className="h-6 w-6" />
+          <OrderBadge count={1} className="absolute -right-1 -top-1" />
+        </div>
+        <h1 className="mt-5 text-lg font-semibold tracking-tight">A new order is in your queue</h1>
+        <p className="mt-1.5 text-[14px] leading-relaxed text-muted">
+          {phone ? "Tap the orders button to open it." : "Open it from the queue on the left."}
+        </p>
+      </div>
+    );
+  }
+  return (
+    <div className="waiting-orders mx-auto flex max-w-sm flex-col items-center pt-[14vh] text-center">
+      <div className="grid h-14 w-14 place-items-center rounded-full bg-panel text-muted shadow-[0_0_0_1px_var(--ring)]">
+        <InboxIcon aria-hidden className="h-6 w-6" />
+      </div>
+      <h1 className="mt-5 text-lg font-semibold tracking-tight">Waiting for orders</h1>
+      <p className="mt-1.5 text-[14px] leading-relaxed text-muted">
+        Contractors text their orders in. Each one lands in your queue already matched to the catalog, so you only check what&apos;s uncertain.
+      </p>
+      <div role="status" className="mt-6 flex items-center gap-2 text-[13px] text-muted">
+        <span aria-hidden className="flex h-8 items-center gap-1 rounded-2xl rounded-tl-md bg-panel px-3 shadow-[0_0_0_1px_var(--ring)]">
+          <span className="typing-dot" /><span className="typing-dot" /><span className="typing-dot" />
+        </span>
+        A contractor is texting…
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Generate order, with a tooltip on hover and keyboard focus that says it's a simulated order and what runs.
+ * The tooltip is portalled to <body> so the sidebar can't clip it: beside the button on wide screens, below it on phones.
+ */
+function GenerateButton({ loading, onGenerate, beside }: { loading: boolean; onGenerate: () => void; beside: boolean }) {
+  const [anchor, setAnchor] = useState<DOMRect | null>(null);
+  const show = (e: { currentTarget: HTMLElement }) => setAnchor(e.currentTarget.getBoundingClientRect());
+  const hide = () => setAnchor(null);
+  const style: CSSProperties | undefined = anchor ? (beside
+    ? { left: anchor.right + 12, top: anchor.top + anchor.height / 2, transform: "translateY(-50%)", width: 288 }
+    : { left: anchor.left, top: anchor.bottom + 8, width: anchor.width }) : undefined;
+  return (
+    <>
+      <button
+        disabled={loading}
+        onClick={onGenerate}
+        onMouseEnter={show}
+        onMouseLeave={hide}
+        onFocus={show}
+        onBlur={hide}
+        aria-describedby={anchor ? "generate-tip" : undefined}
+        className="flex h-9 w-full items-center justify-center gap-1.5 rounded-lg px-2.5 text-[13px] font-medium text-ink shadow-[0_0_0_1px_var(--ring)] transition-colors hover:bg-brand hover:text-onbrand hover:shadow-none focus-visible:bg-brand focus-visible:text-onbrand disabled:opacity-50 disabled:hover:bg-transparent disabled:hover:text-ink"
+      >
+        <DiceIcon />
+        {loading ? "Arriving…" : "Generate order"}
+      </button>
+      {anchor && createPortal(
+        <span id="generate-tip" role="tooltip" style={style} className="generate-tip pointer-events-none fixed z-[60] rounded-lg bg-ink px-3 py-2 text-[12px] leading-snug text-bg shadow-raise">
+          {beside && <span aria-hidden className="absolute -left-1 top-1/2 h-2 w-2 -translate-y-1/2 rotate-45 bg-ink" />}
+          Simulates a contractor texting in a new order (synthetic data). It runs live through two pipelines:
+          <span className="mt-1.5 block"><span className="font-semibold">Claude + Jev:</span> Claude reads the text, then Jev matches each line to the catalog with a calibrated confidence.</span>
+          <span className="mt-1 block"><span className="font-semibold">Claude only:</span> Claude reads and matches the whole order in one call, for comparison.</span>
+        </span>,
+        document.body,
+      )}
+    </>
+  );
+}
+
+function SidebarButton({ label, expanded, unseen = 0, onClick }: { label: string; expanded: boolean; unseen?: number; onClick: () => void }) {
   return (
     <button
       onClick={onClick}
       aria-expanded={expanded}
       aria-controls="orders"
-      aria-label={label}
+      aria-label={unseen ? `${label} (${unseen} new)` : label}
       title={`${label} (⌘B)`}
-      className={ICON_BUTTON}
+      className={`${ICON_BUTTON} relative`}
     >
       {expanded ? <ArrowLeftEndOnRectangleIcon aria-hidden className="h-4 w-4" /> : <SidebarIcon />}
+      {unseen > 0 && <OrderBadge count={unseen} className="absolute -right-1 -top-1" />}
     </button>
+  );
+}
+
+/** The count of new orders on the orders button. Keyed by the count, so it pops each time another order arrives. */
+function OrderBadge({ count, className }: { count: number; className: string }) {
+  return (
+    <span key={count} aria-hidden className={`order-badge grid h-5 min-w-5 place-items-center rounded-full bg-brand px-1.5 text-[11px] font-semibold leading-none text-onbrand shadow-[0_0_0_2px_var(--panel)] ${className}`}>
+      {count}
+    </span>
   );
 }
 
@@ -720,31 +852,39 @@ const TOOL_ROW = "flex h-9 w-full items-center gap-2.5 rounded-lg px-2 text-left
 
 const SidebarIcon = () => <InboxIcon aria-hidden className="h-4 w-4" />;
 
-function OrderItem(p: { id: string; tag: string; title: string; preview: string; time: string; count: number; sent: boolean; active: boolean; arriving?: boolean; onPick: (id: string) => void }) {
-  const preview = p.preview.replace(/\s+/g, " ").trim();
+function OrderItem(p: { id: string; tag: string; title: string; preview: string; time: string; count: number; sent: boolean; active: boolean; reading?: boolean; arriving?: boolean; onPick: (id: string) => void }) {
+  // the first two lines of the text, as the contractor wrote them (the same text the message bubble shows)
+  const previewLines = p.preview.trim().split("\n");
+  const preview = previewLines.slice(0, 2);
+  const hasMorePreview = previewLines.length > preview.length;
   return (
     <li className={p.arriving ? "queue-arrive" : undefined}>
       <button
         onClick={() => p.onPick(p.id)}
         aria-current={p.active ? "true" : undefined}
-        className={`flex w-full items-center gap-3 rounded-r-lg px-2.5 py-2 text-left ${p.active ? "bg-bg shadow-[inset_3px_0_0_var(--brand)]" : "hover:bg-bg"}`}
+        aria-busy={p.reading || undefined}
+        className={`flex w-full items-start gap-2.5 rounded-r-lg px-2.5 py-2.5 text-left ${p.active ? "bg-bg shadow-[inset_3px_0_0_var(--brand)]" : "hover:bg-bg"}`}
       >
         <span className="min-w-0 flex-1">
-          <span className="flex items-baseline gap-2">
-            <span className={`min-w-0 flex-1 truncate text-[14px] ${p.active ? "font-semibold" : "font-medium"}`}>{p.title}</span>
-            <span className="shrink-0 text-[12px] text-muted">{p.time}</span>
+          <span className="flex min-w-0 items-center gap-2">
+            <span className={`shrink-0 rounded-md bg-bg px-1.5 py-0.5 font-mono text-[12px] font-semibold leading-4 text-ink ${p.active ? "shadow-[0_0_0_1px_var(--ring)]" : ""}`}>{p.tag}</span>
+            <span className={`min-w-0 flex-1 truncate text-[13px] ${p.active ? "font-semibold" : "font-medium"}`}>{p.title}</span>
+            <span className="shrink-0 text-[11px] text-muted">{p.time}</span>
           </span>
-          <span className="block truncate text-[12px] text-muted">
-            <span className="font-mono">{p.tag}</span> · {preview}
-          </span>
+          <span className="mt-1 block text-[12px] leading-4 text-muted">{preview.map((line, i) => <span key={i} className="block truncate whitespace-pre">{line}{hasMorePreview && i === preview.length - 1 ? "..." : ""}</span>)}</span>
         </span>
-        {p.sent ? (
-          <span className="shrink-0 text-[12px] font-medium text-ok">Sent<span className="sr-only"> for approval</span></span>
-        ) : p.count > 0 ? (
-          <span className="shrink-0 rounded-full bg-warnbg px-2 py-0.5 text-[12px] font-medium leading-none text-warn"><span aria-hidden>{p.count}</span><span className="sr-only">{p.count} to check</span></span>
-        ) : (
-          <span className="shrink-0 text-ok"><span aria-hidden><Check /></span><span className="sr-only">Nothing to check</span></span>
-        )}
+        {/* status sits in the row's bottom-right corner */}
+        <span className="shrink-0 self-end">
+          {p.reading ? (
+            <span className="shrink-0 text-[12px] text-muted">Reading…</span>
+          ) : p.sent ? (
+            <span className="shrink-0 text-[12px] font-medium text-ok">Sent<span className="sr-only"> for approval</span></span>
+          ) : p.count > 0 ? (
+            <span className="shrink-0 rounded-full bg-warnbg px-2 py-0.5 text-[12px] font-medium leading-none text-warn"><span aria-hidden>{p.count}</span><span className="sr-only">{p.count} to check</span></span>
+          ) : (
+            <span className="shrink-0 text-ok"><span aria-hidden><Check /></span><span className="sr-only">Nothing to check</span></span>
+          )}
+        </span>
       </button>
     </li>
   );
@@ -752,7 +892,7 @@ function OrderItem(p: { id: string; tag: string; title: string; preview: string;
 
 type Decisions = Record<string, string>; // lineId -> sku chosen by the rep
 
-function OrderDetails({ result, mode, lines, flagged, done, sentAt, compare }: { result: OrderResult; mode: Mode; lines: number; flagged: number; done: number; sentAt?: number; compare: Compare }) {
+function OrderDetails({ result, mode, lines, flagged, done, compare }: { result: OrderResult; mode: Mode; lines: number; flagged: number; done: number; compare: Compare }) {
   const who = result.from?.name ?? "the contractor";
   const save = savings(result);
   const toCheck = Math.max(0, flagged - done);
@@ -762,7 +902,7 @@ function OrderDetails({ result, mode, lines, flagged, done, sentAt, compare }: {
     { label: "To check", value: toCheck, className: "text-warn" },
   ];
   return (
-    <div className="@container mb-6 rounded-xl border border-line bg-panel px-4 py-4 shadow-[0_0_0_1px_var(--ring)] sm:px-5" aria-live="polite">
+    <div className="@container mb-6 rounded-xl border xl:mb-0 border-line bg-panel px-4 py-4 shadow-[0_0_0_1px_var(--ring)] sm:px-5" aria-live="polite">
       <div className="flex flex-col gap-3 @min-[560px]:flex-row @min-[560px]:items-start @min-[560px]:justify-between">
       <div className="flex min-w-0 items-start gap-3">
         <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-bg text-[12px] font-semibold text-ink" aria-hidden>
@@ -773,19 +913,11 @@ function OrderDetails({ result, mode, lines, flagged, done, sentAt, compare }: {
             {result.from?.name ?? "New order"}
             {result.from && <span className="font-normal text-muted"> · {result.from.company}</span>}
           </h1>
-          <p className="mt-0.5 text-[13px] text-muted">Texted an order · <span className="font-mono">{result.orderId}</span></p>
+          <p className="mt-0.5 text-[13px] text-muted">Texted an order · <span className="font-mono">{orderNumber(result.orderId)}</span></p>
         </div>
       </div>
-      {/* What the AI cost to read and match this order. Labelled as AI cost so it isn't read as a discount on the order. */}
-      <div className="shrink-0 rounded-lg bg-bg px-3 py-2 @min-[560px]:ml-auto @min-[560px]:text-right">
-        <p className="text-[11px] font-medium uppercase tracking-wider text-muted">AI cost · Claude + Jev</p>
-        <p className="mt-0.5 text-[14px] font-semibold">{save.cheaper.toFixed(1)}× lower cost per order</p>
-        <p className="mt-0.5 text-[12px] tabular-nums text-muted" title={`${usd(save.jevUsd)} vs ${usd(save.claudeUsd)} per order, from a single run`}>
-          vs Claude only{save.timeSaved != null && <> · {timeLine(save.timeSaved)}</>} ·{" "}
-          <button onClick={compare.onToggle} aria-expanded={compare.open} aria-controls={compare.controls} className="font-medium text-ink underline underline-offset-2">
-            {compare.open ? "Hide details" : "Compare"}
-          </button>
-        </p>
+      <div className="grid shrink-0 grid-cols-3 divide-x divide-line whitespace-nowrap rounded-lg bg-bg py-2 @min-[560px]:ml-auto @min-[560px]:flex @min-[560px]:px-1 @min-[560px]:py-1">
+        {stats.map((stat) => <span key={stat.label} className={`flex min-w-0 flex-col items-center gap-0.5 px-1 text-[18px] font-semibold @min-[560px]:block @min-[560px]:px-3 @min-[560px]:text-[13px] @min-[560px]:font-medium ${stat.className}`}>{stat.value} <span className="text-[11px] font-normal text-muted @min-[560px]:text-[13px]">{stat.label}</span></span>)}
       </div>
       </div>
       <figure className="mt-4 @min-[560px]:ml-12">
@@ -795,16 +927,21 @@ function OrderDetails({ result, mode, lines, flagged, done, sentAt, compare }: {
         </blockquote>
       </figure>
       <div className="mt-4 flex flex-col gap-3 border-t border-line pt-3 @min-[560px]:flex-row @min-[560px]:items-center">
-        <div className="grid shrink-0 grid-cols-3 divide-x divide-line whitespace-nowrap rounded-lg bg-bg py-2 @min-[560px]:flex @min-[560px]:px-1 @min-[560px]:py-1">
-          {stats.map((stat) => <span key={stat.label} className={`flex min-w-0 flex-col items-center gap-0.5 px-1 text-[18px] font-semibold @min-[560px]:block @min-[560px]:px-3 @min-[560px]:text-[13px] @min-[560px]:font-medium ${stat.className}`}>{stat.value} <span className="text-[11px] font-normal text-muted @min-[560px]:text-[13px]">{stat.label}</span></span>)}
-        </div>
-        {/* one status spot, so sending doesn't shift the card */}
-        <p role="status" className={`text-[12px] leading-4 @min-[560px]:ml-auto @min-[560px]:text-right ${sentAt ? "font-medium text-ok" : "text-muted"}`}>
-          {sentAt
-            ? `Sent to ${who} for approval at ${new Date(sentAt).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}. It goes to the ERP once they approve.`
-            : toCheck > 0 ? `Check ${toCheck} ${toCheck === 1 ? "line" : "lines"}, then send it to ${who} for approval.` : `Ready to send to ${who} for approval.`}
-          {mode === "claude" && <span className="mt-0.5 block font-medium text-ink">Showing the Claude-only draft</span>}
+        {/* which draft is showing; the send status lives in the pricing card beside Send */}
+        <p className="text-left text-[12px] font-medium leading-4 text-ink">
+          {mode === "claude" && "Showing the Claude-only draft"}
         </p>
+        {/* What the AI cost to read and match this order, vs Claude only. One line; clicking it opens the details. */}
+        <button
+          onClick={compare.onToggle}
+          aria-expanded={compare.open}
+          aria-controls={compare.controls}
+          title={`AI cost: ${usd(save.jevUsd)} vs ${usd(save.claudeUsd)} per order with Claude only, from a single run`}
+          className={`shrink-0 self-start whitespace-nowrap rounded-lg px-3 py-1.5 text-[13px] font-medium tabular-nums text-ink hover:bg-bg @min-[560px]:ml-auto @min-[560px]:self-center ${compare.open ? "bg-bg shadow-[0_0_0_1px_var(--ring)]" : "bg-bg/60"}`}
+        >
+          <span className="text-muted">Results · </span>{save.cheaper.toFixed(1)}× lower cost
+          {save.timeSaved != null && <><span className="text-muted"> | </span>{speedLine(save.timeSaved)}</>}
+        </button>
       </div>
     </div>
   );
@@ -816,21 +953,26 @@ function OrderFooter({ result, subtotal, toCheck, sentAt, onSend, onReopen }: { 
   const first = result.from?.name.split(" ")[0] ?? "contractor";
   const ready = !sentAt && toCheck === 0;
   const extra = [toCheck > 0 && `+ ${toCheck} to check`, subtotal.unpriced > 0 && `+ ${subtotal.unpriced} not priced`].filter(Boolean).join(" · ");
+  const tax = cents(subtotal.sum * SALES_TAX.rate);
+  const total = cents(subtotal.sum + tax);
   return (
     <div className="card px-4 py-4 sm:px-6">
-      <div className="flex items-baseline justify-between gap-4">
-        <div>
-          <h2 className="text-[14px] font-semibold">{toCheck > 0 ? "Subtotal so far" : "Subtotal"}</h2>
-          <p className="mt-0.5 text-[12px] text-muted">CAD, before tax</p>
-        </div>
-        <p className="text-right text-[14px] font-semibold tabular-nums">
-          {money(subtotal.sum)}
-          {extra && <span className="block text-[12px] font-normal text-muted">{extra}</span>}
-        </p>
-      </div>
+      <h2 className="sr-only">Order total</h2>
+      <dl className="grid grid-cols-[1fr_auto] gap-y-1.5 text-[14px] tabular-nums">
+        <dt className="text-muted">{toCheck > 0 ? "Subtotal so far" : "Subtotal"}</dt>
+        <dd className="pl-4 text-right">{money(subtotal.sum)}</dd>
+        <dt className="text-muted">{SALES_TAX.label} ({Math.round(SALES_TAX.rate * 100)}%)</dt>
+        <dd className="pl-4 text-right">{money(tax)}</dd>
+        <dt className="mt-1 border-t border-line pt-2 font-semibold">Total <span className="font-normal text-muted">CAD</span></dt>
+        <dd className="mt-1 border-t border-line pl-4 pt-2 text-right text-[15px] font-semibold">{money(total)}</dd>
+      </dl>
+      {extra && <p className="mt-1.5 text-right text-[12px] text-muted">Not included yet: {extra.replaceAll("+ ", "")}</p>}
       <div className="mt-4 flex flex-col gap-3 border-t border-line pt-4 sm:flex-row sm:items-center sm:justify-end">
-        <p id="send-order-note" className={`text-[12px] leading-4 sm:mr-auto ${toCheck > 0 && !sentAt ? "text-warn" : "text-muted"}`}>
-          {sentAt ? "Waiting on their approval." : toCheck > 0 ? `${toCheck} ${toCheck === 1 ? "line" : "lines"} still to check before sending.` : `${first} approves it before it goes to the ERP.`}
+        {/* the send status lives here, beside Send: what's left before sending, then the confirmation once sent */}
+        <p id="send-order-note" role="status" className={`text-[12px] leading-4 sm:mr-auto ${sentAt ? "font-medium text-ok" : toCheck > 0 ? "text-warn" : "text-muted"}`}>
+          {sentAt
+            ? `Sent to ${result.from?.name ?? "the contractor"} for approval at ${new Date(sentAt).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}. Waiting for their approval.`
+            : toCheck > 0 ? `${toCheck} ${toCheck === 1 ? "line" : "lines"} still to check before sending.` : `${first} approves it before it goes to the ERP.`}
         </p>
         <button
           id="send-order"
@@ -843,7 +985,7 @@ function OrderFooter({ result, subtotal, toCheck, sentAt, onSend, onReopen }: { 
           aria-describedby={sendAttempted && !ready && !sentAt ? "send-order-note send-order-guidance" : "send-order-note"}
           className={`tour-send h-11 w-full shrink-0 cursor-pointer whitespace-nowrap rounded-lg px-4 text-[14px] font-semibold transition-[background-color,opacity] aria-disabled:cursor-not-allowed aria-disabled:opacity-50 sm:h-10 sm:w-auto ${sentAt ? "border border-line bg-panel text-ink hover:bg-bg" : "bg-brand text-onbrand"}`}
         >
-          {sentAt ? "Reopen" : `Send to ${first} for approval`}
+          {sentAt ? "Reopen" : "Send for approval"}
         </button>
       </div>
       {sendAttempted && !ready && !sentAt && (
@@ -879,8 +1021,8 @@ function Review({ result, mode, T, unitMin, catalog, resolved, setResolved, quan
   const validated = orderedLines.filter((l) => l.approved || (resolved[l.id] && resolved[l.id] !== NONE));
   const excluded = flagged.filter((l) => resolved[l.id] === NONE);
   const current = pending.find((l) => l.id === active)?.id ?? pending[0]?.id ?? null;
-  // Phones keep a Send bar at the bottom (it says how many lines are left); wide screens show it once the review is done.
-  const showFloatingSend = !sentAt && !footerSendVisible && (pending.length === 0 || phone);
+  // Once every line is checked, Send follows the rep down the page until the footer's own Send is in view.
+  const showFloatingSend = !sentAt && !footerSendVisible && pending.length === 0;
 
   useEffect(() => {
     const button = document.getElementById("send-order");
@@ -994,7 +1136,6 @@ function Review({ result, mode, T, unitMin, catalog, resolved, setResolved, quan
     return { sum, unpriced };
   }, [validated, resolved, catalog, quantities]);
   const status = (l: ViewLine) => (l.approved ? "ok" : resolved[l.id] ? "done" : "flag");
-  const first = result.from?.name.split(" ")[0] ?? "contractor";
 
   return (
     <>
@@ -1003,42 +1144,13 @@ function Review({ result, mode, T, unitMin, catalog, resolved, setResolved, quan
           Skip to the first line to check
         </a>
       )}
-      <OrderDetails result={result} mode={mode} lines={lines.length} flagged={flagged.length} done={done} sentAt={sentAt} compare={compare} />
-
-      <div
-        className={`floating-send fixed inset-x-0 bottom-0 z-20 flex justify-center px-5 pt-3 pb-[calc(1rem+env(safe-area-inset-bottom))] ${showFloatingSend ? "floating-send-visible" : ""}`}
-        inert={!showFloatingSend}
-        aria-hidden={!showFloatingSend}
-      >
-        {pending.length > 0 ? (
-          <button
-            disabled={!showFloatingSend}
-            onClick={() => {
-              const el = document.getElementById(`line-${pending[0].id}`);
-              el?.scrollIntoView({ block: "center" });
-              el?.focus({ preventScroll: true });
-            }}
-            className="pointer-events-auto flex min-h-12 w-full max-w-md items-center justify-center gap-2 rounded-xl bg-panel px-6 text-[14px] font-semibold text-warn shadow-raise"
-          >
-            {pending.length} {pending.length === 1 ? "line" : "lines"} to check before sending
-          </button>
-        ) : (
-          <button
-            ref={floatingSendRef}
-            id="floating-send-order"
-            disabled={!showFloatingSend}
-            onClick={() => {
-              onSend();
-              requestAnimationFrame(() => document.getElementById("send-order")?.focus());
-            }}
-            className="pointer-events-auto flex min-h-12 items-center gap-2 rounded-xl bg-brand px-6 text-[14px] font-semibold text-onbrand shadow-raise"
-          >
-            <Check /> Send to {first} for approval
-          </button>
-        )}
+      {/* Wide screens: two columns. The order header stays pinned on the left for reference while the lines scroll on the right. */}
+      <div className="xl:grid xl:grid-cols-[minmax(0,23rem)_minmax(0,1fr)] xl:items-start xl:gap-6">
+      <div className="xl:sticky xl:top-5 xl:-m-1 xl:max-h-[calc(100dvh-2.5rem)] xl:overflow-y-auto xl:p-1">
+        <OrderDetails result={result} mode={mode} lines={lines.length} flagged={flagged.length} done={done} compare={compare} />
       </div>
 
-      <section aria-label="Order" className={phone && !sentAt ? "pb-20" : ""}>
+      <section aria-label="Order" className={phone ? "pb-24" : ""}>
         <div className="space-y-5">
           <div inert={!!sentAt} className={`space-y-5 ${sentAt ? "opacity-70" : ""}`}>
             {[
@@ -1075,6 +1187,26 @@ function Review({ result, mode, T, unitMin, catalog, resolved, setResolved, quan
           <OrderFooter result={result} subtotal={subtotal} toCheck={pending.length} sentAt={sentAt} onSend={onSend} onReopen={onReopen} />
         </div>
       </section>
+      </div>
+
+      <div
+        className={`floating-send fixed inset-x-0 bottom-0 z-20 flex justify-center px-5 pt-3 pb-[calc(1rem+env(safe-area-inset-bottom))] ${showFloatingSend ? "floating-send-visible" : ""}`}
+        inert={!showFloatingSend}
+        aria-hidden={!showFloatingSend}
+      >
+          <button
+            ref={floatingSendRef}
+            id="floating-send-order"
+            disabled={!showFloatingSend}
+            onClick={() => {
+              onSend();
+              requestAnimationFrame(() => document.getElementById("send-order")?.focus());
+            }}
+            className="pointer-events-auto flex min-h-12 items-center gap-2 rounded-xl bg-brand px-6 text-[14px] font-semibold text-onbrand shadow-raise"
+          >
+            <Check /> Send for approval
+          </button>
+      </div>
     </>
   );
 }
@@ -1217,14 +1349,28 @@ function LineRow(props: {
             {choices.length === 0 && <p className="text-[13px] text-muted">No product in the catalog comes close.</p>}
           </div>
         )}
-        {!props.staged && (
-          <div className="mt-3">
-            <button onClick={(e) => { e.stopPropagation(); props.onConfirm(NONE); }} className="flex min-h-11 items-center gap-2 rounded-lg px-1 text-[13px] font-medium text-muted hover:text-ink">
-              {active && <kbd className="text-xs">x</kbd>}Leave off order
-              <span className="font-normal">· tell the contractor we don&apos;t carry it</span>
+        {/* leaving the line off is a choice like the products, shaped the same, with its own key and its own confidence */}
+        {!props.staged && (() => {
+          const none = l.options.find((o) => o.sku === NONE)?.probability;
+          return (
+            <button
+              onClick={(e) => { e.stopPropagation(); props.onConfirm(NONE); }}
+              className="review-option mt-2 flex min-h-11 w-full items-center gap-3 rounded-xl bg-panel px-3.5 py-2 text-left text-ink shadow-[0_0_0_1px_var(--control)]"
+            >
+              <kbd className="w-4 text-center text-xs text-muted">x</kbd>
+              <span className="min-w-0 flex-1">
+                <span className={`block ${l.sku === NONE ? "font-semibold" : ""}`}>Leave off order{l.sku === NONE && <span className="sr-only"> (suggested)</span>}</span>
+                <span className="block text-[12px] text-muted">Not in the catalog · tell the contractor we don&apos;t carry it</span>
+              </span>
+              {none != null && (
+                <span className="flex w-16 shrink-0 items-center justify-center self-stretch border-l border-line text-[14px] text-muted sm:w-24">
+                  <span className="sr-only">confidence </span>
+                  {Math.round(none * 100)}%
+                </span>
+              )}
             </button>
-          </div>
-        )}
+          );
+        })()}
       </li>
     );
   }
@@ -1344,7 +1490,7 @@ function CostPanel({ result, samples, mode, T, unitMin, catalog, onMode, onClose
   );
 }
 
-function HelpDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
+function HelpDialog({ open, onClose, onResults }: { open: boolean; onClose: () => void; onResults: () => void }) {
   return (
     <ActionSheet open={open} onClose={onClose} labelledBy="help-title" className="max-w-3xl">
           <div className="flex items-start justify-between gap-4">
@@ -1369,6 +1515,7 @@ function HelpDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
             </div>
           </div>
           <div className={MODAL_FOOTER}>
+            <button onClick={onResults} className="mr-auto h-9 rounded-lg px-1 text-[13px] font-medium text-muted underline underline-offset-2 hover:text-ink">Sample results</button>
             <button onClick={onClose} className={MODAL_PRIMARY}>Got it</button>
           </div>
     </ActionSheet>

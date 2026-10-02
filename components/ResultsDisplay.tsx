@@ -4,7 +4,7 @@ import Link from "next/link";
 import { BrandBar } from "@/components/AppNav";
 import { ModalCloseButton } from "@/components/ModalCloseButton";
 import type { OrderResult, Sender } from "@/lib/types";
-import { totals } from "@/lib/view";
+import { orderNumber, totals } from "@/lib/view";
 import { resultsMetrics, type EvalData } from "@/lib/eval/display";
 import { useThresholds } from "@/lib/settings";
 
@@ -114,7 +114,7 @@ export function ResultsDisplay({ data, samples, senders, onClose, onOpenOrder }:
                   <tr key={o.orderId} className={`border-b border-line last:border-b-0 hover:bg-bg ${!o.decisionsSame ? "bg-brandsoft" : ""}`}>
                     <td className="px-6 py-2.5">
                       <span className="font-medium">{senders[o.orderId]?.company ?? o.orderId}</span>
-                      <span className="ml-2 font-mono text-[12px] text-muted">{o.orderId}</span>{!o.decisionsSame && <span className="ml-2 rounded bg-brandsoft px-2 text-[11px]">Decisions differ</span>}
+                      <span className="ml-2 font-mono text-[12px] text-muted">{orderNumber(o.orderId)}</span>{!o.decisionsSame && <span className="ml-2 rounded bg-brandsoft px-2 text-[11px]">Decisions differ</span>}
                     </td>
                     <td className="px-3 py-2.5 text-right font-mono">{o.lines}</td>
                     <td className="px-3 py-2.5 text-right font-mono text-muted">{o.shouldReview}</td>
@@ -194,8 +194,8 @@ export function ResultsDisplay({ data, samples, senders, onClose, onOpenOrder }:
                       Answer key: <span className="text-ink">{w.gold.sku ?? "not in catalog"}</span> · Jev: {w.jev.sku ?? "not in catalog"} ({Math.round(w.jev.confidence * 100)}%, {w.jevApproved ? "auto-approved" : "flagged"}) · Claude:{" "}
                       {w.claude.sku ?? "not in catalog"} ({w.claude.confidence}, {w.claudeApproved ? "auto-approved" : "flagged"})
                     </p>
-                    {onOpenOrder ? <button onClick={() => onOpenOrder(w.orderId)} className="mt-1 inline-block text-[12px] font-medium underline underline-offset-2">Open {w.orderId}</button> : <Link href={`/?order=${w.orderId}`} className="mt-1 inline-block text-[12px] font-medium underline underline-offset-2">
-                      Open {w.orderId}
+                    {onOpenOrder ? <button onClick={() => onOpenOrder(w.orderId)} className="mt-1 inline-block text-[12px] font-medium underline underline-offset-2">Open {orderNumber(w.orderId)}</button> : <Link href={`/?order=${w.orderId}`} className="mt-1 inline-block text-[12px] font-medium underline underline-offset-2">
+                      Open {orderNumber(w.orderId)}
                     </Link>}
                   </li>
                 ))}

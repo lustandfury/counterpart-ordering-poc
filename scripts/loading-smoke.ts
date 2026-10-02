@@ -41,7 +41,8 @@ async function main() {
       await page.keyboard.press("Enter");
       await expect(page.locator(".lock-screen")).toHaveCount(0);
       const generate = async () => {
-        if (width === 390) await page.getByRole("button", { name: "Show orders", exact: true }).click();
+        // on phones the queue is a sheet (the walkthrough may already have opened it)
+        if (width === 390 && !(await page.locator("#orders").isVisible())) await page.getByRole("button", { name: /^Show orders/ }).click();
         await page.getByRole("button", { name: "Generate order", exact: true }).click();
       };
       // wait for the first order to arrive and the walkthrough to start, as a visitor would
@@ -50,6 +51,11 @@ async function main() {
       await generate();
       const loading = page.getByRole("region", { name: "Order processing" });
       await expect(loading).toBeVisible();
+      // the order joins the queue as soon as it's generated, before its lines are read
+      const queue = page.getByRole("navigation", { name: "Incoming orders" });
+      const reading = queue.locator('button[aria-busy="true"]');
+      if (width !== 390) await expect(reading).toContainText("1021");
+      if (width !== 390) await expect(reading).toContainText("Reading…");
       await expect(page.locator(".walkthrough-card")).toHaveCount(0);
       if (width === 390) await expect(page.locator("#orders")).not.toBeVisible();
       await expect(loading.locator('[data-stage="access"]')).toHaveAttribute("data-status", "running");
@@ -78,7 +84,15 @@ async function main() {
       ]);
       await finish();
       await expect(loading).toHaveCount(0);
-      await expect(page.locator("#review h1 + p")).toContainText("1001");
+      await expect(reading).toHaveCount(0);
+      // it lands at the top of the queue and waits for the rep to open it
+      await expect(page.getByRole("heading", { name: "A new order is in your queue" })).toBeVisible();
+      if (width === 390) await page.getByRole("button", { name: "Show orders (1 new)", exact: true }).click();
+      await expect(queue.locator("li button").first()).toContainText("1021");
+      await queue.locator("li button").first().click();
+      await expect(page.locator("#review h1 + p")).toContainText("1021");
+      // on phones, opening an order closes the queue sheet
+      if (width !== 390) await expect(queue.locator('button[aria-current="true"]')).toContainText("1021");
       if (width !== 390) {
         await expect(page.locator(".walkthrough-card")).toContainText("2 of 3");
         await page.getByRole("button", { name: "Close walkthrough" }).click();
@@ -88,6 +102,7 @@ async function main() {
       await send([{ type: "error", error: "Processing failed. Please retry." }]);
       await expect(loading).toHaveCount(0);
       await expect(page.getByRole("alert").filter({ hasText: "Processing failed." })).toBeVisible();
+      await expect(reading).toHaveCount(0);
       await expect(page.getByRole("button", { name: "Generate order", exact: true })).toBeEnabled();
       console.log(`Accurate loading progress, completion, and retry checks passed at ${width}px`);
       await page.close();

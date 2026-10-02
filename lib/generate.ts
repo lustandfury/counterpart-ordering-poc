@@ -87,10 +87,14 @@ const CLOSERS = ["", "thx", "Thanks!", "Drop at the back gate, call when close",
 
 export type Generated = { text: string; checks: CheckKind[]; from: Sender };
 
-/** A new order each call. Pass a seeded rng for repeatable output (tests). */
-export function generateOrder(rng: Rng = Math.random): Generated {
+/**
+ * A new order each call. Pass a seeded rng for repeatable output (tests).
+ * `checks` fixes how many lines need checking; left out, about a third of orders get two.
+ */
+export function generateOrder(rng: Rng = Math.random, { checks: wanted }: { checks?: 1 | 2 } = {}): Generated {
   const clean = shuffle(rng, CLEAN).slice(0, int(rng, 3, 6)).map((f) => f(rng));
-  const nChecks = rng() < 0.35 ? 2 : 1;
+  const roll = rng();
+  const nChecks = wanted ?? (roll < 0.35 ? 2 : 1);
   const kinds = shuffle(rng, [...new Set(CHECK.map((c) => c.kind))]).slice(0, nChecks);
   const checks = kinds.map((k) => pick(rng, CHECK.filter((c) => c.kind === k)));
   const lines = shuffle(rng, [...clean, ...checks.map((c) => c.line(rng))]);

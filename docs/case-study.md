@@ -242,6 +242,57 @@ The lesson: a keyboard shortcut can decide something the person never saw, so pu
 - The queue holds one order until Generate order adds more. Other samples are reached through Sample results.
 - The smoke tests now find tools in the sidebar and cost details through "Compare". They wait for a closing sheet to finish before reopening it, which was a timing flake the change exposed.
 
+### 38. A floating orders button that says when something arrives
+**Did:** Mike asked for three things on phones:
+- Turn the orders button into a floating action button with a count of new orders.
+- Remove the "1 line to check before sending" bar, which competed with the new button.
+- Give sample orders the same numbering as generated ones.
+
+**Happened:** both sessions edited the same files at the same time, so this change waited for the other session to finish before anything was rechecked or committed. The new count needed a rule for "new". The rule: an order is new if it arrived while the queue was out of sight. The order that arrives on load counts, and so does each generated order. Opening the queue clears the count. Sample ids (o01–o20) had looked nothing like generated orders (1001, 1002, …).
+**Changed:**
+- **Floating button:** a round orders button sits at the bottom right on phones. Its count pops in when an order arrives, and it moves up only while the floating Send is showing. Desktop's "Show orders" button gets the same count when the sidebar is hidden.
+- **Floating Send:** it appears only once every line is checked.
+- **Order numbers:** samples show as 1001–1020, and generated orders continue from 1021. The stored ids, URLs and eval files keep o01–o20, and one tested helper maps between them.
+
+### 39. The rep opens the order
+**Did:** Mike made a series of small changes:
+- Wait for the order to land in the queue before showing anything in the centre, with an empty state in the meantime.
+- Then stop opening orders automatically: the rep picks one.
+- Make "Leave off order" an option button like the products.
+- Give Generate order a tooltip that explains the simulated order and the two pipelines, placed beside the button so it doesn't cover the queue, with a yellow hover.
+
+**Happened:**
+- **Empty state and opening orders:** the centre shows "Waiting for orders" with a typing indicator, then "A new order is in your queue" with the same count as the orders button. Opening the order is the rep's first action, so walkthrough step 1 now points at the queue (on phones it opens the queue sheet), and opening the order moves the tour on.
+- **Two layout bugs from this round:**
+  - The order's fade-in kept a transform after it finished, which made the floating Send position itself relative to the order instead of the screen. The e2e check that Send is on screen caught it.
+  - The tooltip was clipped by the sidebar. It now renders outside the sidebar, at the button's position.
+
+**Changed:**
+- Nothing opens on its own, generated orders included. A link to a specific order, or "Open" in Sample results, still opens that order.
+- Leave off order sits with the products and shows its own confidence (82%), with x as its key.
+- The smoke tests now open the order from the queue and follow the new step 1.
+- Before-and-after screenshots of each stage are in `public/case-study/evolution/` (kept local), with a comparison strip for desktop and one for phones.
+
+### 40. A pinned header, a real total
+**Did:** Mike asked for five more changes:
+- On wide screens, show the order header and the lines in two columns, with the header pinned so it stays in view as the lines scroll.
+- Take the contractor's name off the Send button.
+- Show the after-tax total.
+- Remove the header's "Ready to send…" line, which repeated the footer.
+- Move each queue row's status to its bottom-right corner.
+
+**Happened:**
+- **Two columns:** they start at 1280 px, so they fit even with the queue sidebar open. The left column is about 370 px wide, so the header's own narrow layout takes over.
+- **Pinning:** none of the 20 sample orders is long enough to scroll on a 1440 × 900 screen. The test stretches the list artificially to prove the header stays put.
+- **Tax:** the demo has no province, so the total assumes Ontario's 13% HST, kept in one constant. For the default order that is $400.50 + $52.07 = $452.57.
+
+**Changed:**
+- The header is pinned on wide screens.
+- The button reads "Send for approval".
+- The footer reads Subtotal, HST (13%), then the total in CAD. While lines are still to check, it says which lines aren't included yet.
+- The header shows a status only after sending.
+- The e2e test checks the pinned header, the tax maths and the new button label.
+
 ## Where it stands
 
 | | Claude only | Claude + Jev |

@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { REASON } from "./pipeline/route";
 import type { OrderResult } from "./types";
-import { computeView, displayChoices, NONE, productChoices, sameQuantityUnit, segmentText, suggestQuantity, totals, unitKey, type SlimCatalog } from "./view";
+import { computeView, displayChoices, NONE, orderNumber, productChoices, sameQuantityUnit, segmentText, suggestQuantity, totals, unitKey, type SlimCatalog } from "./view";
 
 const cat: SlimCatalog = { A: { name: "Prod A", unit: "each", price: 1 }, B: { name: "Prod B", unit: "each", price: 1 } };
 const u = { inputTokens: 1, outputTokens: 1 };
@@ -118,5 +118,14 @@ describe("productChoices", () => {
     const opt = (sku: string, probability: number) => ({ sku, name: sku, probability });
     expect(productChoices({ options: [opt(NONE, 0.82), opt("TAPE", 0.14), opt("MESH", 0.02)] }).map((o) => o.sku)).toEqual(["TAPE"]);
     expect(productChoices({ options: [opt("A", 0.6), opt(NONE, 0.3), opt("B", 0.1)] }).map((o) => o.sku)).toEqual(["A", "B"]);
+  });
+});
+
+describe("orderNumber", () => {
+  it("shows sample ids in the same four-digit style as generated orders", () => {
+    expect(orderNumber("o01")).toBe("1001");
+    expect(orderNumber("o13")).toBe("1013");
+    expect(orderNumber("o20")).toBe("1020");
+    expect(orderNumber("1021")).toBe("1021");
   });
 });

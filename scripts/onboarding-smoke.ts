@@ -37,18 +37,23 @@ async function main() {
         }).toBe(true);
       };
       await expect(tour).toContainText("1 of 3");
-      await checkPlacement("#incoming-message");
+      // Step 1 points at the order in the queue (a sheet on phones); nothing is open until the rep opens it
+      const firstOrder = page.locator("#orders nav li button").first();
+      await checkPlacement("#orders nav li button");
+      await expect(page.getByRole("heading", { name: "A new order is in your queue" })).toBeVisible();
       if (width >= 1024) {
-        // Generate order sits in the queue beside the tour: a failed run keeps step 1, a good one advances
+        // Generate order sits beside the tour: a failed run keeps step 1; a good one lands at the top of the queue
         const generate = page.getByRole("button", { name: "Generate order", exact: true });
         await generate.click();
         await expect(page.getByRole("alert").filter({ hasText: "Try again." })).toBeVisible();
         await expect(tour).toContainText("1 of 3");
         succeeds = true;
         await generate.click();
-      } else {
-        await page.getByRole("button", { name: "Next", exact: true }).click();
+        await expect(firstOrder).toContainText("1021");
+        await expect(tour).toContainText("1 of 3");
       }
+      // opening the order moves the tour on
+      await firstOrder.click();
       await expect(tour).toContainText("2 of 3");
       const choice = page.locator(".tour-choice .tour-option").first();
       await expect(choice).toBeVisible();
@@ -74,7 +79,7 @@ async function main() {
       // the visitor sends it; that ends the tour
       await send.click();
       await expect(tour).toHaveCount(0);
-      await expect(page.locator("[aria-live=polite]")).toContainText("Sent to");
+      await expect(page.locator("#send-order-note")).toContainText("Sent to");
       expect(await page.evaluate(() => localStorage.getItem("counterpart-walkthrough-complete"))).toBe("true");
       console.log(`Onboarding placement, auto-advance, and highlight checks passed at ${width}×${height}`);
       await page.close();

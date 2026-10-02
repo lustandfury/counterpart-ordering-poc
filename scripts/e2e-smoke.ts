@@ -10,6 +10,12 @@ async function unlock(page: Page) {
   await expect(page.locator(".lock-screen")).toHaveCount(0);
 }
 
+// Nothing opens by itself: the first order lands in the queue and the rep opens it (on phones, through the orders button).
+async function openFirstOrder(page: Page, width: number) {
+  if (width < 1024) await page.getByRole("button", { name: /^Show orders/ }).click();
+  await page.locator("#orders nav li button").first().click();
+}
+
 async function main() {
   const browser = await chromium.launch();
   try {
@@ -18,13 +24,19 @@ async function main() {
       await page.addInitScript(() => localStorage.setItem("counterpart-walkthrough-complete", "true"));
       await page.goto(base);
       await unlock(page);
+      await expect(page.getByRole("heading", { name: "A new order is in your queue" })).toBeVisible();
+      if (width < 1024) {
+        // the floating orders button counts the order that arrived while the queue was closed
+        await expect(page.getByRole("button", { name: "Show orders (1 new)", exact: true })).toBeVisible();
+        await expect(page.locator(".orders-fab .order-badge")).toHaveText("1");
+      }
+      await openFirstOrder(page, width);
       await expect(page.getByRole("region", { name: "Needs review", exact: true })).toBeVisible();
       await expect(page.getByRole("region", { name: "Validated items", exact: true })).toBeVisible();
-      // The savings lead the order card, labelled as AI cost. "Compare" opens the details:
-      // a sheet on phones, the rail on wide screens (closed at first).
-      const compare = page.locator("#review h1").locator("xpath=ancestor::*[@aria-live]").getByRole("button", { name: /^(Compare|Hide details)$/ });
-      await expect(page.locator("[aria-live=polite]")).toContainText("AI cost · Claude + Jev");
-      await expect(page.locator("[aria-live=polite]")).toContainText(/\d\.\d× lower cost per order/);
+      // The savings sit on the order card as one line, "Results · 3.9× lower cost | 26% faster".
+      // Clicking it opens the details: a sheet on phones, the rail on wide screens (closed at first).
+      const compare = page.locator("#review h1").locator("xpath=ancestor::*[@aria-live]").getByRole("button", { name: /^Results · \d+\.\d× lower cost( \| (\d+% (faster|slower)|same speed))?$/ });
+      await expect(compare).toBeVisible();
       const openCost = async () => {
         if (width < 1024 && !(await page.locator("#cost-comparison").isVisible())) {
           await compare.click();
@@ -37,11 +49,17 @@ async function main() {
       const openOrders = async () => {
         // a phone sheet that is still animating closed counts as visible, so let it finish first
         if (width < 1024) await expect(page.locator('#orders[data-state="closing"]')).toBeHidden();
-        if (!(await page.locator("#orders").isVisible())) await page.getByRole("button", { name: "Show orders", exact: true }).click();
+        // wide screens slide the sidebar away and mark it inert, so "visible" alone isn't enough
+        const orders = page.locator("#orders");
+        if (!(await orders.isVisible()) || (await orders.getAttribute("inert")) !== null) await page.getByRole("button", { name: /^Show orders/ }).click();
+        await expect(orders).not.toHaveAttribute("inert", /.*/);
       };
       if (width >= 1024) await expect(page.locator("#cost-rail")).toHaveCount(0);
       if (width < 1024) {
         await expect(page.locator("#cost-comparison")).toBeHidden();
+        // opening the queue cleared the count
+        await expect(page.getByRole("button", { name: "Show orders", exact: true })).toBeVisible();
+        await expect(page.locator(".order-badge")).toHaveCount(0);
         await openOrders();
         await page.getByRole("button", { name: /^Settings/ }).click();
         await expect(page.getByRole("dialog", { name: "Settings", exact: true })).toBeVisible();
@@ -75,7 +93,7 @@ async function main() {
         await openCost();
         await page.locator(".action-sheet-backdrop").click({ position: { x: 5, y: 5 } });
         await expect(page.locator("#cost-comparison")).toBeHidden();
-        await page.getByRole("button", { name: "Show orders", exact: true }).click();
+        await page.getByRole("button", { name: /^Show orders/ }).click();
         expect(await page.locator("#orders").evaluate(el => Math.round(el.getBoundingClientRect().width))).toBe(width);
         await page.getByRole("button", { name: "Hide orders", exact: true }).click();
         await expect(page.locator("#orders")).toHaveAttribute("data-state", "closing");
@@ -99,11 +117,18 @@ async function main() {
 
       // Keep this short sample scrollable even after its final review item is confirmed.
       await validatedList.evaluate((el) => { (el as HTMLElement).style.minHeight = "1200px"; });
+      if (width >= 1280) {
+        // wide screens: the order header is a pinned left column, so it stays in view while the lines scroll
+        const header = page.locator("[aria-live=polite]");
+        await page.locator("#review").evaluate((el) => el.scrollTo(0, 600));
+        await expect(header).toBeInViewport();
+        expect(await header.evaluate((el) => Math.round(el.getBoundingClientRect().top))).toBeLessThan(40);
+        await page.locator("#review").evaluate((el) => el.scrollTo(0, 0));
+      }
       await needsReview.evaluate((el) => el.scrollIntoView({ block: "start" }));
       await expect(send).not.toBeInViewport();
-      // phones keep a bar at the bottom that says what's left; wide screens show it only once the review is done
-      if (width < 1024) await expect(floatingBar).toContainText("1 line to check before sending");
-      else await expect(floatingBar).toHaveAttribute("aria-hidden", "true");
+      // the floating Send appears only once the review is done
+      await expect(floatingBar).toHaveAttribute("aria-hidden", "true");
 
       // The tape line's closest product is sold by the roll, so picking it asks for a quantity in rolls,
       // prefilled from the product size (100 ft of a 250 ft roll = 1 roll). Nothing is decided until it's confirmed.
@@ -131,6 +156,10 @@ async function main() {
       await send.evaluate((el) => el.scrollIntoView({ block: "center" }));
       await expect(floatingBar).toHaveAttribute("aria-hidden", "true");
       await expect(page.locator("#review")).toContainText("$400.50");
+      // the footer adds 13% HST: $400.50 + $52.07 = $452.57
+      await expect(page.locator("#review")).toContainText("$52.07");
+      await expect(page.locator("#review")).toContainText("$452.57");
+      await expect(page.locator("#send-order")).toHaveText("Send for approval");
       const summaryCard = page.locator("[aria-live=polite]");
       const headerLayout = () => summaryCard.evaluate(el => {
         const card = el.getBoundingClientRect();
@@ -143,7 +172,7 @@ async function main() {
       await expect(floatingBar).toHaveAttribute("aria-hidden", "false");
       await floatingSend.click();
       await expect(floatingBar).toHaveAttribute("aria-hidden", "true");
-      await expect(summaryCard).toContainText("Sent to Owen Park for approval");
+      await expect(page.locator("#send-order-note")).toContainText("Sent to Owen Park for approval");
       const afterSend = await headerLayout();
       expect(afterSend.overflow).toBeLessThanOrEqual(1);
       if (width > 1023) {
@@ -168,13 +197,19 @@ async function main() {
         await openOrders();
         await page.getByRole("button", { name: /^Settings/ }).click();
       };
+      // Sample results opens from the About dialog
       const goToResults = async () => {
         await closeMobileCost();
         await openOrders();
-        await page.getByRole("link", { name: "Sample results", exact: true }).click();
+        await page.getByRole("button", { name: "About Counterpart", exact: true }).click();
+        await page.getByRole("button", { name: "Sample results", exact: true }).click();
       };
       const closeSettings = () => page.getByRole("button", { name: "Close settings" }).click();
-      if (width > 1023) await page.getByRole("button", { name: "Hide orders", exact: true }).click();
+      if (width > 1023) {
+        await page.getByRole("button", { name: "Hide orders", exact: true }).click();
+        // the sidebar slides off the left edge before it counts as hidden
+        await expect(page.locator("#orders")).toBeHidden();
+      }
       await settings();
       await page.getByRole("button", { name: "Replay walkthrough" }).click();
       await expect(page.getByRole("dialog", { name: "Settings", exact: true })).toHaveCount(0);
@@ -197,7 +232,7 @@ async function main() {
       const sendButton = page.locator("#send-order");
       await expect(sendButton).toBeInViewport();
       await expect.poll(() => sendButton.evaluate((el) => getComputedStyle(el, "::after").animationName)).toBe("tour-trace");
-      await expect(page.locator("[aria-live=polite]")).not.toContainText("Sent to");
+      await expect(page.locator("#send-order-note")).not.toContainText("Sent to");
       await page.emulateMedia({ reducedMotion: "reduce" });
       await expect.poll(() => sendButton.evaluate((el) => getComputedStyle(el, "::after").animationName)).toBe("none");
       // the final tour button reads "Done" on phones and "Let's get to work" on wide screens
@@ -205,7 +240,7 @@ async function main() {
       await expect(page.locator(".walkthrough-card")).toHaveCount(0);
 
       // the queue has no text box: new orders come from Generate order
-      if (width < 1024) await page.getByRole("button", { name: "Show orders", exact: true }).click();
+      if (width < 1024) await page.getByRole("button", { name: /^Show orders/ }).click();
       await expect(page.getByRole("navigation", { name: "Incoming orders" })).toBeVisible();
       await expect(page.locator("textarea")).toHaveCount(0);
       if (width < 1024) await page.getByRole("button", { name: "Hide orders", exact: true }).click();
@@ -248,6 +283,7 @@ async function main() {
         await closeSettings();
         await page.reload();
         await unlock(page);
+        await openFirstOrder(page, width);
         await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
         await settings();
         await page.getByRole("radio", { name: "Light", exact: true }).click();
@@ -292,11 +328,11 @@ async function main() {
         else await expect(page.getByRole("complementary", { name: "Cost assessment", exact: true })).toBeVisible();
         await closeMobileCost();
         await goToResults();
-        await sheet.locator("tbody tr").filter({ hasText: "o07" }).getByRole("button", { name: "Open", exact: true }).click();
+        await sheet.locator("tbody tr").filter({ hasText: "1007" }).getByRole("button", { name: "Open", exact: true }).click();
         await expect(sheet).toBeHidden();
         await expect(page).toHaveURL(`${base}/`);
       }
-      await expect(page.locator("#review h1 + p")).toContainText("o07");
+      await expect(page.locator("#review h1 + p")).toContainText("1007"); // sample o07, shown in the generated-order style
       await expect(page.locator(".lock-screen")).toHaveCount(0);
       await page.reload();
       await expect(page.getByLabel("Access code", { exact: true })).toBeVisible();
@@ -318,7 +354,11 @@ async function main() {
         await expect(page.getByRole("dialog", { name: "Keep generating orders" })).toBeVisible();
         await page.getByLabel("Email address", { exact: true }).fill("rep@example.com");
         await page.getByRole("button", { name: "Continue", exact: true }).click();
-        await expect(page.locator("#review h1 + p")).toContainText("1001");
+        // a generated order lands at the top of the queue for the rep to open; the first follows the 20 samples
+        const newest = page.locator("#orders nav li button").first();
+        await expect(newest).toContainText("1021");
+        await newest.click();
+        await expect(page.locator("#review h1 + p")).toContainText("1021");
       }
 
       console.log(`Browser checks passed at ${width}px`);
