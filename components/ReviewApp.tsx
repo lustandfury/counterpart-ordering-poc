@@ -84,7 +84,6 @@ const DEFAULT_SAMPLE = "o13";
 const SAMPLES_SHOWN = 1;
 // Optional address for deletion requests, set in the environment so no personal address lives in the repo
 const PRIVACY_CONTACT = process.env.NEXT_PUBLIC_PRIVACY_CONTACT;
-const WALKTHROUGH_KEY = "counterpart-walkthrough-complete";
 const ago = (minutes: number) => (minutes < 1 ? "Just now" : minutes < 60 ? `${minutes} min ago` : `${Math.floor(minutes / 60)} h ago`);
 const MOBILE_QUERY = "(max-width: 1023px)";
 const subscribeToMobile = (callback: () => void) => {
@@ -93,11 +92,6 @@ const subscribeToMobile = (callback: () => void) => {
   return () => media.removeEventListener("change", callback);
 };
 
-type WalkthroughStep = 0 | 1 | 2;
-// What each walkthrough step points at: the contractor's text, the first choice on a flagged line, then Send.
-const TOUR_TARGETS = ["#orders nav li button", ".tour-choice .tour-option", "#send-order"];
-// How long after the unlock the first order lands in the queue (matches .queue-arrive in globals.css).
-const ARRIVAL_MS = 1600;
 // First load: the centre waits on an empty state, then the first order lands in the queue for the rep to open.
 const QUEUED_MS = 700;
 // Module scope survives client-side navigation, so coming back from Sample results doesn't replay the arrival.
@@ -137,8 +131,6 @@ export function ReviewApp({ samples, catalog, initialOrder, evalData }: { sample
   // Quantities the rep set in the product's selling unit, per order and line ("100 feet" of tape -> 1 roll)
   const [quantities, setQuantities] = useState<Record<string, Record<string, number>>>({});
   const [sent, setSent] = useState<Record<string, number>>({}); // order id -> time sent
-  const [walkthroughStep, setWalkthroughStep] = useState<WalkthroughStep | null>(null);
-  const walkthroughStepRef = useRef<WalkthroughStep | null>(null);
   // The AI cost rail is closed by default on wide screens: the order is the work, the cost comparison is context.
   const [costOpen, setCostOpen] = useState(false);
   const { unlocked, unlock } = useAccess();
@@ -181,22 +173,6 @@ export function ReviewApp({ samples, catalog, initialOrder, evalData }: { sample
     };
   }, []);
 
-  const showWalkthroughStep = useCallback((step: WalkthroughStep) => {
-    walkthroughStepRef.current = step;
-    setWalkthroughStep(step);
-    setDesktopOpen(true);
-    const mobile = window.matchMedia("(max-width: 1023px)").matches;
-    // step 1 points at the order in the queue, which on phones is a sheet
-    setMobileOpen(mobile && step === 0);
-    setMobileCostOpen(false);
-    // Send sits at the foot of the order, so the last step brings it into view on every screen size
-    if ((mobile && step > 0) || step === 2) {
-      window.requestAnimationFrame(() => {
-        document.querySelector(TOUR_TARGETS[step])?.scrollIntoView({ block: "center" });
-      });
-    }
-  }, []);
-
   // Cmd/Ctrl+B toggles the orders sidebar (as in code editors); Escape closes the phone overlay
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -228,47 +204,10 @@ export function ReviewApp({ samples, catalog, initialOrder, evalData }: { sample
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [unlocked, arrived]);
 
-  // localStorage is deliberately read after mount: the walkthrough is a browser-only preference,
-  // and reading it during render would make the server and client markup disagree.
-  // It waits for the unlock and for the first order to arrive in the queue, so the arrival isn't hidden under the backdrop.
-  useEffect(() => {
-    if (!unlocked) return;
-    const timer = window.setTimeout(() => {
-      if (window.localStorage.getItem(WALKTHROUGH_KEY) !== "true") {
-        showWalkthroughStep(0);
-      }
-    }, ARRIVAL_MS);
-    return () => window.clearTimeout(timer);
-  }, [showWalkthroughStep, unlocked]);
-
-  const closeWalkthrough = useCallback(() => {
-    walkthroughStepRef.current = null;
-    window.localStorage.setItem(WALKTHROUGH_KEY, "true");
-    setWalkthroughStep(null);
-    setMobileCostOpen(false);
-  }, []);
-
-  const replayWalkthrough = useCallback(() => {
-    showWalkthroughStep(0);
-  }, [showWalkthroughStep]);
-
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && walkthroughStep !== null) closeWalkthrough();
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [walkthroughStep, closeWalkthrough]);
-
   const pick = (id: string) => {
     trackEvent("order_selected", { source: id.startsWith("live-") ? "live" : "sample" });
     setSelected(id);
     setMobileOpen(false);
-    // the tour's first step asks the rep to open the order; opening it moves on
-    if (walkthroughStepRef.current === 0) {
-      const order = runs.find((r) => `live-${r.runId}` === id) ?? samples.find((s) => s.orderId === id);
-      if (order) showWalkthroughStep(computeView(order, mode, T, catalog, unitMin).some((line) => !line.approved) ? 1 : 2);
-    }
     // hand the keyboard to the review, so Enter / j / k act on lines rather than re-clicking the order
     requestAnimationFrame(() => document.getElementById("review")?.focus({ preventScroll: true }));
   };
@@ -277,7 +216,7 @@ export function ReviewApp({ samples, catalog, initialOrder, evalData }: { sample
   async function runLive() {
     if (loading) return;
     // Every second generated order has two lines to check, so a visitor always sees one;
-    // the first has one, which keeps the walkthrough simple
+    // the first has one, which keeps the first review short
     const order = generateOrder(Math.random, { checks: runs.length % 2 === 1 ? 2 : 1 });
     trackEvent("order_run_started");
     setPending({ orderId: String(nextOrderNumber.current), from: order.from, text: order.text, at: Date.now() });
@@ -344,7 +283,7 @@ export function ReviewApp({ samples, catalog, initialOrder, evalData }: { sample
   };
 
   return (
-    <div className={`flex h-dvh flex-col overflow-hidden ${walkthroughStep !== null && !loading ? `walkthrough-active walkthrough-${walkthroughStep}` : ""}`}>
+    <div className="flex h-dvh flex-col overflow-hidden">
       <div inert={!unlocked || undefined} className={`app-shell relative flex min-h-0 flex-1 [overflow-anchor:none] max-lg:flex-col max-lg:overflow-y-auto ${unlocked ? "app-shell-enter" : "app-shell-locked"}`}>
         {mobileOrders.present && <button data-state={mobileOrders.closing ? "closing" : "open"} aria-label="Close orders" tabIndex={-1} onClick={() => setMobileOpen(false)} className="sheet-fade fixed inset-0 z-20 bg-black/40 lg:hidden" />}
         {/* wide screens: a left sidebar that slides off the left edge when hidden; phones: a bottom sheet over the page */}
@@ -421,10 +360,8 @@ export function ReviewApp({ samples, catalog, initialOrder, evalData }: { sample
                   if (isMobile) { setMobileOpen(false); setMobileCostOpen(true); } else setCostOpen((v) => !v);
                 },
               }}
-              onReviewed={() => { if (walkthroughStep === 1) showWalkthroughStep(2); }}
               sentAt={sent[selected]}
               onSend={() => {
-                if (walkthroughStep === 2) closeWalkthrough();
                 trackEvent("order_sent", { source: live ? "live" : "sample", mode, demo: true });
                 setSent((s) => ({ ...s, [selected]: Date.now() }));
               }}
@@ -459,7 +396,7 @@ export function ReviewApp({ samples, catalog, initialOrder, evalData }: { sample
           setMobileCostOpen(false);
         }} />
       </ActionSheet>
-      <SettingsDialog open={settingsOpen} mode={mode} T={T} unitMin={unitMin} setT={setT} setUnitMin={setUnitMin} changed={T !== DEFAULT_T || unitMin !== DEFAULT_UNIT} onReplay={() => { setSettingsOpen(false); replayWalkthrough(); }} onClose={() => setSettingsOpen(false)} />
+      <SettingsDialog open={settingsOpen} mode={mode} T={T} unitMin={unitMin} setT={setT} setUnitMin={setUnitMin} changed={T !== DEFAULT_T || unitMin !== DEFAULT_UNIT} onClose={() => setSettingsOpen(false)} />
       <HelpDialog open={helpOpen} onClose={() => setHelpOpen(false)} onResults={() => { setHelpOpen(false); setResultsOpen(true); }} />
       {!unlocked && <AccessLockScreen code={accessCode} setCode={setAccessCode} error={accessError} unlocking={unlocking} onSubmit={() => {
         if (accessCode !== "007") {
@@ -475,14 +412,6 @@ export function ReviewApp({ samples, catalog, initialOrder, evalData }: { sample
           window.requestAnimationFrame(() => document.getElementById("review")?.focus());
         }, 550);
       }} />}
-      {walkthroughStep !== null && !loading && <Walkthrough step={walkthroughStep} onBack={() => showWalkthroughStep((walkthroughStep - 1) as WalkthroughStep)} onNext={() => {
-        if (walkthroughStep === 2) closeWalkthrough();
-        // Next on the first step opens the newest order for the rep, which moves the tour on
-        else if (walkthroughStep === 0 && !selected) pick(runs[0] ? `live-${runs[0].runId}` : shownSamples[0].orderId);
-        else {
-          showWalkthroughStep((walkthroughStep + 1) as WalkthroughStep);
-        }
-      }} onClose={closeWalkthrough} />}
       <SignupDialog open={signupOpen} email={signupEmail} setEmail={setSignupEmail} loading={signupLoading} error={signupError} onSubmit={signUp} onClose={() => setSignupOpen(false)} />
     </div>
   );
@@ -545,94 +474,13 @@ function SignupDialog({ open, email, setEmail, loading, error, onSubmit, onClose
   );
 }
 
-function Walkthrough({ step, onBack, onNext, onClose }: { step: WalkthroughStep; onBack: () => void; onNext: () => void; onClose: () => void }) {
-  const cardRef = useRef<HTMLElement>(null);
-  useEffect(() => { cardRef.current?.focus({ preventScroll: true }); }, []);
-  const [position, setPosition] = useState<{ left: number; top: number; arrow: number; side: string; visible: boolean } | null>(null);
-
-  useEffect(() => {
-    let frame: number;
-    const update = () => {
-      const target = (document.querySelector<HTMLElement>(TOUR_TARGETS[step]) ?? document.querySelector<HTMLElement>("#review h1"));
-      const card = cardRef.current;
-      if (target && card) {
-        const rect = target.getBoundingClientRect();
-        const { width, height } = card.getBoundingClientRect();
-        const viewport = window.visualViewport;
-        const minX = (viewport?.offsetLeft ?? 0) + 12;
-        const minY = (viewport?.offsetTop ?? 0) + 12;
-        const maxX = minX + (viewport?.width ?? window.innerWidth) - 24;
-        const maxY = minY + (viewport?.height ?? window.innerHeight) - 24;
-        const gap = 12;
-        const centerX = rect.left + rect.width / 2;
-        const centerY = rect.top + rect.height / 2;
-        const clamp = (value: number, min: number, max: number) => Math.max(min, Math.min(value, max));
-        let left = clamp(centerX - width / 2, minX, maxX - width);
-        let top: number;
-        let side: string;
-        let arrow: number;
-        if (window.innerWidth >= 1024 && rect.right + gap + width <= maxX) {
-          left = rect.right + gap;
-          top = clamp(centerY - height / 2, minY, maxY - height);
-          side = "left";
-          arrow = clamp(centerY - top, 20, height - 20);
-        } else if (window.innerWidth >= 1024 && rect.left - gap - width >= minX) {
-          left = rect.left - gap - width;
-          top = clamp(centerY - height / 2, minY, maxY - height);
-          side = "right";
-          arrow = clamp(centerY - top, 20, height - 20);
-        } else {
-          const above = rect.top - gap - height;
-          const below = rect.bottom + gap;
-          const useAbove = above >= minY || (below + height > maxY && rect.top - minY > maxY - rect.bottom);
-          top = useAbove ? above : below;
-          side = useAbove ? "bottom" : "top";
-          arrow = clamp(centerX - left, 20, width - 20);
-        }
-        const visible = rect.bottom > minY && rect.top < maxY && rect.right > minX && rect.left < maxX;
-        const next = { left: Math.round(left), top: Math.round(top), arrow: Math.round(arrow), side, visible };
-        setPosition(previous => previous && Object.keys(next).every(key => previous[key as keyof typeof next] === next[key as keyof typeof next]) ? previous : next);
-      }
-      // Follow nested scrolling, sheet animations, layout changes, and the mobile keyboard.
-      frame = window.requestAnimationFrame(update);
-    };
-    frame = window.requestAnimationFrame(update);
-    return () => window.cancelAnimationFrame(frame);
-  }, [step]);
-
-  const content = [
-    { eyebrow: "1 of 3 · A new order", title: "A contractor just texted an order.", body: "You're the sales rep. Open it from your queue: Counterpart has matched each line to your catalog, so you only check what it isn't sure about. Want another? Tap Generate order any time.", mobileTitle: "A contractor texted an order", mobileBody: "You're the rep. Tap the order to open it." },
-    { eyebrow: "2 of 3 · Make the call", title: "Even AI needs safety glasses.", body: "Check a flagged line and choose the product that fits, confirm the quantity, or leave it off the order. The glowing choices are yours to make. No rubber stamp required.", mobileTitle: "Check a flagged line", mobileBody: "Pick the right product, or leave it off." },
-    { eyebrow: "3 of 3 · Send it back", title: "Then send it for approval.", body: "Once every line is checked, send the order back to the contractor. They approve it before it goes to the ERP for purchase. Curious what the AI cost? It's at the top of the order.", mobileTitle: "Send it for approval", mobileBody: "They approve it, then it goes to the ERP." },
-  ][step];
-
-  return (
-    <>
-      <div className="walkthrough-backdrop fixed inset-0 z-40 bg-black/35" aria-hidden />
-      <section ref={cardRef} tabIndex={-1} role="dialog" aria-modal="true" aria-labelledby="walkthrough-title" aria-describedby="walkthrough-body" data-side={position?.side} className="walkthrough-card fixed z-50 rounded-2xl outline-none bg-panel shadow-2xl" style={{ left: position?.left ?? 0, top: position?.top ?? 0, visibility: position?.visible ? "visible" : "hidden", "--walkthrough-arrow": `${position?.arrow ?? 20}px` } as CSSProperties}>
-        <span className="walkthrough-arrow" aria-hidden />
-        <div className="flex items-center justify-between gap-4">
-          <p className="text-[11px] font-semibold uppercase tracking-wider text-muted"><span className="lg:hidden">{step + 1} of 3</span><span className="hidden lg:inline">{content.eyebrow}</span></p>
-          <ModalCloseButton onClose={onClose} label="Close walkthrough" />
-        </div>
-        <h2 id="walkthrough-title" className="text-[15px] font-semibold tracking-tight lg:mt-2 lg:text-lg"><span className="lg:hidden">{content.mobileTitle}</span><span className="hidden lg:inline">{content.title}</span></h2>
-        <p id="walkthrough-body" className="mt-1 text-[13px] leading-snug text-muted lg:mt-1.5 lg:text-[14px] lg:leading-relaxed"><span className="lg:hidden">{content.mobileBody}</span><span className="hidden lg:inline">{content.body}</span></p>
-        <div className="mt-2 flex items-center justify-between gap-3 lg:mt-4">
-          <button onClick={onBack} disabled={step === 0} className="h-11 rounded-lg px-3 text-[13px] font-medium text-muted hover:bg-bg hover:text-ink disabled:invisible">Back</button>
-          <button onClick={onNext} className="h-11 rounded-lg bg-brand px-4 text-[13px] font-semibold text-onbrand">{step === 2 ? <><span className="lg:hidden">Done</span><span className="hidden lg:inline">Let&apos;s get to work</span></> : "Next"}</button>
-        </div>
-      </section>
-    </>
-  );
-}
-
 
 type Thresholds = { mode: Mode; T: number; unitMin: number; setT: (v: number) => void; setUnitMin: (v: number) => void };
 
 const SlidersIcon = () => <AdjustmentsHorizontalIcon aria-hidden className="h-4 w-4" />;
 
 /** Review thresholds and onboarding controls, rendered inside the settings dialog. */
-function SettingsSection(p: Thresholds & { changed: boolean; onReplay: () => void }) {
+function SettingsSection(p: Thresholds & { changed: boolean }) {
   return (
     <div id="settings" className="mt-5 divide-y divide-line border-y border-line">
       <section aria-labelledby="settings-thresholds" className="py-5">
@@ -664,17 +512,6 @@ function SettingsSection(p: Thresholds & { changed: boolean; onReplay: () => voi
           <ShortcutsToggle />
         </div>
       </section>
-      <section aria-labelledby="settings-help" className="py-5">
-        <div className="flex items-center justify-between gap-4">
-          <div>
-            <h3 id="settings-help" className="text-[15px] font-semibold">Walkthrough</h3>
-            <p className="mt-1 text-[13px] text-muted">A short tour of the review screen.</p>
-          </div>
-          <button onClick={p.onReplay} aria-label="Replay walkthrough" className="h-8 shrink-0 rounded-lg bg-panel px-3 text-[13px] font-medium shadow-[0_0_0_1px_var(--ring)] hover:bg-bg">
-            Replay
-          </button>
-        </div>
-      </section>
     </div>
   );
 }
@@ -683,7 +520,7 @@ function SettingsSection(p: Thresholds & { changed: boolean; onReplay: () => voi
 const MODAL_FOOTER = "mt-6 flex justify-end";
 const MODAL_PRIMARY = "h-9 rounded-lg bg-brand px-5 text-[13px] font-semibold text-onbrand disabled:opacity-40";
 
-function SettingsDialog(p: Thresholds & { open: boolean; changed: boolean; onReplay: () => void; onClose: () => void }) {
+function SettingsDialog(p: Thresholds & { open: boolean; changed: boolean; onClose: () => void }) {
   return (
     <ActionSheet open={p.open} onClose={p.onClose} labelledBy="settings-title" layer="settings">
       <div className="flex items-start justify-between gap-4">
@@ -983,7 +820,7 @@ function OrderFooter({ result, subtotal, toCheck, sentAt, onSend, onReopen }: { 
           }}
           aria-disabled={!sentAt && !ready}
           aria-describedby={sendAttempted && !ready && !sentAt ? "send-order-note send-order-guidance" : "send-order-note"}
-          className={`tour-send h-11 w-full shrink-0 cursor-pointer whitespace-nowrap rounded-lg px-4 text-[14px] font-semibold transition-[background-color,opacity] aria-disabled:cursor-not-allowed aria-disabled:opacity-50 sm:h-10 sm:w-auto ${sentAt ? "border border-line bg-panel text-ink hover:bg-bg" : "bg-brand text-onbrand"}`}
+          className={`h-11 w-full shrink-0 cursor-pointer whitespace-nowrap rounded-lg px-4 text-[14px] font-semibold transition-[background-color,opacity] aria-disabled:cursor-not-allowed aria-disabled:opacity-50 sm:h-10 sm:w-auto ${sentAt ? "border border-line bg-panel text-ink hover:bg-bg" : "bg-brand text-onbrand"}`}
         >
           {sentAt ? "Reopen" : "Send for approval"}
         </button>
@@ -999,13 +836,12 @@ function OrderFooter({ result, subtotal, toCheck, sentAt, onSend, onReopen }: { 
 
 type Compare = { open: boolean; controls: string; onToggle: () => void };
 
-function Review({ result, mode, T, unitMin, catalog, resolved, setResolved, quantities, setQuantity, phone, compare, sentAt, onSend, onReopen, onReviewed }: {
+function Review({ result, mode, T, unitMin, catalog, resolved, setResolved, quantities, setQuantity, phone, compare, sentAt, onSend, onReopen }: {
   result: OrderResult; mode: Mode; T: number; unitMin: number; catalog: SlimCatalog;
   resolved: Decisions; setResolved: (f: (r: Decisions) => Decisions) => void;
   quantities: Record<string, number>; setQuantity: (lineId: string, qty: number | undefined) => void;
   phone: boolean; compare: Compare;
   sentAt?: number; onSend: () => void; onReopen: () => void;
-  onReviewed: () => void;
 }) {
   const [active, setActive] = useState<string | null>(null);
   // A product the rep picked whose quantity still has to be set in its selling unit (line id -> sku)
@@ -1055,8 +891,7 @@ function Review({ result, mode, T, unitMin, catalog, resolved, setResolved, quan
     trackEvent("order_line_reviewed", { mode, decision: sku === NONE ? "not_in_catalog" : "product", quantity_set: qty != null });
     setQuantity(lineId, sku === NONE ? undefined : qty);
     setResolved((r) => ({ ...r, [lineId]: sku }));
-    onReviewed();
-  }, [mode, setResolved, setQuantity, onReviewed]);
+  }, [mode, setResolved, setQuantity]);
   /**
    * The one way a product gets picked (click, number key or Enter). If the contractor's quantity isn't in the unit the
    * product is sold by ("100 feet" of a roll), or there is none, the pick waits for the rep to set the quantity.
@@ -1293,7 +1128,7 @@ function LineRow(props: {
     const asked = l.unit && sellUnit && l.sku !== NONE && !sameQuantityUnit(l.unit, sellUnit) ? `${fmtQty(l.qty, l.unit)} · sold per ${unitName(sellUnit)}` : fmtQty(l.qty, l.unit);
     const quickPrice = linePrice(l, l.sku, catalog);
     return (
-      <li id={`line-${l.id}`} tabIndex={-1} onClick={props.onSelect} className={`outline-none scroll-mt-44 scroll-mb-8 border-b border-line bg-panel px-4 py-5 last:border-b-0 sm:px-6 ${active ? "tour-choice" : ""}`}>
+      <li id={`line-${l.id}`} tabIndex={-1} onClick={props.onSelect} className={`outline-none scroll-mt-44 scroll-mb-8 border-b border-line bg-panel px-4 py-5 last:border-b-0 sm:px-6`}>
         <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-0.5">
           <span className="font-mono text-[14px] font-medium">
             <span className="sr-only">Check this: </span>
@@ -1327,7 +1162,6 @@ function LineRow(props: {
               return (
                 <button
                   key={o.sku}
-                  style={{ "--tour-delay": `${i * 300}ms` } as React.CSSProperties}
                   onClick={(e) => { e.stopPropagation(); props.onPick(o.sku); }}
                   className="review-option tour-option flex min-h-11 items-center gap-3 rounded-xl bg-panel px-3.5 py-2 text-left text-ink shadow-[0_0_0_1px_var(--control)]"
                 >
@@ -1439,7 +1273,6 @@ function CostPanel({ result, samples, mode, T, unitMin, catalog, onMode, onClose
             onClick={() => onMode(x.key)}
             aria-pressed={mode === x.key}
             className={`tour-compare card p-4 text-left ${mode === x.key ? "!shadow-[0_0_0_1px_var(--ink)]" : "hover:!shadow-[0_0_0_1px_var(--control)]"}`}
-            style={{ "--tour-delay": x.key === "jev" ? "0ms" : "600ms" } as React.CSSProperties}
           >
           <div className="flex items-center justify-between gap-2 text-[14px]">
             <span className={`font-semibold ${x.key === "jev" ? "text-branddeep" : "text-ink"}`}>{x.label}</span>

@@ -41,13 +41,12 @@ async function main() {
       await page.keyboard.press("Enter");
       await expect(page.locator(".lock-screen")).toHaveCount(0);
       const generate = async () => {
-        // on phones the queue is a sheet (the walkthrough may already have opened it)
+        // on phones the queue is a sheet
         if (width === 390 && !(await page.locator("#orders").isVisible())) await page.getByRole("button", { name: /^Show orders/ }).click();
         await page.getByRole("button", { name: "Generate order", exact: true }).click();
       };
-      // wait for the first order to arrive and the walkthrough to start, as a visitor would
-      await expect(page.locator(".walkthrough-card")).toContainText("1 of 3");
-      if (width === 390) await page.getByRole("button", { name: "Close walkthrough" }).click();
+      // wait for the first order to arrive, as a visitor would
+      await expect(page.getByRole("heading", { name: "A new order is in your queue" })).toBeVisible();
       await generate();
       const loading = page.getByRole("region", { name: "Order processing" });
       await expect(loading).toBeVisible();
@@ -56,7 +55,6 @@ async function main() {
       const reading = queue.locator('button[aria-busy="true"]');
       if (width !== 390) await expect(reading).toContainText("1021");
       if (width !== 390) await expect(reading).toContainText("Reading…");
-      await expect(page.locator(".walkthrough-card")).toHaveCount(0);
       if (width === 390) await expect(page.locator("#orders")).not.toBeVisible();
       await expect(loading.locator('[data-stage="access"]')).toHaveAttribute("data-status", "running");
       await send([
@@ -93,10 +91,6 @@ async function main() {
       await expect(page.locator("#review h1 + p")).toContainText("1021");
       // on phones, opening an order closes the queue sheet
       if (width !== 390) await expect(queue.locator('button[aria-current="true"]')).toContainText("1021");
-      if (width !== 390) {
-        await expect(page.locator(".walkthrough-card")).toContainText("2 of 3");
-        await page.getByRole("button", { name: "Close walkthrough" }).click();
-      }
       await generate();
       await expect(loading).toBeVisible();
       await send([{ type: "error", error: "Processing failed. Please retry." }]);

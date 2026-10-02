@@ -10,7 +10,6 @@ async function main() {
     const page = await ctx.newPage();
     // Generate order runs live: answer it with a saved result so screenshots never make paid API calls
     await page.route("**/api/run", (route) => route.fulfill({ json: JSON.parse(readFileSync("results/o13.json", "utf8")) }));
-    await page.addInitScript(() => localStorage.setItem("counterpart-walkthrough-complete", "true"));
     await page.goto(base);
     await page.getByLabel("Access code", { exact: true }).fill("007");
     await page.keyboard.press("Enter");

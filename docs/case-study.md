@@ -293,6 +293,19 @@ The lesson: a keyboard shortcut can decide something the person never saw, so pu
 - The header shows a status only after sending.
 - The e2e test checks the pinned header, the tax maths and the new button label.
 
+### 41. Removing the walkthrough
+**Did:** Mike removed the three-step walkthrough. The screen now explains itself: the order waits in the queue, the flagged line says why, and Send says what's left.
+**Happened:** the tour had spread well beyond its own component:
+- state and stored "completed" flag
+- a Replay button in Settings
+- hooks that moved it on when an order opened, a line was decided or Send was pressed
+- highlight and glow CSS
+- a dedicated smoke test
+- steps inside two other smoke tests
+
+One e2e step had relied, without saying so, on the replay reopening the desktop sidebar. That showed up as soon as the tour was gone.
+**Changed:** the walkthrough, its CSS, the Replay setting and the onboarding smoke test are gone. The tests now open the sidebar themselves. The first-load sequence is unchanged: waiting for orders, then the order arriving in the queue.
+
 ## Where it stands
 
 | | Claude only | Claude + Jev |

@@ -10,7 +10,6 @@ try {
     await page.emulateMedia({ reducedMotion: "reduce" });
     const errors: string[] = [];
     page.on("pageerror", (error) => errors.push(error.message));
-    await page.addInitScript(() => localStorage.setItem("counterpart-walkthrough-complete", "true"));
     await page.goto(base);
     await page.getByLabel("Access code", { exact: true }).fill("007");
     await page.getByRole("button", { name: "Enter", exact: true }).click();

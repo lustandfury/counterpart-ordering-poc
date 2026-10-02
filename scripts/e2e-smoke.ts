@@ -21,7 +21,6 @@ async function main() {
   try {
     for (const width of [1440, 768, 390]) {
       const page = await browser.newPage({ viewport: { width, height: 1000 } });
-      await page.addInitScript(() => localStorage.setItem("counterpart-walkthrough-complete", "true"));
       await page.goto(base);
       await unlock(page);
       await expect(page.getByRole("heading", { name: "A new order is in your queue" })).toBeVisible();
@@ -210,37 +209,8 @@ async function main() {
         // the sidebar slides off the left edge before it counts as hidden
         await expect(page.locator("#orders")).toBeHidden();
       }
-      await settings();
-      await page.getByRole("button", { name: "Replay walkthrough" }).click();
-      await expect(page.getByRole("dialog", { name: "Settings", exact: true })).toHaveCount(0);
-      // step 1 points at the contractor's text, not at a control
-      await expect(page.locator("#incoming-message")).toBeVisible();
-      await expect(page.locator(".walkthrough-card")).toContainText("1 of 3");
-      await page.getByRole("button", { name: "Next", exact: true }).click();
-      const choice = page.locator(".tour-choice .tour-option").first();
-      await expect(choice).toBeVisible();
-      await expect.poll(() => choice.evaluate((el) => {
-        const r = el.getBoundingClientRect();
-        return el.contains(document.elementFromPoint(r.x + r.width / 2, r.y + r.height / 2));
-      })).toBe(true);
-      await expect.poll(() => choice.evaluate((el) => getComputedStyle(el, "::after").animationName)).toBe("tour-trace");
-      await page.getByRole("button", { name: "Back", exact: true }).click();
-      await expect(page.locator(".walkthrough-card")).toContainText("1 of 3");
-      await page.getByRole("button", { name: "Next", exact: true }).click();
-      await page.getByRole("button", { name: "Next", exact: true }).click();
-      // the last step ends on Send (scrolled into view, highlighted, never pressed for the visitor)
-      const sendButton = page.locator("#send-order");
-      await expect(sendButton).toBeInViewport();
-      await expect.poll(() => sendButton.evaluate((el) => getComputedStyle(el, "::after").animationName)).toBe("tour-trace");
-      await expect(page.locator("#send-order-note")).not.toContainText("Sent to");
-      await page.emulateMedia({ reducedMotion: "reduce" });
-      await expect.poll(() => sendButton.evaluate((el) => getComputedStyle(el, "::after").animationName)).toBe("none");
-      // the final tour button reads "Done" on phones and "Let's get to work" on wide screens
-      await page.getByRole("button", { name: width < 1024 ? "Done" : "Let's get to work", exact: true }).click();
-      await expect(page.locator(".walkthrough-card")).toHaveCount(0);
-
       // the queue has no text box: new orders come from Generate order
-      if (width < 1024) await page.getByRole("button", { name: /^Show orders/ }).click();
+      await openOrders();
       await expect(page.getByRole("navigation", { name: "Incoming orders" })).toBeVisible();
       await expect(page.locator("textarea")).toHaveCount(0);
       if (width < 1024) await page.getByRole("button", { name: "Hide orders", exact: true }).click();

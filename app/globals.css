@@ -260,8 +260,7 @@ button { cursor: pointer; }
   .order-loading-spinner, .order-loading-bar { animation: none; }
 }
 
-/* An order landing in the queue: it slides in at the top, then its row glows once.
-   The first one waits for the unlock (ARRIVAL_MS in ReviewApp is when the walkthrough may start). */
+/* An order landing in the queue: it slides in at the top, then its row glows once. */
 @keyframes queue-arrive {
   from { opacity: 0; transform: translateY(-8px); }
   to { opacity: 1; transform: none; }
@@ -281,133 +280,6 @@ button { cursor: pointer; }
   .app-shell-enter .queue-arrive > button { animation: none; }
 }
 
-/* The active tour region sits above the dimmed page while retaining its normal layout. */
-.walkthrough-active .tour-review,
-.walkthrough-active .tour-cost {
-  position: relative;
-}
-@media (min-width: 1024px) {
-  .walkthrough-active .tour-orders {
-    position: relative;
-  }
-}
-/* Opacity animations retain a stacking context with fill-mode: both, which
-   would keep every highlighted section underneath the walkthrough backdrop. */
-.walkthrough-active .app-shell-enter {
-  animation: none;
-}
-.walkthrough-0 .tour-orders,
-.walkthrough-1 .tour-review,
-.walkthrough-2 .tour-review {
-  z-index: 45;
-  box-shadow: 0 0 0 3px var(--brand), 0 0 0 6px rgb(255 255 255 / 0.92);
-}
-/* Step 1 on wide screens also keeps the queue usable, so "Generate order" works mid-tour. */
-@media (min-width: 1024px) {
-  .walkthrough-0 .tour-orders {
-    z-index: 45;
-  }
-}
-.walkthrough-card {
-  width: min(320px, calc(100vw - 24px));
-  padding: 12px;
-  border: 1px solid var(--line);
-}
-.walkthrough-arrow {
-  position: absolute;
-  width: 12px;
-  height: 12px;
-  background: var(--panel);
-  border: 1px solid var(--line);
-  transform: rotate(45deg);
-  pointer-events: none;
-}
-.walkthrough-card[data-side="top"] .walkthrough-arrow {
-  top: -7px;
-  left: calc(var(--walkthrough-arrow) - 6px);
-  border-right: 0;
-  border-bottom: 0;
-}
-.walkthrough-card[data-side="bottom"] .walkthrough-arrow {
-  bottom: -7px;
-  left: calc(var(--walkthrough-arrow) - 6px);
-  border-left: 0;
-  border-top: 0;
-}
-.walkthrough-card[data-side="left"] .walkthrough-arrow {
-  left: -7px;
-  top: calc(var(--walkthrough-arrow) - 6px);
-  border-right: 0;
-  border-top: 0;
-}
-.walkthrough-card[data-side="right"] .walkthrough-arrow {
-  right: -7px;
-  top: calc(var(--walkthrough-arrow) - 6px);
-  border-left: 0;
-  border-bottom: 0;
-}
-@media (min-width: 1024px) {
-  .walkthrough-card {
-    width: 360px;
-    padding: 20px;
-  }
-}
-/* A moving border leads the eye without covering labels or intercepting clicks. */
-@property --tour-angle {
-  syntax: "<angle>";
-  initial-value: 0deg;
-  inherits: false;
-}
-@keyframes tour-trace {
-  to { --tour-angle: 360deg; }
-}
-@keyframes tour-glow {
-  0%, 100% { box-shadow: 0 0 0 4px rgb(255 202 5 / 0.2), 0 0 12px rgb(255 202 5 / 0.3); }
-  50% { box-shadow: 0 0 0 7px rgb(255 202 5 / 0.35), 0 0 24px rgb(255 202 5 / 0.65); }
-}
-.tour-cue,
-.walkthrough-1 .tour-choice .tour-option,
-.walkthrough-2 .tour-send {
-  position: relative;
-}
-.tour-cue::before,
-.walkthrough-1 .tour-choice .tour-option::before,
-.walkthrough-2 .tour-send::before {
-  content: "";
-  position: absolute;
-  inset: -3px;
-  border-radius: inherit;
-  pointer-events: none;
-  animation: tour-glow 1.8s ease-in-out infinite;
-}
-.tour-cue::after,
-.walkthrough-1 .tour-choice .tour-option::after,
-.walkthrough-2 .tour-send::after {
-  content: "";
-  position: absolute;
-  inset: -3px;
-  padding: 3px;
-  border-radius: inherit;
-  pointer-events: none;
-  background: conic-gradient(from var(--tour-angle), rgb(255 202 5 / 0.7) 0%, rgb(255 202 5 / 0.7) 40%, #ffca05 65%, #fff4bf 82%, #ffca05 94%, rgb(255 202 5 / 0.7) 100%);
-  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  mask-composite: exclude;
-  animation: tour-trace 2.4s linear var(--tour-delay, 0ms) infinite;
-}
-@media (prefers-reduced-motion: reduce) {
-  .tour-cue::before,
-  .walkthrough-1 .tour-choice .tour-option::before,
-  .walkthrough-2 .tour-send::before {
-    animation: none;
-    box-shadow: 0 0 0 4px rgb(255 202 5 / 0.3);
-  }
-  .tour-cue::after,
-  .walkthrough-1 .tour-choice .tour-option::after,
-  .walkthrough-2 .tour-send::after {
-    animation: none;
-    background: #ffca05;
-  }
-}
 .action-sheet-handle {
   display: none;
 }
@@ -564,9 +436,6 @@ button { cursor: pointer; }
   #orders {
     animation: lock-sheet-in 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
   }
-  .walkthrough-0 .tour-orders {
-    z-index: 45;
-  }
 }
 @media (prefers-reduced-motion: reduce) {
   #orders,
@@ -578,7 +447,6 @@ button { cursor: pointer; }
   .action-sheet-backdrop[data-state="closing"] .action-sheet-dialog,
   #orders[data-state="closing"],
   .sheet-fade[data-state="closing"],
-  .walkthrough-card,
   .app-shell-enter,
   .app-shell-enter .tour-orders,
   .app-shell-enter .tour-cost,
