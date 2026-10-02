@@ -700,18 +700,17 @@ function OrderItem(p: { id: string; tag: string; title: string; preview: string;
         onClick={() => p.onPick(p.id)}
         aria-current={p.active ? "true" : undefined}
         aria-busy={p.reading || undefined}
-        className={`flex w-full items-start gap-2.5 rounded-r-lg px-2.5 py-2.5 text-left ${p.active ? "bg-bg shadow-[inset_3px_0_0_var(--brand)]" : "hover:bg-bg"}`}
+        className={`grid w-full grid-cols-[minmax(0,1fr)_auto] items-stretch gap-2.5 rounded-r-lg px-2.5 py-2.5 text-left ${p.active ? "bg-bg shadow-[inset_3px_0_0_var(--brand)]" : "hover:bg-bg"}`}
       >
         <span className="min-w-0 flex-1">
           <span className="flex min-w-0 items-center gap-2">
             <span className={`shrink-0 rounded-md bg-bg px-1.5 py-0.5 font-mono text-[12px] font-semibold leading-4 text-ink ${p.active ? "shadow-[0_0_0_1px_var(--ring)]" : ""}`}>{p.tag}</span>
             <span className={`min-w-0 flex-1 truncate text-[13px] ${p.active ? "font-semibold" : "font-medium"}`}>{p.title}</span>
-            <span className="shrink-0 text-[11px] text-muted">{p.time}</span>
           </span>
           <span className="mt-1 block text-[12px] leading-4 text-muted">{preview.map((line, i) => <span key={i} className="block truncate whitespace-pre">{line}{hasMorePreview && i === preview.length - 1 ? "..." : ""}</span>)}</span>
         </span>
-        {/* status sits in the row's bottom-right corner */}
-        <span className="shrink-0 self-end">
+        <span className="flex min-w-0 flex-col items-end justify-between gap-2 text-right">
+          <span className="shrink-0 text-[11px] text-muted">{p.time}</span>
           {p.reading ? (
             <span className="shrink-0 text-[12px] text-muted">Reading…</span>
           ) : p.sent ? (
