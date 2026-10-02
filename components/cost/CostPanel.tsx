@@ -41,8 +41,8 @@ export function CostPanel({ result, samples, mode, T, unitMin, catalog, onMode, 
             <span className={`font-semibold ${x.key === "jev" ? "text-branddeep" : "text-ink"}`}>{x.label}</span>
           </div>
           <div className="mt-1.5 flex items-baseline justify-between gap-2">
-            <span className="font-mono text-lg font-medium tracking-tight">{usd(x.t.usd)}</span>
-            <span className="font-mono text-caption text-muted">{ms(x.t.ms)}</span>
+            <span className="figures text-lg font-medium tracking-tight">{usd(x.t.usd)}</span>
+            <span className="figures text-caption text-muted">{ms(x.t.ms)}</span>
           </div>
           <div className="mt-2 flex h-1.5 overflow-hidden rounded-full" style={{ background: "var(--line)" }} aria-hidden>
             <span style={{ width: `${(100 * x.t.parseUsd) / maxUsd}%`, background: "var(--reading)" }} />
@@ -53,20 +53,20 @@ export function CostPanel({ result, samples, mode, T, unitMin, catalog, onMode, 
               <span aria-hidden="true" className="h-2 w-2 shrink-0 rounded-full" style={{ background: "var(--reading)" }} />
               Reading
             </dt>
-            <dd className="text-right font-mono">{usd(x.t.parseUsd)}</dd>
-            <dd className="text-right font-mono text-muted">{ms(x.t.parseMs)}</dd>
+            <dd className="text-right figures">{usd(x.t.parseUsd)}</dd>
+            <dd className="text-right figures text-muted">{ms(x.t.parseMs)}</dd>
             <dt className="flex items-center gap-2 text-muted">
               <span aria-hidden="true" className="h-2 w-2 shrink-0 rounded-full" style={{ background: "var(--matching)" }} />
               Matching
             </dt>
-            <dd className="text-right font-mono">{usd(x.t.matchUsd)}</dd>
-            <dd className="text-right font-mono text-muted">{ms(x.t.matchMs)}</dd>
+            <dd className="text-right figures">{usd(x.t.matchUsd)}</dd>
+            <dd className="text-right figures text-muted">{ms(x.t.matchMs)}</dd>
             <dt className="text-muted">Auto-approved</dt>
-            <dd className="col-span-2 text-right font-mono">{x.approved} / {x.lines}</dd>
+            <dd className="col-span-2 text-right figures">{x.approved} / {x.lines}</dd>
           </dl>
           <div className="mt-3 flex items-baseline justify-between border-t border-line pt-2.5 text-caption">
             <span className="text-muted">Per 10,000 orders<small className="block text-tiny">this order × 10,000</small></span>
-            <span className="font-mono text-body font-medium">{per10k(x.t.usd)}</span>
+            <span className="figures text-body font-medium">{per10k(x.t.usd)}</span>
           </div>
           </button>
         ))}

@@ -1,98 +1,49 @@
 @import "tailwindcss";
 
+/*
+ * Counterpart's palette: the yard, not the storefront. Concrete floor, a white order sheet, graphite pencil,
+ * tape-measure yellow kept for the brand and the one action that matters, lumber crayon for "check this",
+ * and grade-stamp green for "approved".
+ *
+ * Every colour is written once as light-dark(light, dark). The theme only sets color-scheme:
+ * light is the default; Settings stores Light / Dark / System in <html data-theme> before the page paints,
+ * and "system" lets the OS decide.
+ */
 :root {
   color-scheme: light;
-  --bg: #f7f6f2;
-  --panel: #ffffff;
-  --panel-2: #fbfaf8;
-  --input: #efece5;
-  --ink: #1c1c1e;
-  --muted: #5c5c61;
-  --line: #e8e5de;
-  --control: #8a8577;
-  --ok: #15803d;
-  --ok-bg: #eef9f2;
-  /* brand yellow: fills and highlights only (too faint as a thin line on white) */
+  --bg: light-dark(#e8e9e5, #15171a); /* concrete */
+  --panel: light-dark(#ffffff, #1d2024); /* the sheet */
+  --panel-2: light-dark(#f5f6f3, #191c1f);
+  --input: light-dark(#f0f1ee, #121417);
+  --ink: light-dark(#1f2328, #e9eaec); /* graphite */
+  --muted: light-dark(#575e66, #a2a8b0);
+  --line: light-dark(#dcded9, #2c3036);
+  --control: light-dark(#8a9098, #6b727b);
+  --ok: light-dark(#1e6b3c, #6fd39a); /* grade-stamp green */
+  --ok-bg: light-dark(#eaf3ec, #13291c);
+  /* tape yellow: fills only (too faint as a thin line on white) */
   --brand: #ffca05;
-  --on-brand: #1c1c1e;
-  --brand-soft: #fff4c7;
-  --brand-deep: #6b5200;
-  /* "needs checking" is orange, so it never reads as the brand yellow */
-  --warn: #9a3412;
-  --warn-bg: #fdede3;
-  --warn-line: #c2410c;
-  /* red: Claude-only cost bar; soft up to the Claude + Jev cost, full red for the overage */
-  --over: #dc2626;
-  --over-soft: #fca5a5;
-  --focus: #2456a6;
-  --reading: #60a5fa;
-  --matching: #2563eb;
-  --ring: rgb(0 0 0 / 0.06);
-  --shadow-sm: 0 1px 3px #00000014, 0 1px 2px #0000000a;
-  --shadow-md: 0 4px 6px -1px #00000014, 0 2px 4px -2px #0000000a;
+  --on-brand: #1f2328;
+  --brand-soft: light-dark(#fff4c7, #3a3000);
+  --brand-deep: light-dark(#6b5200, #ffdb5c);
+  /* lumber crayon: lines to check. Text is --warn; the painted edge is --warn-line */
+  --warn: light-dark(#b83a12, #ff9466);
+  --warn-bg: light-dark(#fbeae2, #3a1e14);
+  --warn-line: light-dark(#d9480f, #e8622a);
+  --over: light-dark(#dc2626, #f87171);
+  --over-soft: light-dark(#fca5a5, #7f2d2d);
+  --focus: light-dark(#2456a6, #8db4ff);
+  --reading: light-dark(#60a5fa, #93c5fd);
+  --matching: light-dark(#2563eb, #3b82f6);
+  --ring: light-dark(rgb(0 0 0 / 0.08), rgb(255 255 255 / 0.08));
+  --shadow-sm: 0 1px 2px light-dark(#0000001a, #00000066);
+  --shadow-md: 0 6px 16px -4px light-dark(#00000024, #00000099);
 }
-/*
- * Theme: light is the default. Settings offers Light / Dark / System, stored per browser and written to
- * <html data-theme> by a tiny script in the layout before the page paints. "system" follows the OS setting.
- * The dark palette appears twice (explicit dark, and system while the OS is dark); keep the two in sync.
- */
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --bg: #141416;
-  --panel: #1c1c1e;
-  --panel-2: #18181a;
-  --input: #111113;
-  --ink: #ececec;
-  --muted: #a3a3a8;
-  --line: #2e2e32;
-  --control: #6f7972;
-  --ok: #5bd68a;
-  --ok-bg: #12301f;
-  --brand: #ffca05;
-  --on-brand: #1c1c1e;
-  --brand-soft: #3a3000;
-  --brand-deep: #ffdb5c;
-  --warn: #fdba74;
-  --warn-bg: #3b1d0e;
-  --warn-line: #ea580c;
-  --over: #f87171;
-  --over-soft: #7f2d2d;
-  --focus: #8db4ff;
-  --reading: #93c5fd;
-  --matching: #3b82f6;
-  --ring: rgb(255 255 255 / 0.07);
-  --shadow-sm: 0 1px 2px #00000066;
-  --shadow-md: 0 4px 10px -2px #00000080;
 }
-@media (prefers-color-scheme: dark) {
-  :root[data-theme="system"] {
-    color-scheme: dark;
-    --bg: #141416;
-    --panel: #1c1c1e;
-    --panel-2: #18181a;
-    --input: #111113;
-    --ink: #ececec;
-    --muted: #a3a3a8;
-    --line: #2e2e32;
-    --control: #6f7972;
-    --ok: #5bd68a;
-    --ok-bg: #12301f;
-    --brand: #ffca05;
-  --on-brand: #1c1c1e;
-    --brand-soft: #3a3000;
-    --brand-deep: #ffdb5c;
-    --warn: #fdba74;
-    --warn-bg: #3b1d0e;
-    --warn-line: #ea580c;
-    --over: #f87171;
-  --over-soft: #7f2d2d;
-  --focus: #8db4ff;
-    --reading: #93c5fd;
-    --matching: #3b82f6;
-    --ring: rgb(255 255 255 / 0.07);
-    --shadow-sm: 0 1px 2px #00000066;
-    --shadow-md: 0 4px 10px -2px #00000080;
-  }
+:root[data-theme="system"] {
+  color-scheme: light dark;
 }
 
 @theme inline {
@@ -115,19 +66,33 @@
   --color-warnline: var(--warn-line);
   --font-sans: var(--font-ui);
   /* The type scale, by role. Use these (text-caption, text-body...) rather than pixel sizes, so the scale changes in one place. */
-  --text-tiny: 11px;
+  --text-tiny: 12px;
   --text-caption: 12px;
   --text-small: 13px;
-  --text-body: 14px;
+  --text-body: 15px;
   --text-heading: 15px;
   --text-stat: 18px;
+  --text-xl: 24px;
+  --text-xl--line-height: 1.2;
+  /* Corners: square like a pick ticket. Controls 4px, sheets and cards 6px. Only the text bubble and badges are round. */
+  --radius-md: 4px;
+  --radius-lg: 4px;
+  --radius-xl: 6px;
+  --radius-2xl: 6px;
   --shadow-card: var(--shadow-sm);
   --shadow-raise: var(--shadow-md);
   /* hairline outlines drawn as shadows, so they never change an element's size */
   --shadow-ring: 0 0 0 1px var(--ring);
   --shadow-control: 0 0 0 1px var(--control);
   --shadow-ok: 0 0 0 1px var(--ok);
-  --font-mono: var(--font-geist-mono);
+  /* the painted end of a board: a line to check */
+  --shadow-crayon: inset 4px 0 0 var(--warn-line);
+}
+
+/* Quantities, prices and order numbers: condensed figures that line up, like stencilled numbers on a pick ticket. */
+@utility figures {
+  font-stretch: 78%;
+  font-variant-numeric: tabular-nums;
 }
 
 .floating-send {
@@ -176,33 +141,9 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
-/* A quiet paper-like texture for the entry screen and the review workspace. */
+/* The workspace floor: flat concrete. The order sheet is the only white surface on it. */
 .textured-surface {
   background-color: var(--bg);
-  background-image:
-    radial-gradient(ellipse at center, rgb(255 255 255 / 0.44) 0%, rgb(239 234 223 / 0.12) 54%, rgb(201 190 168 / 0.3) 100%),
-    radial-gradient(circle, rgb(166 154 133 / 0.12) 0 1px, transparent 1.2px);
-  background-size: auto, 4px 4px;
-  background-repeat: no-repeat, repeat;
-  background-attachment: fixed;
-}
-
-:root[data-theme="dark"] .textured-surface {
-  background-image:
-    radial-gradient(ellipse at center, rgb(255 255 255 / 0.035) 0%, transparent 58%, rgb(0 0 0 / 0.12) 100%),
-    radial-gradient(circle, rgb(255 255 255 / 0.022) 0 1px, transparent 1.2px);
-  background-size: auto, 4px 4px;
-  background-repeat: no-repeat, repeat;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root[data-theme="system"] .textured-surface {
-    background-image:
-      radial-gradient(ellipse at center, rgb(255 255 255 / 0.035) 0%, transparent 58%, rgb(0 0 0 / 0.12) 100%),
-      radial-gradient(circle, rgb(255 255 255 / 0.022) 0 1px, transparent 1.2px);
-    background-size: auto, 4px 4px;
-    background-repeat: no-repeat, repeat;
-  }
 }
 
 /* One focus style for the whole app: keyboard users only (never on mouse clicks), thin, offset. */
@@ -230,10 +171,10 @@ button { cursor: pointer; }
   }
 }
 
-/* soft card: white surface, faint outline, gentle shadow */
+/* a sheet on the concrete: white, squared, a hairline edge and a slight lift */
 .card {
   background: var(--panel);
-  border-radius: 14px;
+  border-radius: 6px;
   box-shadow: 0 0 0 1px var(--ring), var(--shadow-sm);
 }
 
@@ -346,20 +287,15 @@ button { cursor: pointer; }
   background-repeat: no-repeat;
   background-attachment: scroll;
 }
-/* dark themes: dim the photo so it does not glare */
-:root[data-theme="dark"] .lock-screen {
-  background-image: linear-gradient(rgb(20 20 22 / 0.78), rgb(20 20 22 / 0.78)), url("/images/lock-bg.jpg");
-}
-@media (prefers-color-scheme: dark) {
-  :root[data-theme="system"] .lock-screen {
-    background-image: linear-gradient(rgb(20 20 22 / 0.78), rgb(20 20 22 / 0.78)), url("/images/lock-bg.jpg");
-  }
+/* dark themes: dim the photo so it does not glare (the overlay is clear in light) */
+.lock-screen {
+  background-image: linear-gradient(light-dark(transparent, rgb(21 23 26 / 0.78)), light-dark(transparent, rgb(21 23 26 / 0.78))), url("/images/lock-bg.jpg");
 }
 /* wide screens: the form is a card over the photo, as the phone layout's sheet is, so it stays readable over the wood */
 .lock-screen-form {
   animation: lock-screen-in 700ms cubic-bezier(0.4, 0, 0.2, 1) 120ms both;
   background: var(--panel);
-  border-radius: 24px;
+  border-radius: 6px;
   padding: 2rem 1.75rem;
   box-shadow: 0 0 0 1px var(--ring), 0 12px 40px rgb(0 0 0 / 0.16);
 }
@@ -412,7 +348,7 @@ button { cursor: pointer; }
     border-right: 0;
     border-bottom: 0;
     border-left: 0;
-    border-radius: 24px 24px 0 0;
+    border-radius: 12px 12px 0 0;
     padding-bottom: calc(1.5rem + env(safe-area-inset-bottom));
     animation: lock-sheet-in 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
   }
@@ -436,7 +372,7 @@ button { cursor: pointer; }
   }
   .lock-screen-form {
     max-width: none;
-    border-radius: 24px 24px 0 0;
+    border-radius: 12px 12px 0 0;
     background: var(--panel);
     padding: 2rem 1.5rem calc(1.5rem + env(safe-area-inset-bottom));
     box-shadow: 0 -8px 32px rgb(0 0 0 / 0.14);

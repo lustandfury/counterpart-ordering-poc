@@ -40,7 +40,7 @@ export function ResultsDisplay({ data, samples, senders, onClose, onOpenOrder }:
         {jevMs > 0 && claudeMs > 0 && <p className="mt-1 max-w-4xl text-base font-semibold">{Math.abs(timeSaved)}% {timeSaved < 0 ? "more" : "less"} time per order on average</p>}
         <p className="mt-2 max-w-3xl text-muted">
           Both pipelines on {data.costs.length} synthetic orders ({lines} lines), scored against a hand-reviewed answer key.
-          Thresholds: product confidence <span className="font-mono">{T.toFixed(2)}</span>, quantity clarity <span className="font-mono">{unitMin.toFixed(2)}</span> ({changed ? "custom" : "defaults"}).
+          Thresholds: product confidence <span className="figures">{T.toFixed(2)}</span>, quantity clarity <span className="figures">{unitMin.toFixed(2)}</span> ({changed ? "custom" : "defaults"}).
           {changed && <button onClick={reset} className="ml-2 underline underline-offset-2">Reset to defaults</button>}
         </p>
 
@@ -56,7 +56,7 @@ export function ResultsDisplay({ data, samples, senders, onClose, onOpenOrder }:
                   {([['Claude + Jev', jev], ['Claude only', claude]] as const).map(([label, side]) => (
                     <div key={label} className="contents">
                       <dt className="text-small text-muted">{label}</dt>
-                      <dd className="text-right font-mono text-lg">{side[k.key]} of {k.denominator(side)}
+                      <dd className="text-right figures text-lg">{side[k.key]} of {k.denominator(side)}
                         <small className="block text-caption text-muted">{k.denominator(side) ? pct(100 * side[k.key] / k.denominator(side)) : "n/a"}</small>
                       </dd>
                     </div>
@@ -77,7 +77,7 @@ export function ResultsDisplay({ data, samples, senders, onClose, onOpenOrder }:
             <table className="w-full text-left text-sm">
               <thead><tr className="text-muted"><th className="font-normal">Pipeline</th><th className="text-right font-normal">Per order (mean)</th><th className="text-right font-normal">Per 10,000 orders</th></tr></thead>
               <tbody>{([['Claude + Jev', e.jevCost], ['Claude only', e.claudeCost]] as const).map(([label, cost]) => (
-                <tr key={label}><th className="py-2 font-medium">{label}</th><td className="text-right font-mono text-lg">{usd(cost)}</td><td className="text-right font-mono text-lg">{usdCents(cost * 10000)}</td></tr>
+                <tr key={label}><th className="py-2 font-medium">{label}</th><td className="text-right figures text-lg">{usd(cost)}</td><td className="text-right figures text-lg">{usdCents(cost * 10000)}</td></tr>
               ))}</tbody>
             </table>
           </div>
@@ -112,19 +112,19 @@ export function ResultsDisplay({ data, samples, senders, onClose, onOpenOrder }:
                 {e.byOrder.map((o) => (
                   <tr key={o.orderId} className={`border-b border-line last:border-b-0 hover:bg-bg ${!o.decisionsSame ? "bg-brandsoft" : ""}`}>
                     <td className="px-6 py-2.5">
-                      <span className="font-medium">{senders[o.orderId]?.company ?? o.orderId}</span>
-                      <span className="ml-2 font-mono text-caption text-muted">{orderNumber(o.orderId)}</span>{!o.decisionsSame && <Pill tone="highlight" className="ml-2">Decisions differ</Pill>}
+                      <span className="whitespace-nowrap font-medium">{senders[o.orderId]?.company ?? o.orderId}</span>
+                      <span className="ml-2 figures text-caption text-muted">{orderNumber(o.orderId)}</span>{!o.decisionsSame && <Pill tone="highlight" className="ml-2">Decisions differ</Pill>}
                     </td>
-                    <td className="px-3 py-2.5 text-right font-mono">{o.lines}</td>
-                    <td className="px-3 py-2.5 text-right font-mono text-muted">{o.shouldReview}</td>
-                    <td className="px-3 py-2.5 text-right font-mono">{o.jev.approved}</td>
-                    <td className={`px-3 py-2.5 text-right font-mono ${o.jev.correct < o.lines ? "text-warn" : ""}`}>{o.jev.correct}</td>
-                    <td className="px-3 py-2.5 text-right font-mono">{o.claude.approved}</td>
-                    <td className={`px-3 py-2.5 text-right font-mono ${o.claude.correct < o.lines ? "text-warn" : ""}`}>{o.claude.correct}</td>
-                    <td className="px-3 py-2.5 text-right font-mono">{o.jev.unneeded}</td>
-                    <td className="px-3 py-2.5 text-right font-mono">{o.claude.unneeded}</td>
-                    <td className="px-3 py-2.5 text-right font-mono">{usd(o.jevUsd)}</td>
-                    <td className="px-3 py-2.5 text-right font-mono text-muted">{usd(o.claudeUsd)}</td>
+                    <td className="px-3 py-2.5 text-right figures">{o.lines}</td>
+                    <td className="px-3 py-2.5 text-right figures text-muted">{o.shouldReview}</td>
+                    <td className="px-3 py-2.5 text-right figures">{o.jev.approved}</td>
+                    <td className={`px-3 py-2.5 text-right figures ${o.jev.correct < o.lines ? "text-warn" : ""}`}>{o.jev.correct}</td>
+                    <td className="px-3 py-2.5 text-right figures">{o.claude.approved}</td>
+                    <td className={`px-3 py-2.5 text-right figures ${o.claude.correct < o.lines ? "text-warn" : ""}`}>{o.claude.correct}</td>
+                    <td className="px-3 py-2.5 text-right figures">{o.jev.unneeded}</td>
+                    <td className="px-3 py-2.5 text-right figures">{o.claude.unneeded}</td>
+                    <td className="px-3 py-2.5 text-right figures">{usd(o.jevUsd)}</td>
+                    <td className="px-3 py-2.5 text-right figures text-muted">{usd(o.claudeUsd)}</td>
                     <td className="px-6 py-2.5 text-right">
                       {onOpenOrder ? <button onClick={() => onOpenOrder(o.orderId)} className="text-small font-medium underline underline-offset-2">Open</button> : <Link href={`/?order=${o.orderId}`} className="text-small font-medium underline underline-offset-2">
                         Open
@@ -133,7 +133,7 @@ export function ResultsDisplay({ data, samples, senders, onClose, onOpenOrder }:
                   </tr>
                 ))}
               </tbody>
-              <tfoot className="border-t border-line bg-panel2 font-mono">
+              <tfoot className="border-t border-line bg-panel2 figures">
                 <tr><th className="px-6 py-3 text-left">Totals / mean cost</th>
                   {[lines, e.byOrder.reduce((s, o) => s + o.shouldReview, 0), jev.approved, jev.correct, claude.approved, claude.correct, jev.unneeded, claude.unneeded, usd(e.jevCost), usd(e.claudeCost)].map((value, i) => <td key={i} className="px-3 py-3 text-right">{value}</td>)}<td />
                 </tr>
@@ -166,9 +166,9 @@ export function ResultsDisplay({ data, samples, senders, onClose, onOpenOrder }:
                   <tbody>
                     {bands.map((b) => (
                       <tr key={b.band} className="border-t border-line">
-                        <td className="py-1.5 font-mono">{b.band}</td>
-                        <td className="py-1.5 text-right font-mono">{b.lines}</td>
-                        <td className="py-1.5 text-right font-mono">{pct(b.accuracy)}</td>
+                        <td className="py-1.5 figures">{b.band}</td>
+                        <td className="py-1.5 text-right figures">{b.lines}</td>
+                        <td className="py-1.5 text-right figures">{pct(b.accuracy)}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -176,7 +176,7 @@ export function ResultsDisplay({ data, samples, senders, onClose, onOpenOrder }:
               ))}
             </div>
             <p className="mt-4 text-small text-muted">
-              The right product was in Jev&apos;s 20-product shortlist for <span className="font-mono">{pct(e.shortlistRecall)}</span> of lines.
+              The right product was in Jev&apos;s 20-product shortlist for <span className="figures">{pct(e.shortlistRecall)}</span> of lines.
             </p>
           </section>
 
@@ -188,7 +188,7 @@ export function ResultsDisplay({ data, samples, senders, onClose, onOpenOrder }:
               <ul className="mt-3 flex flex-col gap-3 text-small">
                 {e.wrong.map((w) => (
                   <li key={`${w.orderId}-${w.raw}`} className="rounded-xl bg-bg px-4 py-3">
-                    <p className="font-mono text-body">{w.raw}</p>
+                    <p className="text-body font-medium">{w.raw}</p>
                     <p className="mt-1 text-muted">
                       Answer key: <span className="text-ink">{w.gold.sku ?? "not in catalog"}</span> · Jev: {w.jev.sku ?? "not in catalog"} ({Math.round(w.jev.confidence * 100)}%, {w.jevApproved ? "auto-approved" : "flagged"}) · Claude:{" "}
                       {w.claude.sku ?? "not in catalog"} ({w.claude.confidence}, {w.claudeApproved ? "auto-approved" : "flagged"})

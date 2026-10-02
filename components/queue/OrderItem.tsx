@@ -7,17 +7,19 @@ export function OrderItem(p: { id: string; tag: string; title: string; preview: 
   const previewLines = p.preview.trim().split("\n");
   const preview = previewLines.slice(0, 2);
   const hasMorePreview = previewLines.length > preview.length;
+  // the same crayon edge as a line to check in the review: this order still has some
+  const toCheck = !p.reading && !p.sent && p.count > 0;
   return (
     <li className={p.arriving ? "queue-arrive" : undefined}>
       <button
         onClick={() => p.onPick(p.id)}
         aria-current={p.active ? "true" : undefined}
         aria-busy={p.reading || undefined}
-        className={`grid w-full grid-cols-[minmax(0,1fr)_auto] items-stretch gap-2.5 rounded-r-lg px-2.5 py-2.5 text-left ${p.active ? "bg-bg shadow-[inset_3px_0_0_var(--brand)]" : "hover:bg-bg"}`}
+        className={`grid w-full grid-cols-[minmax(0,1fr)_auto] items-stretch gap-2.5 rounded-r-lg px-2.5 py-2.5 pl-3.5 text-left ${p.active ? "bg-bg" : "hover:bg-bg"} ${toCheck ? "shadow-crayon" : ""}`}
       >
         <span className="min-w-0 flex-1">
           <span className="flex min-w-0 items-center gap-2">
-            <span className={`shrink-0 rounded-md bg-bg px-1.5 py-0.5 font-mono text-caption font-semibold leading-4 text-ink ${p.active ? "shadow-ring" : ""}`}>{p.tag}</span>
+            <span className={`shrink-0 rounded-md bg-bg px-1.5 py-0.5 figures text-caption font-semibold leading-4 text-ink ${p.active ? "shadow-ring" : ""}`}>{p.tag}</span>
             <span className={`min-w-0 flex-1 truncate text-small ${p.active ? "font-semibold" : "font-medium"}`}>{p.title}</span>
           </span>
           <span className="mt-1 block text-caption leading-4 text-muted">{preview.map((line, i) => <span key={i} className="block truncate whitespace-pre">{line}{hasMorePreview && i === preview.length - 1 ? "..." : ""}</span>)}</span>

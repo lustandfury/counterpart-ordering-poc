@@ -329,6 +329,35 @@ One e2e step had relied, without saying so, on the replay reopening the desktop 
 - The inconsistencies above are queued for the visual-identity pass, so they get decided rather than carried over by accident.
 - The dark palette is still written out three times in `globals.css`. Folding it into one source changes shadow geometry too, so it waits for that pass.
 
+### 43. A pick ticket, not a storefront
+**Did:** gave Counterpart its own look, taken from the lumber-yard counter rather than from a template:
+- **Colours:** a concrete-grey page, one white order sheet, graphite text, tape-measure yellow kept for the logo and Send, lumber-crayon orange for lines to check, and grade-stamp green for approved lines.
+- **Type:** Archivo, with condensed figures from its own width axis for quantities, prices and order numbers.
+- **Corners:** square, 4–6px. Only the contractor's text bubble stays round.
+- **Layout:** the lines and the total sit on one sheet, with the quantity first on every line, like a pick ticket.
+- **The one bold element:** a crayon edge down each line to check, like the paint on lumber ends. Queue rows with lines to check carry the same edge.
+- **Phones:** the contractor's text folds behind "Show text".
+- **Copy:** the saving reads "N× lower AI cost".
+- **Dark mode:** the palette is now written once, as light-dark() pairs, instead of three copies.
+
+**Happened:**
+- The first screenshots showed that opening the AI cost rail squeezed the lines to one word per row. The two-column layout followed the window width, not the space the review actually had. It's now a container query, so the review drops to one column when the rail opens.
+- On phones, the first line to check moved from below the fold onto the first screen.
+- The ux-critic agent ranked 13 issues. The worst was older than this pass: j/k moved an invisible cursor while the 1/2/3/x hints showed on every line to check, so a key could confirm a line the rep wasn't looking at.
+- The faded-yellow Send that sits there until the order is ready measured 2.53:1 contrast, below the WCAG AA minimum.
+
+**Changed:**
+- Fixed in this pass:
+  - The active line now has a wider crayon edge and a tint, j/k move focus with it, and the key hints show only on that line.
+  - A line's quantity turns orange only when the quantity itself is in question.
+  - An unready Send uses a quiet outlined style instead.
+  - On phones, the choices span the full width.
+- Left for Mike, because they change earlier product decisions:
+  - listing the suggestion first
+  - trimming the reason text and the five repeated "to check" counts
+  - single-line approved rows
+  - skip-link and Escape fixes
+
 ## Where it stands
 
 | | Claude only | Claude + Jev |

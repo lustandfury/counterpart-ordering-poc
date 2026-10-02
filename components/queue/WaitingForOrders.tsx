@@ -27,7 +27,7 @@ export function WaitingForOrders({ arrived, phone }: { arrived: boolean; phone: 
         Contractors text their orders in. Each one lands in your queue already matched to the catalog, so you only check what&apos;s uncertain.
       </p>
       <div role="status" className="mt-6 flex items-center gap-2 text-small text-muted">
-        <span aria-hidden className="flex h-8 items-center gap-1 rounded-2xl rounded-tl-md bg-panel px-3 shadow-ring">
+        <span aria-hidden className="flex h-8 items-center gap-1 rounded-[18px] rounded-tl-[4px] bg-panel px-3 shadow-ring">
           <span className="typing-dot" /><span className="typing-dot" /><span className="typing-dot" />
         </span>
         A contractor is texting…

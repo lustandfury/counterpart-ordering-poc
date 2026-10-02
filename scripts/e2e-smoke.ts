@@ -32,9 +32,9 @@ async function main() {
       await openFirstOrder(page, width);
       await expect(page.getByRole("region", { name: "Needs review", exact: true })).toBeVisible();
       await expect(page.getByRole("region", { name: "Validated items", exact: true })).toBeVisible();
-      // The savings sit on the order card as one line, "Results · 3.9× lower cost | 26% faster".
+      // The savings sit on the order card as one line, "3.9× lower AI cost | 26% faster".
       // Clicking it opens the details: a sheet on phones, the rail on wide screens (closed at first).
-      const compare = page.locator("#review h1").locator("xpath=ancestor::*[@aria-live]").getByRole("button", { name: /^Results · \d+\.\d× lower cost( \| (\d+% (faster|slower)|same speed))?$/ });
+      const compare = page.locator("#review h1").locator("xpath=ancestor::*[@aria-live]").getByRole("button", { name: /^\d+\.\d× lower AI cost( \| (\d+% (faster|slower)|same speed))?$/ });
       await expect(compare).toBeVisible();
       const openCost = async () => {
         if (width < 1024 && !(await page.locator("#cost-comparison").isVisible())) {

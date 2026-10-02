@@ -12,7 +12,7 @@ export function OrderFooter({ result, subtotal, toCheck, sentAt, onSend, onReope
   const extra = [toCheck > 0 && `+ ${toCheck} to check`, subtotal.unpriced > 0 && `+ ${subtotal.unpriced} not priced`].filter(Boolean).join(" · ");
   const { tax, total } = withTax(subtotal.sum);
   return (
-    <div className="card px-4 py-4 sm:px-6">
+    <div className="border-t-2 border-line px-4 py-4 sm:px-6">
       <h2 className="sr-only">Order total</h2>
       <dl className="grid grid-cols-[1fr_auto] gap-y-1.5 text-body tabular-nums">
         <dt className="text-muted">{toCheck > 0 ? "Subtotal so far" : "Subtotal"}</dt>
@@ -34,7 +34,7 @@ export function OrderFooter({ result, subtotal, toCheck, sentAt, onSend, onReope
         <Button
           id="send-order"
           size="md"
-          variant={sentAt ? "secondary" : "primary"}
+          variant={sentAt ? "secondary" : ready ? "primary" : "waiting"}
           onClick={() => {
             if (sentAt) onReopen();
             else if (ready) onSend();

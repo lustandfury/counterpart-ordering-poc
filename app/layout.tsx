@@ -1,17 +1,14 @@
 import type { Metadata, Viewport } from "next";
-import { DM_Sans, Geist_Mono } from "next/font/google";
+import { Archivo } from "next/font/google";
 import "./globals.css";
 import { THEME_SCRIPT } from "@/lib/theme";
 import { AccessProvider } from "@/components/AccessProvider";
 
-const dmSans = DM_Sans({
+// One family for everything. Its width axis gives the condensed figures (the `figures` utility) for quantities and prices.
+const archivo = Archivo({
   variable: "--font-ui",
   subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  axes: ["wdth"],
 });
 
 export const metadata: Metadata = {
@@ -53,7 +50,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       data-theme="light"
       suppressHydrationWarning
-      className={`${dmSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${archivo.variable} h-full antialiased`}
     >
       <head>
         <link rel="preload" as="image" href="/images/lock-bg.jpg" />

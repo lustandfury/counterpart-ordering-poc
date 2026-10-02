@@ -19,6 +19,19 @@ export function LineRow(props: {
 
 type Props = Parameters<typeof LineRow>[0];
 
+/** The pick-ticket column every line starts with: the number in condensed figures, its unit under it. */
+const QTY_COLUMN = "grid grid-cols-[3.25rem_minmax(0,1fr)] gap-x-3 sm:grid-cols-[4rem_minmax(0,1fr)] sm:gap-x-4";
+function Qty({ text, tone = "text-ink" }: { text: string; tone?: string }) {
+  const [n, ...unit] = text.split(" ");
+  const number = /^\d/.test(n);
+  return (
+    <span className="flex flex-col items-end pt-0.5 text-right leading-none">
+      <span className={`figures text-stat font-semibold ${tone}`}>{number ? n : "—"}</span>{" "}
+      <span className="mt-1 text-caption text-muted">{number ? unit.join(" ") : "no qty"}</span>
+    </span>
+  );
+}
+
 function FlaggedLine(props: Props) {
   const { l, catalog, active } = props;
   const [showAll, setShowAll] = useState(false);
@@ -30,16 +43,23 @@ function FlaggedLine(props: Props) {
   const asked = l.unit && sellUnit && l.sku !== NONE && !sameQuantityUnit(l.unit, sellUnit) ? `${fmtQty(l.qty, l.unit)} · sold per ${unitName(sellUnit)}` : fmtQty(l.qty, l.unit);
   const quickPrice = linePrice(l, l.sku, catalog);
   const none = l.options.find((o) => o.sku === NONE)?.probability;
+  // orange only when the quantity itself is what to check, not when only the product is uncertain
+  const quantityInQuestion = l.quantityOnly || l.qty == null || asked !== fmtQty(l.qty, l.unit);
   return (
-    <li id={`line-${l.id}`} tabIndex={-1} onClick={props.onSelect} className={`outline-none scroll-mt-44 scroll-mb-8 border-b border-line bg-panel px-4 py-5 last:border-b-0 sm:px-6`}>
-      <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-0.5">
-        <span className="font-mono text-body font-medium">
-          <span className="sr-only">Check this: </span>
-          {l.raw}
-        </span>
-        <span className="text-body text-muted">{asked}</span>
-      </div>
+    // the painted end of a board: a crayon edge down the whole line marks it as one to check;
+    // the line the keys act on (j/k, 1-3, Enter, x) gets a wider edge and a tint
+    <li id={`line-${l.id}`} tabIndex={-1} onClick={props.onSelect} className={`${QTY_COLUMN} outline-none scroll-mt-44 scroll-mb-8 border-b border-line py-5 pl-4 pr-4 last:border-b-0 sm:pl-6 sm:pr-6 ${active ? "bg-panel2 shadow-[inset_7px_0_0_var(--warn-line)]" : "bg-panel shadow-crayon"}`}>
+      <Qty text={fmtQty(l.qty, l.unit)} tone={quantityInQuestion ? "text-warn" : "text-ink"} />
+      <div className="min-w-0">
+      <p className="text-body font-medium">
+        <span className="sr-only">Check this: </span>
+        {l.raw}
+        <span className="sr-only">, {asked}</span>
+      </p>
+      {asked !== fmtQty(l.qty, l.unit) && <p aria-hidden className="text-caption text-muted">{asked}</p>}
       <p className="mt-1.5 text-small text-warn">{l.reasons.join(" ")}</p>
+      {/* phones: the choices use the full width, under the quantity column */}
+      <div className="max-sm:-ml-16">
       {props.staged ? (
         <QuantityEditor l={l} sku={props.staged} catalog={catalog} onConfirm={(n) => props.onConfirm(props.staged!, n)} onCancel={props.onUnstage} />
       ) : quick ? (
@@ -67,6 +87,7 @@ function FlaggedLine(props: Props) {
                 key={o.sku}
                 className="tour-option"
                 keyHint={i + 1}
+                showKey={active}
                 title={o.name}
                 suggested={suggested}
                 detail={price && <span className="tabular-nums">{price.unit}{price.total != null && <> · {money(price.total)} for {fmtQty(l.qty, catalog[o.sku].unit)}</>}</span>}
@@ -84,6 +105,7 @@ function FlaggedLine(props: Props) {
         <ChoiceButton
           className="mt-2 w-full"
           keyHint="x"
+          showKey={active}
           title="Leave off order"
           suggested={l.sku === NONE}
           detail="Not in the catalog · tell the contractor we don't carry it"
@@ -91,6 +113,8 @@ function FlaggedLine(props: Props) {
           onClick={() => props.onConfirm(NONE)}
         />
       )}
+      </div>
+      </div>
     </li>
   );
 }
@@ -99,15 +123,16 @@ function FlaggedLine(props: Props) {
  * One choice on a line to check: its key, the product (bold when it's the suggestion), a price or note under it,
  * and the matcher's confidence in its own column.
  */
-function ChoiceButton({ keyHint, title, suggested, detail, confidence, aside, className, onClick }: {
-  keyHint: ReactNode; title: string; suggested: boolean; detail?: ReactNode; confidence?: number; aside?: ReactNode; className?: string; onClick: () => void;
+function ChoiceButton({ keyHint, showKey, title, suggested, detail, confidence, aside, className, onClick }: {
+  keyHint: ReactNode; showKey: boolean; title: string; suggested: boolean; detail?: ReactNode; confidence?: number; aside?: ReactNode; className?: string; onClick: () => void;
 }) {
   return (
     <button
       onClick={(e) => { e.stopPropagation(); onClick(); }}
       className={cx("review-option flex min-h-11 items-center gap-3 rounded-xl bg-panel px-3.5 py-2 text-left text-ink shadow-control", className)}
     >
-      <kbd className="w-4 text-center text-xs text-muted">{keyHint}</kbd>
+      {/* the key works only on the active line, so only it shows the keys; touch screens have none */}
+      <kbd className={cx("w-4 shrink-0 text-center text-xs text-muted pointer-coarse:hidden", !showKey && "invisible")}>{keyHint}</kbd>
       <span className="min-w-0 flex-1">
         <span className={`block ${suggested ? "font-semibold" : ""}`}>{title}{suggested && <span className="sr-only"> (suggested)</span>}</span>
         {detail && <span className="block text-caption text-muted">{detail}</span>}
@@ -135,30 +160,33 @@ function ConfirmedLine(props: Props) {
   const total = price?.total != null ? money(price.total) : <span title="Not priced: the quantity isn't in the unit this product is sold by">—<span className="sr-only">not priced</span></span>;
   return (
     <li id={`line-${l.id}`} tabIndex={-1} onClick={props.onSelect} className={`outline-none scroll-mt-44 border-b border-line last:border-b-0 ${active ? "bg-bg" : ""}`}>
-      <div className="flex min-h-14 items-center gap-3 px-4 py-3 sm:px-6">
-        <span className={state === "done" && pick === NONE ? "text-warn" : "text-ok"}>{state === "done" ? <UserIcon aria-hidden className="h-4 w-4 shrink-0" /> : <Check />}</span>
-        <span className="min-w-0 flex-1">
-          <span className="block break-words text-ink">{chosen}</span>
-          <span className="block font-mono text-small text-muted">{l.raw}</span>
-          {/* phones: quantity and price stack under the name instead of taking columns */}
-          <span className="mt-1 flex flex-wrap items-baseline gap-x-2 text-small tabular-nums text-muted sm:hidden">
-            {pick !== NONE && <span>{qty}</span>}
-            {pick !== NONE && <span>{total}</span>}
-            {pick !== NONE && price && <span>({price.unit})</span>}
+      <div className={`${QTY_COLUMN} min-h-14 items-center py-3 pl-4 pr-4 sm:pl-6 sm:pr-6`}>
+        {pick !== NONE ? <Qty text={qty} /> : <span aria-hidden />}
+        <div className="flex min-w-0 items-center gap-3">
+          <span className={state === "done" && pick === NONE ? "text-warn" : "text-ok"}>{state === "done" ? <UserIcon aria-hidden className="h-4 w-4 shrink-0" /> : <Check />}</span>
+          <span className="min-w-0 flex-1">
+            <span className="block break-words text-ink">{chosen}</span>
+            <span className="block text-small text-muted">{l.raw}</span>
+            {/* phones: the price sits under the name instead of taking a column */}
+            {pick !== NONE && (
+              <span className="mt-1 flex flex-wrap items-baseline gap-x-2 text-small text-muted sm:hidden">
+                <span className="figures text-ink">{total}</span>
+                {price && <span className="figures">({price.unit})</span>}
+              </span>
+            )}
+            {state === "done" && (
+              <span className="mt-0.5 block text-caption text-muted">
+                {pick === NONE ? "Left off by you" : props.quantity != null ? "Product and quantity set by you" : "Checked by you"} · <button className="underline hover:text-ink" onClick={props.onUndo}>Undo</button>
+              </span>
+            )}
           </span>
-          {state === "done" && (
-            <span className="mt-0.5 block text-caption text-muted">
-              {pick === NONE ? "Left off by you" : props.quantity != null ? "Product and quantity set by you" : "Checked by you"} · <button className="underline hover:text-ink" onClick={props.onUndo}>Undo</button>
+          {pick !== NONE && (
+            <span className="w-28 shrink-0 text-right text-muted max-sm:hidden">
+              <span className="figures block text-heading text-ink">{total}</span>
+              {price && <span className="figures block text-caption">{price.unit}</span>}
             </span>
           )}
-        </span>
-        {pick !== NONE && <span className="shrink-0 text-right text-body text-muted max-sm:hidden">{qty}</span>}
-        {pick !== NONE && (
-          <span className="w-28 shrink-0 text-right tabular-nums text-muted max-sm:hidden">
-            <span className="block text-body">{total}</span>
-            {price && <span className="block text-caption">{price.unit}</span>}
-          </span>
-        )}
+        </div>
       </div>
     </li>
   );

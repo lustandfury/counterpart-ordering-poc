@@ -123,7 +123,10 @@ export function Review({ result, mode, T, unitMin, catalog, resolved, setResolve
       const open = line && !resolved[line.id] && !staged[line.id];
       const navigate = (id: string) => {
         setActive(id);
-        document.getElementById(`line-${id}`)?.scrollIntoView({ block: "nearest" });
+        // focus follows the cursor, so screen readers announce the line the keys now act on
+        const line = document.getElementById(`line-${id}`);
+        line?.focus({ preventScroll: true });
+        line?.scrollIntoView({ block: "nearest" });
       };
       const choices = line ? productChoices(line) : [];
       if (e.key === "j" && ids.length) navigate(ids[Math.min(ids.length - 1, i + 1)]);
@@ -151,27 +154,30 @@ export function Review({ result, mode, T, unitMin, catalog, resolved, setResolve
           Skip to the first line to check
         </a>
       )}
-      {/* Wide screens: two columns. The order header stays pinned on the left for reference while the lines scroll on the right. */}
-      <div className="xl:grid xl:grid-cols-[minmax(0,23rem)_minmax(0,1fr)] xl:items-start xl:gap-6">
-      <div className="xl:sticky xl:top-5 xl:-m-1 xl:max-h-[calc(100dvh-2.5rem)] xl:overflow-y-auto xl:p-1">
-        <OrderDetails result={result} mode={mode} lines={lines.length} flagged={flagged.length} done={done} compare={compare} />
+      {/*
+        Two columns when there's room: the order header stays pinned on the left while the lines scroll on the right.
+        "Room" is the space the review actually has (a container query), so opening the cost rail drops to one column.
+      */}
+      <div className="@container/review">
+      <div className="@min-[52rem]/review:grid @min-[52rem]/review:grid-cols-[minmax(0,23rem)_minmax(0,1fr)] @min-[52rem]/review:items-start @min-[52rem]/review:gap-6">
+      <div className="@min-[52rem]/review:sticky @min-[52rem]/review:top-5 @min-[52rem]/review:-m-1 @min-[52rem]/review:max-h-[calc(100dvh-2.5rem)] @min-[52rem]/review:overflow-y-auto @min-[52rem]/review:p-1">
+        <OrderDetails result={result} mode={mode} lines={lines.length} flagged={flagged.length} done={done} compare={compare} phone={phone} />
       </div>
 
+      {/* One sheet, like a pick ticket: the lines to check on top, then the confirmed lines, then the total and Send. */}
       <section aria-label="Order" className={phone ? "pb-24" : ""}>
-        <div className="space-y-5">
-          <div inert={!!sentAt} className={`space-y-5 ${sentAt ? "opacity-70" : ""}`}>
+        <div className="card overflow-hidden">
+          <div inert={!!sentAt} className={sentAt ? "opacity-70" : undefined}>
             {[
-              ...(pending.length ? [{ id: "needs-review", title: "Needs review", description: "Confirm a product and quantity for each item.", items: pending, color: "bg-panel text-warn", empty: "" }] : []),
-              { id: "validated-items", title: "Validated items", description: "Auto-approved or checked by you.", items: validated, color: "bg-panel text-ok", empty: "Validated items will appear here as you confirm them." },
-              ...(excluded.length ? [{ id: "excluded-items", title: "Left off order", description: "No catalog match. Let the contractor know.", items: excluded, color: "bg-bg text-muted", empty: "" }] : []),
-            ].map((group) => (
-              <section key={group.id} aria-labelledby={group.id} className="card overflow-hidden">
-                <header className={`border-b border-line px-4 py-3 sm:px-6 ${group.color}`}>
-                  <div className="flex items-center justify-between gap-3">
-                    <h2 id={group.id} className="text-body font-semibold">{group.title}</h2>
-                    <Pill tone="count" aria-label={`${group.items.length} items`}>{group.items.length}</Pill>
-                  </div>
-                  <p className="mt-0.5 text-caption text-muted">{group.description}</p>
+              ...(pending.length ? [{ id: "needs-review", title: "Needs review", description: "Confirm a product and quantity for each item.", items: pending, tone: "text-warn", empty: "" }] : []),
+              { id: "validated-items", title: "Validated items", description: "Auto-approved or checked by you.", items: validated, tone: "text-ok", empty: "Validated items will appear here as you confirm them." },
+              ...(excluded.length ? [{ id: "excluded-items", title: "Left off order", description: "No catalog match. Let the contractor know.", items: excluded, tone: "text-muted", empty: "" }] : []),
+            ].map((group, i) => (
+              <section key={group.id} aria-labelledby={group.id} className={i > 0 ? "border-t border-line" : undefined}>
+                <header className="flex flex-wrap items-baseline gap-x-3 gap-y-0.5 border-b border-line bg-panel2 px-4 py-2.5 sm:px-6">
+                  <h2 id={group.id} className={`text-small font-semibold ${group.tone}`}>{group.title}</h2>
+                  <p className="text-caption text-muted">{group.description}</p>
+                  <Pill tone="count" className="ml-auto" aria-label={`${group.items.length} items`}>{group.items.length}</Pill>
                 </header>
                 {group.items.length ? (
                   <ul>
@@ -194,6 +200,7 @@ export function Review({ result, mode, T, unitMin, catalog, resolved, setResolve
           <OrderFooter result={result} subtotal={subtotal} toCheck={pending.length} sentAt={sentAt} onSend={onSend} onReopen={onReopen} />
         </div>
       </section>
+      </div>
       </div>
 
       <div

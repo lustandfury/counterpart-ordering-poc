@@ -3,11 +3,13 @@ import { cx } from "@/components/ui/cx";
 
 /**
  * The app's text buttons. Primary is the brand-yellow action (one per view: Send, Enter, Done); secondary is the quiet
- * outlined one. Both `disabled` and `aria-disabled` dim the button: use aria-disabled when it must stay focusable and
- * clickable to explain why it can't act yet (Send with lines still to check).
+ * outlined one. `disabled` dims the button. When it must stay focusable and clickable to explain why it can't act yet
+ * (Send with lines still to check), use aria-disabled with the `waiting` variant instead: faded yellow fails contrast.
  */
 const VARIANT = {
   primary: "bg-brand text-onbrand",
+  /** an action that isn't ready yet but stays clickable to say why (Send with lines still to check) */
+  waiting: "bg-panel2 text-muted shadow-control",
   secondary: "border border-line bg-panel text-ink hover:bg-bg",
 };
 
@@ -32,7 +34,7 @@ export function Button({ variant = "primary", size = "sm", className, ...props }
     <button
       {...props}
       className={cx(
-        "font-semibold transition-[background-color,opacity] disabled:cursor-not-allowed disabled:opacity-40 aria-disabled:cursor-not-allowed aria-disabled:opacity-50",
+        "font-semibold transition-[background-color,opacity] disabled:cursor-not-allowed disabled:opacity-40 aria-disabled:cursor-not-allowed",
         SIZE[size],
         VARIANT[variant],
         className,

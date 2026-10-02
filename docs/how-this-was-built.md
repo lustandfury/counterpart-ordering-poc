@@ -96,3 +96,18 @@ The plan calls for a security, evaluation-correctness and usability review befor
   - Typecheck, lint and 83 unit tests pass, along with a production build and the e2e and loading smoke tests.
 - **What the checks caught:** `results-smoke` was already failing on `main` (it expects the old always-open cost panel). The case study records it; fixing it is a separate change.
 - **Deferred:** a single source for the dark palette (it changes shadows and textures, not just colours), and normalizing button sizes. Both belong to the visual-identity pass.
+
+## The visual identity pass
+- **Decided by Mike:** approved the "pick ticket" direction (concrete, a white sheet, graphite, tape yellow, lumber crayon, stamp green, and Archivo with condensed figures), including folding the contractor's text away on phones.
+- **What Claude did:** most of the change was token edits made possible by the refactor before it: colours, type scale and corner radii in `globals.css`, plus the font in `layout.tsx`. The structural edits were the single order sheet, the quantity column, the crayon edge, and a container query for the two-column layout.
+- **What the checks caught:**
+  - Claude's own screenshots: the review squeezed to one word per line with the cost rail open.
+  - The ux-critic agent, with 13 ranked issues:
+    - an invisible keyboard cursor, with key hints showing on every line
+    - orange quantities that pointed at the wrong problem
+    - a not-ready Send at 2.53:1 contrast
+    - cramped options on phones
+    - a few more (see case study entry 43)
+
+  The visual and keyboard issues are fixed. The product-level ones wait for Mike.
+- **Verified:** typecheck, lint, 83 unit tests, the e2e and loading smoke tests, and screenshots in light, dark and system-dark themes on desktop and phone.
