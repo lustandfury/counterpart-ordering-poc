@@ -1,5 +1,6 @@
 // Screenshots of the review screen for design review. Needs `npm run build && npm start` on PORT (default 3100).
 import { chromium } from "@playwright/test";
+import { readFileSync } from "node:fs";
 
 const base = `http://localhost:${process.env.PORT ?? 3100}`;
 async function main() {
@@ -7,7 +8,13 @@ async function main() {
   const shot = async (name: string, opts: { width: number; height: number; dark?: boolean }, act?: (p: import("@playwright/test").Page) => Promise<void>) => {
     const ctx = await browser.newContext({ viewport: { width: opts.width, height: opts.height }, colorScheme: opts.dark ? "dark" : "light" });
     const page = await ctx.newPage();
+    // Generate order runs live: answer it with a saved result so screenshots never make paid API calls
+    await page.route("**/api/run", (route) => route.fulfill({ json: JSON.parse(readFileSync("results/o13.json", "utf8")) }));
+    await page.addInitScript(() => localStorage.setItem("counterpart-walkthrough-complete", "true"));
     await page.goto(base);
+    await page.getByLabel("Access code", { exact: true }).fill("007");
+    await page.keyboard.press("Enter");
+    await page.locator(".lock-screen").waitFor({ state: "detached" });
     if (process.env.ORDER) {
       if (!(await page.locator("#orders").isVisible())) await page.keyboard.press("Control+b");
       await page.locator("#orders").getByRole("button", { name: new RegExp(`^${process.env.ORDER} `) }).click();
@@ -25,7 +32,7 @@ async function main() {
     await p.getByRole("button", { name: /^Settings/ }).click();
   });
   await shot("desktop-generate", { width: 1280, height: 900 }, async (p) => {
-    await p.getByRole("button", { name: "Generate" }).click();
+    await p.getByRole("button", { name: "Generate order" }).click();
   });
   await shot("mobile", { width: 390, height: 844 });
   await browser.close();

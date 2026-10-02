@@ -37,42 +37,44 @@ async function main() {
         }).toBe(true);
       };
       await expect(tour).toContainText("1 of 3");
-      await checkPlacement("#paste");
-      const generate = page.getByRole("button", { name: "Generate", exact: true });
-      await expect.poll(() => generate.evaluate(el => getComputedStyle(el, "::after").padding)).toBe("3px");
-      await expect.poll(() => generate.evaluate(el => getComputedStyle(el, "::before").animationName)).toBe("tour-glow");
-      await generate.click();
-      await expect(tour).toContainText("1 of 3");
-      const run = page.getByRole("button", { name: "Run ⌘↵", exact: true });
-      await run.click();
-      await expect(page.getByRole("alert").filter({ hasText: "Try again." })).toBeVisible();
-      await expect(tour).toContainText("1 of 3");
-      succeeds = true;
-      await run.click();
+      await checkPlacement("#incoming-message");
+      if (width >= 1024) {
+        // Generate order sits in the queue beside the tour: a failed run keeps step 1, a good one advances
+        const generate = page.getByRole("button", { name: "Generate order", exact: true });
+        await generate.click();
+        await expect(page.getByRole("alert").filter({ hasText: "Try again." })).toBeVisible();
+        await expect(tour).toContainText("1 of 3");
+        succeeds = true;
+        await generate.click();
+      } else {
+        await page.getByRole("button", { name: "Next", exact: true }).click();
+      }
       await expect(tour).toContainText("2 of 3");
       const choice = page.locator(".tour-choice .tour-option").first();
       await expect(choice).toBeVisible();
       await checkPlacement(".tour-choice .tour-option");
 
+      // The suggestion is to leave the tape off, so pick the closest product: it's sold by the roll, so the
+      // quantity editor opens first, and the tour only moves on once the quantity is confirmed.
       if (width === 1440) {
         await page.locator("#review").focus();
-        await page.keyboard.press("Enter");
+        await page.keyboard.press("1");
       } else {
         await choice.click();
       }
+      await expect(page.getByLabel("Quantity in rolls", { exact: true })).toHaveValue("1");
+      await expect(tour).toContainText("2 of 3");
+      await page.getByRole("button", { name: /^Confirm 1 roll/ }).click();
       await expect(tour).toContainText("3 of 3");
       await page.emulateMedia({ reducedMotion: "reduce" });
-      const comparison = page.locator(".tour-compare").first();
-      await checkPlacement(".tour-compare");
-
-      await expect.poll(() => comparison.evaluate(el => getComputedStyle(el, "::before").animationName)).toBe("none");
-      await expect.poll(() => comparison.evaluate(el => getComputedStyle(el, "::after").animationName)).toBe("none");
-      await page.getByRole("button", { name: /^Claude only/ }).click();
-      await expect(tour).toContainText("3 of 3");
-      await page.getByRole("button", { name: /^Claude only/ }).click();
-      await expect(tour).toContainText("3 of 3");
-      await page.getByRole("button", { name: /^Claude \+ Jev/ }).click();
+      const send = page.locator("#send-order");
+      await checkPlacement("#send-order");
+      await expect.poll(() => send.evaluate(el => getComputedStyle(el, "::before").animationName)).toBe("none");
+      await expect.poll(() => send.evaluate(el => getComputedStyle(el, "::after").animationName)).toBe("none");
+      // the visitor sends it; that ends the tour
+      await send.click();
       await expect(tour).toHaveCount(0);
+      await expect(page.locator("[aria-live=polite]")).toContainText("Sent to");
       expect(await page.evaluate(() => localStorage.getItem("counterpart-walkthrough-complete"))).toBe("true");
       console.log(`Onboarding placement, auto-advance, and highlight checks passed at ${width}×${height}`);
       await page.close();

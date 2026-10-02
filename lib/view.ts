@@ -22,7 +22,59 @@ export type ViewLine = {
   options: Option[]; // the pick first, then the next best candidates
 };
 
-const nameOf = (cat: SlimCatalog, sku: string) => (sku === NONE ? "Not in catalog" : (cat[sku]?.name ?? sku));
+/**
+ * One spelling per unit, so units written differently compare equal: "lbs" = "lb", "tubes" = "tube",
+ * "boxes" = "box", "pcs" = "each". "es" is a plural ending only after s, x, ch or sh ("bundles" is "bundle").
+ */
+export const unitKey = (u: string) => (/^(each|ea|pcs?|pieces?)$/i.test(u) ? "each" : u.toLowerCase().replace(/(?<=(?:s|x|ch|sh))es$|s$/, ""));
+
+// Units that measure or package a quantity. A bare count word ("50 studs", "6 lengths") is a count of pieces.
+const MEASURES = new Set(["ft", "feet", "foot", "lf", "in", "inch", "m", "mm", "cm", "lb", "kg", "g", "l", "litre", "liter", "gal", "gallon", "sq", "sqft", "yd", "yard", "ton",
+  "sheet", "box", "bag", "bundle", "roll", "pail", "bucket", "tube", "case", "pallet", "pack", "carton", "pair", "set", "can", "jug"]);
+// Different words for the same container
+const SAME = { bucket: "pail" } as Record<string, string>;
+
+/**
+ * Whether a quantity written in one unit can be used as-is for a product sold in another: "24 bundles" for a bundle,
+ * "50 studs" for a piece. "100 feet" for a roll, or "50 lb" for a box, cannot.
+ */
+export function sameQuantityUnit(written: string | null, sold: string): boolean {
+  if (!written) return true;
+  const w = unitKey(written);
+  const s = unitKey(sold);
+  if ((SAME[w] ?? w) === (SAME[s] ?? s)) return true;
+  return s === "each" && !MEASURES.has(w);
+}
+
+const SIZE_PATTERNS: Record<string, RegExp> = {
+  ft: /(\d+(?:\.\d+)?)\s*(?:ft\b|feet\b|foot\b|')/gi,
+  lb: /(\d+(?:\.\d+)?)\s*(?:lbs?\b|pounds?\b)/gi,
+  kg: /(\d+(?:\.\d+)?)\s*(?:kg\b|kilos?\b)/gi,
+};
+const MEASURE_OF: Record<string, string> = { ft: "ft", feet: "ft", foot: "ft", "'": "ft", lf: "ft", lb: "lb", pound: "lb", kg: "kg", kilo: "kg" };
+
+/**
+ * A suggested quantity in the product's selling unit, when one can be worked out from its name:
+ * "100 feet" of a "250 ft Roll" is 1 roll. Returns null when the name gives no size in the written unit,
+ * so the rep types the quantity instead of trusting a guess.
+ */
+export function suggestQuantity(qty: number | null, written: string | null, productName: string, sold: string): { qty: number; working: string } | null {
+  if (qty == null || !written) return null;
+  const measure = MEASURE_OF[unitKey(written)];
+  if (!measure) return null;
+  const sizes = [...productName.matchAll(SIZE_PATTERNS[measure])].map((m) => Number(m[1]));
+  const size = sizes.at(-1);
+  if (!size) return null;
+  const n = Math.max(1, Math.ceil(qty / size));
+  return { qty: n, working: `${qty} ${measure} ÷ ${size} ${measure} per ${sold} = ${n} ${sold}${n === 1 ? "" : sold.endsWith("x") ? "es" : "s"}` };
+}
+
+/** The product options on a flagged line, in order, without "no match" (leaving a line off is a separate action). */
+export function productChoices(l: Pick<ViewLine, "options">): Option[] {
+  return displayChoices(l).filter((o) => o.sku !== NONE);
+}
+
+const nameOf = (cat: SlimCatalog, sku: string) => (sku === NONE ? "No match: leave off order" : (cat[sku]?.name ?? sku));
 
 /** Applies the routing rule to the saved raw scores. Pure: the slider just calls this again. */
 export function computeView(result: OrderResult, mode: Mode, T: number, cat: SlimCatalog, unitOkMin?: number): ViewLine[] {
@@ -34,9 +86,11 @@ export function computeView(result: OrderResult, mode: Mode, T: number, cat: Sli
       const pick = j.sku.choice;
       const d = route({ skuChoice: pick, skuConfidence: j.sku.confidence, unitOk: j.unitOk, qty: pl.qty, productUnit: cat[pick]?.unit ?? null, T, unitOkMin });
       const quantityOnly = !d.approved && pick !== NONE && j.sku.confidence >= T && d.reasons.length === 1 && d.reasons[0] === REASON.quantity;
+      const closest = others.find((o) => o.sku !== NONE);
+      const noMatch = `Best guess: nothing in the catalog fits (${Math.round(j.sku.confidence * 100)}%).${closest ? ` Closest product: ${nameOf(cat, closest.sku)} (${Math.round(closest.probability * 100)}%).` : ""}`;
       const reasons = quantityOnly
         ? [`The product looks right (${Math.round(j.sku.confidence * 100)}% sure). Check the quantity: this is sold per ${cat[pick]?.unit === "each" ? "piece" : (cat[pick]?.unit ?? "unit")}.`]
-        : d.reasons;
+        : d.reasons.map((r) => (r === REASON.noMatch ? noMatch : r));
       return {
         id: pl.id, raw: pl.raw, qty: pl.qty, unit: pl.unit, sku: pick, name: nameOf(cat, pick), quantityOnly,
         confidence: j.sku.confidence.toFixed(2), approved: d.approved, reasons,
@@ -51,7 +105,8 @@ export function computeView(result: OrderResult, mode: Mode, T: number, cat: Sli
     const rest = others.filter((o) => o.sku !== pick).slice(0, 2);
     return {
       id: pl.id, raw: pl.raw, qty: pl.qty, unit: pl.unit, sku: pick, name: nameOf(cat, pick),
-      quantityOnly: false, confidence: c.confidence, approved: d.approved, reasons: d.reasons,
+      quantityOnly: false, confidence: c.confidence, approved: d.approved,
+      reasons: d.reasons.map((r) => (r === REASON.noMatch ? "Claude found nothing in the catalog that fits. Choose a product or leave the line off." : r)),
       options: [{ sku: pick, name: nameOf(cat, pick) }, ...rest.map((o) => ({ sku: o.sku, name: nameOf(cat, o.sku) }))],
     };
   });
@@ -99,6 +154,6 @@ export function segmentText(text: string, lines: { id: string; raw: string }[]):
 export function displayChoices(l: Pick<ViewLine, "options">): Option[] {
   const likely = l.options.filter((o, i) => i === 0 || (o.probability ?? 1) >= 0.05).slice(0, 3);
   if (likely.some((o) => o.sku === NONE)) return likely;
-  const none = l.options.find((o) => o.sku === NONE) ?? { sku: NONE, name: "Not in catalog" };
+  const none = l.options.find((o) => o.sku === NONE) ?? { sku: NONE, name: "No match: leave off order" };
   return [...likely, none];
 }

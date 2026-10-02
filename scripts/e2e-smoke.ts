@@ -20,14 +20,22 @@ async function main() {
       await unlock(page);
       await expect(page.getByRole("region", { name: "Needs review", exact: true })).toBeVisible();
       await expect(page.getByRole("region", { name: "Validated items", exact: true })).toBeVisible();
+      // phones open the cost comparison as a sheet; wide screens open the rail, which starts closed
       const openCost = async () => {
         if (width < 1024 && !(await page.locator("#cost-comparison").isVisible())) {
-          await page.getByRole("button", { name: "Cost comparison", exact: true }).click();
+          await page.getByRole("button", { name: "AI cost comparison", exact: true }).click();
+        } else if (width >= 1024 && !(await page.locator("#cost-rail").isVisible())) {
+          await page.getByRole("button", { name: /^AI cost/ }).click();
+          await expect(page.locator("#cost-rail")).toBeVisible();
         }
       };
+      if (width >= 1024) {
+        await expect(page.locator("#cost-rail")).toHaveCount(0);
+        await expect(page.getByRole("button", { name: /^AI cost/ })).toContainText("Claude + Jev");
+      }
       if (width < 1024) {
         await expect(page.locator("#cost-comparison")).toBeHidden();
-        await expect(page.getByRole("button", { name: "Cost comparison", exact: true }).locator("..").locator("button, a")).toHaveCount(4);
+        await expect(page.getByRole("button", { name: "AI cost comparison", exact: true }).locator("..").locator("button, a")).toHaveCount(5); // results, settings, help, cost sheet, and the wide-screen cost summary
         await page.getByRole("button", { name: /^Settings/ }).click();
         await expect(page.getByRole("dialog", { name: "Settings", exact: true })).toBeVisible();
         await expect(page.locator("#cost-comparison")).toBeHidden();
@@ -42,17 +50,17 @@ async function main() {
         expect(await page.locator("#cost-comparison").evaluate(el => Math.round(el.getBoundingClientRect().width))).toBe(width);
         await expect.poll(() => page.locator("#cost-comparison").evaluate(el => getComputedStyle(el).animationName)).toBe("lock-sheet-in");
         await page.keyboard.press("Tab");
-        await expect(page.getByRole("button", { name: "Close cost comparison", exact: true })).toBeFocused();
+        await expect(page.getByRole("button", { name: "Close AI cost comparison", exact: true })).toBeFocused();
         await page.keyboard.press("Shift+Tab");
         await expect(page.locator("#cost-comparison").getByRole("link").last()).toBeFocused();
         await page.keyboard.press("Tab");
-        await expect(page.getByRole("button", { name: "Close cost comparison", exact: true })).toBeFocused();
+        await expect(page.getByRole("button", { name: "Close AI cost comparison", exact: true })).toBeFocused();
         await expect(page.locator("#review")).toHaveAttribute("inert", "");
-        await page.getByRole("button", { name: "Close cost comparison", exact: true }).click();
+        await page.getByRole("button", { name: "Close AI cost comparison", exact: true }).click();
         await expect(page.locator("#cost-comparison").locator("..")).toHaveAttribute("data-state", "closing");
         await expect.poll(() => page.locator("#cost-comparison").evaluate(el => getComputedStyle(el).animationName)).toBe("lock-sheet-out");
         await expect(page.locator("#cost-comparison")).toBeHidden();
-        await expect(page.getByRole("button", { name: "Cost comparison", exact: true })).toBeFocused();
+        await expect(page.getByRole("button", { name: "AI cost comparison", exact: true })).toBeFocused();
         await openCost();
         await page.keyboard.press("Escape");
         await expect(page.locator("#cost-comparison")).toBeHidden();
@@ -67,39 +75,54 @@ async function main() {
         await expect(page.locator("#orders")).toBeHidden();
       }
 
-      const headerSend = page.locator("#send-order");
+      const send = page.locator("#send-order");
       const floatingSend = page.locator("#floating-send-order");
       const floatingBar = page.locator(".floating-send");
       const validatedList = page.getByRole("region", { name: "Validated items", exact: true });
-      await expect(headerSend).toBeDisabled();
-      await headerSend.focus();
+      const needsReview = page.getByRole("region", { name: "Needs review", exact: true });
+      // Send sits at the foot of the order, after the lines, and always says why it's off
+      await send.scrollIntoViewIfNeeded();
+      await expect(send).toHaveAttribute("aria-disabled", "true");
+      await expect(page.locator("#send-order-note")).toContainText("1 line still to check");
+      await send.focus();
       await page.keyboard.press("Enter");
       await expect(page.locator("#send-order-guidance")).toContainText("Confirm a product and quantity");
       await expect(page.getByRole("button", { name: "Reopen", exact: true })).toHaveCount(0);
-      await expect(floatingBar).toHaveAttribute("aria-hidden", "true");
 
       // Keep this short sample scrollable even after its final review item is confirmed.
       await validatedList.evaluate((el) => { (el as HTMLElement).style.minHeight = "1200px"; });
-      await page.getByRole("region", { name: "Needs review", exact: true }).evaluate((el) => el.scrollIntoView({ block: "start" }));
-      await expect(headerSend).not.toBeInViewport();
+      await needsReview.evaluate((el) => el.scrollIntoView({ block: "start" }));
+      await expect(send).not.toBeInViewport();
+      // phones keep a bar at the bottom that says what's left; wide screens show it only once the review is done
+      if (width < 1024) await expect(floatingBar).toContainText("1 line to check before sending");
+      else await expect(floatingBar).toHaveAttribute("aria-hidden", "true");
+
+      // The tape line's closest product is sold by the roll, so picking it asks for a quantity in rolls,
+      // prefilled from the product size (100 ft of a 250 ft roll = 1 roll). Nothing is decided until it's confirmed.
       if (width > 1023) {
-        await page.getByRole("region", { name: "Needs review", exact: true }).locator("li").first().focus();
-        await page.keyboard.press("2");
+        await page.locator("#review").focus();
+        await page.keyboard.press("1");
       } else {
-        const option = page.getByRole("region", { name: "Needs review", exact: true }).locator(".tour-option").nth(1);
+        const option = needsReview.locator(".tour-option").first();
         await expect(option).toBeInViewport();
-        const bounds = await option.boundingBox();
-        if (!bounds) throw new Error("Review option has no visible bounds");
-        await page.mouse.click(bounds.x + bounds.width / 2, bounds.y + bounds.height / 2);
+        await option.click();
       }
-      await expect(page.getByRole("region", { name: "Needs review", exact: true })).toHaveCount(0);
-      await expect(headerSend).toBeEnabled();
-      await expect(headerSend).not.toBeInViewport();
+      const quantity = page.getByLabel("Quantity in rolls", { exact: true });
+      await expect(quantity).toBeFocused();
+      await expect(quantity).toHaveValue("1");
+      await expect(needsReview).toContainText("100 ft ÷ 250 ft per roll = 1 roll");
+      await expect(page.locator("[aria-live=polite]")).toContainText("1 To check");
+      await page.keyboard.press("Enter");
+      await expect(needsReview).toHaveCount(0);
+      await expect(validatedList).toContainText("1 roll");
+      await expect(validatedList).toContainText("Product and quantity set by you");
+      await expect(send).not.toBeInViewport();
       await expect(floatingBar).toHaveAttribute("aria-hidden", "false");
       await expect(floatingSend).toBeInViewport();
       await expect(page.locator("#send-order-guidance")).toHaveCount(0);
-      await headerSend.evaluate((el) => el.scrollIntoView({ block: "start" }));
+      await send.evaluate((el) => el.scrollIntoView({ block: "center" }));
       await expect(floatingBar).toHaveAttribute("aria-hidden", "true");
+      await expect(page.locator("#review")).toContainText("$400.50");
       const summaryCard = page.locator("[aria-live=polite]");
       const headerLayout = () => summaryCard.evaluate(el => {
         const card = el.getBoundingClientRect();
@@ -108,11 +131,11 @@ async function main() {
         return { countsX: counts.x - card.x, countsY: counts.y - card.y, titleY: title.y - card.y, overflow: el.scrollWidth - el.clientWidth };
       });
       const beforeSend = await headerLayout();
-      await validatedList.evaluate((el) => el.scrollIntoView({ block: "end" }));
+      await validatedList.evaluate((el) => el.scrollIntoView({ block: "start" }));
       await expect(floatingBar).toHaveAttribute("aria-hidden", "false");
       await floatingSend.click();
       await expect(floatingBar).toHaveAttribute("aria-hidden", "true");
-      await expect(page.getByRole("status")).toContainText("Sent to");
+      await expect(summaryCard).toContainText("Sent to Owen Park for approval");
       const afterSend = await headerLayout();
       expect(afterSend.overflow).toBeLessThanOrEqual(1);
       if (width > 1023) {
@@ -122,13 +145,13 @@ async function main() {
       }
       await page.getByRole("button", { name: "Reopen", exact: true }).click();
       await validatedList.getByRole("button", { name: "Undo", exact: true }).click();
-      await expect(floatingBar).toHaveAttribute("aria-hidden", "true");
+      await expect(page.locator("[aria-live=polite]")).toContainText("1 To check");
       await validatedList.evaluate((el) => { (el as HTMLElement).style.minHeight = ""; });
-      await headerSend.evaluate((el) => el.scrollIntoView({ block: "start" }));
+      await page.locator("#review h1").evaluate((el) => el.scrollIntoView({ block: "start" }));
 
       const closeMobileCost = async () => {
         if (width < 1024 && await page.locator("#cost-comparison").isVisible()) {
-          await page.getByRole("button", { name: "Close cost comparison", exact: true }).click();
+          await page.getByRole("button", { name: "Close AI cost comparison", exact: true }).click();
           await expect(page.locator("#cost-comparison")).toBeHidden();
         }
       };
@@ -145,13 +168,9 @@ async function main() {
       await settings();
       await page.getByRole("button", { name: "Replay walkthrough" }).click();
       await expect(page.getByRole("dialog", { name: "Settings", exact: true })).toHaveCount(0);
-      await expect(page.locator("#orders")).toBeVisible();
-      const generate = page.getByRole("button", { name: "Generate", exact: true });
-      await expect(generate).toHaveClass(/tour-cue/);
-      await expect(page.getByRole("button", { name: "Next", exact: true })).not.toHaveClass(/tour-cue/);
-      await generate.click();
-      await expect(generate).not.toHaveClass(/tour-cue/);
-      await expect(page.getByRole("button", { name: "Run ⌘↵", exact: true })).toHaveClass(/tour-cue/);
+      // step 1 points at the contractor's text, not at a control
+      await expect(page.locator("#incoming-message")).toBeVisible();
+      await expect(page.locator(".walkthrough-card")).toContainText("1 of 3");
       await page.getByRole("button", { name: "Next", exact: true }).click();
       const choice = page.locator(".tour-choice .tour-option").first();
       await expect(choice).toBeVisible();
@@ -161,28 +180,24 @@ async function main() {
       })).toBe(true);
       await expect.poll(() => choice.evaluate((el) => getComputedStyle(el, "::after").animationName)).toBe("tour-trace");
       await page.getByRole("button", { name: "Back", exact: true }).click();
-      await expect(page.locator("#orders")).toBeVisible();
+      await expect(page.locator(".walkthrough-card")).toContainText("1 of 3");
       await page.getByRole("button", { name: "Next", exact: true }).click();
       await page.getByRole("button", { name: "Next", exact: true }).click();
-      const comparison = page.locator(".tour-compare").first();
-      await expect.poll(() => comparison.evaluate((el) => {
-        const r = el.getBoundingClientRect();
-        return el.contains(document.elementFromPoint(r.x + r.width / 2, r.y + 40));
-      })).toBe(true);
+      // the last step ends on Send (scrolled into view, highlighted, never pressed for the visitor)
+      const sendButton = page.locator("#send-order");
+      await expect(sendButton).toBeInViewport();
+      await expect.poll(() => sendButton.evaluate((el) => getComputedStyle(el, "::after").animationName)).toBe("tour-trace");
+      await expect(page.locator("[aria-live=polite]")).not.toContainText("Sent to");
       await page.emulateMedia({ reducedMotion: "reduce" });
-      await expect.poll(() => comparison.evaluate((el) => getComputedStyle(el, "::after").animationName)).toBe("none");
+      await expect.poll(() => sendButton.evaluate((el) => getComputedStyle(el, "::after").animationName)).toBe("none");
       // the final tour button reads "Done" on phones and "Let's get to work" on wide screens
       await page.getByRole("button", { name: width < 1024 ? "Done" : "Let's get to work", exact: true }).click();
       await expect(page.locator(".walkthrough-card")).toHaveCount(0);
 
+      // the queue has no text box: new orders come from Generate order
       if (width < 1024) await page.getByRole("button", { name: "Show orders", exact: true }).click();
-      const paste = page.getByLabel("Paste a text-message order");
-      await paste.fill("x".repeat(479));
-      await expect(page.getByLabel("479 of 600 characters", { exact: true })).toHaveCount(0);
-      await paste.fill("x".repeat(480));
-      await expect(page.getByLabel("480 of 600 characters", { exact: true })).toBeVisible();
-      await paste.fill("12 2x4x8");
-      await expect(page.getByLabel(/of 600 characters/)).toHaveCount(0);
+      await expect(page.getByRole("navigation", { name: "Incoming orders" })).toBeVisible();
+      await expect(page.locator("textarea")).toHaveCount(0);
       if (width < 1024) await page.getByRole("button", { name: "Hide orders", exact: true }).click();
 
       if (width > 1023) {
@@ -192,23 +207,24 @@ async function main() {
         const lineId = await reviewItems.locator("li").first().getAttribute("id");
         await expect(summary).toContainText("1 To check");
         await expect(reviewItems.locator("li")).toHaveCount(1);
+        // The suggestion is to leave the line off, so Enter does nothing: that takes x or a click.
         await page.locator("#review").focus();
-        // The sample suggests Not in catalog first; choose its second option to validate a product.
-        await page.keyboard.press("2");
-        await expect(summary).toContainText("0 To check");
-        await expect(reviewItems).toHaveCount(0);
-        await expect(validatedItems.locator(`[id="${lineId}"]`)).toHaveCount(1);
-        await expect(headerSend).toBeEnabled();
-        await headerSend.click();
-        await expect(page.getByRole("status")).toContainText("Sent to");
-        await page.getByRole("button", { name: "Reopen", exact: true }).click();
-        await page.getByRole("button", { name: "Undo", exact: true }).click();
+        await page.keyboard.press("Enter");
         await expect(summary).toContainText("1 To check");
+        // the skip link moves to the line; it never decides it
+        await page.getByRole("link", { name: "Skip to the first line to check" }).focus();
+        await page.keyboard.press("Enter");
+        await expect(summary).toContainText("1 To check");
+        await page.evaluate(() => history.replaceState(null, "", "/")); // the skip link adds #line-…
+        // Escape backs out of the quantity editor without deciding
+        await page.locator("#review").focus();
+        await page.keyboard.press("1");
+        await page.keyboard.press("Escape");
+        await expect(page.getByLabel("Quantity in rolls", { exact: true })).toHaveCount(0);
         await expect(reviewItems.locator(`[id="${lineId}"]`)).toHaveCount(1);
-        await expect(validatedItems.locator(`[id="${lineId}"]`)).toHaveCount(0);
         await page.locator("#review").focus();
         await page.keyboard.press("x");
-        const excludedItems = page.getByRole("region", { name: "Not in catalog", exact: true });
+        const excludedItems = page.getByRole("region", { name: "Left off order", exact: true });
         await expect(excludedItems.locator(`[id="${lineId}"]`)).toHaveCount(1);
         await expect(reviewItems).toHaveCount(0);
         await expect(validatedItems.locator(`[id="${lineId}"]`)).toHaveCount(0);
@@ -226,7 +242,11 @@ async function main() {
         await settings();
         await page.getByRole("radio", { name: "Light", exact: true }).click();
         await closeSettings();
+        await openCost();
         await page.getByRole("button", { name: /^Claude only/ }).click();
+        await expect(page.locator("[aria-live=polite]")).toContainText("Showing the Claude-only draft");
+        await page.getByRole("button", { name: "Hide AI cost", exact: true }).click();
+        await expect(page.getByRole("button", { name: /^AI cost/ })).toContainText("Claude only");
         await settings();
         await expect(page.locator("#t")).toBeDisabled();
         await closeSettings();
@@ -265,7 +285,7 @@ async function main() {
         await expect(sheet).toBeHidden();
         await expect(page).toHaveURL(`${base}/`);
       }
-      await expect(page.getByRole("heading", { name: "Order o07" })).toBeVisible();
+      await expect(page.locator("#review h1 + p")).toContainText("o07");
       await expect(page.locator(".lock-screen")).toHaveCount(0);
       await page.reload();
       await expect(page.getByLabel("Access code", { exact: true })).toBeVisible();
@@ -283,12 +303,11 @@ async function main() {
           signedUp = true;
           return route.fulfill({ json: { ok: true } });
         });
-        await paste.fill("12 2x4x8");
-        await page.getByRole("button", { name: "Run ⌘↵", exact: true }).click();
+        await page.getByRole("button", { name: "Generate order", exact: true }).click();
         await expect(page.getByRole("dialog", { name: "Keep generating orders" })).toBeVisible();
         await page.getByLabel("Email address", { exact: true }).fill("rep@example.com");
         await page.getByRole("button", { name: "Continue", exact: true }).click();
-        await expect(page.getByRole("heading", { name: "Order 1001", exact: true })).toBeVisible();
+        await expect(page.locator("#review h1 + p")).toContainText("1001");
       }
 
       console.log(`Browser checks passed at ${width}px`);

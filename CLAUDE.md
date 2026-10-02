@@ -58,11 +58,19 @@ to either pipeline (a test enforces this in `lib/`, `app/`, `components/`).
 - results/: saved pipeline outputs for the sample orders
 
 ## UI
-- Home: pick a sample order (loads instantly from results/) or paste your own (runs live)
-- Review screen: order text on the left, lines on the right. Approved lines collapsed
-  with a check mark; flagged lines expanded with the top 3 alternatives and their
-  confidence, plus a one-click swap. A threshold slider re-routes lines in the browser.
-  Footer: time and cost for this order, and a toggle to compare Jev vs Claude-only
+- The visitor is the sales rep. Home is an order queue ("Incoming orders"): sample orders
+  load instantly from results/, the default one "arrives" on load, and Generate order
+  simulates a new contractor text and runs it live. There is no paste box
+- Review screen: the contractor's name and their text as a message bubble, then the lines.
+  Approved lines collapsed with a check mark; flagged lines expanded with up to 3 product
+  options, their confidence and price, and "Leave off order" as a separate action. Picking a
+  product sold in a different unit than the contractor wrote opens a quantity editor
+  (prefilled only when the product size gives a conversion). Every line shows its price;
+  a CAD subtotal and "Send to {contractor} for approval" sit at the foot of the order (the
+  contractor approves before it goes to the ERP; simulated). Threshold sliders in Settings
+  re-route lines in the browser
+- AI cost: a rail (collapsed by default on desktop, a sheet on phones) with time and cost for
+  this order and a toggle to compare Jev vs Claude-only
 - Product name: Counterpart. Banner: "Counterpart · outside-in sketch · synthetic data"
 - The design should be calm and dense, like a rep's work tool. No marketing page
 

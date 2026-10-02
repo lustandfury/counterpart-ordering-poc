@@ -10,7 +10,7 @@ type AnalyticsEvents = {
   signup_required: undefined;
   signup_completed: undefined;
   comparison_mode_changed: { mode: "jev" | "claude" };
-  order_line_reviewed: { mode: "jev" | "claude"; decision: "product" | "not_in_catalog" };
+  order_line_reviewed: { mode: "jev" | "claude"; decision: "product" | "not_in_catalog"; quantity_set: boolean };
   order_sent: { source: "sample" | "live"; mode: "jev" | "claude"; demo: true };
   workspace_unlocked: undefined;
 };

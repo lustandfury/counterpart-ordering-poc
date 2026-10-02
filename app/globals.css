@@ -260,10 +260,24 @@ button { cursor: pointer; }
   .order-loading-spinner, .order-loading-bar { animation: none; }
 }
 
-/* the composer marks focus with its container's border, not an outline on the text box */
-#paste:focus,
-#paste:focus-visible {
-  outline: none;
+/* An order landing in the queue: it slides in at the top, then its row glows once.
+   The first one waits for the unlock (ARRIVAL_MS in ReviewApp is when the walkthrough may start). */
+@keyframes queue-arrive {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes queue-glow {
+  30% { background-color: var(--brand-soft); }
+}
+.app-shell-enter .queue-arrive {
+  animation: queue-arrive 400ms cubic-bezier(0.2, 0.8, 0.2, 1) 600ms both;
+}
+.app-shell-enter .queue-arrive > button {
+  animation: queue-glow 1600ms ease-out 900ms;
+}
+@media (prefers-reduced-motion: reduce) {
+  .app-shell-enter .queue-arrive,
+  .app-shell-enter .queue-arrive > button { animation: none; }
 }
 
 /* The active tour region sits above the dimmed page while retaining its normal layout. */
@@ -281,11 +295,17 @@ button { cursor: pointer; }
 .walkthrough-active .app-shell-enter {
   animation: none;
 }
-.walkthrough-0 .tour-orders,
+.walkthrough-0 .tour-review,
 .walkthrough-1 .tour-review,
-.walkthrough-2 .tour-cost {
+.walkthrough-2 .tour-review {
   z-index: 45;
   box-shadow: 0 0 0 3px var(--brand), 0 0 0 6px rgb(255 255 255 / 0.92);
+}
+/* Step 1 on wide screens also keeps the queue usable, so "Generate order" works mid-tour. */
+@media (min-width: 1024px) {
+  .walkthrough-0 .tour-orders {
+    z-index: 45;
+  }
 }
 .walkthrough-card {
   width: min(320px, calc(100vw - 24px));
@@ -346,12 +366,12 @@ button { cursor: pointer; }
 }
 .tour-cue,
 .walkthrough-1 .tour-choice .tour-option,
-.walkthrough-2 .tour-compare {
+.walkthrough-2 .tour-send {
   position: relative;
 }
 .tour-cue::before,
 .walkthrough-1 .tour-choice .tour-option::before,
-.walkthrough-2 .tour-compare::before {
+.walkthrough-2 .tour-send::before {
   content: "";
   position: absolute;
   inset: -3px;
@@ -361,7 +381,7 @@ button { cursor: pointer; }
 }
 .tour-cue::after,
 .walkthrough-1 .tour-choice .tour-option::after,
-.walkthrough-2 .tour-compare::after {
+.walkthrough-2 .tour-send::after {
   content: "";
   position: absolute;
   inset: -3px;
@@ -376,13 +396,13 @@ button { cursor: pointer; }
 @media (prefers-reduced-motion: reduce) {
   .tour-cue::before,
   .walkthrough-1 .tour-choice .tour-option::before,
-  .walkthrough-2 .tour-compare::before {
+  .walkthrough-2 .tour-send::before {
     animation: none;
     box-shadow: 0 0 0 4px rgb(255 202 5 / 0.3);
   }
   .tour-cue::after,
   .walkthrough-1 .tour-choice .tour-option::after,
-  .walkthrough-2 .tour-compare::after {
+  .walkthrough-2 .tour-send::after {
     animation: none;
     background: #ffca05;
   }

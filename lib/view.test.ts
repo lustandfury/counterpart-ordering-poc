@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { REASON } from "./pipeline/route";
 import type { OrderResult } from "./types";
-import { computeView, displayChoices, NONE, segmentText, totals, type SlimCatalog } from "./view";
+import { computeView, displayChoices, NONE, productChoices, sameQuantityUnit, segmentText, suggestQuantity, totals, unitKey, type SlimCatalog } from "./view";
 
 const cat: SlimCatalog = { A: { name: "Prod A", unit: "each", price: 1 }, B: { name: "Prod B", unit: "each", price: 1 } };
 const u = { inputTokens: 1, outputTokens: 1 };
@@ -68,5 +68,55 @@ describe("totals and segments", () => {
   it("marks each line in the order text", () => {
     const s = segmentText("hi\n5 A\nbye", [{ id: "1", raw: "5 A" }]);
     expect(s).toEqual([{ text: "hi\n" }, { text: "5 A", lineId: "1" }, { text: "\nbye" }]);
+  });
+});
+
+describe("unitKey", () => {
+  it("treats plural and singular spellings of a selling unit as the same unit", () => {
+    for (const [written, sold] of [["bundles", "bundle"], ["boxes", "box"], ["sheets", "sheet"], ["buckets", "bucket"], ["pails", "pail"], ["lbs", "lb"], ["pcs", "each"], ["pieces", "each"]]) {
+      expect(unitKey(written)).toBe(unitKey(sold));
+    }
+  });
+  it("keeps different units apart", () => {
+    expect(unitKey("feet")).not.toBe(unitKey("roll"));
+    expect(unitKey("lb")).not.toBe(unitKey("box"));
+  });
+});
+
+describe("sameQuantityUnit", () => {
+  it("accepts a quantity written in the selling unit, a synonym, or a count of pieces", () => {
+    expect(sameQuantityUnit("bundles", "bundle")).toBe(true);
+    expect(sameQuantityUnit("buckets", "pail")).toBe(true);
+    expect(sameQuantityUnit("studs", "each")).toBe(true);
+    expect(sameQuantityUnit(null, "roll")).toBe(true);
+  });
+  it("rejects a measure or a different container", () => {
+    expect(sameQuantityUnit("feet", "roll")).toBe(false);
+    expect(sameQuantityUnit("lb", "box")).toBe(false);
+    expect(sameQuantityUnit("feet", "each")).toBe(false);
+    expect(sameQuantityUnit("boxes", "each")).toBe(false);
+  });
+});
+
+describe("suggestQuantity", () => {
+  it("converts a length into rolls when the product name gives the roll length, rounding up", () => {
+    expect(suggestQuantity(100, "feet", "Paper Drywall Joint Tape 250 ft Roll", "roll")).toEqual({ qty: 1, working: "100 ft ÷ 250 ft per roll = 1 roll" });
+    expect(suggestQuantity(140, "ft", "Self-Adhering Ice & Water Shield 36\" x 66' Roll", "roll")?.qty).toBe(3);
+  });
+  it("converts weight into boxes", () => {
+    expect(suggestQuantity(50, "lb", "Framing Nails 3-1/4\" 5 lb Box", "box")?.qty).toBe(10);
+  });
+  it("gives no suggestion when the name has no size in that unit, or the quantity is missing", () => {
+    expect(suggestQuantity(100, "feet", "Synthetic Roofing Underlayment 1000 sq ft Roll", "roll")).toBeNull();
+    expect(suggestQuantity(null, "feet", "Tape 250 ft Roll", "roll")).toBeNull();
+    expect(suggestQuantity(3, "boxes", "Screws 5 lb Box", "box")).toBeNull();
+  });
+});
+
+describe("productChoices", () => {
+  it("lists products only, so leaving a line off is never a numbered option", () => {
+    const opt = (sku: string, probability: number) => ({ sku, name: sku, probability });
+    expect(productChoices({ options: [opt(NONE, 0.82), opt("TAPE", 0.14), opt("MESH", 0.02)] }).map((o) => o.sku)).toEqual(["TAPE"]);
+    expect(productChoices({ options: [opt("A", 0.6), opt(NONE, 0.3), opt("B", 0.1)] }).map((o) => o.sku)).toEqual(["A", "B"]);
   });
 });

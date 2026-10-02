@@ -43,7 +43,7 @@ The first blind-labeler pass disagreed with my labels wherever a line depended o
 - Demo order changed from o06 to o13, since o06 no longer has flagged lines.
 
 ## Workspace layout
-- The screen is now a three-pane workspace: collapsible orders sidebar with a composer for live runs (hidden by default, ⌘B), the conversation-style review in the center, and a cost assessment panel on the right comparing both pipelines for the current order and on average across the samples. The old fixed footer and comparison drawer are folded into that panel.
+- The screen is now a three-pane workspace: collapsible orders sidebar with a composer for live runs (hidden by default, ⌘B) (later replaced by an incoming-orders queue with a Generate order button, after a usability test showed the composer made visitors think they were the customer), the conversation-style review in the center, and a cost assessment panel on the right comparing both pipelines for the current order and on average across the samples. The old fixed footer and comparison drawer are folded into that panel.
 - Routing no longer lists the quantity check or large-quantity rule as reasons on lines with no product match (neither applies without a product). Approvals and the evaluation output are unchanged.
 
 ## Visual refresh
@@ -66,3 +66,19 @@ The plan calls for a security, evaluation-correctness and usability review befor
 - **A separate lesson from the analytics setup:** a check that reports "nothing found" needs a known positive alongside it. A first scan of the live site said analytics was absent, and it was wrong because of a shell quirk; the fix was to look for known text in the same files.
 - **Re-run after rewording a prompt heading:** the heading that reused the answer key's field name was reworded (`shouldReview: true` became "always review"), all 20 orders were run again (about $0.93), and the evaluation was regenerated and checked again by the eval-checker: every metric recomputed exactly, prices matched the recorded tokens, and the prompt file differed only in that heading. The published numbers moved: see the case study, entry 33.
 
+
+## A usability test, and the queue redesign
+- **What happened:** Mike watched a friend use the app cold. The tester thought he was the customer partway through ordering, looked for a "new order" button, found "Not in catalog" unclear and wanted prices. The details are in the case study (entries 35 and 36).
+- **Decided by Mike:** drop the paste box and make the app an order queue with a Generate order button. Send goes back to the contractor for approval before the ERP. Prices on every line plus a subtotal. Add a quantity editor. Fix the ux-critic's top four findings. Track `docs/case-study.md` again.
+- **What the ux-critic caught:**
+  - A bug that was already in the code: pressing Enter on the "Skip to the first line to check" link accepted the top pick. When that pick was "no match", the line was left off, and a second Enter sent the order.
+  - Picking a product sold in a different unit ("100 feet" of tape, sold by the roll) moved the line to Validated with no quantity.
+  - The flagged line didn't say why it was flagged, and "leave off" was ranked as option 1.
+  - The AI cost panel was the loudest thing on the screen.
+  - Send came before the line it depended on.
+  - Prices outweighed the flagged lines.
+
+  All six are fixed. Still open: where the tour card sits on phones, an unlabelled orders icon on phones, the tab order running opposite to the layout, and long accessible names on the cost cards.
+- **What the checks caught along the way:**
+  - A unit helper read "bundles" as "bundl", which would have left 24 bundles of shingles unpriced. It now has unit tests.
+  - `scripts/screenshots.ts` would have made paid API calls through Generate order. It now uses a mocked response.

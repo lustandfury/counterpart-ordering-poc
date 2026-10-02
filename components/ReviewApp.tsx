@@ -6,10 +6,10 @@ import { DEFAULT_T, UNIT_OK_MIN as DEFAULT_UNIT } from "@/lib/pipeline/route";
 import { trackEvent } from "@/lib/analytics";
 import { readOrderStream, type OrderProgress, type OrderStage } from "@/lib/order-progress";
 import { OrderLoading } from "@/components/OrderLoading";
-import type { OrderResult, Sender } from "@/lib/types";
+import type { OrderResult } from "@/lib/types";
 import Link from "next/link";
 import { ICON_BUTTON, ICON_BUTTON_GROUPED, ICON_GROUP } from "@/components/iconButton";
-import { AdjustmentsHorizontalIcon, BanknotesIcon, CheckIcon, DocumentPlusIcon, SparklesIcon, UserIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { AdjustmentsHorizontalIcon, CheckIcon, CpuChipIcon, InboxIcon, SparklesIcon, UserIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { setShortcutsEnabled, shortcutsEnabled } from "@/lib/shortcuts";
 import { ActionSheet } from "@/components/ActionSheet";
 import { ModalCloseButton } from "@/components/ModalCloseButton";
@@ -21,7 +21,7 @@ import { useAccess } from "@/components/AccessProvider";
 import { generateOrder } from "@/lib/generate";
 import { applyTheme, readTheme, THEMES, type Theme } from "@/lib/theme";
 import { CLAUDE_INPUT_PER_TOKEN, CLAUDE_OUTPUT_PER_TOKEN, JEV_INPUT_PER_TOKEN } from "@/lib/pricing";
-import { computeView, displayChoices, NONE, segmentText, totals, type Mode, type SlimCatalog, type ViewLine } from "@/lib/view";
+import { computeView, NONE, productChoices, sameQuantityUnit, suggestQuantity, totals, type Mode, type SlimCatalog, type ViewLine } from "@/lib/view";
 
 const usd = (n: number) => `$${n.toFixed(4)}`;
 const ms = (n: number) => (n >= 1000 ? `${(n / 1000).toFixed(1)} s` : `${Math.round(n)} ms`);
@@ -37,18 +37,38 @@ function fmtQty(qty: number | null, unit: string | null) {
   return `${qty} ${u}`;
 }
 
-// "lbs" = "lb", "tubes" = "tube", "pcs" = "each": the same unit written differently
-const unitKey = (u: string) => (/^(each|ea|pcs?|pieces?)$/i.test(u) ? "each" : u.toLowerCase().replace(/(es|s)$/, ""));
 
 type Run = OrderResult & { runId: number };
+
+/** A copy of a record without one key. */
+const without = <T,>(record: Record<string, T>, key: string) => Object.fromEntries(Object.entries(record).filter(([k]) => k !== key));
+
+const cad = new Intl.NumberFormat("en-CA", { style: "currency", currency: "CAD" });
+const money = (n: number) => cad.format(n);
+// "$4.27 / pc", "$18.50 / sheet"
+const perUnit = (price: number, unit: string) => `${money(price)} / ${unit === "each" ? "pc" : unit}`;
+
+/**
+ * The price of a line for a product (the rep's pick, else the pipeline's). The line total needs a quantity in the
+ * unit the product is sold in: "50 lb" of nails sold by the box has a unit price but no total until the rep sets one.
+ * An auto-approved line already passed the quantity check against the selling unit, so its quantity is used as is.
+ */
+function linePrice(l: ViewLine, pick: string | undefined, catalog: SlimCatalog, quantity?: number) {
+  const product = catalog[pick ?? l.sku];
+  if (!product || (pick ?? l.sku) === NONE) return null;
+  const qty = quantity ?? l.qty;
+  const usable = quantity != null || (l.approved && !pick) || sameQuantityUnit(l.unit, product.unit);
+  return { unit: perUnit(product.price, product.unit), total: qty != null && usable ? qty * product.price : null };
+}
 
 const DEFAULT_SAMPLE = "o13";
 const SAMPLES_SHOWN = 3;
 // Optional address for deletion requests, set in the environment so no personal address lives in the repo
 const PRIVACY_CONTACT = process.env.NEXT_PUBLIC_PRIVACY_CONTACT;
 const WALKTHROUGH_KEY = "counterpart-walkthrough-complete";
-const ORDER_TEXT_LIMIT = 600;
-const ORDER_COUNTER_THRESHOLD = ORDER_TEXT_LIMIT * 0.8;
+// When each queued sample "arrived", in minutes before the page loaded. The default order arrives as the page opens.
+const SAMPLE_AGE_MINUTES = [12, 38, 65, 90];
+const ago = (minutes: number) => (minutes < 1 ? "Just now" : minutes < 60 ? `${minutes} min ago` : `${Math.floor(minutes / 60)} h ago`);
 const MOBILE_QUERY = "(max-width: 1023px)";
 const subscribeToMobile = (callback: () => void) => {
   const media = window.matchMedia(MOBILE_QUERY);
@@ -57,9 +77,13 @@ const subscribeToMobile = (callback: () => void) => {
 };
 
 type WalkthroughStep = 0 | 1 | 2;
+// What each walkthrough step points at: the contractor's text, the first choice on a flagged line, then Send.
+const TOUR_TARGETS = ["#incoming-message", ".tour-choice .tour-option", "#send-order"];
+// How long after the unlock the first order lands in the queue (matches .queue-arrive in globals.css).
+const ARRIVAL_MS = 1400;
 
 export function ReviewApp({ samples, catalog, initialOrder, evalData }: { samples: OrderResult[]; catalog: SlimCatalog; initialOrder?: string; evalData: EvalData }) {
-  const [runs, setRuns] = useState<Run[]>([]); // live runs from the composer, newest first
+  const [runs, setRuns] = useState<Run[]>([]); // generated orders run live, newest first
   const nextOrderNumber = useRef(1001);
   const [selected, setSelected] = useState(initialOrder ?? samples.find((x) => x.orderId === DEFAULT_SAMPLE)?.orderId ?? samples[0].orderId);
   const [mode, setMode] = useState<Mode>("jev");
@@ -73,8 +97,6 @@ export function ReviewApp({ samples, catalog, initialOrder, evalData }: { sample
   const [helpOpen, setHelpOpen] = useState(false);
   const [resultsOpen, setResultsOpen] = useState(false);
   const isMobile = useSyncExternalStore(subscribeToMobile, () => window.matchMedia(MOBILE_QUERY).matches, () => false);
-  const [pasteText, setPasteText] = useState("");
-  const [pasteFrom, setPasteFrom] = useState<Sender | undefined>(); // set by Generate, cleared by editing
   const [loading, setLoading] = useState(false);
   const [orderProgress, setOrderProgress] = useState<Partial<Record<OrderStage, OrderProgress>>>({});
   const [error, setError] = useState<string | null>(null);
@@ -84,11 +106,21 @@ export function ReviewApp({ samples, catalog, initialOrder, evalData }: { sample
   const [signupError, setSignupError] = useState<string | null>(null);
   // The rep's decisions and mock sends, per order, so they survive switching between orders
   const [decisions, setDecisions] = useState<Record<string, Decisions>>({});
+  // Quantities the rep set in the product's selling unit, per order and line ("100 feet" of tape -> 1 roll)
+  const [quantities, setQuantities] = useState<Record<string, Record<string, number>>>({});
   const [sent, setSent] = useState<Record<string, number>>({}); // order id -> time sent
   const [walkthroughStep, setWalkthroughStep] = useState<WalkthroughStep | null>(null);
   const walkthroughStepRef = useRef<WalkthroughStep | null>(null);
-  const [walkthroughCompared, setWalkthroughCompared] = useState<Mode[]>([]);
+  // The AI cost rail is closed by default on wide screens: the order is the work, the cost comparison is context.
+  const [costOpen, setCostOpen] = useState(false);
   const { unlocked, unlock } = useAccess();
+  // Arrival times in the queue are relative to page load, so the default order always arrives "just now".
+  const [loadedAt] = useState(() => Date.now());
+  const [now, setNow] = useState(loadedAt);
+  useEffect(() => {
+    const timer = window.setInterval(() => setNow(Date.now()), 30_000);
+    return () => window.clearInterval(timer);
+  }, []);
   const [unlocking, setUnlocking] = useState(false);
   const [accessCode, setAccessCode] = useState("");
   const [accessError, setAccessError] = useState(false);
@@ -124,14 +156,14 @@ export function ReviewApp({ samples, catalog, initialOrder, evalData }: { sample
   const showWalkthroughStep = useCallback((step: WalkthroughStep) => {
     walkthroughStepRef.current = step;
     setWalkthroughStep(step);
-    setWalkthroughCompared([]);
     setDesktopOpen(true);
     const mobile = window.matchMedia("(max-width: 1023px)").matches;
-    setMobileOpen(mobile && step === 0);
-    setMobileCostOpen(mobile && step === 2);
-    if (mobile && step > 0) {
+    setMobileOpen(false);
+    setMobileCostOpen(false);
+    // Send sits at the foot of the order, so the last step brings it into view on every screen size
+    if (mobile || step === 2) {
       window.requestAnimationFrame(() => {
-        document.querySelector(step === 1 ? ".tour-choice .tour-option" : ".tour-compare")?.scrollIntoView({ block: "center" });
+        document.querySelector(TOUR_TARGETS[step])?.scrollIntoView({ block: "center" });
       });
     }
   }, []);
@@ -152,14 +184,16 @@ export function ReviewApp({ samples, catalog, initialOrder, evalData }: { sample
 
   // localStorage is deliberately read after mount: the walkthrough is a browser-only preference,
   // and reading it during render would make the server and client markup disagree.
+  // It waits for the unlock and for the first order to arrive in the queue, so the arrival isn't hidden under the backdrop.
   useEffect(() => {
-    const frame = window.requestAnimationFrame(() => {
+    if (!unlocked) return;
+    const timer = window.setTimeout(() => {
       if (window.localStorage.getItem(WALKTHROUGH_KEY) !== "true") {
         showWalkthroughStep(0);
       }
-    });
-    return () => window.cancelAnimationFrame(frame);
-  }, [showWalkthroughStep]);
+    }, ARRIVAL_MS);
+    return () => window.clearTimeout(timer);
+  }, [showWalkthroughStep, unlocked]);
 
   const closeWalkthrough = useCallback(() => {
     walkthroughStepRef.current = null;
@@ -188,8 +222,10 @@ export function ReviewApp({ samples, catalog, initialOrder, evalData }: { sample
     requestAnimationFrame(() => document.getElementById("review")?.focus({ preventScroll: true }));
   };
 
+  // Generate simulates a new text arriving: a random order is written and run through both pipelines live.
   async function runLive() {
-    if (!pasteText.trim() || loading) return;
+    if (loading) return;
+    const order = generateOrder();
     trackEvent("order_run_started");
     setLoading(true);
     setOrderProgress({ access: { stage: "access", status: "running" } });
@@ -197,7 +233,7 @@ export function ReviewApp({ samples, catalog, initialOrder, evalData }: { sample
     requestAnimationFrame(() => document.getElementById("review")?.scrollIntoView({ block: "start" }));
     setError(null);
     try {
-      const res = await fetch("/api/run", { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/x-ndjson" }, body: JSON.stringify({ text: pasteText }) });
+      const res = await fetch("/api/run", { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/x-ndjson" }, body: JSON.stringify({ text: order.text }) });
       const data = res.headers.get("content-type")?.includes("application/x-ndjson")
         ? await readOrderStream(res, progress => setOrderProgress(current => ({ ...current, [progress.stage]: progress })))
         : await res.json();
@@ -211,10 +247,8 @@ export function ReviewApp({ samples, catalog, initialOrder, evalData }: { sample
       trackEvent("order_run_completed", { line_count: (data as OrderResult).parse.lines.length });
       const runId = Date.now();
       const orderId = String(nextOrderNumber.current++);
-      setRuns((r) => [{ ...(data as OrderResult), orderId, from: pasteFrom, runId }, ...r]);
-      setPasteFrom(undefined);
+      setRuns((r) => [{ ...(data as OrderResult), orderId, from: order.from, runId }, ...r]);
       pick(`live-${runId}`);
-      setPasteText("");
       if (walkthroughStepRef.current === 0) {
         const needsReview = computeView(data as OrderResult, mode, T, catalog, unitMin).some((line) => !line.approved);
         showWalkthroughStep(needsReview ? 1 : 2);
@@ -256,11 +290,6 @@ export function ReviewApp({ samples, catalog, initialOrder, evalData }: { sample
     onMode: (nextMode: Mode) => {
       if (nextMode !== mode) trackEvent("comparison_mode_changed", { mode: nextMode });
       setMode(nextMode);
-      if (walkthroughStep === 2) {
-        const compared = [...new Set([...walkthroughCompared, nextMode])];
-        setWalkthroughCompared(compared);
-        if (compared.length === 2) closeWalkthrough();
-      }
     },
   };
 
@@ -279,71 +308,48 @@ export function ReviewApp({ samples, catalog, initialOrder, evalData }: { sample
         >
               <div aria-hidden className="mx-auto mt-2 h-1 w-9 shrink-0 rounded-full bg-line lg:hidden" />
               <BrandBar hideResults end={<><ModalCloseButton label="Hide orders" onClose={toggleSidebar} className="lg:hidden" /><span className="hidden lg:block"><SidebarButton label="Hide orders" expanded onClick={toggleSidebar} /></span></>} />
-              <nav className="min-h-0 flex-1 overflow-y-auto px-3 pb-3">
-                {runs.length > 0 && <OrderGroup label="Your runs">{runs.map((r) => (
-                  <OrderItem key={r.runId} id={`live-${r.runId}`} tag={r.orderId} title={r.from?.company ?? "Pasted order"} preview={r.text} count={toCheck(r, `live-${r.runId}`)} sent={!!sent[`live-${r.runId}`]} active={selected === `live-${r.runId}`} onPick={pick} />
-                ))}</OrderGroup>}
-                <OrderGroup label="Samples">{shownSamples.map((s) => (
-                  <OrderItem key={s.orderId} id={s.orderId} tag={s.orderId} title={s.from?.company ?? s.orderId} preview={s.text} count={toCheck(s, s.orderId)} sent={!!sent[s.orderId]} active={selected === s.orderId} onPick={pick} />
-                ))}</OrderGroup>
-              </nav>
-              <div className="shrink-0 border-t border-line p-4">
-                <label htmlFor="paste" className="sr-only">Paste a text-message order</label>
-                <div className="rounded-[14px] bg-input shadow-[inset_0_0_0_1px_var(--ring)] transition-shadow focus-within:shadow-[inset_0_0_0_1px_var(--control)]">
-                  <textarea
-                    id="paste"
-                    rows={7}
-                    disabled={loading}
-                    value={pasteText}
-                    maxLength={ORDER_TEXT_LIMIT}
-                    onChange={(e) => {
-                      setPasteText(e.target.value);
-                      setPasteFrom(undefined);
-                    }}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
-                        e.preventDefault();
-                        runLive();
-                      }
-                    }}
-                    placeholder={"Paste a text-message order, or press Generate for a sample…"}
-                    className="block w-full resize-none rounded-t-[14px] bg-transparent px-3.5 pt-3 font-mono text-[13px] leading-6 outline-none focus-visible:outline-none"
-                  />
-                  <div className="flex items-center gap-2 px-3 pb-3">
-                    <button
-                      disabled={loading}
-                      onClick={() => {
-                        const g = generateOrder();
-                        setPasteText(g.text);
-                        setPasteFrom(g.from);
-                        setError(null);
-                        requestAnimationFrame(() => document.getElementById("paste")?.focus());
-                      }}
-                      title="Fill in a random sample order. It always includes at least one line to check."
-                      className={`flex h-8 items-center gap-1.5 rounded-lg px-2 text-[13px] font-medium text-muted hover:text-ink ${walkthroughStep === 0 && !pasteText.trim() ? "tour-cue bg-line hover:bg-control/20" : "hover:bg-panel"}`}
-                    >
-                      <DiceIcon />
-                      Generate
-                    </button>
-                    {pasteText.length >= ORDER_COUNTER_THRESHOLD && <span className="text-[12px] text-muted" aria-label={`${pasteText.length} of ${ORDER_TEXT_LIMIT} characters`}>{pasteText.length}/{ORDER_TEXT_LIMIT}</span>}
-                    <button onClick={runLive} disabled={loading || !pasteText.trim()} className={`ml-auto h-8 rounded-lg bg-brand px-3.5 text-[13px] font-semibold text-onbrand disabled:opacity-40 ${walkthroughStep === 0 && pasteText.trim() && !loading ? "tour-cue" : ""}`}>
-                      {loading ? "Reading…" : "Run ⌘↵"}
-                    </button>
-                  </div>
-                </div>
-                {error && <p role="alert" className="mt-2 text-[13px] text-warn">{error}</p>}
+              <div className="flex shrink-0 items-center justify-between gap-2 px-5 pb-1.5 pt-3">
+                <h2 id="queue-title" className="text-[12px] font-medium uppercase tracking-wider text-muted">Incoming orders</h2>
+                <button
+                  disabled={loading}
+                  onClick={runLive}
+                  title="Simulate a contractor texting a new order. Each one includes at least one line to check."
+                  className="flex h-8 items-center gap-1.5 rounded-lg px-2.5 text-[13px] font-medium text-ink shadow-[0_0_0_1px_var(--ring)] hover:bg-bg disabled:opacity-50"
+                >
+                  <DiceIcon />
+                  {loading ? "Arriving…" : "Generate order"}
+                </button>
               </div>
+              {error && <p role="alert" className="mx-5 mb-2 text-[13px] text-warn">{error}</p>}
+              <nav aria-labelledby="queue-title" className="min-h-0 flex-1 overflow-y-auto px-3 pb-3">
+                <ul className="flex flex-col gap-0.5">
+                  {runs.map((r) => (
+                    <OrderItem key={r.runId} id={`live-${r.runId}`} tag={r.orderId} title={r.from?.company ?? "New order"} preview={r.text} time={ago(Math.floor((now - r.runId) / 60_000))} count={toCheck(r, `live-${r.runId}`)} sent={!!sent[`live-${r.runId}`]} active={selected === `live-${r.runId}`} arriving onPick={pick} />
+                  ))}
+                  {shownSamples.map((s, i) => (
+                    <OrderItem key={s.orderId} id={s.orderId} tag={s.orderId} title={s.from?.company ?? s.orderId} preview={s.text} time={i === 0 ? ago(Math.floor((now - loadedAt) / 60_000)) : ago(SAMPLE_AGE_MINUTES[i - 1] ?? 120)} count={toCheck(s, s.orderId)} sent={!!sent[s.orderId]} active={selected === s.orderId} arriving={i === 0} onPick={pick} />
+                  ))}
+                </ul>
+              </nav>
+              <p className="shrink-0 border-t border-line px-5 py-3 text-[12px] text-muted">Counterpart · outside-in sketch · synthetic data</p>
         </aside>
 
         <main id="review" tabIndex={-1} inert={mobileCostOpen || undefined} className="tour-review textured-surface relative min-w-0 flex-1 outline-none [overflow-anchor:none] lg:overflow-y-auto">
-          <div className={`flex items-center justify-between px-3 pt-3 lg:absolute lg:left-2 lg:top-2 lg:z-10 lg:p-0 ${desktopOpen ? "lg:hidden" : "lg:flex"}`}>
-            <SidebarButton label="Show orders" expanded={false} onClick={toggleSidebar} />
-            <div className={`${ICON_GROUP} lg:hidden`}>
+          {/* Phones: show orders on the left, tools on the right. Wide screens: the same bar fills in for whichever rail is closed. */}
+          <div className={`flex items-center justify-between px-3 pt-3 lg:px-4 ${desktopOpen && costOpen ? "lg:hidden" : ""}`}>
+            <span className={desktopOpen ? "lg:invisible" : ""}><SidebarButton label="Show orders" expanded={false} onClick={toggleSidebar} /></span>
+            <div className={`${ICON_GROUP} ${costOpen ? "lg:hidden" : ""}`}>
               <ResultsButton grouped onOpen={() => setResultsOpen(true)} />
               <SettingsButton open={settingsOpen} changed={T !== DEFAULT_T || unitMin !== DEFAULT_UNIT} onToggle={() => setSettingsOpen(v => !v)} />
               <button onClick={() => setHelpOpen(true)} aria-label="About Counterpart" title="About Counterpart" className={`${ICON_BUTTON_GROUPED} text-[13px] font-semibold`}>?</button>
-              <button aria-label="Cost comparison" title="Cost comparison" aria-expanded={mobileCostOpen} aria-controls="cost-comparison" onClick={() => { setMobileOpen(false); setMobileCostOpen(true); }} className={ICON_BUTTON_GROUPED}>
-                <BanknotesIcon aria-hidden className="h-4 w-4" />
+              <button aria-label="AI cost comparison" title="AI cost comparison" aria-expanded={mobileCostOpen} aria-controls="cost-comparison" onClick={() => { setMobileOpen(false); setMobileCostOpen(true); }} className={`${ICON_BUTTON_GROUPED} lg:hidden`}>
+                <CpuChipIcon aria-hidden className="h-4 w-4" />
+              </button>
+              {/* wide screens: a quiet summary that opens the rail, and says which draft is showing */}
+              <button aria-expanded={costOpen} aria-controls="cost-rail" onClick={() => setCostOpen(true)} className="hidden h-9 items-center gap-1.5 rounded-full px-3 text-[13px] text-muted hover:bg-bg hover:text-ink lg:flex">
+                <CpuChipIcon aria-hidden className="h-4 w-4" />
+                <span className="font-medium text-ink">AI cost</span>
+                <span className="tabular-nums">{usd(totals(result, mode).usd)} · {mode === "jev" ? "Claude + Jev" : "Claude only"}</span>
               </button>
             </div>
           </div>
@@ -357,22 +363,31 @@ export function ReviewApp({ samples, catalog, initialOrder, evalData }: { sample
               catalog={catalog}
               resolved={decisions[selected] ?? {}}
               setResolved={(f) => setDecisions((d) => ({ ...d, [selected]: f(d[selected] ?? {}) }))}
+              quantities={quantities[selected] ?? {}}
+              setQuantity={(lineId, qty) => setQuantities((all) => {
+                const rest = without(all[selected] ?? {}, lineId);
+                return { ...all, [selected]: qty == null ? rest : { ...rest, [lineId]: qty } };
+              })}
+              phone={isMobile}
               onReviewed={() => { if (walkthroughStep === 1) showWalkthroughStep(2); }}
               sentAt={sent[selected]}
               onSend={() => {
+                if (walkthroughStep === 2) closeWalkthrough();
                 trackEvent("order_sent", { source: live ? "live" : "sample", mode, demo: true });
                 setSent((s) => ({ ...s, [selected]: Date.now() }));
               }}
               onReopen={() => setSent((s) => Object.fromEntries(Object.entries(s).filter(([id]) => id !== selected)))}
             />}
+            {/* on phones the queue (and its banner) is a closed sheet, so the banner also sits under the order */}
+            <p className="mt-8 text-center text-[12px] text-muted lg:hidden">Counterpart · outside-in sketch · synthetic data</p>
           </div>
         </main>
 
-        {!isMobile && <aside aria-label="Cost assessment" className="tour-cost hidden w-80 shrink-0 overflow-y-auto border-l border-line bg-panel lg:block">
-          {loading ? <p className="px-6 py-8 text-[14px] leading-relaxed text-muted">The cost comparison will appear when both matching checks finish.</p> : <CostPanel {...costPanelProps} />}
+        {!isMobile && costOpen && <aside id="cost-rail" aria-label="Cost assessment" className="tour-cost hidden w-80 shrink-0 overflow-y-auto border-l border-line bg-panel lg:block">
+          {loading ? <p className="px-6 py-8 text-[14px] leading-relaxed text-muted">The cost comparison will appear when both matching checks finish.</p> : <CostPanel {...costPanelProps} onCollapse={() => setCostOpen(false)} />}
         </aside>}
       </div>
-      {isMobile && <ActionSheet open={mobileCostOpen} id="cost-comparison" label="Cost assessment" onClose={() => setMobileCostOpen(false)} className="tour-cost max-w-md" modal={walkthroughStep === null} layer={walkthroughStep === 2 ? "tour" : "normal"}>
+      {isMobile && <ActionSheet open={mobileCostOpen} id="cost-comparison" label="Cost assessment" onClose={() => setMobileCostOpen(false)} className="tour-cost max-w-md">
         {loading ? <><div className="flex items-start justify-between gap-4"><h2 className="text-xl font-semibold tracking-tight">Cost</h2><ModalCloseButton onClose={() => setMobileCostOpen(false)} label="Close cost comparison" /></div><p className="py-8 text-[14px] text-muted">The cost comparison will appear when both matching checks finish.</p></> : <CostPanel {...costPanelProps} onClose={() => setMobileCostOpen(false)} />}
       </ActionSheet>}
       <ActionSheet open={resultsOpen} id="sample-results-sheet" labelledBy="sample-results-title" onClose={() => setResultsOpen(false)} className="max-w-6xl">
@@ -398,7 +413,7 @@ export function ReviewApp({ samples, catalog, initialOrder, evalData }: { sample
           window.requestAnimationFrame(() => document.getElementById("review")?.focus());
         }, 550);
       }} />}
-      {walkthroughStep !== null && !loading && <Walkthrough step={walkthroughStep} composerReady={!!pasteText.trim()} onBack={() => showWalkthroughStep((walkthroughStep - 1) as WalkthroughStep)} onNext={() => {
+      {walkthroughStep !== null && !loading && <Walkthrough step={walkthroughStep} onBack={() => showWalkthroughStep((walkthroughStep - 1) as WalkthroughStep)} onNext={() => {
         if (walkthroughStep === 2) closeWalkthrough();
         else {
           showWalkthroughStep((walkthroughStep + 1) as WalkthroughStep);
@@ -416,7 +431,8 @@ function AccessLockScreen({ code, setCode, error, unlocking, onSubmit }: { code:
         <div className="action-sheet-handle" aria-hidden />
         <Wordmark large />
         <p className="mt-5 text-lg font-medium tracking-tight">The Fast Lane for Pro Orders</p>
-        <p className="mt-2 text-[14px] text-muted">Enter your access code to continue</p>
+        <p className="mt-1.5 text-[14px] text-muted">Contractors text their orders. You check only what&apos;s uncertain.</p>
+        <p className="mt-5 text-[13px] text-muted">Enter your access code to continue</p>
         <label htmlFor="access-code" className="sr-only">Access code</label>
         <input
           id="access-code"
@@ -465,7 +481,7 @@ function SignupDialog({ open, email, setEmail, loading, error, onSubmit, onClose
   );
 }
 
-function Walkthrough({ step, composerReady, onBack, onNext, onClose }: { step: WalkthroughStep; composerReady: boolean; onBack: () => void; onNext: () => void; onClose: () => void }) {
+function Walkthrough({ step, onBack, onNext, onClose }: { step: WalkthroughStep; onBack: () => void; onNext: () => void; onClose: () => void }) {
   const cardRef = useRef<HTMLElement>(null);
   useEffect(() => { cardRef.current?.focus({ preventScroll: true }); }, []);
   const [position, setPosition] = useState<{ left: number; top: number; arrow: number; side: string; visible: boolean } | null>(null);
@@ -473,7 +489,7 @@ function Walkthrough({ step, composerReady, onBack, onNext, onClose }: { step: W
   useEffect(() => {
     let frame: number;
     const update = () => {
-      const target = (document.querySelector<HTMLElement>(["#paste", ".tour-choice .tour-option", ".tour-compare"][step]) ?? document.querySelector<HTMLElement>("#review h1"));
+      const target = (document.querySelector<HTMLElement>(TOUR_TARGETS[step]) ?? document.querySelector<HTMLElement>("#review h1"));
       const card = cardRef.current;
       if (target && card) {
         const rect = target.getBoundingClientRect();
@@ -518,12 +534,12 @@ function Walkthrough({ step, composerReady, onBack, onNext, onClose }: { step: W
     };
     frame = window.requestAnimationFrame(update);
     return () => window.cancelAnimationFrame(frame);
-  }, [step, composerReady]);
+  }, [step]);
 
   const content = [
-    { eyebrow: "1 of 3 · Make an order", title: "Bring on the lumber lingo.", body: composerReady ? "Now tap Run. We'll do the decoding; you keep the coffee. Or hit Next to explore a saved sample." : "No contractor text handy? Tap Generate. We'll supply the typos. You can also paste your own order, then tap Run.", mobileTitle: "Make an order", mobileBody: composerReady ? "Tap Run to match your order." : "Paste an order or tap Generate, then Run." },
-    { eyebrow: "2 of 3 · Make the call", title: "Even AI needs safety glasses.", body: "Check a flagged line and choose the product that fits, confirm the quantity, or select Not in catalog. The glowing choices are yours to make. No rubber stamp required.", mobileTitle: "Check a flagged line", mobileBody: "Choose a product, confirm quantity, or tap Not in catalog." },
-    { eyebrow: "3 of 3 · Compare the savings", title: "Less waiting. More lumber.", body: "Tap Claude + Jev and Claude only to compare cost and time for this order. Your calculator can take a coffee break.", mobileTitle: "Compare cost & time", mobileBody: "Tap Claude + Jev and Claude only to compare." },
+    { eyebrow: "1 of 3 · A new order", title: "A contractor just texted an order.", body: "You're the sales rep. Counterpart read the text and matched each line to your catalog, so you only check what it isn't sure about. Want another? Tap Generate order any time.", mobileTitle: "A contractor texted an order", mobileBody: "You're the rep. Check only what's flagged." },
+    { eyebrow: "2 of 3 · Make the call", title: "Even AI needs safety glasses.", body: "Check a flagged line and choose the product that fits, confirm the quantity, or leave it off the order. The glowing choices are yours to make. No rubber stamp required.", mobileTitle: "Check a flagged line", mobileBody: "Pick the right product, or leave it off." },
+    { eyebrow: "3 of 3 · Send it back", title: "Then send it for approval.", body: "Once every line is checked, send the order back to the contractor. They approve it before it goes to the ERP for purchase. Curious what the AI cost? Open AI cost at the top right.", mobileTitle: "Send it for approval", mobileBody: "They approve it, then it goes to the ERP." },
   ][step];
 
   return (
@@ -700,34 +716,28 @@ function SidebarButton({ label, expanded, onClick }: { label: string; expanded: 
   );
 }
 
-const SidebarIcon = () => <DocumentPlusIcon aria-hidden className="h-4 w-4" />;
+const SidebarIcon = () => <InboxIcon aria-hidden className="h-4 w-4" />;
 
-function OrderGroup({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <div className="mb-2">
-      <h2 className="px-2 pb-1.5 pt-3 text-[12px] font-medium uppercase tracking-wider text-muted">{label}</h2>
-      <ul className="flex flex-col gap-0.5">{children}</ul>
-    </div>
-  );
-}
-
-function OrderItem(p: { id: string; tag: string; title: string; preview: string; count: number; sent: boolean; active: boolean; onPick: (id: string) => void }) {
+function OrderItem(p: { id: string; tag: string; title: string; preview: string; time: string; count: number; sent: boolean; active: boolean; arriving?: boolean; onPick: (id: string) => void }) {
   const preview = p.preview.replace(/\s+/g, " ").trim();
   return (
-    <li>
+    <li className={p.arriving ? "queue-arrive" : undefined}>
       <button
         onClick={() => p.onPick(p.id)}
         aria-current={p.active ? "true" : undefined}
         className={`flex w-full items-center gap-3 rounded-r-lg px-2.5 py-2 text-left ${p.active ? "bg-bg shadow-[inset_3px_0_0_var(--brand)]" : "hover:bg-bg"}`}
       >
         <span className="min-w-0 flex-1">
-          <span className={`block truncate text-[14px] ${p.active ? "font-semibold" : "font-medium"}`}>{p.title}</span>
+          <span className="flex items-baseline gap-2">
+            <span className={`min-w-0 flex-1 truncate text-[14px] ${p.active ? "font-semibold" : "font-medium"}`}>{p.title}</span>
+            <span className="shrink-0 text-[12px] text-muted">{p.time}</span>
+          </span>
           <span className="block truncate text-[12px] text-muted">
             <span className="font-mono">{p.tag}</span> · {preview}
           </span>
         </span>
         {p.sent ? (
-          <span className="shrink-0 text-[12px] font-medium text-ok">Sent</span>
+          <span className="shrink-0 text-[12px] font-medium text-ok">Sent<span className="sr-only"> for approval</span></span>
         ) : p.count > 0 ? (
           <span className="shrink-0 rounded-full bg-warnbg px-2 py-0.5 text-[12px] font-medium leading-none text-warn"><span aria-hidden>{p.count}</span><span className="sr-only">{p.count} to check</span></span>
         ) : (
@@ -740,75 +750,110 @@ function OrderItem(p: { id: string; tag: string; title: string; preview: string;
 
 type Decisions = Record<string, string>; // lineId -> sku chosen by the rep
 
-function OrderDetails({ result, notes, lines, flagged, done, sentAt, onSend, onReopen }: { result: OrderResult; notes: string; lines: number; flagged: number; done: number; sentAt?: number; onSend: () => void; onReopen: () => void }) {
-  const [sendAttempted, setSendAttempted] = useState(false);
-  const title = `Order ${result.orderId}`;
-  const readyToSend = !sentAt && flagged === done;
+function OrderDetails({ result, mode, lines, flagged, done, sentAt }: { result: OrderResult; mode: Mode; lines: number; flagged: number; done: number; sentAt?: number }) {
+  const who = result.from?.name ?? "the contractor";
+  const toCheck = Math.max(0, flagged - done);
   const stats = [
-    { label: "Lines", value: lines, suffix: "", className: "text-ink" },
-    { label: "Auto-approved", value: lines - flagged, suffix: "", className: "text-ok" },
-    { label: "To check", value: Math.max(0, flagged - done), suffix: "", className: "text-warn" },
+    { label: "Lines", value: lines, className: "text-ink" },
+    { label: "Auto-approved", value: lines - flagged, className: "text-ok" },
+    { label: "To check", value: toCheck, className: "text-warn" },
   ];
   return (
-    <div className="@container mb-6 rounded-xl border border-line bg-panel px-4 py-3 shadow-[0_0_0_1px_var(--ring)]" aria-live="polite">
-      <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-2 @min-[560px]:grid-cols-[auto_minmax(0,1fr)_auto] @min-[560px]:gap-x-4">
-        <div className="contents">
-            <h1 className="col-start-1 row-start-1 min-w-0 break-words text-xl font-semibold tracking-tight">{title}</h1>
-            {sentAt && (
-              <p role="status" className="col-span-2 col-start-1 row-start-2 w-fit max-w-full rounded-full bg-okbg px-2.5 py-1 text-[12px] font-medium text-ok">
-                Sent to {result.from?.name ?? "the contractor"} at {new Date(sentAt).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}
-              </p>
-            )}
-          <div className={`col-span-2 grid grid-cols-3 divide-x divide-line rounded-lg bg-bg py-2 @min-[560px]:col-span-1 @min-[560px]:col-start-2 @min-[560px]:row-start-1 @min-[560px]:flex @min-[560px]:items-center @min-[560px]:justify-self-start @min-[560px]:px-1 @min-[560px]:py-1 ${sentAt ? "row-start-3" : "row-start-2"}`}>
-            {stats.map((stat) => <span key={stat.label} className={`flex min-w-0 flex-col items-center gap-0.5 px-1 text-[18px] font-semibold sm:block sm:px-3 sm:text-[13px] sm:font-medium ${stat.className}`}>{stat.value}{stat.suffix} <span className="text-[11px] font-normal text-muted sm:text-[13px]">{stat.label}</span></span>)}
-          </div>
-        </div>
-        <button
-          id="send-order"
-          onClick={() => {
-            if (sentAt) onReopen();
-            else if (readyToSend) onSend();
-            else setSendAttempted(true);
-          }}
-          aria-disabled={!sentAt && !readyToSend}
-          aria-describedby={sendAttempted && !readyToSend && !sentAt ? "send-order-guidance" : undefined}
-          title={readyToSend || sentAt ? undefined : `${flagged - done} ${flagged - done === 1 ? "line" : "lines"} still to check`}
-          className={`col-start-2 row-start-1 ml-auto h-11 shrink-0 cursor-pointer whitespace-nowrap rounded-lg px-3.5 text-[13px] font-semibold transition-[background-color,opacity] aria-disabled:cursor-not-allowed aria-disabled:opacity-50 @min-[560px]:col-start-3 sm:h-9 ${sentAt ? "border border-line bg-panel text-ink hover:bg-bg" : "bg-brand text-onbrand"}`}
-        >
-          {sentAt ? "Reopen" : "Send order"}
-        </button>
-      </div>
-      {sendAttempted && !readyToSend && !sentAt && (
-        <p id="send-order-guidance" role="status" className="mt-3 text-[13px] text-warn">
-          Confirm a product and quantity for each remaining item before sending. <a href="#needs-review" className="font-medium underline underline-offset-2">Go to Needs review</a>
-        </p>
-      )}
-      <div className="mt-3 grid grid-cols-[2rem_minmax(0,1fr)] items-center gap-x-3 gap-y-2 border-t border-line pt-3 sm:flex sm:flex-wrap sm:gap-y-1">
-        <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-bg text-[11px] font-semibold text-ink" aria-hidden>
+    <div className="@container mb-6 rounded-xl border border-line bg-panel px-4 py-4 shadow-[0_0_0_1px_var(--ring)] sm:px-5" aria-live="polite">
+      <div className="flex items-start gap-3">
+        <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-bg text-[12px] font-semibold text-ink" aria-hidden>
           {result.from ? result.from.name.split(" ").map((w) => w[0]).join("").slice(0, 2) : "C"}
         </span>
-        <span className="min-w-0 break-words text-[14px]">
-          <span className="block font-semibold sm:inline">{result.from?.name ?? "Contractor"}</span>
-          {result.from && <span className="block text-[13px] text-muted sm:inline sm:text-[14px]"><span className="hidden sm:inline"> · </span>{result.from.company}</span>}
-        </span>
-        {notes && <p className="col-start-2 min-w-0 break-words text-[14px] leading-relaxed text-muted sm:ml-auto sm:max-w-md">“{notes}”</p>}
+        <div className="min-w-0 flex-1">
+          <h1 className="break-words text-xl font-semibold leading-tight tracking-tight">
+            {result.from?.name ?? "New order"}
+            {result.from && <span className="font-normal text-muted"> · {result.from.company}</span>}
+          </h1>
+          <p className="mt-0.5 text-[13px] text-muted">Texted an order · <span className="font-mono">{result.orderId}</span></p>
+        </div>
+      </div>
+      <figure className="mt-4 @min-[560px]:ml-12">
+        <figcaption className="sr-only">Text message from {who}</figcaption>
+        <blockquote id="incoming-message" className="w-fit max-w-prose whitespace-pre-wrap break-words rounded-2xl rounded-tl-md bg-bg px-4 py-3 text-[14px] leading-relaxed text-ink">
+          {result.text.trim()}
+        </blockquote>
+      </figure>
+      <div className="mt-4 flex flex-col gap-3 border-t border-line pt-3 @min-[560px]:flex-row @min-[560px]:items-center">
+        <div className="grid shrink-0 grid-cols-3 divide-x divide-line whitespace-nowrap rounded-lg bg-bg py-2 @min-[560px]:flex @min-[560px]:px-1 @min-[560px]:py-1">
+          {stats.map((stat) => <span key={stat.label} className={`flex min-w-0 flex-col items-center gap-0.5 px-1 text-[18px] font-semibold @min-[560px]:block @min-[560px]:px-3 @min-[560px]:text-[13px] @min-[560px]:font-medium ${stat.className}`}>{stat.value} <span className="text-[11px] font-normal text-muted @min-[560px]:text-[13px]">{stat.label}</span></span>)}
+        </div>
+        {/* one status spot, so sending doesn't shift the card */}
+        <p role="status" className={`text-[12px] leading-4 @min-[560px]:ml-auto @min-[560px]:text-right ${sentAt ? "font-medium text-ok" : "text-muted"}`}>
+          {sentAt
+            ? `Sent to ${who} for approval at ${new Date(sentAt).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}. It goes to the ERP once they approve.`
+            : toCheck > 0 ? `Check ${toCheck} ${toCheck === 1 ? "line" : "lines"}, then send it to ${who} for approval.` : `Ready to send to ${who} for approval.`}
+          {mode === "claude" && <span className="mt-0.5 block font-medium text-ink">Showing the Claude-only draft</span>}
+        </p>
       </div>
     </div>
   );
 }
 
-function Review({ result, mode, T, unitMin, catalog, resolved, setResolved, sentAt, onSend, onReopen, onReviewed }: {
+/** The foot of the order: the subtotal, then Send. It comes after the lines, so the rep reaches it once they're checked. */
+function OrderFooter({ result, subtotal, toCheck, sentAt, onSend, onReopen }: { result: OrderResult; subtotal: { sum: number; unpriced: number }; toCheck: number; sentAt?: number; onSend: () => void; onReopen: () => void }) {
+  const [sendAttempted, setSendAttempted] = useState(false);
+  const first = result.from?.name.split(" ")[0] ?? "contractor";
+  const ready = !sentAt && toCheck === 0;
+  const extra = [toCheck > 0 && `+ ${toCheck} to check`, subtotal.unpriced > 0 && `+ ${subtotal.unpriced} not priced`].filter(Boolean).join(" · ");
+  return (
+    <div className="card px-4 py-4 sm:px-6">
+      <div className="flex items-baseline justify-between gap-4">
+        <div>
+          <h2 className="text-[14px] font-semibold">{toCheck > 0 ? "Subtotal so far" : "Subtotal"}</h2>
+          <p className="mt-0.5 text-[12px] text-muted">CAD, before tax</p>
+        </div>
+        <p className="text-right text-[14px] font-semibold tabular-nums">
+          {money(subtotal.sum)}
+          {extra && <span className="block text-[12px] font-normal text-muted">{extra}</span>}
+        </p>
+      </div>
+      <div className="mt-4 flex flex-col gap-3 border-t border-line pt-4 sm:flex-row sm:items-center sm:justify-end">
+        <p id="send-order-note" className={`text-[12px] leading-4 sm:mr-auto ${toCheck > 0 && !sentAt ? "text-warn" : "text-muted"}`}>
+          {sentAt ? "Waiting on their approval." : toCheck > 0 ? `${toCheck} ${toCheck === 1 ? "line" : "lines"} still to check before sending.` : `${first} approves it before it goes to the ERP.`}
+        </p>
+        <button
+          id="send-order"
+          onClick={() => {
+            if (sentAt) onReopen();
+            else if (ready) onSend();
+            else setSendAttempted(true);
+          }}
+          aria-disabled={!sentAt && !ready}
+          aria-describedby={sendAttempted && !ready && !sentAt ? "send-order-note send-order-guidance" : "send-order-note"}
+          className={`tour-send h-11 w-full shrink-0 cursor-pointer whitespace-nowrap rounded-lg px-4 text-[14px] font-semibold transition-[background-color,opacity] aria-disabled:cursor-not-allowed aria-disabled:opacity-50 sm:h-10 sm:w-auto ${sentAt ? "border border-line bg-panel text-ink hover:bg-bg" : "bg-brand text-onbrand"}`}
+        >
+          {sentAt ? "Reopen" : `Send to ${first} for approval`}
+        </button>
+      </div>
+      {sendAttempted && !ready && !sentAt && (
+        <p id="send-order-guidance" role="status" className="mt-3 text-[13px] text-warn">
+          Confirm a product and quantity for each remaining item first. <a href="#needs-review" className="font-medium underline underline-offset-2">Go to Needs review</a>
+        </p>
+      )}
+    </div>
+  );
+}
+
+function Review({ result, mode, T, unitMin, catalog, resolved, setResolved, quantities, setQuantity, phone, sentAt, onSend, onReopen, onReviewed }: {
   result: OrderResult; mode: Mode; T: number; unitMin: number; catalog: SlimCatalog;
   resolved: Decisions; setResolved: (f: (r: Decisions) => Decisions) => void;
+  quantities: Record<string, number>; setQuantity: (lineId: string, qty: number | undefined) => void;
+  phone: boolean;
   sentAt?: number; onSend: () => void; onReopen: () => void;
   onReviewed: () => void;
 }) {
   const [active, setActive] = useState<string | null>(null);
-  const [headerSendVisible, setHeaderSendVisible] = useState(true);
+  // A product the rep picked whose quantity still has to be set in its selling unit (line id -> sku)
+  const [staged, setStaged] = useState<Record<string, string>>({});
+  const [footerSendVisible, setFooterSendVisible] = useState(false);
   const floatingSendRef = useRef<HTMLButtonElement>(null);
   const lines = useMemo(() => computeView(result, mode, T, catalog, unitMin), [result, mode, T, catalog, unitMin]);
   // Unmatched lines need triage before product or quantity checks, so keep them at the top of the review list.
-  // The original `lines` order stays intact for reconstructing the contractor's message above the list.
   const orderedLines = useMemo(() => [...lines].sort((a, b) => Number(b.sku === NONE) - Number(a.sku === NONE)), [lines]);
   const flagged = orderedLines.filter((l) => !l.approved);
   const done = flagged.filter((l) => resolved[l.id]).length;
@@ -816,14 +861,15 @@ function Review({ result, mode, T, unitMin, catalog, resolved, setResolved, sent
   const validated = orderedLines.filter((l) => l.approved || (resolved[l.id] && resolved[l.id] !== NONE));
   const excluded = flagged.filter((l) => resolved[l.id] === NONE);
   const current = pending.find((l) => l.id === active)?.id ?? pending[0]?.id ?? null;
-  const showFloatingSend = !sentAt && pending.length === 0 && !headerSendVisible;
+  // Phones keep a Send bar at the bottom (it says how many lines are left); wide screens show it once the review is done.
+  const showFloatingSend = !sentAt && !footerSendVisible && (pending.length === 0 || phone);
 
   useEffect(() => {
     const button = document.getElementById("send-order");
     if (!button) return;
     const observer = new IntersectionObserver(([entry]) => {
       const visible = entry.isIntersecting;
-      setHeaderSendVisible(visible);
+      setFooterSendVisible(visible);
       if (visible && document.activeElement === floatingSendRef.current) {
         button.focus({ preventScroll: true });
       }
@@ -835,7 +881,7 @@ function Review({ result, mode, T, unitMin, catalog, resolved, setResolved, sent
   // A decision removes the button that had focus, so move it on instead of dropping to <body>.
   const focusAfter = useRef<"next" | string | null>(null);
   const scrollAfter = useRef<{ element: HTMLElement; top: number }[]>([]);
-  const choose = useCallback((lineId: string, sku: string) => {
+  const choose = useCallback((lineId: string, sku: string, qty?: number) => {
     focusAfter.current = "next";
     const positions: { element: HTMLElement; top: number }[] = [];
     for (let element = document.getElementById("review"); element; element = element.parentElement) {
@@ -845,13 +891,31 @@ function Review({ result, mode, T, unitMin, catalog, resolved, setResolved, sent
     }
     scrollAfter.current = positions;
     setActive(null);
-    trackEvent("order_line_reviewed", { mode, decision: sku === NONE ? "not_in_catalog" : "product" });
+    setStaged((s) => without(s, lineId));
+    trackEvent("order_line_reviewed", { mode, decision: sku === NONE ? "not_in_catalog" : "product", quantity_set: qty != null });
+    setQuantity(lineId, sku === NONE ? undefined : qty);
     setResolved((r) => ({ ...r, [lineId]: sku }));
     onReviewed();
-  }, [mode, setResolved, onReviewed]);
+  }, [mode, setResolved, setQuantity, onReviewed]);
+  /**
+   * The one way a product gets picked (click, number key or Enter). If the contractor's quantity isn't in the unit the
+   * product is sold by ("100 feet" of a roll), or there is none, the pick waits for the rep to set the quantity.
+   */
+  const pickProduct = useCallback((l: ViewLine, sku: string, editQuantity = false) => {
+    const product = catalog[sku];
+    if (editQuantity || l.qty == null || (product && !sameQuantityUnit(l.unit, product.unit))) {
+      setActive(l.id);
+      setStaged((s) => ({ ...s, [l.id]: sku }));
+    } else choose(l.id, sku);
+  }, [catalog, choose]);
+  const unstage = (lineId: string) => {
+    setStaged((s) => without(s, lineId));
+    requestAnimationFrame(() => document.getElementById(`line-${lineId}`)?.focus());
+  };
   const undo = (lineId: string) => {
     focusAfter.current = lineId;
     setActive(lineId);
+    setQuantity(lineId, undefined);
     setResolved((r) => Object.fromEntries(Object.entries(r).filter(([id]) => id !== lineId)));
   };
 
@@ -867,7 +931,7 @@ function Review({ result, mode, T, unitMin, catalog, resolved, setResolved, sent
     scrollAfter.current = [];
   }, [resolved, current, showFloatingSend]);
 
-  // keyboard: j/k move between flagged lines, 1-3 pick an option, Enter accepts the top pick, x = not in catalog.
+  // keyboard: j/k move between flagged lines, 1-3 pick a product, Enter accepts the suggested product, x leaves the line off.
   // After a decision the cursor moves to the next line that still needs one.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -879,48 +943,40 @@ function Review({ result, mode, T, unitMin, catalog, resolved, setResolved, sent
       const ids = pending.map((l) => l.id);
       const i = current ? ids.indexOf(current) : -1;
       const line = flagged.find((l) => l.id === current);
-      const decide = (sku: string) => {
-        if (!line || resolved[line.id]) return false; // already decided: use Undo to change
-        choose(line.id, sku);
-        return true;
-      };
+      // a line waiting for its quantity takes input in its own editor
+      const open = line && !resolved[line.id] && !staged[line.id];
       const navigate = (id: string) => {
         setActive(id);
         document.getElementById(`line-${id}`)?.scrollIntoView({ block: "nearest" });
       };
+      const choices = line ? productChoices(line) : [];
       if (e.key === "j" && ids.length) navigate(ids[Math.min(ids.length - 1, i + 1)]);
       else if (e.key === "k" && ids.length) navigate(ids[Math.max(0, i - 1)]);
-      else if (line && !line.quantityOnly && /^[1-4]$/.test(e.key) && displayChoices(line)[Number(e.key) - 1]) decide(displayChoices(line)[Number(e.key) - 1].sku);
-      else if (line && e.key === "Enter" && t.tagName !== "BUTTON") decide(line.sku);
-      else if (line && e.key === "x") decide(NONE);
+      else if (open && !line.quantityOnly && /^[1-3]$/.test(e.key) && choices[Number(e.key) - 1]) pickProduct(line, choices[Number(e.key) - 1].sku);
+      // Enter accepts the suggested product, only from the review itself or a line (never from a focused link or button),
+      // and never when the suggestion is to leave the line off: that takes x or a click.
+      else if (open && e.key === "Enter" && line.sku !== NONE && (t === document.body || t.id === "review" || /^line-/.test(t.id))) pickProduct(line, line.sku);
+      else if (line && !resolved[line.id] && e.key === "x") choose(line.id, NONE);
       else return;
       e.preventDefault();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [flagged, pending, current, choose, resolved, sentAt]);
+  }, [flagged, pending, current, choose, pickProduct, resolved, staged, sentAt]);
 
-
-  // What the contractor wrote besides the order lines (greetings, delivery notes), shown with the sender.
-  // If order lines sit inside sentences ("We need 30 2x4x8 and 12 2x6x8"), cutting them out would leave
-  // broken text, so the whole message is shown instead.
-  const notes = useMemo(() => {
-    const segs = segmentText(result.text, lines);
-    const inline = segs.some((seg, i) => {
-      if (!seg.lineId) return false;
-      const before = (segs[i - 1]?.text ?? "\n").split("\n").pop()!.trim();
-      const after = (segs[i + 1]?.text ?? "\n").split("\n")[0].trim();
-      return before !== "" || after !== "";
-    });
-    if (inline) return result.text.replace(/\s+/g, " ").trim();
-    return segs
-      .filter((seg) => !seg.lineId)
-      .map((seg) => seg.text.replace(/\s+/g, " ").trim())
-      .filter((t) => /[a-z]{2}/i.test(t))
-      .join(" ")
-      .trim();
-  }, [result, lines]);
+  // Order subtotal: confirmed lines only (auto-approved or checked by the rep). Lines still to check aren't priced yet.
+  const subtotal = useMemo(() => {
+    let sum = 0;
+    let unpriced = 0;
+    for (const l of validated) {
+      const total = linePrice(l, resolved[l.id], catalog, quantities[l.id])?.total;
+      if (total == null) unpriced++;
+      else sum += total;
+    }
+    return { sum, unpriced };
+  }, [validated, resolved, catalog, quantities]);
   const status = (l: ViewLine) => (l.approved ? "ok" : resolved[l.id] ? "done" : "flag");
+  const first = result.from?.name.split(" ")[0] ?? "contractor";
 
   return (
     <>
@@ -929,61 +985,76 @@ function Review({ result, mode, T, unitMin, catalog, resolved, setResolved, sent
           Skip to the first line to check
         </a>
       )}
-      <OrderDetails
-        result={result}
-        notes={notes}
-        lines={lines.length}
-        flagged={flagged.length}
-        done={done}
-        sentAt={sentAt}
-        onSend={onSend}
-        onReopen={onReopen}
-      />
+      <OrderDetails result={result} mode={mode} lines={lines.length} flagged={flagged.length} done={done} sentAt={sentAt} />
 
       <div
         className={`floating-send fixed inset-x-0 bottom-0 z-20 flex justify-center px-5 pt-3 pb-[calc(1rem+env(safe-area-inset-bottom))] ${showFloatingSend ? "floating-send-visible" : ""}`}
         inert={!showFloatingSend}
         aria-hidden={!showFloatingSend}
       >
-        <button
-          ref={floatingSendRef}
-          id="floating-send-order"
-          disabled={!showFloatingSend}
-          onClick={() => {
-            onSend();
-            requestAnimationFrame(() => document.getElementById("send-order")?.focus());
-          }}
-          className="pointer-events-auto flex min-h-12 items-center gap-2 rounded-xl bg-brand px-6 text-[14px] font-semibold text-onbrand shadow-raise"
-        >
-          <Check /> Send order
-        </button>
+        {pending.length > 0 ? (
+          <button
+            disabled={!showFloatingSend}
+            onClick={() => {
+              const el = document.getElementById(`line-${pending[0].id}`);
+              el?.scrollIntoView({ block: "center" });
+              el?.focus({ preventScroll: true });
+            }}
+            className="pointer-events-auto flex min-h-12 w-full max-w-md items-center justify-center gap-2 rounded-xl bg-panel px-6 text-[14px] font-semibold text-warn shadow-raise"
+          >
+            {pending.length} {pending.length === 1 ? "line" : "lines"} to check before sending
+          </button>
+        ) : (
+          <button
+            ref={floatingSendRef}
+            id="floating-send-order"
+            disabled={!showFloatingSend}
+            onClick={() => {
+              onSend();
+              requestAnimationFrame(() => document.getElementById("send-order")?.focus());
+            }}
+            className="pointer-events-auto flex min-h-12 items-center gap-2 rounded-xl bg-brand px-6 text-[14px] font-semibold text-onbrand shadow-raise"
+          >
+            <Check /> Send to {first} for approval
+          </button>
+        )}
       </div>
 
-
-      <section aria-label="Order" inert={!!sentAt} className={sentAt ? "opacity-70" : ""}>
+      <section aria-label="Order" className={phone && !sentAt ? "pb-20" : ""}>
         <div className="space-y-5">
-          {[
-            ...(pending.length ? [{ id: "needs-review", title: "Needs review", description: "Confirm a product and quantity for each item.", items: pending, color: "bg-panel text-warn", empty: "" }] : []),
-            { id: "validated-items", title: "Validated items", description: "Auto-approved or checked by you.", items: validated, color: "bg-panel text-ok", empty: "Validated items will appear here as you confirm them." },
-            ...(excluded.length ? [{ id: "excluded-items", title: "Not in catalog", description: "Items skipped by you.", items: excluded, color: "bg-bg text-muted", empty: "" }] : []),
-          ].map((group) => (
-            <section key={group.id} aria-labelledby={group.id} className="card overflow-hidden">
-              <header className={`border-b border-line px-4 py-3 sm:px-6 ${group.color}`}>
-                <div className="flex items-center justify-between gap-3">
-                  <h2 id={group.id} className="text-[14px] font-semibold">{group.title}</h2>
-                  <span className="rounded-full bg-line/50 px-2.5 py-0.5 font-mono text-[12px]" aria-label={`${group.items.length} items`}>{group.items.length}</span>
-                </div>
-                <p className="mt-0.5 text-[12px] text-muted">{group.description}</p>
-              </header>
-              {group.items.length ? (
-                <ul>
-                  {group.items.map((l) => (
-                    <LineRow key={l.id} l={l} state={status(l)} pick={resolved[l.id]} active={current === l.id} catalog={catalog} onSelect={() => setActive(l.id)} onChoose={(sku) => choose(l.id, sku)} onUndo={() => undo(l.id)} />
-                  ))}
-                </ul>
-              ) : <p className="px-4 py-5 text-[13px] text-muted sm:px-6">{group.empty}</p>}
-            </section>
-          ))}
+          <div inert={!!sentAt} className={`space-y-5 ${sentAt ? "opacity-70" : ""}`}>
+            {[
+              ...(pending.length ? [{ id: "needs-review", title: "Needs review", description: "Confirm a product and quantity for each item.", items: pending, color: "bg-panel text-warn", empty: "" }] : []),
+              { id: "validated-items", title: "Validated items", description: "Auto-approved or checked by you.", items: validated, color: "bg-panel text-ok", empty: "Validated items will appear here as you confirm them." },
+              ...(excluded.length ? [{ id: "excluded-items", title: "Left off order", description: "No catalog match. Let the contractor know.", items: excluded, color: "bg-bg text-muted", empty: "" }] : []),
+            ].map((group) => (
+              <section key={group.id} aria-labelledby={group.id} className="card overflow-hidden">
+                <header className={`border-b border-line px-4 py-3 sm:px-6 ${group.color}`}>
+                  <div className="flex items-center justify-between gap-3">
+                    <h2 id={group.id} className="text-[14px] font-semibold">{group.title}</h2>
+                    <span className="rounded-full bg-line/50 px-2.5 py-0.5 font-mono text-[12px]" aria-label={`${group.items.length} items`}>{group.items.length}</span>
+                  </div>
+                  <p className="mt-0.5 text-[12px] text-muted">{group.description}</p>
+                </header>
+                {group.items.length ? (
+                  <ul>
+                    {group.items.map((l) => (
+                      <LineRow
+                        key={l.id} l={l} state={status(l)} pick={resolved[l.id]} quantity={quantities[l.id]} staged={staged[l.id]}
+                        active={current === l.id} catalog={catalog}
+                        onSelect={() => setActive(l.id)}
+                        onPick={(sku, editQuantity) => pickProduct(l, sku, editQuantity)}
+                        onConfirm={(sku, qty) => choose(l.id, sku, qty)}
+                        onUnstage={() => unstage(l.id)}
+                        onUndo={() => undo(l.id)}
+                      />
+                    ))}
+                  </ul>
+                ) : <p className="px-4 py-5 text-[13px] text-muted sm:px-6">{group.empty}</p>}
+              </section>
+            ))}
+          </div>
+          <OrderFooter result={result} subtotal={subtotal} toCheck={pending.length} sentAt={sentAt} onSend={onSend} onReopen={onReopen} />
         </div>
       </section>
     </>
@@ -1002,20 +1073,77 @@ function Slider(p: { id: string; label: string; value: number; min: number; max:
   );
 }
 
-function LineRow(props: { l: ViewLine; state: "ok" | "done" | "flag"; pick?: string; active: boolean; catalog: SlimCatalog; onSelect: () => void; onChoose: (sku: string) => void; onUndo: () => void }) {
+const unitName = (unit: string, n = 1) => (unit === "each" ? (n === 1 ? "piece" : "pieces") : n === 1 ? unit : unit.endsWith("x") ? `${unit}es` : `${unit}s`);
+
+/** Sets how many of a product, in the unit it's sold by, when the contractor's quantity can't be used as written. */
+function QuantityEditor({ l, sku, catalog, onConfirm, onCancel }: { l: ViewLine; sku: string; catalog: SlimCatalog; onConfirm: (qty: number) => void; onCancel: () => void }) {
+  const product = catalog[sku];
+  const suggestion = product ? suggestQuantity(l.qty, l.unit, product.name, product.unit) : null;
+  // Prefill only a quantity that is already in the selling unit, or a conversion worked out from the product's size.
+  const initial = suggestion?.qty ?? (l.qty != null && product && sameQuantityUnit(l.unit, product.unit) ? l.qty : null);
+  const [value, setValue] = useState(initial != null ? String(initial) : "");
+  const qty = Number(value);
+  const valid = value.trim() !== "" && Number.isFinite(qty) && qty > 0;
+  const inputId = `qty-${l.id}`;
+  const step = (d: number) => setValue(String(Math.max(1, (valid ? qty : 0) + d)));
+  if (!product) return null;
+  return (
+    <div className="mt-4 rounded-xl bg-bg p-4" onClick={(e) => e.stopPropagation()}>
+      <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+        <p className="font-medium text-ink">{product.name}</p>
+        <button onClick={onCancel} className="text-[13px] text-muted underline hover:text-ink">Change product</button>
+      </div>
+      <p className="mt-0.5 text-[12px] tabular-nums text-muted">{perUnit(product.price, product.unit)}</p>
+      <form className="mt-3 flex flex-wrap items-end gap-3" onSubmit={(e) => { e.preventDefault(); if (valid) onConfirm(qty); }}>
+        <div>
+          <label htmlFor={inputId} className="mb-1 block text-[13px] font-medium">Quantity in {unitName(product.unit, 2)}</label>
+          <div className="flex items-center rounded-lg bg-panel shadow-[0_0_0_1px_var(--control)]">
+            <button type="button" onClick={() => step(-1)} aria-label="One fewer" className="h-11 w-11 text-lg text-muted hover:text-ink">−</button>
+            <input
+              id={inputId}
+              autoFocus
+              inputMode="decimal"
+              value={value}
+              onChange={(e) => setValue(e.target.value.replace(/[^\d.]/g, ""))}
+              onKeyDown={(e) => { if (e.key === "Escape") { e.preventDefault(); e.stopPropagation(); onCancel(); } }}
+              aria-describedby={`${inputId}-hint`}
+              className="h-11 w-16 bg-transparent text-center text-[15px] tabular-nums outline-none"
+            />
+            <button type="button" onClick={() => step(1)} aria-label="One more" className="h-11 w-11 text-lg text-muted hover:text-ink">+</button>
+          </div>
+        </div>
+        <button type="submit" disabled={!valid} className="h-11 rounded-lg bg-okbg px-4 font-medium text-ok shadow-[0_0_0_1px_var(--ok)] disabled:opacity-40">
+          Confirm {valid ? `${qty} ${unitName(product.unit, qty)}` : "quantity"}{valid ? ` · ${money(qty * product.price)}` : ""}
+        </button>
+      </form>
+      <p id={`${inputId}-hint`} className="mt-2 text-[12px] text-muted">
+        {suggestion ? `Suggested from the product size: ${suggestion.working}.`
+          : l.qty == null ? "The contractor didn't give a quantity."
+          : `The contractor wrote ${fmtQty(l.qty, l.unit)}. Enter how many ${unitName(product.unit, 2)} that is.`}
+      </p>
+    </div>
+  );
+}
+
+function LineRow(props: {
+  l: ViewLine; state: "ok" | "done" | "flag"; pick?: string; quantity?: number; staged?: string; active: boolean; catalog: SlimCatalog;
+  onSelect: () => void; onPick: (sku: string, editQuantity?: boolean) => void; onConfirm: (sku: string, qty?: number) => void; onUnstage: () => void; onUndo: () => void;
+}) {
   const { l, state, pick, active, catalog } = props;
   const [showAll, setShowAll] = useState(false);
-  const sellUnit = catalog[l.sku]?.unit;
-  const qty = fmtQty(l.qty, sellUnit ?? l.unit);
+  const product = catalog[pick && pick !== NONE ? pick : l.sku];
+  const sellUnit = product?.unit;
+  const qty = props.quantity != null && sellUnit ? fmtQty(props.quantity, sellUnit) : fmtQty(l.qty, sellUnit && sameQuantityUnit(l.unit, sellUnit) ? sellUnit : (l.unit ?? sellUnit ?? null));
 
   if (state === "flag") {
-    const shown = displayChoices(l);
+    const choices = productChoices(l);
     const quick = l.quantityOnly && !showAll;
     // On a line to check, show the quantity as the customer wrote it. If their unit differs from how the
     // product is sold ("50 lb" of nails sold by the box), say both rather than silently converting.
-    const asked = l.unit && sellUnit && unitKey(l.unit) !== unitKey(sellUnit) ? `${fmtQty(l.qty, l.unit)} · sold per ${sellUnit === "each" ? "piece" : sellUnit}` : qty;
+    const asked = l.unit && sellUnit && l.sku !== NONE && !sameQuantityUnit(l.unit, sellUnit) ? `${fmtQty(l.qty, l.unit)} · sold per ${unitName(sellUnit)}` : fmtQty(l.qty, l.unit);
+    const quickPrice = linePrice(l, l.sku, catalog);
     return (
-      <li id={`line-${l.id}`} tabIndex={-1} onClick={props.onSelect} className={`outline-none scroll-mt-44 scroll-mb-8 border-b border-line bg-panel px-6 py-5 last:border-b-0 ${active ? "tour-choice" : ""}`}>
+      <li id={`line-${l.id}`} tabIndex={-1} onClick={props.onSelect} className={`outline-none scroll-mt-44 scroll-mb-8 border-b border-line bg-panel px-4 py-5 last:border-b-0 sm:px-6 ${active ? "tour-choice" : ""}`}>
         <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-0.5">
           <span className="font-mono text-[14px] font-medium">
             <span className="sr-only">Check this: </span>
@@ -1024,66 +1152,93 @@ function LineRow(props: { l: ViewLine; state: "ok" | "done" | "flag"; pick?: str
           <span className="text-[14px] text-muted">{asked}</span>
         </div>
         <p className="mt-1.5 text-[13px] text-warn">{l.reasons.join(" ")}</p>
-        {quick ? (
+        {props.staged ? (
+          <QuantityEditor l={l} sku={props.staged} catalog={catalog} onConfirm={(n) => props.onConfirm(props.staged!, n)} onCancel={props.onUnstage} />
+        ) : quick ? (
           <div className="mt-4 flex flex-wrap items-center gap-3">
-            <button onClick={(e) => { e.stopPropagation(); props.onChoose(l.sku); }} className="review-option tour-option min-h-11 rounded-xl bg-okbg px-4 py-2 text-left font-medium text-ok shadow-[0_0_0_1px_var(--ok)]">
-              {active && <kbd className="mr-2 text-xs">Enter</kbd>}Confirm {qty} of {l.name}
+            <button onClick={(e) => { e.stopPropagation(); props.onPick(l.sku); }} className="review-option tour-option min-h-11 rounded-xl bg-okbg px-4 py-2 text-left font-medium text-ok shadow-[0_0_0_1px_var(--ok)]">
+              {active && <kbd className="mr-2 text-xs">Enter</kbd>}
+              {quickPrice?.total != null ? <>Confirm {fmtQty(l.qty, sellUnit ?? null)} of {l.name}<span className="font-normal"> · {money(quickPrice.total)}</span></> : <>Set the quantity of {l.name}</>}
             </button>
-            <button onClick={(e) => { e.stopPropagation(); props.onChoose(NONE); }} className="review-option tour-option min-h-11 rounded-xl bg-panel px-4 py-2 font-medium shadow-[0_0_0_1px_var(--control)]" style={{ "--tour-delay": "300ms" } as React.CSSProperties}>
-              {active && <kbd className="mr-2 text-xs text-muted">x</kbd>}Not in catalog
-            </button>
+            {quickPrice?.total != null && <button onClick={(e) => { e.stopPropagation(); props.onPick(l.sku, true); }} className="text-[13px] text-muted underline hover:text-ink">Change quantity</button>}
             <button onClick={(e) => { e.stopPropagation(); setShowAll(true); }} className="text-[13px] text-muted underline hover:text-ink">Other products…</button>
           </div>
         ) : (
-          <div role="group" aria-label={`Options for ${l.raw}`} className="mt-3 flex flex-col gap-2">
+          <div role="group" aria-label={`Products for ${l.raw}`} className="mt-3 flex flex-col gap-2">
             {/* column header over the confidence cells */}
-            {shown.some((o) => o.probability != null) && (
+            {choices.some((o) => o.probability != null) && (
               <div aria-hidden className="-mb-1 flex justify-end px-3.5 text-[12px] font-medium text-muted">
                 <span className="w-16 text-center sm:w-24">Confidence</span>
               </div>
             )}
-            {shown.map((o, i) => (
-              <button
-                key={o.sku}
-                aria-pressed={pick === o.sku}
-                style={{ "--tour-delay": `${i * 300}ms` } as React.CSSProperties}
-                onClick={(e) => { e.stopPropagation(); props.onChoose(o.sku); }}
-                className={`review-option tour-option flex min-h-11 items-center gap-3 rounded-xl px-3.5 py-2 text-left text-ink ${pick === o.sku ? "bg-okbg shadow-[0_0_0_1px_var(--ok)]" : "bg-panel shadow-[0_0_0_1px_var(--control)]"}`}
-              >
-                <kbd className="w-4 text-center text-xs text-muted">{i + 1}</kbd>
-                <span className="min-w-0 flex-1">
-                  <span className={i === 0 ? "font-semibold" : ""}>{o.name}</span>
-                </span>
-                {o.probability != null && (
-                  <span className="flex w-16 shrink-0 items-center justify-center self-stretch sm:w-24 border-l border-line text-[14px] text-muted">
-                    <span className="sr-only">confidence </span>
-                    {Math.round(o.probability * 100)}%
+            {choices.map((o, i) => {
+              const price = linePrice(l, o.sku, catalog);
+              const suggested = o.sku === l.sku;
+              return (
+                <button
+                  key={o.sku}
+                  style={{ "--tour-delay": `${i * 300}ms` } as React.CSSProperties}
+                  onClick={(e) => { e.stopPropagation(); props.onPick(o.sku); }}
+                  className="review-option tour-option flex min-h-11 items-center gap-3 rounded-xl bg-panel px-3.5 py-2 text-left text-ink shadow-[0_0_0_1px_var(--control)]"
+                >
+                  <kbd className="w-4 text-center text-xs text-muted">{i + 1}</kbd>
+                  <span className="min-w-0 flex-1">
+                    <span className={`block ${suggested ? "font-semibold" : ""}`}>{o.name}{suggested && <span className="sr-only"> (suggested)</span>}</span>
+                    {price && <span className="block text-[12px] tabular-nums text-muted">{price.unit}{price.total != null && <> · {money(price.total)} for {fmtQty(l.qty, catalog[o.sku].unit)}</>}</span>}
                   </span>
-                )}
-                {o.probability == null && i === 0 && <span className="text-xs text-muted">Claude: {l.confidence}</span>}
-              </button>
-            ))}
+                  {o.probability != null && (
+                    <span className="flex w-16 shrink-0 items-center justify-center self-stretch sm:w-24 border-l border-line text-[14px] text-muted">
+                      <span className="sr-only">confidence </span>
+                      {Math.round(o.probability * 100)}%
+                    </span>
+                  )}
+                  {o.probability == null && suggested && <span className="text-xs text-muted">Claude: {l.confidence}</span>}
+                </button>
+              );
+            })}
+            {choices.length === 0 && <p className="text-[13px] text-muted">No product in the catalog comes close.</p>}
+          </div>
+        )}
+        {!props.staged && (
+          <div className="mt-3">
+            <button onClick={(e) => { e.stopPropagation(); props.onConfirm(NONE); }} className="flex min-h-11 items-center gap-2 rounded-lg px-1 text-[13px] font-medium text-muted hover:text-ink">
+              {active && <kbd className="text-xs">x</kbd>}Leave off order
+              <span className="font-normal">· tell the contractor we don&apos;t carry it</span>
+            </button>
           </div>
         )}
       </li>
     );
   }
 
-  const chosen = state === "done" ? (pick === NONE ? "Not in catalog" : (catalog[pick!]?.name ?? pick)) : l.name;
+  const chosen = state === "done" ? (pick === NONE ? "Left off order" : (catalog[pick!]?.name ?? pick)) : l.name;
+  const price = pick === NONE ? null : linePrice(l, pick, catalog, props.quantity);
+  const total = price?.total != null ? money(price.total) : <span title="Not priced: the quantity isn't in the unit this product is sold by">—<span className="sr-only">not priced</span></span>;
   return (
     <li id={`line-${l.id}`} tabIndex={-1} onClick={props.onSelect} className={`outline-none scroll-mt-44 border-b border-line last:border-b-0 ${active ? "bg-bg" : ""}`}>
-      <div className="flex min-h-14 items-center gap-3 px-6 py-3">
+      <div className="flex min-h-14 items-center gap-3 px-4 py-3 sm:px-6">
         <span className={state === "done" && pick === NONE ? "text-warn" : "text-ok"}>{state === "done" ? <Person /> : <Check />}</span>
         <span className="min-w-0 flex-1">
           <span className="block break-words text-ink">{chosen}</span>
           <span className="block font-mono text-[13px] text-muted">{l.raw}</span>
+          {/* phones: quantity and price stack under the name instead of taking columns */}
+          <span className="mt-1 flex flex-wrap items-baseline gap-x-2 text-[13px] tabular-nums text-muted sm:hidden">
+            {pick !== NONE && <span>{qty}</span>}
+            {pick !== NONE && <span>{total}</span>}
+            {pick !== NONE && price && <span>({price.unit})</span>}
+          </span>
+          {state === "done" && (
+            <span className="mt-0.5 block text-[12px] text-muted">
+              {pick === NONE ? "Left off by you" : props.quantity != null ? "Product and quantity set by you" : "Checked by you"} · <button className="underline hover:text-ink" onClick={props.onUndo}>Undo</button>
+            </span>
+          )}
         </span>
-        <span className="shrink-0 text-[14px] text-muted">{qty}</span>
-        {state === "done" && (
-          <>
-            <span className="shrink-0 text-[13px] text-muted">{pick === NONE ? "skipped by you" : "checked by you"}</span>
-            <button className="shrink-0 text-[13px] underline" onClick={props.onUndo}>Undo</button>
-          </>
+        {pick !== NONE && <span className="shrink-0 text-right text-[14px] text-muted max-sm:hidden">{qty}</span>}
+        {pick !== NONE && (
+          <span className="w-28 shrink-0 text-right tabular-nums text-muted max-sm:hidden">
+            <span className="block text-[14px]">{total}</span>
+            {price && <span className="block text-[12px]">{price.unit}</span>}
+          </span>
         )}
       </div>
     </li>
@@ -1093,7 +1248,7 @@ function LineRow(props: { l: ViewLine; state: "ok" | "done" | "flag"; pick?: str
 type Side = { key: Mode; label: string; matcher: string; t: ReturnType<typeof totals>; approved: number; lines: number };
 const PER = 10_000;
 
-function CostPanel({ result, samples, mode, T, unitMin, catalog, onMode, settingsOpen, onSettings, onHelp, onClose, onResults }: { result: OrderResult; samples: OrderResult[]; mode: Mode; T: number; unitMin: number; catalog: SlimCatalog; onMode: (m: Mode) => void; settingsOpen: boolean; onSettings: () => void; onHelp: () => void; onClose?: () => void; onResults?: () => void }) {
+function CostPanel({ result, samples, mode, T, unitMin, catalog, onMode, settingsOpen, onSettings, onHelp, onClose, onCollapse, onResults }: { result: OrderResult; samples: OrderResult[]; mode: Mode; T: number; unitMin: number; catalog: SlimCatalog; onMode: (m: Mode) => void; settingsOpen: boolean; onSettings: () => void; onHelp: () => void; onClose?: () => void; onCollapse?: () => void; onResults?: () => void }) {
   const changed = T !== DEFAULT_T || unitMin !== DEFAULT_UNIT;
   const a = computeView(result, "jev", T, catalog, unitMin);
   const b = computeView(result, "claude", T, catalog);
@@ -1112,7 +1267,7 @@ function CostPanel({ result, samples, mode, T, unitMin, catalog, onMode, setting
   return (
     <div className="flex flex-col">
       <div className={`flex shrink-0 justify-between ${onClose ? "items-start gap-4" : "h-16 items-center gap-2 px-4"}`}>
-        <h2 className={onClose ? "text-xl font-semibold tracking-tight" : "text-[15px] font-semibold"}>Cost</h2>
+        <h2 className={onClose ? "text-xl font-semibold tracking-tight" : "text-[15px] font-semibold"}>AI cost</h2>
         <div className={`${ICON_GROUP} max-lg:hidden`}>
           <ResultsButton grouped onOpen={onResults} />
           <SettingsButton open={settingsOpen} changed={changed} onToggle={onSettings} />
@@ -1124,14 +1279,19 @@ function CostPanel({ result, samples, mode, T, unitMin, catalog, onMode, setting
           >
             ?
           </button>
+          {onCollapse && (
+            <button onClick={onCollapse} aria-label="Hide AI cost" title="Hide AI cost" aria-controls="cost-rail" aria-expanded className={ICON_BUTTON_GROUPED}>
+              <XMarkIcon aria-hidden className="h-4 w-4" />
+            </button>
+          )}
         </div>
-        {onClose && <ModalCloseButton onClose={onClose} label="Close cost comparison" />}
+        {onClose && <ModalCloseButton onClose={onClose} label="Close AI cost comparison" />}
       </div>
       <div className={`flex flex-col gap-4 ${onClose ? "pt-4" : "p-5"}`}>
 
-        <div className="rounded-xl bg-brandsoft px-4 py-3">
-          <p className="font-mono text-base font-semibold">{cheaper.toFixed(1)}× lower cost per order</p>
-          {jev.t.ms > 0 && cla.t.ms > 0 && <p className="mt-1 font-mono text-sm font-semibold">{Math.abs(timeSaved)}% {timeSaved < 0 ? "more" : "less"} time per order</p>}
+        <div className="rounded-xl bg-bg px-4 py-3">
+          <p className="text-[14px] font-semibold">{cheaper.toFixed(1)}× lower cost per order</p>
+          {jev.t.ms > 0 && cla.t.ms > 0 && <p className="mt-0.5 text-[13px] text-muted">{Math.abs(timeSaved)}% {timeSaved < 0 ? "more" : "less"} time per order</p>}
           <p className="mt-1 text-[12px] text-muted">{usd(jev.t.usd)} vs {usd(cla.t.usd)} · single run, results vary</p>
         </div>
 
@@ -1205,7 +1365,7 @@ function HelpDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
           <div className="mt-5 grid gap-6 text-[14px] leading-relaxed text-muted md:grid-cols-2 md:gap-8">
             <div className="space-y-4">
               <h3 className="text-[13px] font-semibold uppercase tracking-wider text-ink">Meet Pros where they order</h3>
-              <p><span className="font-medium text-ink">The common path:</span> Many everyday orders start with a phone call or quick message to the counter. Counterpart turns the rep&apos;s notes or pasted request into a catalog-matched draft.</p>
+              <p><span className="font-medium text-ink">The common path:</span> Many everyday orders start with a phone call or quick message to the counter. Counterpart turns a contractor&apos;s text into a catalog-matched draft. The rep checks only the uncertain lines, then sends it back to the contractor to approve before it goes to the ERP for purchase.</p>
               <p><span className="font-medium text-ink">The benefit:</span> The Pro avoids re-keying an order or learning another interface, while your team gets a structured order to review instead of working from messy shorthand.</p>
               <p><span className="font-medium text-ink">Skip the storefront when it makes sense:</span> Detailed quotes and complex orders can follow the full ordering workflow, while routine requests move straight from the channels Pros already use into a review-ready draft.</p>
             </div>

@@ -1,6 +1,6 @@
 # Counterpart
 
-**An outside-in sketch of AI-assisted lumber ordering.** Paste a contractor's text-message order and get a draft order matched to a product catalog, with only the lines a sales rep needs to check flagged.
+**An outside-in sketch of AI-assisted lumber ordering.** A contractor texts an order; Counterpart drafts it against a product catalog and flags only the lines the sales rep needs to check. The rep then sends it back to the contractor to approve before it goes to the ERP.
 
 **Live demo:** https://counterpart-ordering-poc.vercel.app
 
@@ -29,13 +29,13 @@ and rates itself high / medium / low; only "high" lines auto-approve.
 ## The screen
 
 A three-pane workspace:
-- **Left, open by default (⌘B or the sidebar icon to hide):** sample orders, each with the number of lines to check, and a composer to paste your own, or press **Generate** for a random sample order that always contains at least one line to check.
-- **Center:** one card per order: who sent it, then each line as the contractor wrote it next to the product it matched. Approved lines are quiet; flagged lines say why and offer the top alternatives. When only the quantity is in doubt, a flagged line is a one-click confirm.
-- **Right:** a cost assessment of both pipelines for the current order and across all samples. Clicking a pipeline's card shows its draft, and **Settings** there holds the thresholds.
+- **Left, open by default (⌘B or the inbox icon to hide):** the queue of incoming orders, each with when it arrived and the number of lines to check. The default order arrives as the page opens; **Generate order** simulates another contractor text (always with at least one line to check) and runs it live.
+- **Center:** one card per order. It starts with who sent it and their text message, then each line as the contractor wrote it next to the matched product, with its unit price and line total. Approved lines are quiet. Flagged lines say why, offer up to three products with their confidence and price, and have a separate **Leave off order** action. If a product is sold in a different unit than the contractor wrote (100 feet of tape, sold by the roll), a quantity editor asks for the quantity in the selling unit. It prefills a quantity only when the product's size gives a conversion. The order ends with a CAD subtotal and **Send to … for approval**, which returns the order to the contractor to approve before it goes to the ERP (simulated). On phones, a bar at the bottom says how many lines are left.
+- **Right (closed by default; the AI cost summary at the top right opens it):** the AI cost of both pipelines for this order. Clicking a pipeline's card shows its draft.
 
-The two thresholds (product confidence and quantity clarity), under Settings in the cost panel, re-route lines live; Settings also has Light / Dark / System (light by default).
+The two thresholds (product confidence and quantity clarity), under Settings, re-route lines live; Settings also has Light / Dark / System (light by default).
 
-A second page, **Sample results** (`/results`), is a dashboard for the 20 saved orders: headline comparisons, a by-order table linking back to each order, calibration, the misses and the caveats. Each line to check carries a short hint saying what to do. Keyboard shortcuts also work: `j`/`k` move, `1`–`3` pick, `Enter` accepts, `x` marks a line as not in the catalog.
+A second page, **Sample results** (`/results`), is a dashboard for the 20 saved orders: headline comparisons, a by-order table linking back to each order, calibration, the misses and the caveats. Each line to check carries a short hint saying what to do. Keyboard shortcuts also work: `j`/`k` move, `1`–`3` pick, `Enter` accepts, `x` leaves a line off the order. Enter never accepts a "leave off" suggestion.
 
 ## Results
 
@@ -66,7 +66,7 @@ cp .env.example .env.local   # then fill in the keys
 npm run dev                  # http://localhost:3000
 ```
 
-`.env.local` needs `ANTHROPIC_API_KEY`, `ANTHROPIC_MODEL` (for example `claude-sonnet-5-5`), `TYPESAFE_API_KEY`, and `POSTGRES_URL` for the live-order usage limit and email signups. Set `NEXT_PUBLIC_SITE_URL` to the public URL when deploying so canonical and social metadata point to the right host. The saved sample orders work without keys; only live paste and the pipeline scripts call the APIs.
+`.env.local` needs `ANTHROPIC_API_KEY`, `ANTHROPIC_MODEL` (for example `claude-sonnet-5-5`), `TYPESAFE_API_KEY`, and `POSTGRES_URL` for the live-order usage limit and email signups. Set `NEXT_PUBLIC_SITE_URL` to the public URL when deploying so canonical and social metadata point to the right host. The saved sample orders work without keys; only Generate order and the pipeline scripts call the APIs.
 
 ## Analytics
 
@@ -87,12 +87,12 @@ To verify a configured deployment, open PostHog's live events view, visit Review
 
 With a production build running (`npm run build && PORT=3100 npm start`), `npx tsx scripts/e2e-smoke.ts` tests the keyboard flow and sliders in a real browser, and `npx tsx scripts/screenshots.ts` saves screenshots to `shots/`.
 
-**Live paste is capped:**
+**Live runs are capped:**
 - 600 characters and 15 items per order
 - 5 free orders per visitor, then an email signup is required
 - 5 runs per IP address per hour and 40 a day
 
-The five-order signup limit is stored in Postgres and counts attempted runs, including failed AI calls. The hourly and daily counters are per server instance. The spend limit on the API key is the hard stop, and setting `LIVE_RUNS=off` switches live paste off.
+The five-order signup limit is stored in Postgres and counts attempted runs, including failed AI calls. The hourly and daily counters are per server instance. The spend limit on the API key is the hard stop, and setting `LIVE_RUNS=off` switches live runs off.
 
 ## Live runs: limits and safeguards
 

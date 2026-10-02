@@ -48,6 +48,7 @@ shots/
 
 # case study drafts and media (kept local)
 /docs/*case-study*.md
+!/docs/case-study.md
 /public/case-study/
 /public/*case-study*.zip
 /scripts/capture-case-study.ts

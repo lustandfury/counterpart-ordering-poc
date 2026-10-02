@@ -40,8 +40,14 @@ async function main() {
       await page.getByLabel("Access code", { exact: true }).fill("007");
       await page.keyboard.press("Enter");
       await expect(page.locator(".lock-screen")).toHaveCount(0);
-      await page.getByRole("button", { name: "Generate", exact: true }).click();
-      await page.getByRole("button", { name: "Run ⌘↵", exact: true }).click();
+      const generate = async () => {
+        if (width === 390) await page.getByRole("button", { name: "Show orders", exact: true }).click();
+        await page.getByRole("button", { name: "Generate order", exact: true }).click();
+      };
+      // wait for the first order to arrive and the walkthrough to start, as a visitor would
+      await expect(page.locator(".walkthrough-card")).toContainText("1 of 3");
+      if (width === 390) await page.getByRole("button", { name: "Close walkthrough" }).click();
+      await generate();
       const loading = page.getByRole("region", { name: "Order processing" });
       await expect(loading).toBeVisible();
       await expect(page.locator(".walkthrough-card")).toHaveCount(0);
@@ -72,18 +78,17 @@ async function main() {
       ]);
       await finish();
       await expect(loading).toHaveCount(0);
-      await expect(page.getByRole("heading", { name: "Order 1001", exact: true })).toBeVisible();
-      await expect(page.locator(".walkthrough-card")).toContainText("2 of 3");
-      await page.getByRole("button", { name: "Close walkthrough" }).click();
-      if (width === 390) await page.getByRole("button", { name: "Show orders", exact: true }).click();
-      await page.getByLabel("Paste a text-message order").fill("12 2x4x8");
-      await page.getByRole("button", { name: "Run ⌘↵", exact: true }).click();
+      await expect(page.locator("#review h1 + p")).toContainText("1001");
+      if (width !== 390) {
+        await expect(page.locator(".walkthrough-card")).toContainText("2 of 3");
+        await page.getByRole("button", { name: "Close walkthrough" }).click();
+      }
+      await generate();
       await expect(loading).toBeVisible();
       await send([{ type: "error", error: "Processing failed. Please retry." }]);
       await expect(loading).toHaveCount(0);
       await expect(page.getByRole("alert").filter({ hasText: "Processing failed." })).toBeVisible();
-      await expect(page.getByLabel("Paste a text-message order")).toHaveValue("12 2x4x8");
-      await expect(page.getByRole("button", { name: "Run ⌘↵", exact: true })).toBeEnabled();
+      await expect(page.getByRole("button", { name: "Generate order", exact: true })).toBeEnabled();
       console.log(`Accurate loading progress, completion, and retry checks passed at ${width}px`);
       await page.close();
     }
