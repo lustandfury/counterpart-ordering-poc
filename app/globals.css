@@ -142,9 +142,16 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
-/* The workspace floor: flat concrete. The order sheet is the only white surface on it. */
+/* The workspace floor: concrete with a faint dot grain and a soft vignette, so the white order sheet sits on a surface.
+   The grain is the earlier paper texture, retinted for the cooler concrete; light-dark() covers both themes. */
 .textured-surface {
   background-color: var(--bg);
+  background-image:
+    radial-gradient(ellipse at center, light-dark(rgb(255 255 255 / 0.44), rgb(255 255 255 / 0.035)) 0%, light-dark(rgb(232 233 229 / 0.12), transparent) 54%, light-dark(rgb(176 180 172 / 0.3), rgb(0 0 0 / 0.12)) 100%),
+    radial-gradient(circle, light-dark(rgb(120 126 118 / 0.12), rgb(255 255 255 / 0.022)) 0 1px, transparent 1.2px);
+  background-size: auto, 4px 4px;
+  background-repeat: no-repeat, repeat;
+  background-attachment: fixed;
 }
 
 /* One focus style for the whole app: keyboard users only (never on mouse clicks), thin, offset. */

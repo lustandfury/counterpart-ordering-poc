@@ -145,7 +145,7 @@ export function ReviewApp({ samples, catalog, initialOrder, evalData }: { sample
               {live.error && <p role="alert" className="mx-5 mb-2 text-small text-warn">{live.error}</p>}
               <div className="shrink-0 px-4 pb-2">
                 <SegmentedControl
-                  look="tabs"
+                  fill
                   label="Show orders that are"
                   value={filter}
                   onChange={setFilter}
