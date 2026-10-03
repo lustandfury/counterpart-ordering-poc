@@ -40,9 +40,9 @@ const DEFAULT_SAMPLE = "o13";
 // The queue starts with one order, which arrives as the page opens. Others come from Generate order or Sample results.
 const SAMPLES_SHOWN = 1;
 const COST_PENDING = "The cost comparison will appear when both matching checks finish.";
-// The inbox filter follows an order's life: the rep checks it, sends it to the contractor, the contractor approves it.
+// The inbox filter follows an order's life: it's received and the rep checks it, sends it to the contractor, the contractor approves it.
 const FILTERS: { value: OrderStatus; label: string; empty: string }[] = [
-  { value: "open", label: "Open", empty: "No orders to check." },
+  { value: "open", label: "Received", empty: "No orders to check." },
   { value: "sent", label: "Sent", empty: "Orders you send wait here for the contractor's approval." },
   { value: "approved", label: "Approved", empty: "Orders the contractor approved, on their way to the ERP." },
 ];
@@ -229,6 +229,8 @@ export function ReviewApp({ samples, catalog, initialOrder, evalData }: { sample
               unitMin={unitMin}
               catalog={catalog}
               {...orders.forOrder(selected)}
+              // when it landed in the queue: a generated order's arrival, or the page load for the sample orders
+              receivedAt={liveRun ? liveRun.runId : loadedAt}
               phone={isMobile}
               compare={{
                 open: isMobile ? mobileCostOpen : costOpen,
@@ -251,7 +253,14 @@ export function ReviewApp({ samples, catalog, initialOrder, evalData }: { sample
           </div>
         </main>
 
-        {!isMobile && costOpen && <aside id="cost-rail" aria-label="Cost assessment" className="tour-cost hidden w-80 shrink-0 overflow-y-auto border-l border-line bg-panel lg:block">
+        {/* wide screens: the AI cost rail slides in from the right edge, the mirror of the orders sidebar. It stays mounted
+            (hidden, invisible and inert when closed) so it can slide both ways. */}
+        {!isMobile && <aside
+          id="cost-rail"
+          aria-label="Cost assessment"
+          inert={!costOpen || undefined}
+          className={`tour-cost hidden w-80 shrink-0 overflow-y-auto border-l border-line bg-panel lg:block lg:transition-[margin-right,visibility] lg:duration-300 lg:ease-[cubic-bezier(0.22,1,0.36,1)] lg:motion-reduce:transition-none ${costOpen ? "" : "lg:invisible lg:-mr-80"}`}
+        >
           {live.loading ? <p className="px-6 py-8 text-body leading-relaxed text-muted">{COST_PENDING}</p> : costPanelProps && <CostPanel {...costPanelProps} onCollapse={() => layout.setCostOpen(false)} />}
         </aside>}
       </div>
@@ -260,10 +269,10 @@ export function ReviewApp({ samples, catalog, initialOrder, evalData }: { sample
           onClick={toggleSidebar}
           aria-expanded={false}
           aria-controls="orders"
-          aria-label={layout.unseen ? `Show orders (${layout.unseen} new)` : openCount ? `Show orders (${openCount} open)` : "Show orders"}
+          aria-label={layout.unseen ? `Show orders (${layout.unseen} new)` : openCount ? `Show orders (${openCount} received)` : "Show orders"}
           className={`orders-fab ${layout.unseen ? "orders-fab-new" : ""} fixed right-4 bottom-[calc(1rem+env(safe-area-inset-bottom))] z-20 grid h-14 w-14 place-items-center rounded-full bg-brand text-onbrand shadow-raise lg:hidden`}
         >
-          <InboxIcon aria-hidden strokeWidth={2.5} className="h-5 w-5 text-white" />
+          <InboxIcon aria-hidden strokeWidth={2.5} className="h-5 w-5 text-onbrand" />
           {/* the count of open orders, so the rep knows there's work in the queue; it nudges when a new one arrives */}
           {openCount > 0 && <OrderBadge count={openCount} onBrand className="absolute -right-0.5 -top-0.5" />}
         </button>

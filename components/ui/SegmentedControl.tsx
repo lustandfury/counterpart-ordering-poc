@@ -3,7 +3,7 @@ import { cx } from "@/components/ui/cx";
 
 /**
  * A row of mutually exclusive choices (a radio group drawn as buttons): a rounded track where the choice is a raised
- * white pill. Used for settings (Light / Dark / System) and for filtering the inbox (Open / Sent / Approved).
+ * white pill. Used for settings (Light / Dark / System) and for filtering the inbox (Received / Sent / Approved).
  * Name it with `labelledBy` (visible text) or `label`. `fill` stretches it to its container, with equal segments.
  */
 export function SegmentedControl<T extends string>({ options, value, onChange, labelledBy, label, fill = false }: {

@@ -8,13 +8,13 @@ async function generateOGImage() {
 <html>
 <head>
   <meta charset="utf-8">
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; }
     body {
       width: 1730px;
       height: 909px;
-      font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-family: 'Archivo', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       display: flex;
       align-items: center;
       justify-content: flex-start;
@@ -47,27 +47,28 @@ async function generateOGImage() {
       filter: drop-shadow(0 10px 30px rgba(0,0,0,0.15));
     }
     .wordmark {
-      color: #1c1c1e;
+      color: #1f2328;
       /* optical centring: line boxes leave extra space above the letters, so lift the text until its
          visible ink (top of the wordmark to the tagline's descenders) is centred on the logo */
       transform: translateY(-15.5px);
     }
+    /* the app's wordmark: monospace capitals, C0UNTER in graphite and PART in muted grey */
     .wordmark h1 {
-      font-size: 128px;
-      font-weight: 700;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 92px;
+      font-weight: 600;
       margin: 0;
-      letter-spacing: -0.015em;
+      letter-spacing: 0.02em;
       line-height: 1.2;
     }
     .part {
-      font-weight: 500;
-      color: #5c5c61;
+      color: #575e66;
     }
     .wordmark p {
       font-size: 40px;
       margin: 0;
       margin-top: -14px;
-      color: #5c5c61;
+      color: #575e66;
       font-weight: 400;
       line-height: 1.4;
     }
@@ -77,14 +78,15 @@ async function generateOGImage() {
   <div class="background-mirror"></div>
   <div class="background"></div>
   <div class="logo-container">
-    <svg class="logo" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="12" cy="12" r="12" fill="#ffca05"/>
-      <path d="M6.5 8.5h7M6.5 12h5M6.5 15.5h4" stroke="#1c1c1e" stroke-width="1.8" stroke-linecap="round" opacity="0.45"/>
-      <path d="M14 14.8l1.9 1.9 3.6-4.2" stroke="#1c1c1e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    <svg class="logo" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+      <path d="M4.5 2H27.5V30L24.625 28.5L21.75 30L18.875 28.5L16 30L13.125 28.5L10.25 30L7.375 28.5L4.5 30Z" fill="#ffca05" stroke="#ffca05" stroke-width="1.5" stroke-linejoin="round"/>
+      <g transform="translate(16 16.5) scale(0.82) translate(-16 -16)">
+        <path d="M16 7.5h-4a6 6 0 0 0 0 12h4v-12h4a6 6 0 0 1 0 12h-4v5" fill="none" stroke="#1f2328" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      </g>
     </svg>
     <div class="wordmark">
-      <h1>counter<span class="part">part</span></h1>
-      <p>The Fast Lane for Pro Orders</p>
+      <h1>C0UNTER<span class="part">PART</span></h1>
+      <p>The fast lane for pro orders.</p>
     </div>
   </div>
 </body>

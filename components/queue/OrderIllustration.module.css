@@ -47,9 +47,44 @@
   to { transform: translateY(0); }
 }
 
+/* "All caught up", played once as the state appears: each line is ticked off in turn, then the stamp lands */
+.stamp {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.tick {
+  stroke-dasharray: 1;
+}
+.illustration[data-state="complete"] .row {
+  animation: row-done 260ms ease-out both;
+}
+.illustration[data-state="complete"] .row:nth-child(1) { animation-delay: 150ms; }
+.illustration[data-state="complete"] .row:nth-child(2) { animation-delay: 270ms; }
+.illustration[data-state="complete"] .row:nth-child(3) { animation-delay: 390ms; }
+.illustration[data-state="complete"] .stamp {
+  animation: stamp-land 340ms cubic-bezier(0.2, 1.5, 0.4, 1) 620ms both;
+}
+.illustration[data-state="complete"] .tick {
+  animation: tick-draw 260ms ease-out 940ms both;
+}
+
+@keyframes stamp-land {
+  from { opacity: 0; transform: scale(1.35) rotate(-8deg); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes tick-draw {
+  from { stroke-dashoffset: 1; }
+  to { stroke-dashoffset: 0; }
+}
+@keyframes row-done {
+  to { opacity: 0.3; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .illustration[data-state] .message,
   .illustration[data-state] .dot,
   .illustration[data-state] .row,
-  .illustration[data-state] .slip { animation: none; }
+  .illustration[data-state] .slip,
+  .illustration[data-state] .stamp,
+  .illustration[data-state] .tick { animation: none; }
 }

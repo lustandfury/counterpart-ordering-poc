@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/Button";
 import { Pill } from "@/components/ui/Pill";
 import { LineRow, type LineState } from "@/components/order/LineRow";
 import { OrderDetails } from "@/components/order/OrderDetails";
+import { CostSummary } from "@/components/order/CostSummary";
 import { OrderFooter } from "@/components/order/OrderFooter";
 import type { Compare, Decisions } from "@/components/order/types";
 
@@ -17,12 +18,12 @@ import type { Compare, Decisions } from "@/components/order/types";
  * The review of one order: its header, the lines to check (expanded, with the keyboard on them), the confirmed lines,
  * and the total with Send. Decisions live with the parent so they survive switching orders.
  */
-export function Review({ result, mode, T, unitMin, catalog, resolved, setResolved, quantities, setQuantity, phone, compare, sentAt, approvedAt, onSend, onReopen }: {
+export function Review({ result, mode, T, unitMin, catalog, resolved, setResolved, quantities, setQuantity, phone, compare, receivedAt, sentAt, approvedAt, onSend, onReopen }: {
   result: OrderResult; mode: Mode; T: number; unitMin: number; catalog: SlimCatalog;
   resolved: Decisions; setResolved: (f: (r: Decisions) => Decisions) => void;
   quantities: Record<string, number>; setQuantity: (lineId: string, qty: number | undefined) => void;
   phone: boolean; compare: Compare;
-  sentAt?: number; approvedAt?: number; onSend: () => void; onReopen: () => void;
+  receivedAt?: number; sentAt?: number; approvedAt?: number; onSend: () => void; onReopen: () => void;
 }) {
   const [active, setActive] = useState<string | null>(null);
   // A product the rep picked whose quantity still has to be set in its selling unit (line id -> sku)
@@ -160,7 +161,11 @@ export function Review({ result, mode, T, unitMin, catalog, resolved, setResolve
       <div className="@container/review">
       <div className="@min-[52rem]/review:grid @min-[52rem]/review:grid-cols-[minmax(0,23rem)_minmax(0,1fr)] @min-[52rem]/review:items-start @min-[52rem]/review:gap-6">
       <div className="@min-[52rem]/review:sticky @min-[52rem]/review:top-5 @min-[52rem]/review:-m-1 @min-[52rem]/review:max-h-[calc(100dvh-2.5rem)] @min-[52rem]/review:overflow-y-auto @min-[52rem]/review:p-1">
-        <OrderDetails result={result} mode={mode} compare={compare} phone={phone} toCheck={pending.map((l) => l.id)} sentAt={sentAt} approvedAt={approvedAt} />
+        <OrderDetails result={result} phone={phone} toCheck={pending.map((l) => l.id)} receivedAt={receivedAt} sentAt={sentAt} approvedAt={approvedAt} />
+        {/* one 12px rhythm between the stacked cards on phones (order, AI cost, line counts, sheet) */}
+        <div className="mb-3 @min-[52rem]/review:mb-0">
+          <CostSummary result={result} mode={mode} compare={compare} />
+        </div>
       </div>
 
       {/* One sheet, like a pick ticket: the lines to check on top, then the confirmed lines, then the total and Send. */}

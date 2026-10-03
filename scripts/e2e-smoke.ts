@@ -32,9 +32,9 @@ async function main() {
       await openFirstOrder(page, width);
       await expect(page.getByRole("region", { name: "Needs review", exact: true })).toBeVisible();
       await expect(page.getByRole("region", { name: "Validated items", exact: true })).toBeVisible();
-      // The savings sit on the order card as one line, "3.9× lower AI cost | 26% faster".
+      // The savings sit in their own small card under the order card, "3.9× lower AI cost | 26% faster".
       // Clicking it opens the details: a sheet on phones, the rail on wide screens (closed at first).
-      const compare = page.locator("#review h1").locator("xpath=ancestor::*[@aria-live]").getByRole("button", { name: /^\d+\.\d× lower AI cost( \| (\d+% (faster|slower)|same speed))?$/ });
+      const compare = page.locator("#review").getByRole("button", { name: /^\d+\.\d× lower AI cost( \| (\d+% (faster|slower)|same speed))?$/ });
       await expect(compare).toBeVisible();
       const openCost = async () => {
         if (width < 1024 && !(await page.locator("#cost-comparison").isVisible())) {
@@ -53,11 +53,11 @@ async function main() {
         if (!(await orders.isVisible()) || (await orders.getAttribute("inert")) !== null) await page.getByRole("button", { name: /^Show orders/ }).click();
         await expect(orders).not.toHaveAttribute("inert", /.*/);
       };
-      if (width >= 1024) await expect(page.locator("#cost-rail")).toHaveCount(0);
+      if (width >= 1024) await expect(page.locator("#cost-rail")).toBeHidden();
       if (width < 1024) {
         await expect(page.locator("#cost-comparison")).toBeHidden();
         // opening the queue cleared the "new" count
-        await expect(page.getByRole("button", { name: "Show orders (1 open)", exact: true })).toBeVisible();
+        await expect(page.getByRole("button", { name: "Show orders (1 received)", exact: true })).toBeVisible();
         // the open order stays counted on the button, so the rep knows it is waiting
         await expect(page.locator(".orders-fab .order-badge")).toHaveText("1");
         await openOrders();
@@ -263,10 +263,10 @@ async function main() {
         await closeSettings();
         await openCost();
         await page.getByRole("button", { name: /^Claude only/ }).click();
-        await expect(page.locator("[aria-live=polite]")).toContainText("Showing the Claude-only draft");
+        await expect(page.locator("#review")).toContainText("Showing the Claude-only draft");
         await page.getByRole("button", { name: "Hide AI cost", exact: true }).click();
-        await expect(page.locator("#cost-rail")).toHaveCount(0);
-        await expect(page.locator("[aria-live=polite]")).toContainText("Showing the Claude-only draft");
+        await expect(page.locator("#cost-rail")).toBeHidden();
+        await expect(page.locator("#review")).toContainText("Showing the Claude-only draft");
         await settings();
         await expect(page.locator("#t")).toBeDisabled();
         await closeSettings();

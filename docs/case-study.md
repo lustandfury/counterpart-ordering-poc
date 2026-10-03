@@ -447,6 +447,32 @@ This is the point where Counterpart stopped looking like a template and started 
 **Happened:** this revisits an earlier call that the sent status lives only in the pricing card. With the inbox now organized by stage, Mike wanted the stage visible where the rep reads the order too.
 **Changed:** the stage now appears in three places, each doing a different job: the inbox (which orders), the order card (where this one is), and the foot of the order (what to do next).
 
+### 48. A slip for a logo, and a calmer order card
+**Did:**
+- **The logo:** the CP monogram moved from a yellow circle onto a yellow counter slip with a torn bottom edge, the shape the app's illustrations already use. The favicon, the home-screen icons and the social preview image were regenerated from it, with the current wordmark, the lock screen's tagline ("The fast lane for pro orders.") and matching page descriptions.
+  - A misunderstanding on the way: "make the Counterpart container look like the slip" was first built as torn edges on the order sheet and lock card. Mike meant the logo, so that change was reverted before it was committed.
+- **The order card:**
+  - **Stage names:** "Open" became "Received" everywhere it appears.
+  - **The timeline:** compared in place with a temporary dev-only switcher, first three layouts, then three condensed versions of each (twelve in all). Mike chose a thin three-part bar with each stage's label and time above it. Stages reached are green, the current one bold, and those to come grey. It sits under the card's divider, and Received now shows its time too.
+  - **AI cost:** the saving moved out of the order card into its own small card below it.
+- **The empty states:**
+  - "All caught up" plays a one-time tick-off: the slip's lines fade in turn, then the approval stamp presses down and its check draws. Mike picked it from three variants shown side by side.
+  - In the empty Sent and Approved tabs, the message bubble sits in front of the slip.
+  - The slip is now centred on its ground line.
+- **Smaller changes:**
+  - The AI cost rail slides in like the orders sidebar.
+  - The phone's card stack keeps an even 12px rhythm.
+  - The orders button's icon is graphite on yellow, like the logo.
+
+**Happened:**
+- Comparing variants in the running app, rather than in screenshots, let Mike decide in minutes. Each comparison switcher was removed with the losing variants.
+- The first condensed timelines wrapped their times onto two lines in the narrow desktop column. Times now never wrap, and the versions that would crowd the card drop the time when the card itself is narrow, using a container query.
+- One e2e run failed once at 390px and passed on the three reruns that followed.
+
+**Changed:**
+- The order card now holds who, what, where and the stage the order is at, while cost has its own card.
+- The brand mark, the app and the link previews all show the same slip.
+
 ## Where it stands
 
 | | Claude only | Claude + Jev |

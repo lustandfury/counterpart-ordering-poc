@@ -2,12 +2,12 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Counterpart — AI-assisted lumber ordering",
+    name: "Counterpart — the fast lane for pro orders",
     short_name: "Counterpart",
-    description: "Turn messy contractor text messages into accurate, reviewable lumber orders with AI-assisted matching.",
+    description: "Contractors' text messages, turned into ready-to-send lumber orders. AI matches each line to the catalog; the rep checks only what's uncertain.",
     start_url: "/",
     display: "standalone",
-    background_color: "#f7f6f2",
+    background_color: "#e8e9e5",
     theme_color: "#ffca05",
     icons: [
       { src: "/icon-192.png", sizes: "192x192", type: "image/png" },
