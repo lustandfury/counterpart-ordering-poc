@@ -33,6 +33,26 @@ describe("generateOrder", () => {
     for (const o of orders) expect(o.from.name && o.from.company).toBeTruthy();
   });
 
+  it("makes some orders long, while staying inside the limits", () => {
+    const productLines = (o: (typeof orders)[number]) => o.text.split("\n").length;
+    expect(orders.filter((o) => productLines(o) >= 11).length).toBeGreaterThan(30);
+  });
+
+  it("usually says when and where the order goes, in the text as generated", () => {
+    expect(orders.filter((o) => o.details.when).length).toBeGreaterThan(200);
+    expect(orders.filter((o) => o.details.where).length).toBeGreaterThan(150);
+    for (const o of orders) {
+      for (const d of [o.details.when, o.details.where, o.details.notes]) if (d) expect(o.text).toContain(d);
+      if (o.details.pickup) expect(o.details.where).toBeUndefined();
+    }
+  });
+
+  it("points at an earlier address only for senders with an address on file", () => {
+    const onFile = orders.filter((o) => o.details.onFile);
+    expect(onFile.length).toBeGreaterThan(10);
+    for (const o of onFile) expect(o.from.address).toBeTruthy();
+  });
+
   it("covers every kind of check", () => {
     const kinds = new Set(orders.flatMap((o) => o.checks));
     expect(kinds.size).toBe(6);

@@ -64,43 +64,101 @@ const CHECK: { kind: CheckKind; line: (rng: Rng) => string }[] = [
   { kind: "missing quantity", line: () => "OSB for the garage roof" },
 ];
 
+// Each sender has a jobsite on file (invented), so "same address as last week" resolves to a real-looking address.
 const SENDERS: Sender[] = [
-  { name: "Sam Whitford", company: "Northline Framing" },
-  { name: "Ana Costa", company: "Costa Build Group" },
-  { name: "Derek Olsen", company: "Olsen Carpentry" },
-  { name: "Mei Lin", company: "Harbourview Renovations" },
-  { name: "Ray Boucher", company: "Boucher Decks" },
-  { name: "Tanya Price", company: "Price Drywall & Paint" },
-  { name: "Jordan Blake", company: "Blake & Co. Contracting" },
-  { name: "Omar Siddiqui", company: "Cedarline Homes" },
+  { name: "Sam Whitford", company: "Northline Framing", address: "1180 Concession Rd 4, Unit B" },
+  { name: "Ana Costa", company: "Costa Build Group", address: "27 Harbour View Cres" },
+  { name: "Derek Olsen", company: "Olsen Carpentry", address: "415 Mill St" },
+  { name: "Mei Lin", company: "Harbourview Renovations", address: "88 Lakeshore Rd W" },
+  { name: "Ray Boucher", company: "Boucher Decks", address: "9 Quarry Lane" },
+  { name: "Tanya Price", company: "Price Drywall & Paint", address: "2250 Dundas St, Suite 4" },
+  { name: "Jordan Blake", company: "Blake & Co. Contracting", address: "61 Orchard Park Dr" },
+  { name: "Omar Siddiqui", company: "Cedarline Homes", address: "Lot 14, Maple Ridge Dr" },
 ];
 
 const OPENERS: ((s: Sender) => string)[] = [
   () => "",
-  (s) => `Hey it's ${s.name.split(" ")[0]} from ${s.company}, need this for Thursday AM:`,
-  () => "Morning! Order for the Birch St job:",
-  () => "Can you deliver tomorrow before 8?",
+  (s) => `Hey it's ${s.name.split(" ")[0]} from ${s.company}`,
+  () => "Morning!",
   () => "Quick order pls",
-  (s) => `Hi, ${s.name.split(" ")[0]} here. New job starting Monday. Need:`,
+  (s) => `Hi, ${s.name.split(" ")[0]} here. New job starting.`,
+  () => "Need the following:",
 ];
-const CLOSERS = ["", "thx", "Thanks!", "Drop at the back gate, call when close", "Same address as last week"];
+const CLOSERS = ["", "thx", "Thanks!", "ty"];
 
-export type Generated = { text: string; checks: CheckKind[]; from: Sender };
+/** When it's needed, in contractor shorthand. Pickups are marked so the generator knows not to add a site. */
+const WHEN: { text: string; pickup?: boolean }[] = [
+  { text: "deliver thurs before 7am" },
+  { text: "need it on site by noon tmrw" },
+  { text: "can u drop it monday first thing" },
+  { text: "deliver tomorrow before 8" },
+  { text: "by 10 sat morning pls" },
+  { text: "friday after lunch works" },
+  { text: "pickup fri 2pm", pickup: true },
+  { text: "ill grab it tmrw around 7", pickup: true },
+];
+const SITES = ["42 birch st", "lot 14 maple ridge", "118 lakeshore rd unit 3", "7 quarry lane", "2250 dundas st w", "the cedar ave job, 31 cedar ave"];
+const WHERE: ((site: string) => { text: string; onFile?: boolean })[] = [
+  (site) => ({ text: `site is ${site}` }),
+  (site) => ({ text: `deliver to ${site}` }),
+  (site) => ({ text: `job site ${site}` }),
+  () => ({ text: "same address as last week", onFile: true }),
+  () => ({ text: "usual spot", onFile: true }),
+];
+const NOTES = ["drop at the back gate", "call when close", "forklift on site", "no truck access before 7", "leave it by the garage, call me"];
+
+export type Details = { when?: string; where?: string; onFile?: boolean; notes?: string; pickup?: boolean };
+export type Generated = { text: string; checks: CheckKind[]; from: Sender; details: Details };
+
+// The live run's limits (app/api/run): the generator stays inside them with room to spare.
+const MAX_CHARS = 580;
+const MAX_LINES = 14;
 
 /**
  * A new order each call. Pass a seeded rng for repeatable output (tests).
  * `checks` fixes how many lines need checking; left out, about a third of orders get two.
+ * About a third of orders are long (7-10 clean lines), and most say when and where the order goes.
  */
 export function generateOrder(rng: Rng = Math.random, { checks: wanted }: { checks?: 1 | 2 } = {}): Generated {
-  const clean = shuffle(rng, CLEAN).slice(0, int(rng, 3, 6)).map((f) => f(rng));
+  const long = rng() < 0.35;
+  let clean = shuffle(rng, CLEAN).slice(0, long ? int(rng, 7, 10) : int(rng, 3, 6)).map((f) => f(rng));
   const roll = rng();
   const nChecks = wanted ?? (roll < 0.35 ? 2 : 1);
   const kinds = shuffle(rng, [...new Set(CHECK.map((c) => c.kind))]).slice(0, nChecks);
-  const checks = kinds.map((k) => pick(rng, CHECK.filter((c) => c.kind === k)));
-  const lines = shuffle(rng, [...clean, ...checks.map((c) => c.line(rng))]);
+  const checkLines = kinds.map((k) => pick(rng, CHECK.filter((c) => c.kind === k)).line(rng));
   const from = pick(rng, SENDERS);
-  const text = [pick(rng, OPENERS)(from), ...lines, pick(rng, CLOSERS)].filter(Boolean).join("\n");
-  return { text, checks: kinds, from };
+
+  // delivery details: when (most orders), where (unless it's a pickup), and sometimes a note
+  const details: Details = {};
+  if (rng() < 0.8) {
+    const w = pick(rng, WHEN);
+    details.when = w.text;
+    if (w.pickup) details.pickup = true;
+  }
+  if (!details.pickup && rng() < 0.75) {
+    const w = pick(rng, WHERE)(pick(rng, SITES));
+    details.where = w.text;
+    if (w.onFile) details.onFile = true;
+  }
+  if (!details.pickup && rng() < 0.4) details.notes = pick(rng, NOTES);
+  // the details sit together, before or after the list, sometimes on one line ("deliver thurs before 7am, site is 42 birch st")
+  const detailParts = [details.when, details.where, details.notes].filter((x): x is string => !!x);
+  const detailLines = detailParts.length > 1 && rng() < 0.5 ? [detailParts.join(", ")] : detailParts;
+  const detailsFirst = rng() < 0.5;
+  const opener = pick(rng, OPENERS)(from);
+  const closer = pick(rng, CLOSERS);
+
+  const compose = () => {
+    const items = shuffle(rng, [...clean, ...checkLines]);
+    return [opener, ...(detailsFirst ? detailLines : []), ...items, ...(detailsFirst ? [] : detailLines), closer].filter(Boolean).join("\n");
+  };
+  let text = compose();
+  // keep inside the live-run limits by dropping clean lines (never the ones to check, never the details)
+  while ((text.length > MAX_CHARS || text.split("\n").length > MAX_LINES) && clean.length > 3) {
+    clean = clean.slice(0, -1);
+    text = compose();
+  }
+  return { text, checks: kinds, from, details };
 }
 
 /** Small seeded generator (mulberry32) for repeatable tests and scripts. */

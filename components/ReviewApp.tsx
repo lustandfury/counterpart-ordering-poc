@@ -32,6 +32,9 @@ import { SidebarTools } from "@/components/queue/SidebarTools";
 import { useFirstArrival, useLiveOrders } from "@/components/queue/useLiveOrders";
 import { WaitingForOrders } from "@/components/queue/WaitingForOrders";
 import { SettingsDialog, thresholdsChanged } from "@/components/settings/SettingsDialog";
+import { useNotifications } from "@/components/notifications/useNotifications";
+import { Toasts } from "@/components/notifications/Toasts";
+import { NotificationsDialog } from "@/components/notifications/NotificationsDialog";
 
 const DEFAULT_SAMPLE = "o13";
 // The queue starts with one order, which arrives as the page opens. Others come from Generate order or Sample results.
@@ -55,7 +58,20 @@ export function ReviewApp({ samples, catalog, initialOrder, evalData }: { sample
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [helpOpen, setHelpOpen] = useState(false);
   const [resultsOpen, setResultsOpen] = useState(false);
-  const orders = useOrderDecisions({ onApproved: () => trackEvent("order_approved", { demo: true }) });
+  const notices = useNotifications();
+  const [noticesOpen, setNoticesOpen] = useState(false);
+  // who and which order, for notification copy ("Owen Park approved order 1013"). Called from callbacks, after `live` exists.
+  const describe = (id: string) => {
+    const r = id.startsWith("live-") ? live.runs.find((x) => `live-${x.runId}` === id) : samples.find((x) => x.orderId === id);
+    return { number: r ? (id.startsWith("live-") ? r.orderId : orderNumber(r.orderId)) : id, who: r?.from?.name ?? "The contractor", company: r?.from?.company };
+  };
+  const orders = useOrderDecisions({
+    onApproved: (id) => {
+      trackEvent("order_approved", { demo: true });
+      const o = describe(id);
+      notices.notify({ kind: "approved", title: `${o.who} approved order ${o.number}`, detail: "Sent to the ERP.", orderId: id, toast: true, read: selected === id });
+    },
+  });
   const [filter, setFilter] = useState<OrderStatus>("open");
   const live = useLiveOrders({
     samples,
@@ -63,7 +79,10 @@ export function ReviewApp({ samples, catalog, initialOrder, evalData }: { sample
       setMobileOpen(false);
       requestAnimationFrame(() => document.getElementById("review")?.scrollIntoView({ block: "start" }));
     },
-    onArrived: layout.arrived,
+    onArrived: (run) => {
+      layout.arrived();
+      notices.notify({ kind: "arrived", title: `New order from ${run.from?.company ?? "a contractor"}`, detail: `Order ${run.orderId} is in your queue.`, orderId: `live-${run.runId}`, toast: true });
+    },
     onError: () => { if (narrow()) setMobileOpen(true); },
   });
   const { unlocked } = useAccess();
@@ -87,9 +106,27 @@ export function ReviewApp({ samples, catalog, initialOrder, evalData }: { sample
     return [...ids].map((id) => samples.find((s) => s.orderId === id)!);
   }, [samples, initialOrder, selected]);
 
+  const openNotices = () => {
+    setMobileOpen(false);
+    setNoticesOpen(true);
+    notices.markAllRead();
+  };
   const pick = (id: string) => {
     trackEvent("order_selected", { source: id.startsWith("live-") ? "live" : "sample" });
+    // Already open (from a notification or the queue): nothing would change, so bring the order back into view and
+    // flash its card once, so the click visibly lands.
+    if (id === selected) {
+      document.getElementById("review")?.scrollTo({ top: 0, behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+      const card = document.querySelector<HTMLElement>("#review [aria-live=polite]");
+      if (card) {
+        card.classList.remove("order-flash");
+        void card.offsetWidth; // restart the animation if it's still running
+        card.classList.add("order-flash");
+        card.addEventListener("animationend", () => card.classList.remove("order-flash"), { once: true });
+      }
+    }
     setSelected(id);
+    notices.markOrderRead(id);
     setMobileOpen(false);
     // hand the keyboard to the review, so Enter / j / k act on lines rather than re-clicking the order
     requestAnimationFrame(() => document.getElementById("review")?.focus({ preventScroll: true }));
@@ -137,7 +174,7 @@ export function ReviewApp({ samples, catalog, initialOrder, evalData }: { sample
           className={`tour-orders w-80 shrink-0 flex-col border-r border-line bg-panel lg:flex lg:transition-[margin-left,visibility] lg:duration-300 lg:ease-[cubic-bezier(0.22,1,0.36,1)] lg:motion-reduce:transition-none max-lg:sheet-up max-lg:fixed max-lg:inset-x-0 max-lg:bottom-0 max-lg:z-30 max-lg:mx-auto max-lg:max-h-[85dvh] max-lg:w-full max-lg:rounded-t-[12px] max-lg:border-r-0 max-lg:pb-[env(safe-area-inset-bottom)] max-lg:shadow-[0_-8px_30px_rgb(0_0_0/0.18)] ${desktopOpen ? "" : "lg:invisible lg:-ml-80"} ${mobileOrders.present ? "max-lg:flex" : "max-lg:hidden"}`}
         >
               <div aria-hidden className="mx-auto mt-2 h-1 w-9 shrink-0 rounded-full bg-line lg:hidden" />
-              <BrandBar hideResults processing={live.loading} end={<><ModalCloseButton label="Hide orders" onClose={toggleSidebar} className="lg:hidden" /><span className="hidden lg:block"><SidebarButton label="Hide orders" expanded onClick={toggleSidebar} /></span></>} />
+              <BrandBar hideResults processing={live.loading} end={<span className="flex items-center gap-1"><ModalCloseButton label="Hide orders" onClose={toggleSidebar} className="lg:hidden" /><span className="hidden lg:block"><SidebarButton label="Hide orders" expanded onClick={toggleSidebar} /></span></span>} />
               <div className="flex shrink-0 items-center justify-between gap-2 px-4 pb-3 pt-2">
                 <h2 className="text-small font-semibold text-ink">Orders</h2>
                 <GenerateButton loading={live.loading} onGenerate={live.runLive} beside={!isMobile} />
@@ -168,6 +205,9 @@ export function ReviewApp({ samples, catalog, initialOrder, evalData }: { sample
                 )}
               </nav>
               <SidebarTools
+                unread={notices.unread}
+                noticesOpen={noticesOpen}
+                onNotices={openNotices}
                 settingsOpen={settingsOpen}
                 settingsChanged={settingsChanged}
                 onSettings={() => { setMobileOpen(false); setSettingsOpen((v) => !v); }}
@@ -177,7 +217,7 @@ export function ReviewApp({ samples, catalog, initialOrder, evalData }: { sample
 
         <main id="review" tabIndex={-1} inert={mobileCostOpen || undefined} className="tour-review textured-surface relative min-w-0 flex-1 outline-none [overflow-anchor:none] lg:overflow-y-auto">
           {/* Wide screens: opens the orders sidebar once it's hidden. Phones use the floating button below. */}
-          <div className={desktopOpen ? "hidden" : "hidden px-4 pt-3 lg:flex"}>
+          <div className={desktopOpen ? "hidden" : "hidden items-center gap-1 px-4 pt-3 lg:flex"}>
             <SidebarButton label="Show orders" expanded={false} unseen={layout.unseen} onClick={toggleSidebar} />
           </div>
           <div className="mx-auto max-w-4xl px-5 py-8 sm:px-10 xl:max-w-6xl">
@@ -200,8 +240,13 @@ export function ReviewApp({ samples, catalog, initialOrder, evalData }: { sample
               onSend={() => {
                 trackEvent("order_sent", { source: liveRun ? "live" : "sample", mode, demo: true });
                 orders.send(selected);
+                const o = describe(selected);
+                notices.notify({ kind: "sent", title: `Order ${o.number} sent to ${o.who} for approval`, orderId: selected });
               }}
-              onReopen={() => orders.reopen(selected)}
+              onReopen={() => {
+                orders.reopen(selected);
+                notices.notify({ kind: "reopened", title: `Order ${describe(selected).number} reopened`, orderId: selected });
+              }}
             /></div>}
           </div>
         </main>
@@ -234,6 +279,8 @@ export function ReviewApp({ samples, catalog, initialOrder, evalData }: { sample
         }} />
       </ActionSheet>
       <SettingsDialog open={settingsOpen} mode={mode} T={T} unitMin={unitMin} setT={setT} setUnitMin={setUnitMin} changed={settingsChanged} onClose={() => setSettingsOpen(false)} />
+      <NotificationsDialog open={noticesOpen} log={notices.log} onClose={() => setNoticesOpen(false)} onOpen={pick} />
+      <Toasts toasts={notices.toasts} onDismiss={notices.dismiss} onOpen={pick} />
       <HelpDialog open={helpOpen} onClose={() => setHelpOpen(false)} onResults={() => { setHelpOpen(false); setResultsOpen(true); }} />
       {!unlocked && <AccessLockScreen />}
       <SignupDialog open={live.signup.open} email={live.signup.email} setEmail={live.signup.setEmail} loading={live.signup.loading} error={live.signup.error} onSubmit={live.signup.submit} onClose={live.signup.close} />

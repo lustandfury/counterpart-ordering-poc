@@ -166,13 +166,13 @@ export function Review({ result, mode, T, unitMin, catalog, resolved, setResolve
       {/* One sheet, like a pick ticket: the lines to check on top, then the confirmed lines, then the total and Send. */}
       <section aria-label="Order" className={phone ? "pb-24" : ""}>
         <div id="order-counts" role="status" className="card mb-3 grid grid-cols-3 divide-x divide-line py-3 text-center text-small">
-          {[
-            { label: "Lines", value: lines.length, tone: "text-ink" },
-            { label: "Auto-approved", value: lines.length - flagged.length, tone: "text-ok" },
-            { label: "To check", value: pending.length, tone: "text-warn" },
-          ].map((stat) => (
-            <span key={stat.label} className="px-2 py-1">
-              <span className={`figures font-semibold ${stat.tone}`}>{stat.value}</span>{" "}
+          {([
+            { label: "Lines", value: lines.length, tone: "total" },
+            { label: "Auto-approved", value: lines.length - flagged.length, tone: "ok" },
+            { label: "To check", value: pending.length, tone: pending.length ? "warn" : "count" },
+          ] satisfies { label: string; value: number; tone: "total" | "ok" | "warn" | "count" }[]).map((stat) => (
+            <span key={stat.label} className="flex items-center justify-center gap-2 px-2 py-1">
+              <Pill tone={stat.tone} className="figures">{stat.value}</Pill>{" "}
               <span className="text-muted">{stat.label}</span>
             </span>
           ))}
@@ -188,7 +188,7 @@ export function Review({ result, mode, T, unitMin, catalog, resolved, setResolve
                 <header className={`flex flex-wrap items-baseline gap-x-3 gap-y-0.5 border-b border-line px-4 py-2.5 sm:px-6 ${group.id === "validated-items" ? "" : "bg-panel2"}`}>
                   <h2 id={group.id} className={`text-small font-semibold ${group.tone}`}>{group.title}</h2>
                   <p className="text-caption text-muted">{group.description}</p>
-                  <Pill tone="count" className="ml-auto" aria-label={`${group.items.length} items`}>{group.items.length}</Pill>
+                  <Pill tone={group.id === "needs-review" ? "warn" : "count"} className="ml-auto" aria-label={`${group.items.length} items`}>{group.items.length}</Pill>
                 </header>
                 {group.items.length ? (
                   <ul>

@@ -10,7 +10,7 @@ const ACCESS_CODE = "007";
 // Introductory copy reveals in reading order; the access form is available immediately.
 // Any key or tap shows everything at once, so returning reps are never held up.
 const LOCK_STEPS = [
-  { title: "A contractor texts an order", body: <span className="mt-1.5 block w-fit rounded-[18px] rounded-tl-[4px] bg-bg px-3 py-1.5 text-caption leading-snug text-ink">need 40 2x4x8 PT + 12 sheets 1/2 rock</span> },
+  { title: "A contractor texts an order", body: <span className="mt-1.5 block w-fit rounded-[18px] rounded-tl-none bg-bg px-3 py-1.5 text-caption leading-snug text-ink">need 40 2x4x8 PT + 12 sheets 1/2 rock</span> },
   { title: "AI drafts it from your catalog", body: <span className="mt-0.5 block text-small text-muted">Each line is matched to a product with a confidence score.</span> },
   { title: "You check only what\u2019s uncertain", body: <span className="mt-0.5 block text-small text-muted">Confident lines are approved; unclear ones are flagged with options.</span> },
 ];
@@ -58,7 +58,7 @@ export function AccessLockScreen() {
           <ol className="mt-6 flex w-full flex-col gap-4 text-left">
             {LOCK_STEPS.map((step, i) => (
               <li key={step.title} className="lock-reveal flex gap-3" style={reveal(LOCK_REVEAL_MS.steps + i * LOCK_REVEAL_MS.stepGap)}>
-                <span aria-hidden className="figures mt-px grid h-6 w-6 shrink-0 place-items-center rounded-full bg-brandsoft text-caption font-semibold text-ink">{i + 1}</span>
+                <span aria-hidden className="figures mt-px grid h-6 w-6 shrink-0 place-items-center rounded-full bg-[#2563eb] text-caption font-semibold text-white">{i + 1}</span>
                 <span className="min-w-0 text-body font-medium leading-6">{step.title}{step.body}</span>
               </li>
             ))}

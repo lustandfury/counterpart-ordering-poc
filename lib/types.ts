@@ -1,4 +1,17 @@
-export type Sender = { name: string; company: string };
+/** Who sent an order. `address` is the jobsite on file (invented for the demo), used when they say "same address as last week". */
+export type Sender = { name: string; company: string; address?: string };
+
+/** A detail as the contractor wrote it, and tidied up for the rep ("thurs before 7am" -> "Thu, Oct 8 · before 7:00 AM"). */
+export type Said = { said: string; tidy: string };
+
+/** When and where the order goes, captured from the text alongside the lines. Every part is null when the text doesn't say. */
+export type Delivery = {
+  method: "delivery" | "pickup" | null;
+  when: Said | null;
+  // onFile: they pointed at an earlier address ("same address as last week"); the app shows the address on file
+  where: (Said & { onFile: boolean }) | null;
+  notes: string | null;
+};
 
 export type Product = {
   sku: string;
@@ -45,7 +58,7 @@ export type OrderResult = {
   from?: Sender; // who sent the order (display only; never sent to the pipelines)
   text: string;
   model: string;
-  parse: { lines: ParsedLine[] } & Timed;
+  parse: { lines: ParsedLine[]; delivery?: Delivery } & Timed; // delivery: live runs only (saved samples predate it)
   jev: { lines: JevLine[] } & Timed; // matching step only
   claudeOnly: { lines: ClaudeOnlyLine[] } & Timed; // matching step only
 };

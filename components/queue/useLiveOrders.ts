@@ -17,7 +17,7 @@ export function useLiveOrders({ samples, onStart, onArrived, onError }: {
   /** the text is on its way: make room for the progress view */
   onStart: () => void;
   /** a run finished and joined the queue */
-  onArrived: () => void;
+  onArrived: (run: Run) => void;
   onError: () => void;
 }) {
   const [runs, setRuns] = useState<Run[]>([]); // newest first
@@ -58,9 +58,10 @@ export function useLiveOrders({ samples, onStart, onArrived, onError }: {
       trackEvent("order_run_completed", { line_count: (data as OrderResult).parse.lines.length });
       const runId = Date.now();
       const orderId = String(nextOrderNumber.current++);
-      setRuns((r) => [{ ...(data as OrderResult), orderId, from: order.from, runId }, ...r]);
+      const run = { ...(data as OrderResult), orderId, from: order.from, runId };
+      setRuns((r) => [run, ...r]);
       // it lands in the queue for the rep to open, like any incoming text
-      onArrived();
+      onArrived(run);
     } catch (e) {
       trackEvent("order_run_failed");
       setError(e instanceof Error ? e.message : "The run failed.");

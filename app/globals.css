@@ -30,6 +30,11 @@
   --warn: light-dark(#b83a12, #ff9466);
   --warn-bg: light-dark(#fbeae2, #3a1e14);
   --warn-line: light-dark(#d9480f, #e8622a);
+  /* solid fills for counts, always with white text (each at least 5:1): lines to check in the Needs review red,
+     approved in a green and all lines in a graphite of similar weight, so no one count shouts louder than the others */
+  --fill-alert: light-dark(#b83a12, #c2410c);
+  --fill-ok: light-dark(#2f7a4a, #2e7d4f);
+  --fill-ink: #5c636b;
   --over: light-dark(#dc2626, #f87171);
   --over-soft: light-dark(#fca5a5, #7f2d2d);
   --focus: light-dark(#2456a6, #8db4ff);
@@ -65,6 +70,9 @@
   --color-warn: var(--warn);
   --color-warnbg: var(--warn-bg);
   --color-warnline: var(--warn-line);
+  --color-fillalert: var(--fill-alert);
+  --color-fillok: var(--fill-ok);
+  --color-fillink: var(--fill-ink);
   --font-sans: var(--font-ui);
   /* The type scale, by role. Use these (text-caption, text-body...) rather than pixel sizes, so the scale changes in one place. */
   --text-tiny: 12px;
@@ -552,4 +560,26 @@ body:has(.floating-send-visible) .orders-fab {
 }
 @media (prefers-reduced-motion: reduce) {
   .generate-tip { animation: none; }
+}
+
+/* A toast slides down into the top right corner. */
+@keyframes toast-in-down {
+  from { opacity: 0; transform: translateY(-12px); }
+}
+.toast-in {
+  animation: toast-in-down 260ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .toast-in { animation: none; }
+}
+
+/* Opening the order that's already open: its card flashes once in the brand yellow, so the click visibly lands. */
+@keyframes order-flash {
+  30% { box-shadow: 0 0 0 3px var(--brand); }
+}
+.order-flash {
+  animation: order-flash 900ms ease-out;
+}
+@media (prefers-reduced-motion: reduce) {
+  .order-flash { animation: none; }
 }

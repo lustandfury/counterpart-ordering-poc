@@ -5,8 +5,12 @@ import { cx } from "@/components/ui/cx";
 const TONE = {
   /** a neutral count beside a section title */
   count: "rounded-full bg-line/50 px-2.5 py-0.5 figures text-caption",
-  /** lines still to check */
-  warn: "rounded-full bg-warnbg px-2 py-0.5 text-caption font-medium leading-none text-warn",
+  /** lines still to check: the Needs review red with white text, so the count stands out wherever it appears */
+  warn: "rounded-full bg-fillalert px-2 py-0.5 text-caption font-semibold leading-none text-white",
+  /** auto-approved lines */
+  ok: "rounded-full bg-fillok px-2 py-0.5 text-caption font-semibold leading-none text-white",
+  /** a plain total (all lines) */
+  total: "rounded-full bg-fillink px-2 py-0.5 text-caption font-semibold leading-none text-white",
   /** a quiet note on a figure ("identical") */
   quiet: "rounded-full bg-panel2 px-2 py-0.5 text-tiny text-muted",
   /** a row worth a second look ("Decisions differ") */

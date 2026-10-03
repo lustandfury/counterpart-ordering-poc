@@ -1,11 +1,21 @@
-import { AdjustmentsHorizontalIcon, QuestionMarkCircleIcon } from "@heroicons/react/24/outline";
+import { AdjustmentsHorizontalIcon, BellIcon, QuestionMarkCircleIcon } from "@heroicons/react/24/outline";
 
 const TOOL_ROW = "flex h-9 w-full items-center gap-2.5 rounded-lg px-2 text-left text-small text-muted hover:bg-bg hover:text-ink";
 
-/** The secondary, technical tools at the foot of the orders sidebar. */
-export function SidebarTools({ settingsOpen, settingsChanged, onSettings, onAbout }: { settingsOpen: boolean; settingsChanged: boolean; onSettings: () => void; onAbout: () => void }) {
+/** The secondary tools at the foot of the orders sidebar: the notification log, settings and about. */
+export function SidebarTools({ unread, noticesOpen, onNotices, settingsOpen, settingsChanged, onSettings, onAbout }: { unread: number; noticesOpen: boolean; onNotices: () => void; settingsOpen: boolean; settingsChanged: boolean; onSettings: () => void; onAbout: () => void }) {
   return (
     <div className="shrink-0 border-t border-line px-3 py-2">
+      <button
+        onClick={onNotices}
+        aria-expanded={noticesOpen}
+        aria-controls="notifications"
+        aria-label={unread ? `Notifications (${unread} new)` : "Notifications"}
+        className={TOOL_ROW}
+      >
+        <BellIcon aria-hidden className="h-4 w-4" />Notifications
+        {unread > 0 && <span aria-hidden className="figures ml-auto grid h-5 min-w-5 place-items-center rounded-full bg-fillalert px-1.5 text-caption font-semibold leading-none text-white">{unread}</span>}
+      </button>
       <button
         onClick={onSettings}
         aria-expanded={settingsOpen}

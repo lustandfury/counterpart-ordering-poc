@@ -411,6 +411,37 @@ This is the point where Counterpart stopped looking like a template and started 
 - The line counts have their own id and a status role. The e2e test reads them there and checks the open-order count on the phone's orders button.
 - The four design points are with Mike.
 
+### 46. Orders that say when and where, and a log of what happened
+**Did:**
+- **Generated orders got closer to real texts:**
+  - About a third are long (7–10 product lines).
+  - Most say when and where: "deliver thurs before 7am", "site is 42 birch st", "usual spot", sometimes with a note.
+  - Each sender has an invented jobsite on file.
+- **The parse step captures the delivery details** in the same Claude call: method, when, where and notes, each with the contractor's words and a tidied version. Relative days are resolved against today's date in Ontario.
+  - "Same address as last week" is flagged as on file, and the app shows that contractor's address.
+  - The order card lists Delivery, Site and Note: tidy in bold, their words in quotes beneath.
+- **A notification log:**
+  - **Toasts:** new orders and contractor approvals raise a toast at the top right. Sends and reopens go to the log quietly.
+  - **Unread count, per Mike:** only approvals count as unread, because the rep isn't watching that queue. Opening the order clears its approval, and an approval for the order already open never counts.
+  - **Already-open order:** opening it from a notification scrolls it back into view and flashes its card, so the click visibly lands.
+- **Styling:**
+  - Counts in solid fills with white text: to check in the Needs review red, approved in green, all lines in graphite.
+  - Rounded pill toggles for the inbox filter and theme.
+  - A lighter selected row and the textured floor back.
+  - Blue step numbers on the lock screen and a square top-left corner on the text bubble.
+
+**Happened:**
+- Two live parse calls, run without matching, checked the prompt:
+  - "monday first thing" became "Mon, Oct 5 · first thing" (today being Sat, Oct 3), and "usual spot" was flagged as on file.
+  - No delivery sentence became an order line.
+- The parse step now costs about $0.014–0.016 per order, up from about $0.009.
+- The toast container's explicit `aria-live` broke the e2e test, which expects one live region. Its status role already announces politely, so the attribute went.
+- Mike reported that opening an order from a notification didn't work. A browser test showed it did; the order was simply already open. That led to the scroll-and-flash.
+
+**Changed:**
+- The saved samples predate delivery capture and show none until they're re-run.
+- The matching steps are untouched, so the Jev vs Claude-only comparison stays fair.
+
 ## Where it stands
 
 | | Claude only | Claude + Jev |
