@@ -56,9 +56,10 @@ async function main() {
       if (width >= 1024) await expect(page.locator("#cost-rail")).toHaveCount(0);
       if (width < 1024) {
         await expect(page.locator("#cost-comparison")).toBeHidden();
-        // opening the queue cleared the count
-        await expect(page.getByRole("button", { name: "Show orders", exact: true })).toBeVisible();
-        await expect(page.locator(".order-badge")).toHaveCount(0);
+        // opening the queue cleared the "new" count
+        await expect(page.getByRole("button", { name: "Show orders (1 open)", exact: true })).toBeVisible();
+        // the open order stays counted on the button, so the rep knows it is waiting
+        await expect(page.locator(".orders-fab .order-badge")).toHaveText("1");
         await openOrders();
         await page.getByRole("button", { name: /^Settings/ }).click();
         await expect(page.getByRole("dialog", { name: "Settings", exact: true })).toBeVisible();
@@ -143,7 +144,7 @@ async function main() {
       await expect(quantity).toBeFocused();
       await expect(quantity).toHaveValue("1");
       await expect(needsReview).toContainText("100 ft ÷ 250 ft per roll = 1 roll");
-      await expect(page.locator("[aria-live=polite]")).toContainText("1 To check");
+      await expect(page.locator("#order-counts")).toContainText("1 To check");
       await page.keyboard.press("Enter");
       await expect(needsReview).toHaveCount(0);
       await expect(validatedList).toContainText("1 roll");
@@ -163,8 +164,10 @@ async function main() {
       const headerLayout = () => summaryCard.evaluate(el => {
         const card = el.getBoundingClientRect();
         const title = el.querySelector("h1")!.getBoundingClientRect();
-        const counts = el.querySelector(".divide-x")!.getBoundingClientRect();
-        return { countsX: counts.x - card.x, countsY: counts.y - card.y, titleY: title.y - card.y, overflow: el.scrollWidth - el.clientWidth };
+        // the line counts sit at the top of the order sheet, so measure them against it
+        const sheet = document.querySelector('section[aria-label="Order"]')!.getBoundingClientRect();
+        const counts = document.getElementById("order-counts")!.getBoundingClientRect();
+        return { countsX: counts.x - sheet.x, countsY: counts.y - sheet.y, titleY: title.y - card.y, overflow: el.scrollWidth - el.clientWidth };
       });
       const beforeSend = await headerLayout();
       await validatedList.evaluate((el) => el.scrollIntoView({ block: "start" }));
@@ -181,7 +184,7 @@ async function main() {
       }
       await page.getByRole("button", { name: "Reopen", exact: true }).click();
       await validatedList.getByRole("button", { name: "Undo", exact: true }).click();
-      await expect(page.locator("[aria-live=polite]")).toContainText("1 To check");
+      await expect(page.locator("#order-counts")).toContainText("1 To check");
       await validatedList.evaluate((el) => { (el as HTMLElement).style.minHeight = ""; });
       await page.locator("#review h1").evaluate((el) => el.scrollIntoView({ block: "start" }));
 
@@ -216,7 +219,7 @@ async function main() {
       if (width < 1024) await page.getByRole("button", { name: "Hide orders", exact: true }).click();
 
       if (width > 1023) {
-        const summary = page.locator("[aria-live=polite]");
+        const summary = page.locator("#order-counts");
         const reviewItems = page.getByRole("region", { name: "Needs review", exact: true });
         const validatedItems = page.getByRole("region", { name: "Validated items", exact: true });
         const lineId = await reviewItems.locator("li").first().getAttribute("id");

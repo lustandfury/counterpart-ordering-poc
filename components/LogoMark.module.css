@@ -1,0 +1,32 @@
+.mark {
+  position: absolute;
+  inset: 0;
+  transform-origin: 50% 50%;
+  animation: arrive var(--wordmark-duration, 2400ms) cubic-bezier(0.333333, 0.666667, 0.666667, 1) both;
+}
+
+/* Quadratic slowdown, synchronized with each letter's half-turn delay.
+   Rotation is exclusively around the vertical center axis. */
+@keyframes arrive {
+  from { transform: perspective(240px) rotateY(-2160deg); }
+  to { transform: perspective(240px) rotateY(0deg); }
+}
+
+.mark[data-processing="true"] {
+  animation: processing 900ms linear infinite;
+}
+
+@keyframes processing {
+  from { transform: perspective(240px) rotateY(0deg); }
+  to { transform: perspective(240px) rotateY(360deg); }
+}
+
+/* Finishing an order restores the resting mark without replaying its entrance. */
+.mark[data-processing="false"] { animation: none; }
+
+:global(.lock-reveal-skip) .mark:not([data-processing="true"]) { animation: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .mark,
+  .mark[data-processing="true"] { animation: none; }
+}

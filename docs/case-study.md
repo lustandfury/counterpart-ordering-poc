@@ -383,6 +383,34 @@ This is the point where Counterpart stopped looking like a template and started 
 - The inbox is now organized by where each order is, not just by arrival.
 - **Talk track:** open on the before/after composite, then walk one order through Open → Sent → Approved.
 
+### 45. Tying the text to the lines, and a mark that moves
+**Did:**
+- **Mike:**
+  - A CP monogram and an odometer-style "C0UNTERPART" wordmark. The coin spins in and keeps spinning while an order is processing.
+  - Illustrated empty and waiting states.
+  - A two-panel lock screen: the story on the left, the access code on the right.
+  - The line counts moved to a strip above the order sheet.
+  - A compact "Generate order" next to an "Orders" heading.
+- **Claude, at Mike's request:**
+  - An orange dot beside each phrase in the contractor's text that is still to check, with the same dot on its line, so the eye can go from the text to the line.
+  - Lighter inbox filter tabs: an underline instead of a black block.
+  - The text bubble indented under the contractor's name at every width.
+  - A count of open orders on the phone's orders button. It nudges only when a new order arrives.
+  - A white, thicker icon on that button.
+  - Slower lock-screen steps, 0.9 seconds apart, so each one can be read.
+
+**Happened:**
+- Before continuing, Claude reviewed Mike's work in progress. The moved line counts had created a second live region, and the e2e test, which expects one, failed in strict mode.
+- The review also raised four design points for Mike:
+  - The wordmark uses `font-mono` with no mono font loaded, so it renders in each system's own monospace.
+  - The CP mark reads as "Φ" at small sizes.
+  - The new "Generate order" button is 32px tall, under the 44px minimum touch target on phones.
+  - The lock card's 12px corners differ from the app's 2px corners.
+
+**Changed:**
+- The line counts have their own id and a status role. The e2e test reads them there and checks the open-order count on the phone's orders button.
+- The four design points are with Mike.
+
 ## Where it stands
 
 | | Claude only | Claude + Jev |

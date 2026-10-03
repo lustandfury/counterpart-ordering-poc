@@ -1,6 +1,6 @@
 import { useState, type CSSProperties } from "react";
 import { createPortal } from "react-dom";
-import { SparklesIcon } from "@heroicons/react/24/outline";
+import { PlusIcon } from "@heroicons/react/24/outline";
 
 /**
  * Generate order, with a tooltip on mouse hover and keyboard focus that says it's a simulated order and what runs.
@@ -26,9 +26,9 @@ export function GenerateButton({ loading, onGenerate, beside }: { loading: boole
         onFocus={showOnKeyboard}
         onBlur={hide}
         aria-describedby={anchor ? "generate-tip" : undefined}
-        className="flex h-9 w-full items-center justify-center gap-1.5 rounded-lg px-2.5 text-small font-medium text-ink shadow-ring transition-colors hover:bg-brand hover:text-onbrand hover:shadow-none focus-visible:bg-brand focus-visible:text-onbrand disabled:opacity-50 disabled:hover:bg-transparent disabled:hover:text-ink"
+        className="flex h-8 shrink-0 items-center justify-center gap-1 rounded-lg px-2 text-caption font-medium text-ink shadow-ring transition-colors hover:bg-brand hover:text-onbrand hover:shadow-none focus-visible:bg-brand focus-visible:text-onbrand disabled:opacity-50 disabled:hover:bg-transparent disabled:hover:text-ink"
       >
-        <SparklesIcon aria-hidden className="h-4 w-4" />
+        <PlusIcon aria-hidden className="h-3.5 w-3.5" />
         {loading ? "Arriving…" : "Generate order"}
       </button>
       {anchor && createPortal(

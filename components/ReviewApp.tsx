@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { OrderIllustration } from "@/components/queue/OrderIllustration";
 import { useThresholds } from "@/lib/settings";
 import { trackEvent } from "@/lib/analytics";
 import type { OrderResult } from "@/lib/types";
@@ -23,7 +24,8 @@ import { Review } from "@/components/order/Review";
 import { useOrderDecisions, type OrderStatus } from "@/components/order/useOrderDecisions";
 import { SegmentedControl } from "@/components/ui/SegmentedControl";
 import { GenerateButton } from "@/components/queue/GenerateButton";
-import { OrderBadge, OrdersIcon } from "@/components/queue/OrderBadge";
+import { InboxIcon } from "@heroicons/react/24/outline";
+import { OrderBadge } from "@/components/queue/OrderBadge";
 import { OrderItem } from "@/components/queue/OrderItem";
 import { SidebarButton } from "@/components/queue/SidebarButton";
 import { SidebarTools } from "@/components/queue/SidebarTools";
@@ -118,6 +120,8 @@ export function ReviewApp({ samples, catalog, initialOrder, evalData }: { sample
       count: toCheck(s, s.orderId), status: orders.status(s.orderId), active: !pending && selected === s.orderId, arriving: i === 0, onPick: pick,
     })),
   ];
+  // orders still waiting on the rep (including one being read), counted on the phone's orders button
+  const openCount = queue.filter((o) => o.status === "open").length;
 
   return (
     <div className="flex h-dvh flex-col overflow-hidden">
@@ -133,20 +137,21 @@ export function ReviewApp({ samples, catalog, initialOrder, evalData }: { sample
           className={`tour-orders w-80 shrink-0 flex-col border-r border-line bg-panel lg:flex lg:transition-[margin-left,visibility] lg:duration-300 lg:ease-[cubic-bezier(0.22,1,0.36,1)] lg:motion-reduce:transition-none max-lg:sheet-up max-lg:fixed max-lg:inset-x-0 max-lg:bottom-0 max-lg:z-30 max-lg:mx-auto max-lg:max-h-[85dvh] max-lg:w-full max-lg:rounded-t-[12px] max-lg:border-r-0 max-lg:pb-[env(safe-area-inset-bottom)] max-lg:shadow-[0_-8px_30px_rgb(0_0_0/0.18)] ${desktopOpen ? "" : "lg:invisible lg:-ml-80"} ${mobileOrders.present ? "max-lg:flex" : "max-lg:hidden"}`}
         >
               <div aria-hidden className="mx-auto mt-2 h-1 w-9 shrink-0 rounded-full bg-line lg:hidden" />
-              <BrandBar hideResults end={<><ModalCloseButton label="Hide orders" onClose={toggleSidebar} className="lg:hidden" /><span className="hidden lg:block"><SidebarButton label="Hide orders" expanded onClick={toggleSidebar} /></span></>} />
-              <div className="shrink-0 px-4 pb-2 pt-2">
+              <BrandBar hideResults processing={live.loading} end={<><ModalCloseButton label="Hide orders" onClose={toggleSidebar} className="lg:hidden" /><span className="hidden lg:block"><SidebarButton label="Hide orders" expanded onClick={toggleSidebar} /></span></>} />
+              <div className="flex shrink-0 items-center justify-between gap-2 px-4 pb-3 pt-2">
+                <h2 className="text-small font-semibold text-ink">Orders</h2>
                 <GenerateButton loading={live.loading} onGenerate={live.runLive} beside={!isMobile} />
               </div>
               {live.error && <p role="alert" className="mx-5 mb-2 text-small text-warn">{live.error}</p>}
               <div className="shrink-0 px-4 pb-2">
                 <SegmentedControl
-                  fill
+                  look="tabs"
                   label="Show orders that are"
                   value={filter}
                   onChange={setFilter}
                   options={FILTERS.map((f) => {
                     const n = queue.filter((o) => o.status === f.value).length;
-                    return { value: f.value, label: <>{f.label}{n > 0 && <span className="figures ml-1.5 opacity-70">{n}</span>}</> };
+                    return { value: f.value, label: <>{f.label}{n > 0 && <span className="figures ml-1.5 font-normal text-muted">{n}</span>}</> };
                   })}
                 />
               </div>
@@ -154,7 +159,13 @@ export function ReviewApp({ samples, catalog, initialOrder, evalData }: { sample
                 <ul className="flex flex-col gap-0.5">
                   {queue.filter((o) => o.status === filter).map(({ key, ...o }) => <OrderItem key={key} {...o} />)}
                 </ul>
-                {!queue.some((o) => o.status === filter) && arrival !== "empty" && <p className="px-2.5 py-6 text-small text-muted">{FILTERS.find((f) => f.value === filter)!.empty}</p>}
+                {!queue.some((o) => o.status === filter) && arrival !== "empty" && (
+                  <div role="status" className="flex flex-col items-center px-4 py-10 text-center">
+                    <OrderIllustration state={filter === "open" ? "complete" : "idle"} className="h-20 w-20" />
+                    <p className="mt-3 text-small font-semibold text-ink">{filter === "open" ? "You're all caught up" : filter === "sent" ? "No orders awaiting approval" : "No approved orders yet"}</p>
+                    <p className="mt-1.5 text-caption leading-relaxed text-muted">{filter === "open" ? "New orders will appear here. Generate an order to try another review." : FILTERS.find((f) => f.value === filter)!.empty}</p>
+                  </div>
+                )}
               </nav>
               <SidebarTools
                 settingsOpen={settingsOpen}
@@ -204,11 +215,12 @@ export function ReviewApp({ samples, catalog, initialOrder, evalData }: { sample
           onClick={toggleSidebar}
           aria-expanded={false}
           aria-controls="orders"
-          aria-label={layout.unseen ? `Show orders (${layout.unseen} new)` : "Show orders"}
-          className="orders-fab fixed right-4 bottom-[calc(1rem+env(safe-area-inset-bottom))] z-20 grid h-14 w-14 place-items-center rounded-full bg-brand text-onbrand shadow-raise lg:hidden"
+          aria-label={layout.unseen ? `Show orders (${layout.unseen} new)` : openCount ? `Show orders (${openCount} open)` : "Show orders"}
+          className={`orders-fab ${layout.unseen ? "orders-fab-new" : ""} fixed right-4 bottom-[calc(1rem+env(safe-area-inset-bottom))] z-20 grid h-14 w-14 place-items-center rounded-full bg-brand text-onbrand shadow-raise lg:hidden`}
         >
-          <OrdersIcon />
-          {layout.unseen > 0 && <OrderBadge count={layout.unseen} onBrand className="absolute -right-0.5 -top-0.5" />}
+          <InboxIcon aria-hidden strokeWidth={2.5} className="h-5 w-5 text-white" />
+          {/* the count of open orders, so the rep knows there's work in the queue; it nudges when a new one arrives */}
+          {openCount > 0 && <OrderBadge count={openCount} onBrand className="absolute -right-0.5 -top-0.5" />}
         </button>
       )}
       {isMobile && <ActionSheet open={mobileCostOpen} id="cost-comparison" label="Cost assessment" onClose={() => setMobileCostOpen(false)} className="tour-cost max-w-md">

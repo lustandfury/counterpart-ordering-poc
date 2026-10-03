@@ -33,7 +33,6 @@ export function Review({ result, mode, T, unitMin, catalog, resolved, setResolve
   // Unmatched lines need triage before product or quantity checks, so keep them at the top of the review list.
   const orderedLines = useMemo(() => [...lines].sort((a, b) => Number(b.sku === NONE) - Number(a.sku === NONE)), [lines]);
   const flagged = orderedLines.filter((l) => !l.approved);
-  const done = flagged.filter((l) => resolved[l.id]).length;
   const pending = flagged.filter((l) => !resolved[l.id]);
   const validated = orderedLines.filter((l) => l.approved || (resolved[l.id] && resolved[l.id] !== NONE));
   const excluded = flagged.filter((l) => resolved[l.id] === NONE);
@@ -161,11 +160,23 @@ export function Review({ result, mode, T, unitMin, catalog, resolved, setResolve
       <div className="@container/review">
       <div className="@min-[52rem]/review:grid @min-[52rem]/review:grid-cols-[minmax(0,23rem)_minmax(0,1fr)] @min-[52rem]/review:items-start @min-[52rem]/review:gap-6">
       <div className="@min-[52rem]/review:sticky @min-[52rem]/review:top-5 @min-[52rem]/review:-m-1 @min-[52rem]/review:max-h-[calc(100dvh-2.5rem)] @min-[52rem]/review:overflow-y-auto @min-[52rem]/review:p-1">
-        <OrderDetails result={result} mode={mode} lines={lines.length} flagged={flagged.length} done={done} compare={compare} phone={phone} />
+        <OrderDetails result={result} mode={mode} compare={compare} phone={phone} toCheck={pending.map((l) => l.id)} />
       </div>
 
       {/* One sheet, like a pick ticket: the lines to check on top, then the confirmed lines, then the total and Send. */}
       <section aria-label="Order" className={phone ? "pb-24" : ""}>
+        <div id="order-counts" role="status" className="card mb-3 grid grid-cols-3 divide-x divide-line py-3 text-center text-small">
+          {[
+            { label: "Lines", value: lines.length, tone: "text-ink" },
+            { label: "Auto-approved", value: lines.length - flagged.length, tone: "text-ok" },
+            { label: "To check", value: pending.length, tone: "text-warn" },
+          ].map((stat) => (
+            <span key={stat.label} className="px-2 py-1">
+              <span className={`figures font-semibold ${stat.tone}`}>{stat.value}</span>{" "}
+              <span className="text-muted">{stat.label}</span>
+            </span>
+          ))}
+        </div>
         <div className="card overflow-hidden">
           <div inert={!!sentAt} className={sentAt ? "opacity-70" : undefined}>
             {[
@@ -174,7 +185,7 @@ export function Review({ result, mode, T, unitMin, catalog, resolved, setResolve
               ...(excluded.length ? [{ id: "excluded-items", title: "Left off order", description: "No catalog match. Let the contractor know.", items: excluded, tone: "text-muted", empty: "" }] : []),
             ].map((group, i) => (
               <section key={group.id} aria-labelledby={group.id} className={i > 0 ? "border-t border-line" : undefined}>
-                <header className="flex flex-wrap items-baseline gap-x-3 gap-y-0.5 border-b border-line bg-panel2 px-4 py-2.5 sm:px-6">
+                <header className={`flex flex-wrap items-baseline gap-x-3 gap-y-0.5 border-b border-line px-4 py-2.5 sm:px-6 ${group.id === "validated-items" ? "" : "bg-panel2"}`}>
                   <h2 id={group.id} className={`text-small font-semibold ${group.tone}`}>{group.title}</h2>
                   <p className="text-caption text-muted">{group.description}</p>
                   <Pill tone="count" className="ml-auto" aria-label={`${group.items.length} items`}>{group.items.length}</Pill>

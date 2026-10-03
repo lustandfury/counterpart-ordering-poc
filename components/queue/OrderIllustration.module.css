@@ -1,0 +1,55 @@
+.illustration {
+  display: block;
+  overflow: visible;
+  flex-shrink: 0;
+}
+
+/* A 1.5-second gesture, then 12.5 seconds at rest. */
+.illustration[data-state="waiting"] .message {
+  animation: message-lift 14s ease-in-out infinite;
+}
+
+.illustration[data-state="waiting"] .dot {
+  animation: message-dot 14s ease-in-out infinite;
+}
+
+.dot:nth-child(2) { animation-delay: 120ms; }
+.dot:nth-child(3) { animation-delay: 240ms; }
+
+.illustration[data-state="waiting"] .row {
+  animation: line-settle 14s ease-in-out infinite;
+}
+
+.row:nth-child(2) { animation-delay: 100ms; }
+.row:nth-child(3) { animation-delay: 200ms; }
+
+.illustration[data-state="arrived"] .slip {
+  animation: slip-arrive 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes message-lift {
+  0%, 11%, 100% { transform: translateY(0); }
+  4% { transform: translateY(-3px); }
+}
+
+@keyframes message-dot {
+  0%, 9%, 100% { opacity: 0.55; transform: translateY(0); }
+  3% { opacity: 1; transform: translateY(-1.5px); }
+}
+
+@keyframes line-settle {
+  0%, 3%, 11%, 100% { opacity: 1; transform: translateX(0); }
+  5% { opacity: 0.35; transform: translateX(-3px); }
+}
+
+@keyframes slip-arrive {
+  from { transform: translateY(4px); }
+  to { transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .illustration[data-state] .message,
+  .illustration[data-state] .dot,
+  .illustration[data-state] .row,
+  .illustration[data-state] .slip { animation: none; }
+}

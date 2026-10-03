@@ -6,6 +6,7 @@ import { linePrice } from "@/lib/order-math";
 import { TextButton } from "@/components/ui/Button";
 import { cx } from "@/components/ui/cx";
 import { QuantityEditor } from "@/components/order/QuantityEditor";
+import { CheckDot } from "@/components/order/CheckDot";
 
 export type LineState = "ok" | "done" | "flag";
 
@@ -53,6 +54,7 @@ function FlaggedLine(props: Props) {
       <div className="min-w-0">
       <p className="text-body font-medium">
         <span className="sr-only">Check this: </span>
+        <CheckDot />
         {l.raw}
         <span className="sr-only">, {asked}</span>
       </p>

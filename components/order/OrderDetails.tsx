@@ -1,25 +1,20 @@
 import { useState } from "react";
 import type { OrderResult } from "@/lib/types";
-import { orderNumber, type Mode } from "@/lib/view";
+import { orderNumber, segmentText, type Mode } from "@/lib/view";
 import { usd } from "@/lib/format";
 import { savings, speedLine } from "@/lib/order-math";
 import type { Compare } from "@/components/order/types";
 import { TextButton } from "@/components/ui/Button";
+import { CheckDot } from "@/components/order/CheckDot";
 
 /**
  * The head of the order: who texted, the line counts, their message, and the AI cost saving (which opens the comparison).
  * On phones the message folds away behind "Show text", so the first line to check is on the first screen.
  */
-export function OrderDetails({ result, mode, lines, flagged, done, compare, phone }: { result: OrderResult; mode: Mode; lines: number; flagged: number; done: number; compare: Compare; phone: boolean }) {
+export function OrderDetails({ result, mode, compare, phone, toCheck: unchecked }: { result: OrderResult; mode: Mode; compare: Compare; phone: boolean; toCheck: string[] }) {
   const [textShown, setTextShown] = useState(false);
   const who = result.from?.name ?? "the contractor";
   const save = savings(result);
-  const toCheck = Math.max(0, flagged - done);
-  const stats = [
-    { label: "Lines", value: lines, className: "text-ink" },
-    { label: "Auto-approved", value: lines - flagged, className: "text-ok" },
-    { label: "To check", value: toCheck, className: "text-warn" },
-  ];
   return (
     <div className="@container mb-6 rounded-xl border border-line @min-[52rem]/review:mb-0 bg-panel px-4 py-4 shadow-ring sm:px-5" aria-live="polite">
       <div className="flex flex-col gap-3 @min-[560px]:flex-row @min-[560px]:items-start @min-[560px]:justify-between">
@@ -35,15 +30,15 @@ export function OrderDetails({ result, mode, lines, flagged, done, compare, phon
           <p className="mt-0.5 text-small text-muted">Texted an order · <span className="figures text-ink">{orderNumber(result.orderId)}</span></p>
         </div>
       </div>
-      <div className="grid shrink-0 grid-cols-3 divide-x divide-line whitespace-nowrap rounded-lg bg-bg py-2 @min-[560px]:ml-auto @min-[560px]:flex @min-[560px]:px-1 @min-[560px]:py-1">
-        {stats.map((stat) => <span key={stat.label} className={`flex min-w-0 flex-col items-center gap-0.5 px-1 text-stat font-semibold @min-[560px]:block @min-[560px]:px-3 @min-[560px]:text-small @min-[560px]:font-medium ${stat.className}`}><span className="figures">{stat.value}</span> <span className="text-tiny font-normal text-muted @min-[560px]:text-small">{stat.label}</span></span>)}
-      </div>
       </div>
       {(!phone || textShown) && (
-        <figure className="mt-4 @min-[560px]:ml-12">
+        <figure className="mt-4 ml-12">
           <figcaption className="sr-only">Text message from {who}</figcaption>
-          <blockquote id="incoming-message" className="w-fit max-w-prose whitespace-pre-wrap break-words rounded-[18px] rounded-tl-[4px] bg-bg px-4 py-3 text-body leading-relaxed text-ink">
-            {result.text.trim()}
+          <blockquote id="incoming-message" className="w-fit max-w-prose whitespace-pre-wrap break-words rounded-[18px] bg-bg px-4 py-3 text-body leading-relaxed text-ink">
+            {/* indented under the name, as in a messages app; the phrases behind lines still to check get the same dot as their line */}
+            {segmentText(result.text.trim(), result.parse.lines).map((seg, i) => seg.lineId && unchecked.includes(seg.lineId)
+              ? <span key={i}><CheckDot />{seg.text}<span className="sr-only"> (to check)</span></span>
+              : <span key={i}>{seg.text}</span>)}
           </blockquote>
         </figure>
       )}
@@ -63,7 +58,7 @@ export function OrderDetails({ result, mode, lines, flagged, done, compare, phon
           aria-expanded={compare.open}
           aria-controls={compare.controls}
           title={`AI cost: ${usd(save.jevUsd)} vs ${usd(save.claudeUsd)} per order with Claude only, from a single run`}
-          className={`results-cue ml-auto shrink-0 whitespace-nowrap rounded-lg px-3 py-1.5 text-small font-medium tabular-nums hover:bg-bg ${compare.open ? "bg-bg" : "bg-bg/60"}`}
+          className="results-cue ml-auto shrink-0 whitespace-nowrap rounded-lg px-3 py-1.5 text-small font-medium tabular-nums hover:underline"
         >
           <span className="figures">{save.cheaper.toFixed(1)}×</span> lower AI cost
           {save.timeSaved != null && <><span className="text-muted"> | </span>{speedLine(save.timeSaved)}</>}
