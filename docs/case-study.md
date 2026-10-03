@@ -442,6 +442,11 @@ This is the point where Counterpart stopped looking like a template and started 
 - The saved samples predate delivery capture and show none until they're re-run.
 - The matching steps are untouched, so the Jev vs Claude-only comparison stays fair.
 
+### 47. The order card says where the order is
+**Did:** at Mike's request, added a compact Open → Sent → Approved tracker to the order card: the same three stages as the inbox filter, with a check and a time for each stage that's done. The pricing card keeps its full status sentence beside Send.
+**Happened:** this revisits an earlier call that the sent status lives only in the pricing card. With the inbox now organized by stage, Mike wanted the stage visible where the rep reads the order too.
+**Changed:** the stage now appears in three places, each doing a different job: the inbox (which orders), the order card (where this one is), and the foot of the order (what to do next).
+
 ## Where it stands
 
 | | Claude only | Claude + Jev |

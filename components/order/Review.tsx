@@ -160,7 +160,7 @@ export function Review({ result, mode, T, unitMin, catalog, resolved, setResolve
       <div className="@container/review">
       <div className="@min-[52rem]/review:grid @min-[52rem]/review:grid-cols-[minmax(0,23rem)_minmax(0,1fr)] @min-[52rem]/review:items-start @min-[52rem]/review:gap-6">
       <div className="@min-[52rem]/review:sticky @min-[52rem]/review:top-5 @min-[52rem]/review:-m-1 @min-[52rem]/review:max-h-[calc(100dvh-2.5rem)] @min-[52rem]/review:overflow-y-auto @min-[52rem]/review:p-1">
-        <OrderDetails result={result} mode={mode} compare={compare} phone={phone} toCheck={pending.map((l) => l.id)} />
+        <OrderDetails result={result} mode={mode} compare={compare} phone={phone} toCheck={pending.map((l) => l.id)} sentAt={sentAt} approvedAt={approvedAt} />
       </div>
 
       {/* One sheet, like a pick ticket: the lines to check on top, then the confirmed lines, then the total and Send. */}

@@ -7,12 +7,13 @@ import type { Compare } from "@/components/order/types";
 import { TextButton } from "@/components/ui/Button";
 import { CheckDot } from "@/components/order/CheckDot";
 import { DeliveryDetails } from "@/components/order/DeliveryDetails";
+import { OrderProgress } from "@/components/order/OrderProgress";
 
 /**
  * The head of the order: who texted, the line counts, their message, and the AI cost saving (which opens the comparison).
  * On phones the message folds away behind "Show text", so the first line to check is on the first screen.
  */
-export function OrderDetails({ result, mode, compare, phone, toCheck: unchecked }: { result: OrderResult; mode: Mode; compare: Compare; phone: boolean; toCheck: string[] }) {
+export function OrderDetails({ result, mode, compare, phone, toCheck: unchecked, sentAt, approvedAt }: { result: OrderResult; mode: Mode; compare: Compare; phone: boolean; toCheck: string[]; sentAt?: number; approvedAt?: number }) {
   const [textShown, setTextShown] = useState(false);
   const who = result.from?.name ?? "the contractor";
   const save = savings(result);
@@ -32,6 +33,7 @@ export function OrderDetails({ result, mode, compare, phone, toCheck: unchecked 
         </div>
       </div>
       </div>
+      <OrderProgress sentAt={sentAt} approvedAt={approvedAt} />
       {(!phone || textShown) && (
         <figure className="mt-4 ml-12">
           <figcaption className="sr-only">Text message from {who}</figcaption>
