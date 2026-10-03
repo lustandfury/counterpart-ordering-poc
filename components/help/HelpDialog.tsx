@@ -9,6 +9,7 @@ export function HelpDialog({ open, onClose, onResults }: { open: boolean; onClos
   return (
     <ActionSheet open={open} onClose={onClose} labelledBy="help-title" className="max-w-3xl">
           <SheetHeader id="help-title" eyebrow="Counterpart" title="The fast lane for Pro orders" closeLabel="Close help" onClose={onClose} />
+          <p className="mt-5 rounded-lg border border-line bg-surface p-4 text-body leading-relaxed text-muted"><span className="font-medium text-ink">Demo orders. Real AI processing.</span> This demo runs generated orders through a real text-processing workflow. Live AI and API calls read each message, extract the order details, and match items to the catalog in real time.</p>
           <div className="mt-5 grid gap-6 text-body leading-relaxed text-muted md:grid-cols-2 md:gap-8">
             <div className="space-y-4">
               <h3 className={COLUMN_TITLE}>Meet Pros where they order</h3>

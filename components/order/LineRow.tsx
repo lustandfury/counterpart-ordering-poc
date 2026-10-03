@@ -20,14 +20,14 @@ export function LineRow(props: {
 
 type Props = Parameters<typeof LineRow>[0];
 
-/** The pick-ticket column every line starts with: the number in condensed figures, its unit under it. */
+/** Requested quantity stays beside the original text while a line needs review. */
 const QTY_COLUMN = "grid grid-cols-[3.25rem_minmax(0,1fr)] gap-x-3 sm:grid-cols-[4rem_minmax(0,1fr)] sm:gap-x-4";
 function Qty({ text, tone = "text-ink" }: { text: string; tone?: string }) {
   const [n, ...unit] = text.split(" ");
   const number = /^\d/.test(n);
   return (
     <span className="flex flex-col items-end pt-0.5 text-right leading-none">
-      <span className={`figures text-stat font-semibold ${tone}`}>{number ? n : "—"}</span>{" "}
+      <span className={`figures text-heading font-semibold ${tone}`}>{number ? n : "—"}</span>{" "}
       <span className="mt-1 text-caption text-muted">{number ? unit.join(" ") : "no qty"}</span>
     </span>
   );
@@ -161,34 +161,29 @@ function ConfirmedLine(props: Props) {
   const price = pick === NONE ? null : linePrice(l, pick, catalog, props.quantity);
   const total = price?.total != null ? money(price.total) : <span title="Not priced: the quantity isn't in the unit this product is sold by">—<span className="sr-only">not priced</span></span>;
   return (
-    <li id={`line-${l.id}`} tabIndex={-1} onClick={props.onSelect} className={`outline-none scroll-mt-44 border-b border-line last:border-b-0 ${active ? "bg-bg" : ""}`}>
-      <div className={`${QTY_COLUMN} min-h-14 items-center py-3 pl-4 pr-4 sm:pl-6 sm:pr-6`}>
-        {pick !== NONE ? <Qty text={qty} /> : <span aria-hidden />}
+    <li id={`line-${l.id}`} tabIndex={-1} onClick={props.onSelect} className={`@container/line outline-none scroll-mt-44 border-b border-line last:border-b-0 ${active ? "bg-bg" : ""}`}>
+      <div className="grid min-h-14 grid-cols-1 items-center gap-3 py-3 pl-4 pr-4 @min-[440px]/line:grid-cols-[minmax(0,1fr)_auto] sm:pl-6 sm:pr-6">
         <div className="flex min-w-0 items-center gap-3">
           <span className={state === "done" && pick === NONE ? "text-warn" : "text-ok"}>{state === "done" ? <UserIcon aria-hidden className="h-4 w-4 shrink-0" /> : <Check />}</span>
           <span className="min-w-0 flex-1">
             <span className="block break-words text-ink">{chosen}</span>
             <span className="block text-small text-muted">{l.raw}</span>
-            {/* phones: the price sits under the name instead of taking a column */}
-            {pick !== NONE && (
-              <span className="mt-1 flex flex-wrap items-baseline gap-x-2 text-small text-muted sm:hidden">
-                <span className="figures text-ink">{total}</span>
-                {price && <span className="figures">({price.unit})</span>}
-              </span>
-            )}
             {state === "done" && (
               <span className="mt-0.5 block text-caption text-muted">
                 {pick === NONE ? "Left off by you" : props.quantity != null ? "Product and quantity set by you" : "Checked by you"} · <button className="underline hover:text-ink" onClick={props.onUndo}>Undo</button>
               </span>
             )}
           </span>
-          {pick !== NONE && (
-            <span className="w-28 shrink-0 text-right text-muted max-sm:hidden">
+        </div>
+        {pick !== NONE && (
+          <div className="flex items-center justify-end gap-4">
+            <Qty text={qty} />
+            <span className="w-28 shrink-0 text-right text-muted">
               <span className="figures block text-heading text-ink">{total}</span>
               {price && <span className="figures block text-caption">{price.unit}</span>}
             </span>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </li>
   );
