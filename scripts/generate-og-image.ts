@@ -1,6 +1,11 @@
 import { chromium } from "playwright";
 import { readFileSync } from "fs";
 
+// Optional: --scale 2 --out path.png for a hi-res copy (e.g. a portfolio image); defaults to the 1× meta image.
+const arg = (name: string) => { const i = process.argv.indexOf(name); return i > -1 ? process.argv[i + 1] : undefined; };
+const scale = Number(arg("--scale") ?? 1);
+const out = arg("--out") ?? "public/images/counterpart-og.png";
+
 async function generateOGImage() {
   const bgData = readFileSync("public/images/counterpart-og-bg.png").toString("base64");
   const html = `
@@ -38,7 +43,7 @@ async function generateOGImage() {
       padding-left: 80px;
       display: flex;
       align-items: center;
-      gap: 48px;
+      gap: 32px;
     }
     .logo {
       width: 200px;
@@ -48,9 +53,7 @@ async function generateOGImage() {
     }
     .wordmark {
       color: #1f2328;
-      /* optical centring: line boxes leave extra space above the letters, so lift the text until its
-         visible ink (top of the wordmark to the tagline's descenders) is centred on the logo */
-      transform: translateY(-15.5px);
+      /* vertical position is set after the fonts load: see the centring step below */
     }
     /* the app's wordmark: monospace capitals, C0UNTER in graphite and PART in muted grey */
     .wordmark h1 {
@@ -95,7 +98,7 @@ async function generateOGImage() {
 
   const browser = await chromium.launch();
   try {
-    const page = await browser.newPage({ viewport: { width: 1730, height: 909 } });
+    const page = await browser.newPage({ viewport: { width: 1730, height: 909 }, deviceScaleFactor: scale });
     await page.setContent(html);
     await page.evaluate(async () => {
       await document.fonts.ready;
@@ -119,8 +122,31 @@ async function generateOGImage() {
       return { target, ls };
     });
     console.log(`tagline letter-spacing ${fit.ls.toFixed(2)}px to match wordmark width ${fit.target.toFixed(0)}px`);
-    await page.screenshot({ path: "public/images/counterpart-og.png" });
-    console.log("✓ Generated public/images/counterpart-og.png (1730×909 with logo overlay)");
+    // Centre the text on the logo's centre line: from the top of the wordmark's capitals to the
+    // tagline's baseline (descenders hang below, as they do in any lockup). Baselines come from a
+    // zero-size inline-block marker; cap height from canvas text metrics.
+    const shift = await page.evaluate(() => {
+      const logo = document.querySelector(".logo")!.getBoundingClientRect();
+      const h1 = document.querySelector(".wordmark h1") as HTMLElement;
+      const p = document.querySelector(".wordmark p") as HTMLElement;
+      const baselines = [h1, p].map(el => {
+        const marker = document.createElement("span");
+        marker.style.cssText = "display:inline-block;width:0;height:0;vertical-align:baseline";
+        el.append(marker);
+        const y = marker.getBoundingClientRect().bottom;
+        marker.remove();
+        return y;
+      });
+      const ctx = document.createElement("canvas").getContext("2d")!;
+      ctx.font = getComputedStyle(h1).font;
+      const capTop = baselines[0] - ctx.measureText("C0UNTERPART").actualBoundingBoxAscent;
+      const dy = logo.top + logo.height / 2 - (capTop + baselines[1]) / 2;
+      (document.querySelector(".wordmark") as HTMLElement).style.transform = `translateY(${dy}px)`;
+      return dy;
+    });
+    console.log(`text shifted ${shift.toFixed(1)}px to centre on the logo`);
+    await page.screenshot({ path: out });
+    console.log(`✓ Generated ${out} (${1730 * scale}×${909 * scale} with logo overlay)`);
   } finally {
     await browser.close();
   }

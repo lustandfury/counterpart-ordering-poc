@@ -3,6 +3,7 @@ import type { OrderResult } from "@/lib/types";
 import { orderNumber, segmentText } from "@/lib/view";
 import { TextButton } from "@/components/ui/Button";
 import { CheckDot } from "@/components/order/CheckDot";
+import { CheckPhrase, useHighlightVariant } from "@/components/order/CheckPhrase";
 import { DeliveryDetails } from "@/components/order/DeliveryDetails";
 import { OrderProgress } from "@/components/order/OrderProgress";
 
@@ -13,6 +14,7 @@ import { OrderProgress } from "@/components/order/OrderProgress";
  */
 export function OrderDetails({ result, phone, toCheck: unchecked, receivedAt, sentAt, approvedAt }: { result: OrderResult; phone: boolean; toCheck: string[]; receivedAt?: number; sentAt?: number; approvedAt?: number }) {
   const [textShown, setTextShown] = useState(false);
+  const hl = useHighlightVariant();
   const who = result.from?.name ?? "the contractor";
   return (
     <div className="@container rounded-xl border border-line bg-panel px-4 py-4 shadow-ring sm:px-5" aria-live="polite">
@@ -36,7 +38,7 @@ export function OrderDetails({ result, phone, toCheck: unchecked, receivedAt, se
           <blockquote id="incoming-message" className="w-fit max-w-prose whitespace-pre-wrap break-words rounded-[18px] rounded-tl-none bg-bg px-4 py-3 text-body leading-relaxed text-ink">
             {/* indented under the name, as in a messages app; the phrases behind lines still to check get the same dot as their line */}
             {segmentText(result.text.trim(), result.parse.lines).map((seg, i) => seg.lineId && unchecked.includes(seg.lineId)
-              ? <span key={i}><CheckDot />{seg.text}<span className="sr-only"> (to check)</span></span>
+              ? <span key={i}>{hl === "dot" ? <><CheckDot />{seg.text}</> : <CheckPhrase variant={hl}>{seg.text}</CheckPhrase>}<span className="sr-only"> (to check)</span></span>
               : <span key={i}>{seg.text}</span>)}
           </blockquote>
         </figure>

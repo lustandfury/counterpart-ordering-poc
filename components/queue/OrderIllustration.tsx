@@ -24,8 +24,6 @@ export function OrderIllustration({ state = "waiting", className = "" }: {
       {/* The slip (x 28-75) is shifted 4.5 so it centres on the ground lines (x 16-96), with its message and stamp.
           An outer group, because the inner ones animate with CSS transforms, which would replace a transform attribute. */}
       <g transform="translate(4.5 0)">
-        {/* waiting and arriving: the text comes first and the slip in front of it, as the order is written up */}
-        {(state === "waiting" || state === "arrived") && message}
         <g className={styles.slip}>
           <path d="M28 27h35l12 12v45l-6-3-6 3-6-3-6 3-6-3-6 3-6-3-5 3V27Z" fill="var(--panel)" stroke="var(--muted)" strokeWidth="1.5" strokeLinejoin="round" />
           <path d="M63 27v12h12" stroke="var(--muted)" strokeWidth="1.5" strokeLinejoin="round" />
@@ -36,8 +34,8 @@ export function OrderIllustration({ state = "waiting", className = "" }: {
             <path className={styles.row} d="M37 66h13" />
           </g>
         </g>
-        {/* the empty Sent and Approved tabs: the message sits in front of the slip, the order out with the contractor */}
-        {state === "idle" && message}
+        {/* the contractor's message sits in front of the slip (the stamp replaces it once the order is approved) */}
+        {state !== "complete" && message}
         {/* the approval stamp, drawn over the slip */}
         {state === "complete" && (
           <g className={styles.stamp}>

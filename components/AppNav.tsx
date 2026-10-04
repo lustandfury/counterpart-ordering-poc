@@ -20,7 +20,7 @@ export function Wordmark({ large = false, processing }: { large?: boolean; proce
         {Array.from("C0UNTERPART", (letter, index) => (
           <span
             key={`${letter}-${index}`}
-            className={index >= 7 ? "wordmark-slot text-muted" : "wordmark-slot"}
+            className={index >= 7 ? `wordmark-slot text-muted${index === 7 ? " wordmark-slot-tight" : ""}` : "wordmark-slot"}
             style={{ "--letter-delay": `${letterDelay(index)}ms` } as CSSProperties}
           >
             <span className="wordmark-letter">

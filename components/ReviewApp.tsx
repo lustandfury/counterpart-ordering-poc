@@ -221,7 +221,7 @@ export function ReviewApp({ samples, catalog, initialOrder, evalData }: { sample
             <SidebarButton label="Show orders" expanded={false} unseen={layout.unseen} onClick={toggleSidebar} />
           </div>
           <div className="mx-auto max-w-4xl px-5 py-8 sm:px-10 xl:max-w-6xl">
-            {live.loading ? <OrderLoading progress={live.progress} /> : !result || !selected ? <WaitingForOrders arrived={arrival === "queued"} phone={isMobile} /> : <div className="order-enter"><Review
+            {live.loading ? <OrderLoading progress={live.progress} /> : !result || !selected ? <WaitingForOrders arrived={arrival === "queued"} count={openCount} phone={isMobile} /> : <div className="order-enter"><Review
               key={selected}
               result={result}
               mode={mode}

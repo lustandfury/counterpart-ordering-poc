@@ -183,6 +183,10 @@ button { cursor: pointer; }
   height: 1.1em;
   overflow: hidden;
 }
+.wordmark-slot-tight {
+  /* the monospace R and P sit wide apart where COUNTER meets PART; pull the P in */
+  margin-left: -0.07em;
+}
 .wordmark-letter {
   display: block;
   transform: translateY(-2.2em);
