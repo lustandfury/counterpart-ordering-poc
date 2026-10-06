@@ -1,0 +1,9 @@
+{
+  "_note": "Fictional sender. The photo is data/orders/p03.jpg; what it says is described in photo-orders.md.",
+  "yard": "fernhill",
+  "image": "data/orders/p03.jpg",
+  "from": {
+    "name": "Nico Rossi",
+    "company": "Rossi Outdoor Living"
+  }
+}

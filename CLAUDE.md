@@ -11,7 +11,8 @@ A web prototype that turns a contractor's text-message order for lumber and buil
 materials into a draft order matched to a product catalog, and flags only the lines a
 sales rep needs to check. Claude reads the text; TypeSafe's Jev model makes each line's
 matching decision with calibrated confidence. A Claude-only comparison version runs
-alongside. All data is synthetic. Not affiliated with any company.
+alongside. All data is synthetic, except one photo of a handwritten order found online (no names on it; the
+sender is fictional). Not affiliated with any company.
 
 ## Stack
 - Next.js (App Router) + TypeScript + Tailwind + shadcn/ui
@@ -39,6 +40,12 @@ alongside. All data is synthetic. Not affiliated with any company.
    for the rep. T defaults to 0.85 and can be changed in the UI
 5. comparison: a Claude-only version reads the order and matches lines against the full
    catalog in one call, returning a sku plus confidence (high/medium/low)
+Photo orders (data/orders/p*.json): Claude first transcribes the photo verbatim (lib/pipeline/transcribe.ts,
+crossed-out text as ~~text~~), and the transcription is the order text for both pipelines.
+Metric mapping (lib/pipeline/metric.ts): between parse and matching, metric timber sections and lengths are rewritten
+to the catalog's imperial names ("150 x 50" -> "2x6", "4.8m" -> "16'") for both pipelines; raw keeps the contractor's
+words. Lines with a conversion always go to the rep (Mike's call). Metric quantities (kg, litres, metres) are
+converted in the quantity editor's suggestion.
 Every step records time (ms), tokens and cost (USD). Prices are constants in lib/pricing.ts.
 
 ## House defaults
@@ -59,7 +66,8 @@ to either pipeline (a test enforces this in `lib/`, `app/`, `components/`).
 
 ## UI
 - The visitor is the sales rep. Home is an order queue: one sample order (from results/)
-  "arrives" on load, and Generate order simulates a new contractor text and runs it live.
+  "arrives" on load, the photo order sits below it as an earlier order, and Generate order
+  simulates a new contractor text and runs it live.
   There is no paste box. Secondary tools (Sample results, Settings, About) sit at the foot
   of the sidebar
 - Review screen: the contractor's name and their text as a message bubble, with the AI cost

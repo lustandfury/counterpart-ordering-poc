@@ -1,5 +1,5 @@
 import { isLargeQuantity, route, routeClaudeOnly } from "../pipeline/route";
-import type { OrderResult } from "../types";
+import type { MetricConversion, OrderResult } from "../types";
 
 export type Gold = { sku: string | null; shouldReview: boolean };
 
@@ -8,6 +8,7 @@ export type Row = {
   lineId: string;
   raw: string;
   qty: number | null;
+  metric?: MetricConversion[]; // metric sizes converted before matching; such lines always go to a rep
   gold: Gold;
   inShortlist: boolean; // correct product among Jev's shortlist (true when gold is null)
   jev: { sku: string | null; confidence: number; unitOk: number; unit: string | null };
@@ -36,6 +37,7 @@ export function buildRows(
         lineId: pl.id,
         raw: pl.raw,
         qty: pl.qty,
+        ...(pl.metric ? { metric: pl.metric } : {}),
         gold: gold[i],
         inShortlist: gold[i].sku === null || j.shortlist.includes(gold[i].sku!),
         jev: { sku: jevSku, confidence: j.sku.confidence, unitOk: j.unitOk, unit: jevSku ? unitOf(jevSku) : null },
@@ -57,10 +59,11 @@ export const jevApprove = (T: number, useUnitOk = true, unitOkMin?: number): App
     productUnit: r.jev.unit,
     T,
     unitOkMin,
+    metric: r.metric,
   }).approved;
 
 export const claudeApprove: Approve = (r) =>
-  routeClaudeOnly({ sku: r.claude.sku, confidence: r.claude.confidence, qty: r.qty, productUnit: r.claude.unit }).approved;
+  routeClaudeOnly({ sku: r.claude.sku, confidence: r.claude.confidence, qty: r.qty, productUnit: r.claude.unit, metric: r.metric }).approved;
 
 const pct = (n: number, d: number) => (d === 0 ? null : (100 * n) / d);
 

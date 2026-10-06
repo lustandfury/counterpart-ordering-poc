@@ -64,6 +64,10 @@ describe("totals and segments", () => {
   it("adds the shared parse step to the matching step", () => {
     expect(totals(result(0.9), "jev").ms).toBe(120);
     expect(totals(result(0.9), "claude").usd).toBeCloseTo(0.06);
+    // a photo order's transcription counts as shared reading
+    const photo = { ...result(0.9), photo: { src: "/orders/p01.jpg", ms: 50, usage: { inputTokens: 0, outputTokens: 0 }, costUsd: 0.01 } };
+    expect(totals(photo, "jev").parseMs).toBe(totals(result(0.9), "jev").parseMs + 50);
+    expect(totals(photo, "claude").usd).toBeCloseTo(0.07);
   });
   it("marks each line in the order text", () => {
     const s = segmentText("hi\n5 A\nbye", [{ id: "1", raw: "5 A" }]);
@@ -106,6 +110,15 @@ describe("suggestQuantity", () => {
   it("converts weight into boxes", () => {
     expect(suggestQuantity(50, "lb", "Framing Nails 3-1/4\" 5 lb Box", "box")?.qty).toBe(10);
   });
+  it("converts metric quantities for products sized in imperial, and back", () => {
+    expect(suggestQuantity(15, "kg", "1-1/4\" Electro-Galvanized Roofing Nails, 5 lb Box", "box")).toEqual({ qty: 7, working: "15 kg = 33.1 lb ÷ 5 lb per box = 7 boxes" });
+    expect(suggestQuantity(100, "lb", "Concrete Mix 30 kg Bag", "bag")?.qty).toBe(2);
+    expect(suggestQuantity(30, "metres", "Paper Drywall Joint Tape 250 ft Roll", "roll")?.working).toBe("30 m = 98.4 ft ÷ 250 ft per roll = 1 roll");
+  });
+  it("converts litres when the product is sized in litres", () => {
+    expect(suggestQuantity(40, "litres", "All-Purpose Joint Compound 17 L Pail", "pail")?.qty).toBe(3);
+    expect(suggestQuantity(20, "Ltrs", "All-Purpose Joint Compound 17 L Pail", "pail")?.qty).toBe(2);
+  });
   it("gives no suggestion when the name has no size in that unit, or the quantity is missing", () => {
     expect(suggestQuantity(100, "feet", "Synthetic Roofing Underlayment 1000 sq ft Roll", "roll")).toBeNull();
     expect(suggestQuantity(null, "feet", "Tape 250 ft Roll", "roll")).toBeNull();
@@ -124,6 +137,7 @@ describe("productChoices", () => {
 describe("orderNumber", () => {
   it("shows sample ids in the same four-digit style as generated orders", () => {
     expect(orderNumber("o01")).toBe("1001");
+    expect(orderNumber("p02")).toBe("P02"); // photo orders
     expect(orderNumber("o13")).toBe("1013");
     expect(orderNumber("o20")).toBe("1020");
     expect(orderNumber("1021")).toBe("1021");

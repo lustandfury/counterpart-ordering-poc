@@ -38,3 +38,17 @@ describe("routeClaudeOnly", () => {
     expect(routeClaudeOnly({ ...a, sku: null }).approved).toBe(false);
   });
 });
+
+describe("metric lines", () => {
+  const metric = [{ from: "150 x 50", to: "2x6" }];
+  it("always go to a rep, even when the match is confident, and say what was converted", () => {
+    const d = route({ skuChoice: "A", skuConfidence: 0.99, unitOk: 0.99, qty: 6, productUnit: "each", metric });
+    expect(d.approved).toBe(false);
+    expect(d.reasons).toEqual([REASON.metric(metric)]);
+    expect(d.reasons[0]).toContain("150 x 50 → 2x6");
+    expect(routeClaudeOnly({ sku: "A", confidence: "high", qty: 6, productUnit: "each", metric }).approved).toBe(false);
+  });
+  it("leave lines with no conversion to the normal rule", () => {
+    expect(route({ skuChoice: "A", skuConfidence: 0.99, unitOk: 0.99, qty: 6, productUnit: "each", metric: [] }).approved).toBe(true);
+  });
+});

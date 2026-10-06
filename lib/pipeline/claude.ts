@@ -13,13 +13,19 @@ export async function callTool<T>(args: {
   toolName: string;
   schema: Anthropic.Tool["input_schema"];
   maxTokens?: number;
+  image?: { data: Buffer; mediaType: "image/jpeg" | "image/png" }; // sent before the user text (photo orders)
 }): Promise<{ input: T } & Timed> {
   const t0 = performance.now();
   const res = await anthropic().messages.create({
     model: claudeModel(),
     max_tokens: args.maxTokens ?? 4000,
     system: `${args.system}\n\nRespond only by calling the ${args.toolName} tool.`,
-    messages: [{ role: "user", content: args.user }],
+    messages: [{
+      role: "user",
+      content: args.image
+        ? [{ type: "image", source: { type: "base64", media_type: args.image.mediaType, data: args.image.data.toString("base64") } }, { type: "text", text: args.user }]
+        : args.user,
+    }],
     tools: [{ name: args.toolName, description: "Submit the result.", input_schema: args.schema }],
     tool_choice: { type: "auto" },
   });

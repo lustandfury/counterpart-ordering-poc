@@ -39,6 +39,8 @@ import { NotificationsDialog } from "@/components/notifications/NotificationsDia
 const DEFAULT_SAMPLE = "o13";
 // The queue starts with one order, which arrives as the page opens. Others come from Generate order or Sample results.
 const SAMPLES_SHOWN = 1;
+// Photo orders (a picture of a handwritten list) sit below it as earlier orders
+const isPhotoOrder = (id: string) => /^p\d+$/.test(id);
 const COST_PENDING = "The cost comparison will appear when both matching checks finish.";
 // The inbox filter follows an order's life: it's received and the rep checks it, sends it to the contractor, the contractor approves it.
 const FILTERS: { value: OrderStatus; label: string; empty: string }[] = [
@@ -101,6 +103,7 @@ export function ReviewApp({ samples, catalog, initialOrder, evalData }: { sample
   // A sample opened from a link (e.g. from Sample results) is added so the active order is always listed.
   const shownSamples = useMemo(() => {
     const ids = new Set([...new Set([DEFAULT_SAMPLE, ...samples.map((s) => s.orderId)])].filter((id) => samples.some((s) => s.orderId === id)).slice(0, SAMPLES_SHOWN));
+    for (const s of samples) if (isPhotoOrder(s.orderId)) ids.add(s.orderId);
     if (initialOrder) ids.add(initialOrder);
     if (selected && samples.some(s => s.orderId === selected)) ids.add(selected);
     return [...ids].map((id) => samples.find((s) => s.orderId === id)!);
@@ -159,6 +162,8 @@ export function ReviewApp({ samples, catalog, initialOrder, evalData }: { sample
   ];
   // orders still waiting on the rep (including one being read), counted on the phone's orders button
   const openCount = queue.filter((o) => o.status === "open").length;
+  // orders that arrived since the page opened, for the "new order is in your queue" screen (photo orders came in earlier)
+  const arrivedCount = queue.filter((o) => o.status === "open" && !isPhotoOrder(o.id)).length;
 
   return (
     <div className="flex h-dvh flex-col overflow-hidden">
@@ -221,7 +226,7 @@ export function ReviewApp({ samples, catalog, initialOrder, evalData }: { sample
             <SidebarButton label="Show orders" expanded={false} unseen={layout.unseen} onClick={toggleSidebar} />
           </div>
           <div className="mx-auto max-w-4xl px-5 py-8 sm:px-10 xl:max-w-6xl">
-            {live.loading ? <OrderLoading progress={live.progress} /> : !result || !selected ? <WaitingForOrders arrived={arrival === "queued"} count={openCount} phone={isMobile} /> : <div className="order-enter"><Review
+            {live.loading ? <OrderLoading progress={live.progress} /> : !result || !selected ? <WaitingForOrders arrived={arrival === "queued"} count={arrivedCount} phone={isMobile} /> : <div className="order-enter"><Review
               key={selected}
               result={result}
               mode={mode}

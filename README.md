@@ -4,7 +4,7 @@
 
 **Live demo:** https://counterpart-ordering-poc.vercel.app
 
-> All data is synthetic. This is a prototype, not affiliated with any company.
+> All data is synthetic, except one photo of a handwritten order found online (no names on them; the senders are fictional). This is a prototype, not affiliated with any company.
 
 The idea it tests: reading a messy order is the easy part. The hard part is deciding **what the rep does not need to check**, and doing that cheaply, quickly and measurably.
 
@@ -106,7 +106,7 @@ Pasting your own order calls paid APIs, so live runs are limited: 5 free orders 
 | `lib/eval/` | Evaluation metrics (unit-tested) |
 | `lib/view.ts` | Turns saved scores into approved or flagged lines at any threshold |
 | `app/`, `components/` | The Next.js app and the review screen |
-| `data/` | Synthetic catalog (203 products), 20 orders with fictional senders, answer key, house rules |
+| `data/` | Synthetic catalog (203 products), 20 text orders and 1 photo order with fictional senders, answer key, house rules |
 | `results/` | Saved pipeline outputs and the evaluation |
 | `docs/` | The case study and the technical build log |
 

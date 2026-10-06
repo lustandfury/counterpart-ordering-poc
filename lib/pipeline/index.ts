@@ -2,6 +2,7 @@ import { claudeModel } from "./claude";
 import { claudeOnlyMatch } from "./claude-only";
 import { decideLine } from "./decide";
 import { mapLimit } from "./limit";
+import { convertMetric } from "./metric";
 import { parseOrder } from "./parse";
 import type { OrderResult } from "../types";
 import type { OrderProgress } from "../order-progress";
@@ -11,7 +12,9 @@ export class TooManyLinesError extends Error {}
 
 export async function runOrder(orderId: string, text: string, opts: { maxLines?: number; onProgress?: (progress: OrderProgress) => void } = {}): Promise<OrderResult> {
   opts.onProgress?.({ stage: "parse", status: "running" });
-  const parse = await parseOrder(text);
+  const parsed = await parseOrder(text);
+  // Metric sizes and lengths become the catalog's imperial names before either pipeline matches them
+  const parse = { ...parsed, lines: parsed.lines.map(convertMetric) };
   opts.onProgress?.({ stage: "parse", status: "complete", total: parse.lines.length });
   // Every parsed line fans out to paid matching calls, so cap it before any of them run.
   if (opts.maxLines != null && parse.lines.length > opts.maxLines) {

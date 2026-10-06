@@ -124,3 +124,27 @@ The plan calls for a security, evaluation-correctness and usability review befor
 - **Verified:**
   - A browser script walked one order through Open → Sent → Approved and checked that Reopen disappears once the contractor has approved.
   - Typecheck, lint, 83 unit tests and the e2e and loading smoke tests all pass.
+
+## Photo orders and metric mapping
+- **Decided by Mike:**
+  - Use real photos found online instead of generating images, and publish them in the public repo.
+  - Keep the deck estimate, and drop the metric timber list as unrealistic for this yard.
+  - Always flag lines that went through a metric conversion.
+- **What Claude did:**
+  - `lib/pipeline/transcribe.ts`: a vision call that transcribes the photo verbatim, with crossed-out text as `~~text~~`. `scripts/transcribe-photo.ts` prints the raw transcription for checking.
+  - Parse rules for working pages: prices, totals, labour and lump sums aren't lines; crossed-out lines are skipped.
+  - `lib/pipeline/metric.ts`: a table of standard section sizes and lumber lengths, applied to both pipelines' lines. Routing adds a metric reason in both pipelines and in the eval.
+  - Metric quantity suggestions in `suggestQuantity`.
+  - `run-all` support for `p*.json` photo orders.
+  - The photo and a struck-through transcription on the order card.
+  - The photos were stripped of metadata; they are Google Images thumbnails with no location data.
+  - The transcription counts as shared reading in the cost comparison, like parsing.
+  - The photo order sits in the queue as an earlier order. Only the order that arrives on load counts as new.
+- **What the checks caught:**
+  - The advisor review caught a length rule that would have turned "15M rebar 3m" (a stock Canadian product) into "10'" and flagged it on every generated order. Lengths are now converted only on lines with a lumber size. A test runs the mapping over the whole catalog, the 20 text orders and 300 generated orders and expects no conversions.
+  - The e2e smoke test's order counts on phones changed from 1 to 2 received, because of the photo order.
+- **Verified:**
+  - Claude read the first raw transcriptions against the photos before building the parse rules on them.
+  - Unit tests for the mapping, the routing reason, the quantity conversions and the shared reading cost.
+  - Typecheck, lint, 101 unit tests and the e2e smoke test (1440, 768 and 390 px) pass. `loading-smoke` fails at the "A new order is in your queue" step with or without the photo orders, so that failure predates this change.
+  - Screenshots of the photo order at 1440 px and at 390 px with the photo shown.

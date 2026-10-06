@@ -10,7 +10,8 @@ describe("house defaults", () => {
   });
   it("never lets application code, prompts or their data files read the answer key", () => {
     // The answer key and anything derived from it. Application code and prompt sources must not mention them.
-    const forbidden = /labels(\.draft)?\.json|blind-labels|review-sheet|shouldReview\s*:\s*(true|false)/;
+    // truth.json is the answer key for a yard's item-master onboarding (data/yards/<yard>/truth.json).
+    const forbidden = /labels(\.draft)?\.json|blind-labels|review-sheet|shouldReview\s*:\s*(true|false)|truth\.json/;
     for (const dir of ["lib", "app", "components"]) {
       // no try/catch: a missing folder should fail the test, not silently skip the check
       const files = (readdirSync(dir, { recursive: true }) as string[]).filter((f) => /\.(tsx?|json|md|csv|txt)$/.test(f) && !/\.test\.tsx?$/.test(f));

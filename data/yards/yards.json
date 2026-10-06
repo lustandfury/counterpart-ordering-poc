@@ -1,0 +1,13 @@
+{
+  "_note": "Fictional yards for the demo. Any resemblance to real businesses is coincidental. No real ERP is named.",
+  "northgate": {
+    "name": "Northgate Lumber",
+    "catalog": "data/catalog.json",
+    "export": "The original demo catalog: clean names, nicknames and one selling unit per product."
+  },
+  "fernhill": {
+    "name": "Fernhill Building Supply",
+    "itemMaster": "data/yards/fernhill/item-master.csv",
+    "export": "A raw item-master export: terse descriptions, UoM codes, lumber priced per MBF, deck boards and pine per lineal foot, anchor bolts per hundred, superseded and inactive codes."
+  }
+}

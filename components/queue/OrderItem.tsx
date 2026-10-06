@@ -1,4 +1,5 @@
 import { CheckIcon } from "@heroicons/react/24/outline";
+import { struck } from "@/components/ui/Struck";
 import { Pill } from "@/components/ui/Pill";
 import type { OrderStatus } from "@/components/order/useOrderDecisions";
 
@@ -24,7 +25,7 @@ export function OrderItem(p: { id: string; tag: string; title: string; preview: 
             <span className={`shrink-0 rounded-md bg-bg px-1.5 py-0.5 figures text-caption font-semibold leading-4 text-ink ${p.active ? "shadow-ring" : ""}`}>{p.tag}</span>
             <span className={`min-w-0 flex-1 truncate text-small ${p.active ? "font-semibold" : "font-medium"}`}>{p.title}</span>
           </span>
-          <span className="mt-1 block text-caption leading-4 text-muted">{preview.map((line, i) => <span key={i} className="block truncate whitespace-pre">{line}{hasMorePreview && i === preview.length - 1 ? "..." : ""}</span>)}</span>
+          <span className="mt-1 block text-caption leading-4 text-muted">{preview.map((line, i) => <span key={i} className="block truncate whitespace-pre">{struck(line)}{hasMorePreview && i === preview.length - 1 ? "..." : ""}</span>)}</span>
         </span>
         <span className="flex min-w-0 flex-col items-end justify-between gap-2 text-right">
           <span className="shrink-0 text-tiny text-muted">{p.time}</span>

@@ -29,7 +29,11 @@ export type ParsedLine = {
   item: string; // the product words, quantity removed
   qty: number | null;
   unit: string | null; // as spoken, e.g. "bags", "lbs"
+  metric?: MetricConversion[]; // metric sizes or lengths converted for matching ("150 x 50" -> "2x6"); item holds the converted words
 };
+
+/** One metric size or length, as written and as the catalog names it. */
+export type MetricConversion = { from: string; to: string };
 
 export type Usage = { inputTokens: number; outputTokens: number; cacheWriteTokens?: number; cacheReadTokens?: number };
 export type Timed = { ms: number; usage: Usage; costUsd: number };
@@ -56,7 +60,8 @@ export type ClaudeOnlyLine = {
 export type OrderResult = {
   orderId: string;
   from?: Sender; // who sent the order (display only; never sent to the pipelines)
-  text: string;
+  text: string; // for a photo order, Claude's transcription of the photo
+  photo?: { src: string } & Timed; // photo orders: the image (served from public/) and the transcription step
   model: string;
   parse: { lines: ParsedLine[]; delivery?: Delivery } & Timed; // delivery: live runs only (saved samples predate it)
   jev: { lines: JevLine[] } & Timed; // matching step only

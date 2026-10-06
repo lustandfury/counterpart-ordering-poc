@@ -72,7 +72,8 @@ export function CostPanel({ result, samples, mode, T, unitMin, catalog, onMode, 
         ))}
 
         <Link href="/results" onClick={onResults ? event => { event.preventDefault(); onResults(); } : undefined} className="flex min-h-11 items-center px-1 text-small font-medium underline underline-offset-2">
-          See results on all {samples.length} sample orders →
+          {/* the results cover the labelled text orders; photo orders aren't scored yet */}
+          See results on all {samples.filter((s) => /^o\d+$/.test(s.orderId)).length} sample orders →
         </Link>
 
         <p className="px-1 text-caption text-muted">

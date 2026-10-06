@@ -1,5 +1,5 @@
 import { REASON, route, routeClaudeOnly } from "./pipeline/route";
-import type { OrderResult } from "./types";
+import type { MetricConversion, OrderResult } from "./types";
 
 export type Mode = "jev" | "claude";
 export type SlimProduct = { name: string; unit: string; price: number };
@@ -20,6 +20,7 @@ export type ViewLine = {
   reasons: string[];
   quantityOnly: boolean; // product is confident; only the quantity/unit is unclear
   options: Option[]; // the pick first, then the next best candidates
+  metric?: MetricConversion[]; // metric sizes converted before matching ("150 x 50" -> "2x6")
 };
 
 /**
@@ -50,23 +51,44 @@ const SIZE_PATTERNS: Record<string, RegExp> = {
   ft: /(\d+(?:\.\d+)?)\s*(?:ft\b|feet\b|foot\b|')/gi,
   lb: /(\d+(?:\.\d+)?)\s*(?:lbs?\b|pounds?\b)/gi,
   kg: /(\d+(?:\.\d+)?)\s*(?:kg\b|kilos?\b)/gi,
+  L: /(\d+(?:\.\d+)?)\s*(?:L\b|litres?\b|liters?\b)/g,
 };
-const MEASURE_OF: Record<string, string> = { ft: "ft", feet: "ft", foot: "ft", "'": "ft", lf: "ft", lb: "lb", pound: "lb", kg: "kg", kilo: "kg" };
+const MEASURE_OF: Record<string, string> = {
+  ft: "ft", feet: "ft", foot: "ft", "'": "ft", lf: "ft", lb: "lb", pound: "lb", kg: "kg", kilo: "kg",
+  m: "m", metre: "m", meter: "m", l: "L", litre: "L", liter: "L", ltr: "L",
+};
+// A metric quantity against a product sized in imperial, or the other way round: "15 kg" of nails sold in 5 lb boxes
+const CONVERT: Record<string, [to: string, factor: number][]> = {
+  kg: [["lb", 2.20462]],
+  lb: [["kg", 0.453592]],
+  m: [["ft", 3.28084]],
+};
+const round1 = (n: number) => Math.round(n * 10) / 10;
 
 /**
  * A suggested quantity in the product's selling unit, when one can be worked out from its name:
- * "100 feet" of a "250 ft Roll" is 1 roll. Returns null when the name gives no size in the written unit,
- * so the rep types the quantity instead of trusting a guess.
+ * "100 feet" of a "250 ft Roll" is 1 roll, and "15 kg" of a "5 lb Box" is 7 boxes. Returns null when the name
+ * gives no size in the written unit (or one it converts to), so the rep types the quantity instead of trusting a guess.
  */
 export function suggestQuantity(qty: number | null, written: string | null, productName: string, sold: string): { qty: number; working: string } | null {
   if (qty == null || !written) return null;
   const measure = MEASURE_OF[unitKey(written)];
   if (!measure) return null;
-  const sizes = [...productName.matchAll(SIZE_PATTERNS[measure])].map((m) => Number(m[1]));
-  const size = sizes.at(-1);
-  if (!size) return null;
-  const n = Math.max(1, Math.ceil(qty / size));
-  return { qty: n, working: `${qty} ${measure} ÷ ${size} ${measure} per ${sold} = ${n} ${sold}${n === 1 ? "" : sold.endsWith("x") ? "es" : "s"}` };
+  const sizeIn = (m: string) => (SIZE_PATTERNS[m] ? [...productName.matchAll(SIZE_PATTERNS[m])].map((x) => Number(x[1])).at(-1) : undefined);
+  const plural = (n: number) => `${n} ${sold}${n === 1 ? "" : sold.endsWith("x") ? "es" : "s"}`;
+  const size = sizeIn(measure);
+  if (size) {
+    const n = Math.max(1, Math.ceil(qty / size));
+    return { qty: n, working: `${qty} ${measure} ÷ ${size} ${measure} per ${sold} = ${plural(n)}` };
+  }
+  for (const [to, factor] of CONVERT[measure] ?? []) {
+    const other = sizeIn(to);
+    if (!other) continue;
+    const converted = round1(qty * factor);
+    const n = Math.max(1, Math.ceil(converted / other));
+    return { qty: n, working: `${qty} ${measure} = ${converted} ${to} ÷ ${other} ${to} per ${sold} = ${plural(n)}` };
+  }
+  return null;
 }
 
 /**
@@ -75,7 +97,9 @@ export function suggestQuantity(qty: number | null, written: string | null, prod
  */
 export function orderNumber(orderId: string): string {
   const sample = /^o(\d+)$/.exec(orderId);
-  return sample ? String(1000 + Number(sample[1])) : orderId;
+  if (sample) return String(1000 + Number(sample[1]));
+  const photo = /^p(\d+)$/.exec(orderId); // photo orders: P01, P02
+  return photo ? `P${photo[1]}` : orderId;
 }
 
 /** The product options on a flagged line, in order, without "no match" (leaving a line off is a separate action). */
@@ -93,7 +117,7 @@ export function computeView(result: OrderResult, mode: Mode, T: number, cat: Sli
     const others = j.sku.top;
     if (mode === "jev") {
       const pick = j.sku.choice;
-      const d = route({ skuChoice: pick, skuConfidence: j.sku.confidence, unitOk: j.unitOk, qty: pl.qty, productUnit: cat[pick]?.unit ?? null, T, unitOkMin });
+      const d = route({ skuChoice: pick, skuConfidence: j.sku.confidence, unitOk: j.unitOk, qty: pl.qty, productUnit: cat[pick]?.unit ?? null, T, unitOkMin, metric: pl.metric });
       const quantityOnly = !d.approved && pick !== NONE && j.sku.confidence >= T && d.reasons.length === 1 && d.reasons[0] === REASON.quantity;
       const closest = others.find((o) => o.sku !== NONE);
       const noMatch = `Best guess: nothing in the catalog fits (${Math.round(j.sku.confidence * 100)}%).${closest ? ` Closest product: ${nameOf(cat, closest.sku)} (${Math.round(closest.probability * 100)}%).` : ""}`;
@@ -101,7 +125,7 @@ export function computeView(result: OrderResult, mode: Mode, T: number, cat: Sli
         ? [`The product looks right (${Math.round(j.sku.confidence * 100)}% sure). Check the quantity: this is sold per ${cat[pick]?.unit === "each" ? "piece" : (cat[pick]?.unit ?? "unit")}.`]
         : d.reasons.map((r) => (r === REASON.noMatch ? noMatch : r));
       return {
-        id: pl.id, raw: pl.raw, qty: pl.qty, unit: pl.unit, sku: pick, name: nameOf(cat, pick), quantityOnly,
+        id: pl.id, raw: pl.raw, qty: pl.qty, unit: pl.unit, sku: pick, name: nameOf(cat, pick), quantityOnly, metric: pl.metric,
         confidence: j.sku.confidence.toFixed(2), approved: d.approved, reasons,
         // The pick shows the same confidence the routing rule and the reason text use. Jev's per-option probability for the
         // pick can differ by a point or two, and two numbers for one thing reads as an error.
@@ -110,10 +134,10 @@ export function computeView(result: OrderResult, mode: Mode, T: number, cat: Sli
     }
     const c = claude.get(pl.id)!;
     const pick = c.sku ?? NONE;
-    const d = routeClaudeOnly({ sku: c.sku, confidence: c.confidence, qty: pl.qty, productUnit: c.sku ? (cat[c.sku]?.unit ?? null) : null });
+    const d = routeClaudeOnly({ sku: c.sku, confidence: c.confidence, qty: pl.qty, productUnit: c.sku ? (cat[c.sku]?.unit ?? null) : null, metric: pl.metric });
     const rest = others.filter((o) => o.sku !== pick).slice(0, 2);
     return {
-      id: pl.id, raw: pl.raw, qty: pl.qty, unit: pl.unit, sku: pick, name: nameOf(cat, pick),
+      id: pl.id, raw: pl.raw, qty: pl.qty, unit: pl.unit, sku: pick, name: nameOf(cat, pick), metric: pl.metric,
       quantityOnly: false, confidence: c.confidence, approved: d.approved,
       reasons: d.reasons.map((r) => (r === REASON.noMatch ? "Claude found nothing in the catalog that fits. Choose a product or leave the line off." : r)),
       options: [{ sku: pick, name: nameOf(cat, pick) }, ...rest.map((o) => ({ sku: o.sku, name: nameOf(cat, o.sku) }))],
@@ -123,13 +147,16 @@ export function computeView(result: OrderResult, mode: Mode, T: number, cat: Sli
 
 export function totals(result: OrderResult, mode: Mode) {
   const m = mode === "jev" ? result.jev : result.claudeOnly;
+  // Reading is shared by both pipelines: parsing, plus transcribing the photo for a photo order
+  const parseMs = result.parse.ms + (result.photo?.ms ?? 0);
+  const parseUsd = result.parse.costUsd + (result.photo?.costUsd ?? 0);
   return {
     matchMs: m.ms,
-    parseMs: result.parse.ms,
+    parseMs,
     matchUsd: m.costUsd,
-    parseUsd: result.parse.costUsd,
-    ms: m.ms + result.parse.ms,
-    usd: m.costUsd + result.parse.costUsd,
+    parseUsd,
+    ms: m.ms + parseMs,
+    usd: m.costUsd + parseUsd,
   };
 }
 

@@ -1,0 +1,633 @@
+{
+  "orderId": "p01",
+  "text": "240\" across = 15' Joists + 2 rim joist\n~~Total job = $6166.00~~ $6,166.00\n~~M = $2886.00~~\n~~L = $3,580.00~~\n[circled: M = $2886.00, L = $3,280.00, Total = $6166.00]\n[sketch: deck 20' x 12' with 3' x 14' section attached on left, 13' 5 5/8\" along bottom edge, 20' along bottom]\n~~3~~ 3 - 2x12x20' = $[?]\nLabor = ~~$3,280.00~~ \n~~$3,580.23~~\nfasteners = $175.00\n17 2\"x8\"x12' $16.72 ea = $284.24\n3 - 2\"x12\"x16' $39.41 ea = $118.23\n2 - 2\"x8\"x20' $34.59 ea = $69.18\n6~~8~~ - 4\"x4\"x8' $11.18 ea = $67.08\n6 - 2\"x6\"x10' $10.68 each = $64.08\n71' of handrail 13 @ $54.48 ea = $708.24\n27 deck boards $9.11 ea = $245.97\n3 - 6\"x6\"x12' $54.06 ea = $162.18\n~~Total = $1,719.20~~\n~~WI tax $1822.35~~\n~~Total = $2386.82~~\n~~$2,386.82~~\n~~Total Job = $5,967.00~~ $200.00",
+  "model": "claude-sonnet-5-5",
+  "parse": {
+    "lines": [
+      {
+        "id": "1",
+        "raw": "~~3~~ 3 - 2x12x20' = $[?]",
+        "item": "2x12x20'",
+        "qty": 3,
+        "unit": null
+      },
+      {
+        "id": "2",
+        "raw": "17 2\"x8\"x12' $16.72 ea = $284.24",
+        "item": "2\"x8\"x12'",
+        "qty": 17,
+        "unit": null
+      },
+      {
+        "id": "3",
+        "raw": "3 - 2\"x12\"x16' $39.41 ea = $118.23",
+        "item": "2\"x12\"x16'",
+        "qty": 3,
+        "unit": null
+      },
+      {
+        "id": "4",
+        "raw": "2 - 2\"x8\"x20' $34.59 ea = $69.18",
+        "item": "2\"x8\"x20'",
+        "qty": 2,
+        "unit": null
+      },
+      {
+        "id": "5",
+        "raw": "6~~8~~ - 4\"x4\"x8' $11.18 ea = $67.08",
+        "item": "4\"x4\"x8'",
+        "qty": 6,
+        "unit": null
+      },
+      {
+        "id": "6",
+        "raw": "6 - 2\"x6\"x10' $10.68 each = $64.08",
+        "item": "2\"x6\"x10'",
+        "qty": 6,
+        "unit": null
+      },
+      {
+        "id": "7",
+        "raw": "71' of handrail 13 @ $54.48 ea = $708.24",
+        "item": "handrail",
+        "qty": 13,
+        "unit": null
+      },
+      {
+        "id": "8",
+        "raw": "27 deck boards $9.11 ea = $245.97",
+        "item": "deck boards",
+        "qty": 27,
+        "unit": null
+      },
+      {
+        "id": "9",
+        "raw": "3 - 6\"x6\"x12' $54.06 ea = $162.18",
+        "item": "6\"x6\"x12'",
+        "qty": 3,
+        "unit": null
+      }
+    ],
+    "ms": 7177.125125,
+    "usage": {
+      "inputTokens": 4616,
+      "outputTokens": 1183,
+      "cacheWriteTokens": 0,
+      "cacheReadTokens": 0
+    },
+    "costUsd": 0.021061999999999997
+  },
+  "jev": {
+    "lines": [
+      {
+        "lineId": "1",
+        "shortlist": [
+          "LBR-2X12-10-PT",
+          "LBR-2X12-10-SPF",
+          "LBR-2X12-08-PT",
+          "LBR-2X10-10-PT",
+          "LBR-2X12-12-PT",
+          "LBR-2X12-16-PT",
+          "LBR-2X12-08-SPF",
+          "LBR-2X10-08-PT",
+          "LBR-2X10-12-PT",
+          "LBR-2X10-16-PT",
+          "LBR-2X10-10-SPF",
+          "LBR-2X12-12-SPF",
+          "LBR-2X12-16-SPF",
+          "LBR-2X4-10-PT",
+          "LBR-2X6-10-PT",
+          "LBR-2X8-10-PT",
+          "LBR-2X10-08-SPF",
+          "LBR-2X10-12-SPF",
+          "LBR-2X10-16-SPF",
+          "LBR-2X4-10-SPF"
+        ],
+        "category": {
+          "choice": "dimensional_lumber",
+          "confidence": 1
+        },
+        "sku": {
+          "choice": "NONE",
+          "confidence": 0.89,
+          "top": [
+            {
+              "sku": "NONE",
+              "probability": 0.9
+            },
+            {
+              "sku": "LBR-2X12-16-SPF",
+              "probability": 0.09
+            },
+            {
+              "sku": "LBR-2X12-12-SPF",
+              "probability": 0.01
+            }
+          ]
+        },
+        "unitOk": 0,
+        "ms": 454.66066599999976,
+        "usage": {
+          "inputTokens": 4640,
+          "outputTokens": 513
+        },
+        "costUsd": 0.00019488
+      },
+      {
+        "lineId": "2",
+        "shortlist": [
+          "LBR-2X8-12-PT",
+          "LBR-2X8-12-SPF",
+          "LBR-2X4-12-PT",
+          "LBR-2X6-12-PT",
+          "LBR-2X8-10-PT",
+          "LBR-2X8-16-PT",
+          "LBR-2X12-12-PT",
+          "LBR-2X10-12-PT",
+          "LBR-2X4-12-SPF",
+          "LBR-2X6-12-SPF",
+          "LBR-2X8-10-SPF",
+          "LBR-2X8-16-SPF",
+          "LBR-2X12-12-SPF",
+          "LBR-2X12-08-PT",
+          "LBR-2X12-10-PT",
+          "LBR-2X12-16-PT",
+          "LBR-2X10-12-SPF",
+          "LBR-2X8-08-PT",
+          "LBR-2X4-10-PT",
+          "LBR-2X4-16-PT"
+        ],
+        "category": {
+          "choice": "dimensional_lumber",
+          "confidence": 1
+        },
+        "sku": {
+          "choice": "LBR-2X8-12-SPF",
+          "confidence": 1,
+          "top": [
+            {
+              "sku": "LBR-2X8-12-SPF",
+              "probability": 1
+            },
+            {
+              "sku": "LBR-2X8-10-SPF",
+              "probability": 0
+            },
+            {
+              "sku": "LBR-2X10-12-SPF",
+              "probability": 0
+            }
+          ]
+        },
+        "unitOk": 0.96,
+        "ms": 483.65379199999916,
+        "usage": {
+          "inputTokens": 6838,
+          "outputTokens": 535
+        },
+        "costUsd": 0.000287196
+      },
+      {
+        "lineId": "3",
+        "shortlist": [
+          "LBR-2X12-16-PT",
+          "LBR-2X12-16-SPF",
+          "LBR-2X10-16-PT",
+          "LBR-2X12-10-PT",
+          "LBR-2X12-12-PT",
+          "LBR-2X12-08-PT",
+          "LBR-2X10-16-SPF",
+          "LBR-2X12-10-SPF",
+          "LBR-2X12-12-SPF",
+          "LBR-2X4-16-PT",
+          "LBR-2X6-16-PT",
+          "LBR-2X8-16-PT",
+          "LBR-2X10-10-PT",
+          "LBR-2X10-12-PT",
+          "LBR-2X12-08-SPF",
+          "LBR-2X4-16-SPF",
+          "LBR-2X6-16-SPF",
+          "LBR-2X8-16-SPF",
+          "LBR-2X10-10-SPF",
+          "LBR-2X10-12-SPF"
+        ],
+        "category": {
+          "choice": "dimensional_lumber",
+          "confidence": 1
+        },
+        "sku": {
+          "choice": "LBR-2X12-16-SPF",
+          "confidence": 1,
+          "top": [
+            {
+              "sku": "LBR-2X12-16-SPF",
+              "probability": 1
+            },
+            {
+              "sku": "LBR-2X10-10-SPF",
+              "probability": 0
+            },
+            {
+              "sku": "LBR-2X4-16-SPF",
+              "probability": 0
+            }
+          ]
+        },
+        "unitOk": 0.97,
+        "ms": 399.3536669999994,
+        "usage": {
+          "inputTokens": 6851,
+          "outputTokens": 543
+        },
+        "costUsd": 0.000287742
+      },
+      {
+        "lineId": "4",
+        "shortlist": [
+          "LBR-2X8-10-PT",
+          "LBR-2X8-10-SPF",
+          "LBR-2X8-12-PT",
+          "LBR-2X8-08-PT",
+          "LBR-2X4-10-PT",
+          "LBR-2X6-10-PT",
+          "LBR-2X8-12-SPF",
+          "LBR-2X8-16-PT",
+          "LBR-2X12-10-PT",
+          "LBR-2X8-08-SPF",
+          "LBR-2X4-10-SPF",
+          "LBR-2X6-10-SPF",
+          "LBR-2X8-16-SPF",
+          "LBR-2X10-10-PT",
+          "LBR-2X12-10-SPF",
+          "LBR-2X10-10-SPF",
+          "LBR-2X4-08-SPF",
+          "LBR-2X4-08-PT",
+          "LBR-2X6-08-SPF",
+          "LBR-2X6-08-PT"
+        ],
+        "category": {
+          "choice": "dimensional_lumber",
+          "confidence": 1
+        },
+        "sku": {
+          "choice": "NONE",
+          "confidence": 0.94,
+          "top": [
+            {
+              "sku": "NONE",
+              "probability": 0.95
+            },
+            {
+              "sku": "LBR-2X8-16-SPF",
+              "probability": 0.05
+            },
+            {
+              "sku": "LBR-2X6-08-SPF",
+              "probability": 0
+            }
+          ]
+        },
+        "unitOk": 0,
+        "ms": 266.04429100000016,
+        "usage": {
+          "inputTokens": 4559,
+          "outputTokens": 501
+        },
+        "costUsd": 0.000191478
+      },
+      {
+        "lineId": "5",
+        "shortlist": [
+          "LBR-2X4-08-PT",
+          "LBR-4X4-8-SPF",
+          "LBR-4X4-8-PT",
+          "LBR-2X4-08-SPF",
+          "LBR-4X4-10-SPF",
+          "LBR-4X4-10-PT",
+          "LBR-4X4-12-SPF",
+          "LBR-4X4-12-PT",
+          "LBR-1X4-8-PINE",
+          "DCK-54-8-PT",
+          "TRM-BASE-314"
+        ],
+        "category": {
+          "choice": "dimensional_lumber",
+          "confidence": 1
+        },
+        "sku": {
+          "choice": "LBR-4X4-8-SPF",
+          "confidence": 0.87,
+          "top": [
+            {
+              "sku": "LBR-4X4-8-SPF",
+              "probability": 0.88
+            },
+            {
+              "sku": "NONE",
+              "probability": 0.1
+            },
+            {
+              "sku": "LBR-4X4-8-PT",
+              "probability": 0.02
+            }
+          ]
+        },
+        "unitOk": 0.95,
+        "ms": 417.3928329999999,
+        "usage": {
+          "inputTokens": 5864,
+          "outputTokens": 366
+        },
+        "costUsd": 0.000246288
+      },
+      {
+        "lineId": "6",
+        "shortlist": [
+          "LBR-2X6-10-PT",
+          "LBR-2X6-10-SPF",
+          "LBR-2X4-10-PT",
+          "LBR-2X6-12-PT",
+          "LBR-2X6-16-PT",
+          "LBR-2X8-10-PT",
+          "LBR-2X12-10-PT",
+          "LBR-2X10-10-PT",
+          "LBR-2X4-10-SPF",
+          "LBR-2X6-12-SPF",
+          "LBR-2X6-16-SPF",
+          "LBR-2X8-10-SPF",
+          "LBR-2X12-10-SPF",
+          "LBR-2X10-08-PT",
+          "LBR-2X10-12-PT",
+          "LBR-2X10-16-PT",
+          "LBR-2X10-10-SPF",
+          "LBR-2X6-08-PT",
+          "LBR-2X4-12-PT",
+          "LBR-2X4-16-PT"
+        ],
+        "category": {
+          "choice": "dimensional_lumber",
+          "confidence": 1
+        },
+        "sku": {
+          "choice": "LBR-2X6-10-SPF",
+          "confidence": 1,
+          "top": [
+            {
+              "sku": "LBR-2X6-10-SPF",
+              "probability": 1
+            },
+            {
+              "sku": "LBR-2X10-16-PT",
+              "probability": 0
+            },
+            {
+              "sku": "LBR-2X6-16-PT",
+              "probability": 0
+            }
+          ]
+        },
+        "unitOk": 0.97,
+        "ms": 336.595292,
+        "usage": {
+          "inputTokens": 6834,
+          "outputTokens": 535
+        },
+        "costUsd": 0.000287028
+      },
+      {
+        "lineId": "7",
+        "shortlist": [
+          "FST-FRM-3-PAPER-5LB",
+          "FST-FRM-3-PAPER-50LB",
+          "FST-ROOF-118-5LB",
+          "FST-10D-GALV-5LB",
+          "FST-10D-GALV-50LB",
+          "FST-ROOF-114-1LB",
+          "WTH-CAP-1",
+          "FST-16D-COM-5LB",
+          "FST-16D-COM-50LB",
+          "FST-16D-SINK-5LB",
+          "FST-16D-SINK-50LB",
+          "FST-8D-COM-5LB",
+          "FST-8D-COM-50LB",
+          "ROF-SHG-3TAB-GRY",
+          "ROF-SHG-RIDGE",
+          "INS-SPRAY-CAN",
+          "TRM-LAP-8",
+          "SUP-ADH-CONST-10"
+        ],
+        "category": {
+          "choice": "decking_trim",
+          "confidence": 0.92
+        },
+        "sku": {
+          "choice": "NONE",
+          "confidence": 1,
+          "top": [
+            {
+              "sku": "NONE",
+              "probability": 1
+            },
+            {
+              "sku": "FST-16D-COM-50LB",
+              "probability": 0
+            },
+            {
+              "sku": "ROF-SHG-RIDGE",
+              "probability": 0
+            }
+          ]
+        },
+        "unitOk": 0,
+        "ms": 162.45429200000035,
+        "usage": {
+          "inputTokens": 4110,
+          "outputTokens": 445
+        },
+        "costUsd": 0.00017261999999999998
+      },
+      {
+        "lineId": "8",
+        "shortlist": [
+          "FST-DECK-3-TAN-1LB",
+          "FST-DECK-3-TAN-5LB",
+          "FST-DECK-3-TAN-25LB",
+          "DCK-54-8-PT",
+          "DCK-54-12-PT",
+          "DCK-54-16-PT",
+          "DRY-12-MR-4X8",
+          "FST-DECK-25-TAN-1LB",
+          "FST-DECK-25-TAN-5LB",
+          "FST-DECK-25-TAN-25LB",
+          "DRY-12-MR-4X10",
+          "DRY-12-MR-4X12",
+          "INS-FOAM-1",
+          "DCK-COMP-8",
+          "DCK-COMP-12",
+          "DCK-COMP-16",
+          "FST-DECK-3-GRAY-1LB",
+          "FST-DECK-3-GRAY-5LB",
+          "FST-DECK-3-GRAY-25LB",
+          "FST-DECK-25-BRN-1LB"
+        ],
+        "category": {
+          "choice": "decking_trim",
+          "confidence": 1
+        },
+        "sku": {
+          "choice": "NONE",
+          "confidence": 0.56,
+          "top": [
+            {
+              "sku": "NONE",
+              "probability": 0.59
+            },
+            {
+              "sku": "DCK-54-16-PT",
+              "probability": 0.21
+            },
+            {
+              "sku": "DCK-54-12-PT",
+              "probability": 0.16
+            }
+          ]
+        },
+        "unitOk": 0,
+        "ms": 149.5677080000005,
+        "usage": {
+          "inputTokens": 4455,
+          "outputTokens": 484
+        },
+        "costUsd": 0.00018711
+      },
+      {
+        "lineId": "9",
+        "shortlist": [
+          "LBR-2X6-12-PT",
+          "LBR-2X6-12-SPF",
+          "LBR-2X4-12-PT",
+          "LBR-2X6-10-PT",
+          "LBR-2X6-16-PT",
+          "LBR-2X8-12-PT",
+          "LBR-2X10-12-PT",
+          "LBR-2X12-12-PT",
+          "LBR-6X6-12-PT",
+          "LBR-2X4-12-SPF",
+          "LBR-2X6-10-SPF",
+          "LBR-2X6-16-SPF",
+          "LBR-2X8-12-SPF",
+          "LBR-2X10-12-SPF",
+          "LBR-2X12-12-SPF",
+          "LBR-6X6-10-PT",
+          "LBR-1X6-12-PINE",
+          "DCK-54-12-PT",
+          "LBR-6X6-8-PT",
+          "LBR-4X4-12-SPF"
+        ],
+        "category": {
+          "choice": "dimensional_lumber",
+          "confidence": 1
+        },
+        "sku": {
+          "choice": "LBR-6X6-12-PT",
+          "confidence": 0.85,
+          "top": [
+            {
+              "sku": "LBR-6X6-12-PT",
+              "probability": 0.86
+            },
+            {
+              "sku": "NONE",
+              "probability": 0.11
+            },
+            {
+              "sku": "LBR-2X6-12-SPF",
+              "probability": 0.03
+            }
+          ]
+        },
+        "unitOk": 0.96,
+        "ms": 338.8280419999992,
+        "usage": {
+          "inputTokens": 6665,
+          "outputTokens": 530
+        },
+        "costUsd": 0.00027993
+      }
+    ],
+    "ms": 820.980042000001,
+    "usage": {
+      "inputTokens": 50816,
+      "outputTokens": 4452
+    },
+    "costUsd": 0.002134272
+  },
+  "claudeOnly": {
+    "lines": [
+      {
+        "lineId": "1",
+        "sku": null,
+        "confidence": "high"
+      },
+      {
+        "lineId": "2",
+        "sku": "LBR-2X8-12-SPF",
+        "confidence": "high"
+      },
+      {
+        "lineId": "3",
+        "sku": "LBR-2X12-16-SPF",
+        "confidence": "high"
+      },
+      {
+        "lineId": "4",
+        "sku": null,
+        "confidence": "high"
+      },
+      {
+        "lineId": "5",
+        "sku": null,
+        "confidence": "low"
+      },
+      {
+        "lineId": "6",
+        "sku": "LBR-2X6-10-SPF",
+        "confidence": "high"
+      },
+      {
+        "lineId": "7",
+        "sku": null,
+        "confidence": "high"
+      },
+      {
+        "lineId": "8",
+        "sku": null,
+        "confidence": "low"
+      },
+      {
+        "lineId": "9",
+        "sku": "LBR-6X6-12-PT",
+        "confidence": "high"
+      }
+    ],
+    "ms": 6273.429958000001,
+    "usage": {
+      "inputTokens": 17780,
+      "outputTokens": 706,
+      "cacheWriteTokens": 0,
+      "cacheReadTokens": 0
+    },
+    "costUsd": 0.042620000000000005
+  },
+  "photo": {
+    "src": "/orders/p01.jpg",
+    "ms": 5095.139083,
+    "usage": {
+      "inputTokens": 1112,
+      "outputTokens": 528,
+      "cacheWriteTokens": 0,
+      "cacheReadTokens": 0
+    },
+    "costUsd": 0.007504
+  }
+}

@@ -1,4 +1,5 @@
 import { useState, type ReactNode } from "react";
+import { struck, unstruck } from "@/components/ui/Struck";
 import { CheckIcon, UserIcon } from "@heroicons/react/24/outline";
 import { NONE, productChoices, sameQuantityUnit, type SlimCatalog, type ViewLine } from "@/lib/view";
 import { fmtQty, money, unitName } from "@/lib/format";
@@ -55,7 +56,7 @@ function FlaggedLine(props: Props) {
       <p className="text-body font-medium">
         <span className="sr-only">Check this: </span>
         <CheckDot />
-        {l.raw}
+        {struck(l.raw)}
         <span className="sr-only">, {asked}</span>
       </p>
       {asked !== fmtQty(l.qty, l.unit) && <p aria-hidden className="text-caption text-muted">{asked}</p>}
@@ -74,7 +75,7 @@ function FlaggedLine(props: Props) {
           <TextButton onClick={(e) => { e.stopPropagation(); setShowAll(true); }}>Other products…</TextButton>
         </div>
       ) : (
-        <div role="group" aria-label={`Products for ${l.raw}`} className="mt-3 flex flex-col gap-2">
+        <div role="group" aria-label={`Products for ${unstruck(l.raw)}`} className="mt-3 flex flex-col gap-2">
           {/* column header over the confidence cells */}
           {choices.some((o) => o.probability != null) && (
             <div aria-hidden className="-mb-1 flex justify-end px-3.5 text-caption font-medium text-muted">
@@ -167,7 +168,7 @@ function ConfirmedLine(props: Props) {
           <span className={state === "done" && pick === NONE ? "text-warn" : "text-ok"}>{state === "done" ? <UserIcon aria-hidden className="h-4 w-4 shrink-0" /> : <Check />}</span>
           <span className="min-w-0 flex-1">
             <span className="block break-words text-ink">{chosen}</span>
-            <span className="block text-small text-muted">{l.raw}</span>
+            <span className="block text-small text-muted">{struck(l.raw)}</span>
             {state === "done" && (
               <span className="mt-0.5 block text-caption text-muted">
                 {pick === NONE ? "Left off by you" : props.quantity != null ? "Product and quantity set by you" : "Checked by you"} · <button className="underline hover:text-ink" onClick={props.onUndo}>Undo</button>

@@ -14,6 +14,11 @@ Rules:
 - qty: the number ordered, or null if none is stated. A bare number next to lumber or sheet goods means pieces or sheets. "a"/"one" means 1. Do not convert units.
 - unit: the unit as spoken (bags, boxes, lbs, ft, rolls...), or null.
 - Include items you cannot identify, and questions such as "do you rent a dumpster", as lines too.
+- Handwritten lists and estimates (transcribed from a photo) also hold working-out. Prices, sums, totals, tax, labour and
+  lump sums ("fasteners = $175") are not lines; take only the material and its quantity from a priced line
+  ("3 - 2"x 12"x 16' $39.41 ea = $118.23" -> item "2"x 12"x 16'", qty 3). Text in ~~ ~~ is crossed out: skip a crossed-out
+  line, and where a number is crossed out with a new one beside it ("~~24~~ 30") use the new one. Sketch notes in [ ] are
+  not lines. Keep a [?] reading as written in raw. A list number at the start ("4.") is not the quantity.
 
 Also capture the delivery details, separately from the lines:
 - method: "pickup" if they will collect it, "delivery" if it is delivered or a site/address is given, else null.

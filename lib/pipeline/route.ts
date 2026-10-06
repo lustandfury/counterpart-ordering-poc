@@ -1,4 +1,4 @@
-import type { Decision } from "../types";
+import type { Decision, MetricConversion } from "../types";
 
 export const DEFAULT_T = 0.85;
 
@@ -10,6 +10,7 @@ export const REASON = {
   noQty: "No quantity was given.",
   large: "This is an unusually large quantity. Confirm it with the customer.",
   claude: (c: string) => `Claude rated its own match “${c}”, not “high”.`,
+  metric: (m: MetricConversion[]) => `Written in metric. Matched as ${m.map((c) => `${c.from} → ${c.to}`).join(", ")}. Confirm the size with the customer.`,
 };
 export const UNIT_OK_MIN = 0.8;
 
@@ -27,6 +28,7 @@ export function route(a: {
   productUnit: string | null; // catalog unit of the chosen product
   T?: number;
   unitOkMin?: number;
+  metric?: MetricConversion[]; // sizes converted from metric before matching; always checked by a rep
 }): Decision {
   const T = a.T ?? DEFAULT_T;
   const unitMin = a.unitOkMin ?? UNIT_OK_MIN;
@@ -38,6 +40,7 @@ export function route(a: {
   if (!none && a.unitOk < unitMin) reasons.push(REASON.quantity);
   if (a.qty == null) reasons.push(REASON.noQty);
   if (!none && isLargeQuantity(a.qty, a.productUnit)) reasons.push(REASON.large);
+  if (a.metric?.length) reasons.push(REASON.metric(a.metric));
   return { approved: reasons.length === 0, reasons };
 }
 
@@ -47,11 +50,13 @@ export function routeClaudeOnly(a: {
   confidence: "high" | "medium" | "low";
   qty: number | null;
   productUnit: string | null;
+  metric?: MetricConversion[];
 }): Decision {
   const reasons: string[] = [];
   if (!a.sku) reasons.push(REASON.noMatch);
   if (a.confidence !== "high") reasons.push(REASON.claude(a.confidence));
   if (a.qty == null) reasons.push(REASON.noQty);
   if (isLargeQuantity(a.qty, a.productUnit)) reasons.push(REASON.large);
+  if (a.metric?.length) reasons.push(REASON.metric(a.metric));
   return { approved: reasons.length === 0, reasons };
 }

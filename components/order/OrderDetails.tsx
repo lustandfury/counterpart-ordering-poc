@@ -1,4 +1,6 @@
+import Image from "next/image";
 import { useState } from "react";
+import { struck } from "@/components/ui/Struck";
 import type { OrderResult } from "@/lib/types";
 import { orderNumber, segmentText } from "@/lib/view";
 import { TextButton } from "@/components/ui/Button";
@@ -16,6 +18,7 @@ export function OrderDetails({ result, phone, toCheck: unchecked, receivedAt, se
   const [textShown, setTextShown] = useState(false);
   const hl = useHighlightVariant();
   const who = result.from?.name ?? "the contractor";
+  const photo = result.photo;
   return (
     <div className="@container rounded-xl border border-line bg-panel px-4 py-4 shadow-ring sm:px-5" aria-live="polite">
       <div className="flex flex-col gap-3 @min-[560px]:flex-row @min-[560px]:items-start @min-[560px]:justify-between">
@@ -28,18 +31,27 @@ export function OrderDetails({ result, phone, toCheck: unchecked, receivedAt, se
             {result.from?.name ?? "New order"}
             {result.from && <span className="font-normal text-muted"> · {result.from.company}</span>}
           </h1>
-          <p className="mt-0.5 text-small text-muted">Texted an order · <span className="figures text-ink">{orderNumber(result.orderId)}</span></p>
+          <p className="mt-0.5 text-small text-muted">{photo ? "Sent a photo of an order" : "Texted an order"} · <span className="figures text-ink">{orderNumber(result.orderId)}</span></p>
         </div>
       </div>
       </div>
       {(!phone || textShown) && (
-        <figure className="mt-4 ml-12">
-          <figcaption className="sr-only">Text message from {who}</figcaption>
+        <figure className={`mt-4 ml-12 ${photo ? "flex flex-wrap items-start gap-3" : ""}`}>
+          {photo && (
+            // the photo as sent; it opens full size, since the transcription is only a reading of it
+            <a href={photo.src} target="_blank" rel="noreferrer" className="shrink-0 overflow-hidden rounded-[18px] rounded-tl-none shadow-ring">
+              <Image src={photo.src} alt={`Photo of a handwritten order from ${who}`} width={480} height={640} className="h-auto w-36 sm:w-44" />
+              <span className="sr-only"> (opens full size)</span>
+            </a>
+          )}
+          <figcaption className={photo ? "basis-full text-caption text-muted @min-[560px]:order-last" : "sr-only"}>
+            {photo ? "What we read from the photo. Crossed-out text is struck through." : `Text message from ${who}`}
+          </figcaption>
           <blockquote id="incoming-message" className="w-fit max-w-prose whitespace-pre-wrap break-words rounded-[18px] rounded-tl-none bg-bg px-4 py-3 text-body leading-relaxed text-ink">
             {/* indented under the name, as in a messages app; the phrases behind lines still to check get the same dot as their line */}
             {segmentText(result.text.trim(), result.parse.lines).map((seg, i) => seg.lineId && unchecked.includes(seg.lineId)
-              ? <span key={i}>{hl === "dot" ? <><CheckDot />{seg.text}</> : <CheckPhrase variant={hl}>{seg.text}</CheckPhrase>}<span className="sr-only"> (to check)</span></span>
-              : <span key={i}>{seg.text}</span>)}
+              ? <span key={i}>{hl === "dot" ? <><CheckDot />{struck(seg.text)}</> : <CheckPhrase variant={hl}>{struck(seg.text)}</CheckPhrase>}<span className="sr-only"> (to check)</span></span>
+              : <span key={i}>{struck(seg.text)}</span>)}
           </blockquote>
         </figure>
       )}
@@ -52,7 +64,7 @@ export function OrderDetails({ result, phone, toCheck: unchecked, receivedAt, se
         </div>
         {phone && (
           <TextButton onClick={() => setTextShown((v) => !v)} aria-expanded={textShown} aria-controls="incoming-message">
-            {textShown ? "Hide text" : "Show text"}
+            {photo ? (textShown ? "Hide photo" : "Show photo") : textShown ? "Hide text" : "Show text"}
           </TextButton>
         )}
       </div>

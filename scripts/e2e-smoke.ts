@@ -27,7 +27,7 @@ async function main() {
       if (width < 1024) {
         // the floating orders button counts the order that arrived while the queue was closed
         await expect(page.getByRole("button", { name: "Show orders (1 new)", exact: true })).toBeVisible();
-        await expect(page.locator(".orders-fab .order-badge")).toHaveText("1");
+        await expect(page.locator(".orders-fab .order-badge")).toHaveText("2"); // the arrival plus the earlier photo order
       }
       await openFirstOrder(page, width);
       await expect(page.getByRole("region", { name: "Needs review", exact: true })).toBeVisible();
@@ -57,9 +57,9 @@ async function main() {
       if (width < 1024) {
         await expect(page.locator("#cost-comparison")).toBeHidden();
         // opening the queue cleared the "new" count
-        await expect(page.getByRole("button", { name: "Show orders (1 received)", exact: true })).toBeVisible();
+        await expect(page.getByRole("button", { name: "Show orders (2 received)", exact: true })).toBeVisible();
         // the open order stays counted on the button, so the rep knows it is waiting
-        await expect(page.locator(".orders-fab .order-badge")).toHaveText("1");
+        await expect(page.locator(".orders-fab .order-badge")).toHaveText("2");
         await openOrders();
         await page.getByRole("button", { name: /^Settings/ }).click();
         await expect(page.getByRole("dialog", { name: "Settings", exact: true })).toBeVisible();

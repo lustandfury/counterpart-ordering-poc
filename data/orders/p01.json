@@ -1,0 +1,9 @@
+{
+  "_note": "A real handwritten deck estimate, found online (no names on it). Lumber quantities sit beside prices, totals and labour, with crossed-out sums. The sender is fictional. What the photo says is described in photo-orders.md.",
+  "yard": "northgate",
+  "image": "public/orders/p01.jpg",
+  "from": {
+    "name": "Wes Lindqvist",
+    "company": "Lindqvist Decks"
+  }
+}

@@ -1,0 +1,1020 @@
+{
+  "_note": "Answer key for onboarding. Never pass this to a pipeline or prompt.",
+  "items": {
+    "SPF2X4-08": {
+      "sku": "LBR-2X4-08-SPF",
+      "sellUnit": "PC",
+      "confirm": null
+    },
+    "PTG2X4-08": {
+      "sku": "LBR-2X4-08-PT",
+      "sellUnit": "PC",
+      "confirm": null
+    },
+    "SPF2X4-10": {
+      "sku": "LBR-2X4-10-SPF",
+      "sellUnit": "PC",
+      "confirm": null
+    },
+    "PTG2X4-10": {
+      "sku": "LBR-2X4-10-PT",
+      "sellUnit": "PC",
+      "confirm": null
+    },
+    "SPF2X4-12": {
+      "sku": "LBR-2X4-12-SPF",
+      "sellUnit": "PC",
+      "confirm": null
+    },
+    "PTG2X4-12": {
+      "sku": "LBR-2X4-12-PT",
+      "sellUnit": "PC",
+      "confirm": null
+    },
+    "SPF2X4-16": {
+      "sku": "LBR-2X4-16-SPF",
+      "sellUnit": "PC",
+      "confirm": null
+    },
+    "PTG2X4-16": {
+      "sku": "LBR-2X4-16-PT",
+      "sellUnit": "PC",
+      "confirm": null
+    },
+    "SPF2X6-08": {
+      "sku": "LBR-2X6-08-SPF",
+      "sellUnit": "PC",
+      "confirm": null
+    },
+    "PTG2X6-08": {
+      "sku": "LBR-2X6-08-PT",
+      "sellUnit": "PC",
+      "confirm": null
+    },
+    "SPF2X6-10": {
+      "sku": "LBR-2X6-10-SPF",
+      "sellUnit": "PC",
+      "confirm": null
+    },
+    "PTG2X6-10": {
+      "sku": "LBR-2X6-10-PT",
+      "sellUnit": "PC",
+      "confirm": null
+    },
+    "SPF2X6-12": {
+      "sku": "LBR-2X6-12-SPF",
+      "sellUnit": "PC",
+      "confirm": null
+    },
+    "PTG2X6-12": {
+      "sku": "LBR-2X6-12-PT",
+      "sellUnit": "PC",
+      "confirm": null
+    },
+    "SPF2X6-16": {
+      "sku": "LBR-2X6-16-SPF",
+      "sellUnit": "PC",
+      "confirm": null
+    },
+    "PTG2X6-16": {
+      "sku": "LBR-2X6-16-PT",
+      "sellUnit": "PC",
+      "confirm": null
+    },
+    "SPF2X8-08": {
+      "sku": "LBR-2X8-08-SPF",
+      "sellUnit": "PC",
+      "confirm": null
+    },
+    "PTG2X8-08": {
+      "sku": "LBR-2X8-08-PT",
+      "sellUnit": "PC",
+      "confirm": null
+    },
+    "SPF2X8-10": {
+      "sku": "LBR-2X8-10-SPF",
+      "sellUnit": "PC",
+      "confirm": null
+    },
+    "PTG2X8-10": {
+      "sku": "LBR-2X8-10-PT",
+      "sellUnit": "PC",
+      "confirm": null
+    },
+    "SPF2X8-12": {
+      "sku": "LBR-2X8-12-SPF",
+      "sellUnit": "PC",
+      "confirm": null
+    },
+    "PTG2X8-12": {
+      "sku": "LBR-2X8-12-PT",
+      "sellUnit": "PC",
+      "confirm": null
+    },
+    "SPF2X8-16": {
+      "sku": "LBR-2X8-16-SPF",
+      "sellUnit": "PC",
+      "confirm": null
+    },
+    "PTG2X8-16": {
+      "sku": "LBR-2X8-16-PT",
+      "sellUnit": "PC",
+      "confirm": null
+    },
+    "SPF2X10-08": {
+      "sku": "LBR-2X10-08-SPF",
+      "sellUnit": "PC",
+      "confirm": null
+    },
+    "PTG2X10-08": {
+      "sku": "LBR-2X10-08-PT",
+      "sellUnit": "PC",
+      "confirm": null
+    },
+    "SPF2X10-10": {
+      "sku": "LBR-2X10-10-SPF",
+      "sellUnit": "PC",
+      "confirm": null
+    },
+    "PTG2X10-10": {
+      "sku": "LBR-2X10-10-PT",
+      "sellUnit": "PC",
+      "confirm": null
+    },
+    "SPF2X10-12": {
+      "sku": "LBR-2X10-12-SPF",
+      "sellUnit": "PC",
+      "confirm": null
+    },
+    "PTG2X10-12": {
+      "sku": "LBR-2X10-12-PT",
+      "sellUnit": "PC",
+      "confirm": null
+    },
+    "SPF2X10-16": {
+      "sku": "LBR-2X10-16-SPF",
+      "sellUnit": "PC",
+      "confirm": null
+    },
+    "PTG2X10-16": {
+      "sku": "LBR-2X10-16-PT",
+      "sellUnit": "PC",
+      "confirm": null
+    },
+    "SPF2X12-08": {
+      "sku": "LBR-2X12-08-SPF",
+      "sellUnit": "PC",
+      "confirm": null
+    },
+    "PTG2X12-08": {
+      "sku": "LBR-2X12-08-PT",
+      "sellUnit": "PC",
+      "confirm": null
+    },
+    "SPF2X12-10": {
+      "sku": "LBR-2X12-10-SPF",
+      "sellUnit": "PC",
+      "confirm": null
+    },
+    "PTG2X12-10": {
+      "sku": "LBR-2X12-10-PT",
+      "sellUnit": "PC",
+      "confirm": null
+    },
+    "SPF2X12-12": {
+      "sku": "LBR-2X12-12-SPF",
+      "sellUnit": "PC",
+      "confirm": null
+    },
+    "PTG2X12-12": {
+      "sku": "LBR-2X12-12-PT",
+      "sellUnit": "PC",
+      "confirm": null
+    },
+    "SPF2X12-16": {
+      "sku": "LBR-2X12-16-SPF",
+      "sellUnit": "PC",
+      "confirm": null
+    },
+    "PTG2X12-16": {
+      "sku": "LBR-2X12-16-PT",
+      "sellUnit": "PC",
+      "confirm": null
+    },
+    "SPF2X4-925": {
+      "sku": "LBR-2X4-PRECUT-SPF",
+      "sellUnit": "PC",
+      "confirm": null
+    },
+    "SPF2X6-925": {
+      "sku": "LBR-2X6-PRECUT-SPF",
+      "sellUnit": "PC",
+      "confirm": null
+    },
+    "SPF4X4-08": {
+      "sku": "LBR-4X4-8-SPF",
+      "sellUnit": "PC",
+      "confirm": null
+    },
+    "PTG4X4-08": {
+      "sku": "LBR-4X4-8-PT",
+      "sellUnit": "PC",
+      "confirm": null
+    },
+    "SPF4X4-10": {
+      "sku": "LBR-4X4-10-SPF",
+      "sellUnit": "PC",
+      "confirm": null
+    },
+    "PTG4X4-10": {
+      "sku": "LBR-4X4-10-PT",
+      "sellUnit": "PC",
+      "confirm": null
+    },
+    "SPF4X4-12": {
+      "sku": "LBR-4X4-12-SPF",
+      "sellUnit": "PC",
+      "confirm": null
+    },
+    "PTG4X4-12": {
+      "sku": "LBR-4X4-12-PT",
+      "sellUnit": "PC",
+      "confirm": null
+    },
+    "PTG6X6-08": {
+      "sku": "LBR-6X6-8-PT",
+      "sellUnit": "PC",
+      "confirm": null
+    },
+    "PTG6X6-10": {
+      "sku": "LBR-6X6-10-PT",
+      "sellUnit": "PC",
+      "confirm": null
+    },
+    "PTG6X6-12": {
+      "sku": "LBR-6X6-12-PT",
+      "sellUnit": "PC",
+      "confirm": null
+    },
+    "PIN1X4-08": {
+      "sku": "LBR-1X4-8-PINE",
+      "sellUnit": "PC",
+      "confirm": "Priced per lineal foot but sold by the piece: confirm the length used to convert."
+    },
+    "PIN1X4-12": {
+      "sku": "LBR-1X4-12-PINE",
+      "sellUnit": "PC",
+      "confirm": "Priced per lineal foot but sold by the piece: confirm the length used to convert."
+    },
+    "PIN1X6-08": {
+      "sku": "LBR-1X6-8-PINE",
+      "sellUnit": "PC",
+      "confirm": "Priced per lineal foot but sold by the piece: confirm the length used to convert."
+    },
+    "PIN1X6-12": {
+      "sku": "LBR-1X6-12-PINE",
+      "sellUnit": "PC",
+      "confirm": "Priced per lineal foot but sold by the piece: confirm the length used to convert."
+    },
+    "PIN1X8-08": {
+      "sku": "LBR-1X8-8-PINE",
+      "sellUnit": "PC",
+      "confirm": "Priced per lineal foot but sold by the piece: confirm the length used to convert."
+    },
+    "PIN1X8-12": {
+      "sku": "LBR-1X8-12-PINE",
+      "sellUnit": "PC",
+      "confirm": "Priced per lineal foot but sold by the piece: confirm the length used to convert."
+    },
+    "PLY12CDX": {
+      "sku": "SHT-PLY-CDX-12",
+      "sellUnit": "SHT",
+      "confirm": null
+    },
+    "PLY58CDX": {
+      "sku": "SHT-PLY-CDX-58",
+      "sellUnit": "SHT",
+      "confirm": null
+    },
+    "PLY34CDX": {
+      "sku": "SHT-PLY-CDX-34",
+      "sellUnit": "SHT",
+      "confirm": null
+    },
+    "PLY34PTG": {
+      "sku": "SHT-PLY-PT-34",
+      "sellUnit": "SHT",
+      "confirm": null
+    },
+    "PLY34BIR": {
+      "sku": "SHT-PLY-BIRCH-34",
+      "sellUnit": "SHT",
+      "confirm": null
+    },
+    "OSB716N": {
+      "sku": "SHT-OSB-716",
+      "sellUnit": "SHT",
+      "confirm": null
+    },
+    "OSB716": {
+      "sku": "SHT-OSB-716",
+      "sellUnit": "SHT",
+      "confirm": "Superseded code: orders that use it should map to OSB716N."
+    },
+    "OSB12": {
+      "sku": "SHT-OSB-12",
+      "sellUnit": "SHT",
+      "confirm": null
+    },
+    "OSB58": {
+      "sku": "SHT-OSB-58",
+      "sellUnit": "SHT",
+      "confirm": null
+    },
+    "OSB2332TG": {
+      "sku": "SHT-OSB-2332",
+      "sellUnit": "SHT",
+      "confirm": null
+    },
+    "MDF34": {
+      "sku": "SHT-MDF-34",
+      "sellUnit": "SHT",
+      "confirm": null
+    },
+    "MDF12": {
+      "sku": "SHT-MDF-12",
+      "sellUnit": "SHT",
+      "confirm": null
+    },
+    "GYP12R08": {
+      "sku": "DRY-12-REG-4X8",
+      "sellUnit": "SHT",
+      "confirm": null
+    },
+    "GYP-12-REG-48": {
+      "sku": "DRY-12-REG-4X8",
+      "sellUnit": "SHT",
+      "confirm": "Duplicate of GYP12R08 entered by the second branch: pick one to sell."
+    },
+    "GYP12R10": {
+      "sku": "DRY-12-REG-4X10",
+      "sellUnit": "SHT",
+      "confirm": null
+    },
+    "GYP12R12": {
+      "sku": "DRY-12-REG-4X12",
+      "sellUnit": "SHT",
+      "confirm": null
+    },
+    "GYP12M08": {
+      "sku": "DRY-12-MR-4X8",
+      "sellUnit": "SHT",
+      "confirm": null
+    },
+    "GYP12M10": {
+      "sku": "DRY-12-MR-4X10",
+      "sellUnit": "SHT",
+      "confirm": null
+    },
+    "GYP12M12": {
+      "sku": "DRY-12-MR-4X12",
+      "sellUnit": "SHT",
+      "confirm": null
+    },
+    "GYP12L08": {
+      "sku": "DRY-12-LITE-4X8",
+      "sellUnit": "SHT",
+      "confirm": null
+    },
+    "GYP12L10": {
+      "sku": "DRY-12-LITE-4X10",
+      "sellUnit": "SHT",
+      "confirm": null
+    },
+    "GYP12L12": {
+      "sku": "DRY-12-LITE-4X12",
+      "sellUnit": "SHT",
+      "confirm": null
+    },
+    "GYP58R08": {
+      "sku": "DRY-58-REG-4X8",
+      "sellUnit": "SHT",
+      "confirm": null
+    },
+    "GYP58R10": {
+      "sku": "DRY-58-REG-4X10",
+      "sellUnit": "SHT",
+      "confirm": null
+    },
+    "GYP58R12": {
+      "sku": "DRY-58-REG-4X12",
+      "sellUnit": "SHT",
+      "confirm": null
+    },
+    "GYP58X08": {
+      "sku": "DRY-58-X-4X8",
+      "sellUnit": "SHT",
+      "confirm": null
+    },
+    "GYP58X10": {
+      "sku": "DRY-58-X-4X10",
+      "sellUnit": "SHT",
+      "confirm": null
+    },
+    "GYP58X12": {
+      "sku": "DRY-58-X-4X12",
+      "sellUnit": "SHT",
+      "confirm": null
+    },
+    "GYP58M08": {
+      "sku": "DRY-58-MR-4X8",
+      "sellUnit": "SHT",
+      "confirm": null
+    },
+    "GYP58M10": {
+      "sku": "DRY-58-MR-4X10",
+      "sellUnit": "SHT",
+      "confirm": null
+    },
+    "GYP58M12": {
+      "sku": "DRY-58-MR-4X12",
+      "sellUnit": "SHT",
+      "confirm": null
+    },
+    "JC-AP17": {
+      "sku": "DRY-MUD-45",
+      "sellUnit": "PL",
+      "confirm": null
+    },
+    "TAPE-P250": {
+      "sku": "DRY-TAPE-250",
+      "sellUnit": "RL",
+      "confirm": null
+    },
+    "TAPE-M300": {
+      "sku": "DRY-TAPE-MESH",
+      "sellUnit": "RL",
+      "confirm": null
+    },
+    "DS10-212T-01": {
+      "sku": "FST-DECK-25-TAN-1LB",
+      "sellUnit": "BX",
+      "confirm": null
+    },
+    "DS10-212T-05": {
+      "sku": "FST-DECK-25-TAN-5LB",
+      "sellUnit": "BX",
+      "confirm": null
+    },
+    "DS10-212T-25": {
+      "sku": "FST-DECK-25-TAN-25LB",
+      "sellUnit": "PL",
+      "confirm": null
+    },
+    "DS10-3T-01": {
+      "sku": "FST-DECK-3-TAN-1LB",
+      "sellUnit": "BX",
+      "confirm": null
+    },
+    "DS10-3T-05N": {
+      "sku": "FST-DECK-3-TAN-5LB",
+      "sellUnit": "BX",
+      "confirm": null
+    },
+    "DS10-3T-05": {
+      "sku": "FST-DECK-3-TAN-5LB",
+      "sellUnit": "BX",
+      "confirm": "Superseded code: orders that use it should map to DS10-3T-05N."
+    },
+    "DS10-3T-25": {
+      "sku": "FST-DECK-3-TAN-25LB",
+      "sellUnit": "PL",
+      "confirm": null
+    },
+    "DS10-3G-01": {
+      "sku": "FST-DECK-3-GRAY-1LB",
+      "sellUnit": "BX",
+      "confirm": null
+    },
+    "DS10-3G-05": {
+      "sku": "FST-DECK-3-GRAY-5LB",
+      "sellUnit": "BX",
+      "confirm": null
+    },
+    "DS10-3G-25": {
+      "sku": "FST-DECK-3-GRAY-25LB",
+      "sellUnit": "PL",
+      "confirm": null
+    },
+    "DS10-212B-01": {
+      "sku": "FST-DECK-25-BRN-1LB",
+      "sellUnit": "BX",
+      "confirm": null
+    },
+    "DS10-212B-05": {
+      "sku": "FST-DECK-25-BRN-5LB",
+      "sellUnit": "BX",
+      "confirm": null
+    },
+    "DS10-212B-25": {
+      "sku": "FST-DECK-25-BRN-25LB",
+      "sellUnit": "PL",
+      "confirm": null
+    },
+    "STRC3-01": {
+      "sku": "FST-STRC-3-1LB",
+      "sellUnit": "BX",
+      "confirm": null
+    },
+    "STRC3-05": {
+      "sku": "FST-STRC-3-5LB",
+      "sellUnit": "BX",
+      "confirm": null
+    },
+    "DRY158-01": {
+      "sku": "FST-DRY-158-1LB",
+      "sellUnit": "BX",
+      "confirm": null
+    },
+    "DRY158-05": {
+      "sku": "FST-DRY-158-5LB",
+      "sellUnit": "BX",
+      "confirm": null
+    },
+    "DRY158-25": {
+      "sku": "FST-DRY-158-25LB",
+      "sellUnit": "PL",
+      "confirm": null
+    },
+    "DRY214-01": {
+      "sku": "FST-DRY-214-1LB",
+      "sellUnit": "BX",
+      "confirm": null
+    },
+    "DRY214-05": {
+      "sku": "FST-DRY-214-5LB",
+      "sellUnit": "BX",
+      "confirm": null
+    },
+    "DRY214-25": {
+      "sku": "FST-DRY-214-25LB",
+      "sellUnit": "PL",
+      "confirm": null
+    },
+    "DRY158FINE-01": {
+      "sku": "FST-DRY-158-FINE-1LB",
+      "sellUnit": "BX",
+      "confirm": null
+    },
+    "DRY158FINE-05": {
+      "sku": "FST-DRY-158-FINE-5LB",
+      "sellUnit": "BX",
+      "confirm": null
+    },
+    "DRY158FINE-25": {
+      "sku": "FST-DRY-158-FINE-25LB",
+      "sellUnit": "PL",
+      "confirm": null
+    },
+    "16DCOM-05": {
+      "sku": "FST-16D-COM-5LB",
+      "sellUnit": "BX",
+      "confirm": null
+    },
+    "16DCOM-50": {
+      "sku": "FST-16D-COM-50LB",
+      "sellUnit": "BX",
+      "confirm": null
+    },
+    "16DSINK-05": {
+      "sku": "FST-16D-SINK-5LB",
+      "sellUnit": "BX",
+      "confirm": null
+    },
+    "16DSINK-50": {
+      "sku": "FST-16D-SINK-50LB",
+      "sellUnit": "BX",
+      "confirm": null
+    },
+    "8DCOM-05": {
+      "sku": "FST-8D-COM-5LB",
+      "sellUnit": "BX",
+      "confirm": null
+    },
+    "8DCOM-50": {
+      "sku": "FST-8D-COM-50LB",
+      "sellUnit": "BX",
+      "confirm": null
+    },
+    "10DGALV-05": {
+      "sku": "FST-10D-GALV-5LB",
+      "sellUnit": "BX",
+      "confirm": null
+    },
+    "10DGALV-50": {
+      "sku": "FST-10D-GALV-50LB",
+      "sellUnit": "BX",
+      "confirm": null
+    },
+    "FRM3PAPER-05": {
+      "sku": "FST-FRM-3-PAPER-5LB",
+      "sellUnit": "BX",
+      "confirm": null
+    },
+    "FRM3PAPER-50": {
+      "sku": "FST-FRM-3-PAPER-50LB",
+      "sellUnit": "BX",
+      "confirm": null
+    },
+    "ROOF118-05": {
+      "sku": "FST-ROOF-118-5LB",
+      "sellUnit": "BX",
+      "confirm": null
+    },
+    "ROOF114-01": {
+      "sku": "FST-ROOF-114-1LB",
+      "sellUnit": "BX",
+      "confirm": null
+    },
+    "CS14-314": {
+      "sku": "FST-TAPCON-14-100",
+      "sellUnit": "BX",
+      "confirm": null
+    },
+    "WA12-6": {
+      "sku": "FST-ANCH-12-50",
+      "sellUnit": "BX",
+      "confirm": null
+    },
+    "JB12-06": {
+      "sku": "FST-ATROD-12-6",
+      "sellUnit": "EA",
+      "confirm": "Priced per hundred (C) but sold each: confirm the conversion."
+    },
+    "JB12-08": {
+      "sku": "FST-ATROD-12-8",
+      "sellUnit": "EA",
+      "confirm": "Priced per hundred (C) but sold each: confirm the conversion."
+    },
+    "JB58-10": {
+      "sku": "FST-ATROD-58-10",
+      "sellUnit": "EA",
+      "confirm": "Priced per hundred (C) but sold each: confirm the conversion."
+    },
+    "JH2X4": {
+      "sku": "HDW-JH-2X4",
+      "sellUnit": "EA",
+      "confirm": null
+    },
+    "JH2X6": {
+      "sku": "HDW-JH-2X6",
+      "sellUnit": "EA",
+      "confirm": null
+    },
+    "JH2X8": {
+      "sku": "HDW-JH-2X8",
+      "sellUnit": "EA",
+      "confirm": null
+    },
+    "JH2X10": {
+      "sku": "HDW-JH-2X10",
+      "sellUnit": "EA",
+      "confirm": null
+    },
+    "HT25A": {
+      "sku": "HDW-HT-H2-5",
+      "sellUnit": "EA",
+      "confirm": null
+    },
+    "PB44ADJ": {
+      "sku": "HDW-POST-4X4",
+      "sellUnit": "EA",
+      "confirm": null
+    },
+    "ST12": {
+      "sku": "HDW-STRAP-12",
+      "sellUnit": "EA",
+      "confirm": null
+    },
+    "JH2X6-BX25": {
+      "sku": "HDW-JH-2X6-BOX",
+      "sellUnit": "BX",
+      "confirm": null
+    },
+    "CM30": {
+      "sku": "CON-30KG",
+      "sellUnit": "BAG",
+      "confirm": null
+    },
+    "CMF20": {
+      "sku": "CON-FAST-20KG",
+      "sellUnit": "BAG",
+      "confirm": null
+    },
+    "CEMGU30": {
+      "sku": "MAS-CEM-GU-30KG",
+      "sellUnit": "BAG",
+      "confirm": null
+    },
+    "MORS30": {
+      "sku": "MAS-MORT-S-30KG",
+      "sellUnit": "BAG",
+      "confirm": null
+    },
+    "MORN30": {
+      "sku": "MAS-MORT-N-30KG",
+      "sellUnit": "BAG",
+      "confirm": null
+    },
+    "SAND30": {
+      "sku": "MAS-SAND-30KG",
+      "sellUnit": "BAG",
+      "confirm": null
+    },
+    "GRAV30": {
+      "sku": "MAS-GRAV-30KG",
+      "sellUnit": "BAG",
+      "confirm": null
+    },
+    "CMU8": {
+      "sku": "MAS-CMU-8",
+      "sellUnit": "EA",
+      "confirm": null
+    },
+    "CMU4CAP": {
+      "sku": "MAS-CMU-CAP",
+      "sellUnit": "EA",
+      "confirm": null
+    },
+    "WWM6610": {
+      "sku": "CON-MESH-5X10",
+      "sellUnit": "SHT",
+      "confirm": null
+    },
+    "RB10M-3": {
+      "sku": "CON-REBAR-10M-3M",
+      "sellUnit": "PC",
+      "confirm": null
+    },
+    "RB15M-3": {
+      "sku": "CON-REBAR-15M-3M",
+      "sellUnit": "PC",
+      "confirm": null
+    },
+    "RB15M-6": {
+      "sku": "CON-REBAR-15M-6M",
+      "sellUnit": "PC",
+      "confirm": null
+    },
+    "TF8-4": {
+      "sku": "CON-FORM-SONO-8",
+      "sellUnit": "PC",
+      "confirm": null
+    },
+    "TF12-4": {
+      "sku": "CON-FORM-SONO-12",
+      "sellUnit": "PC",
+      "confirm": null
+    },
+    "SH3T-CHR": {
+      "sku": null,
+      "sellUnit": "BDL",
+      "confirm": "Inactive (discontinued): should not be offered."
+    },
+    "SHAR-ONX": {
+      "sku": "ROF-SHG-ARCH-BLK",
+      "sellUnit": "BDL",
+      "confirm": null
+    },
+    "SHAR-WW": {
+      "sku": "ROF-SHG-ARCH-BRN",
+      "sellUnit": "BDL",
+      "confirm": null
+    },
+    "SHHR": {
+      "sku": "ROF-SHG-RIDGE",
+      "sellUnit": "BDL",
+      "confirm": null
+    },
+    "FELT15": {
+      "sku": "ROF-UNDER-15",
+      "sellUnit": "RL",
+      "confirm": null
+    },
+    "FELT30": {
+      "sku": "ROF-UNDER-30",
+      "sellUnit": "RL",
+      "confirm": null
+    },
+    "ULSYN10": {
+      "sku": "ROF-UNDER-SYN",
+      "sellUnit": "RL",
+      "confirm": null
+    },
+    "IWS36": {
+      "sku": "ROF-ICE-36",
+      "sellUnit": "RL",
+      "confirm": null
+    },
+    "DE10-WH": {
+      "sku": "ROF-DRIP-10",
+      "sellUnit": "PC",
+      "confirm": null
+    },
+    "DE10-BR": {
+      "sku": "ROF-DRIP-10-BRN",
+      "sellUnit": "PC",
+      "confirm": null
+    },
+    "RV4": {
+      "sku": "ROF-VENT-RIDGE",
+      "sellUnit": "PC",
+      "confirm": null
+    },
+    "BT12-15": {
+      "sku": "INS-R12-15",
+      "sellUnit": "BAG",
+      "confirm": null
+    },
+    "BT12-23": {
+      "sku": "INS-R12-23",
+      "sellUnit": "BAG",
+      "confirm": null
+    },
+    "BT20-15": {
+      "sku": "INS-R20-15",
+      "sellUnit": "BAG",
+      "confirm": null
+    },
+    "BT20-23": {
+      "sku": "INS-R20-23",
+      "sellUnit": "BAG",
+      "confirm": null
+    },
+    "BT31-16": {
+      "sku": "INS-R31-16",
+      "sellUnit": "BAG",
+      "confirm": null
+    },
+    "BT40-16": {
+      "sku": "INS-R40-16",
+      "sellUnit": "BAG",
+      "confirm": null
+    },
+    "RF1-48": {
+      "sku": "INS-FOAM-1",
+      "sellUnit": "SHT",
+      "confirm": null
+    },
+    "RF2-48": {
+      "sku": "INS-FOAM-2",
+      "sellUnit": "SHT",
+      "confirm": null
+    },
+    "FS340": {
+      "sku": "INS-SPRAY-CAN",
+      "sellUnit": "EA",
+      "confirm": null
+    },
+    "HW9-100": {
+      "sku": "WTH-WRAP-9",
+      "sellUnit": "RL",
+      "confirm": null
+    },
+    "HW3-100": {
+      "sku": "WTH-WRAP-3",
+      "sellUnit": "RL",
+      "confirm": null
+    },
+    "FT6-75": {
+      "sku": "WTH-FLASH-6",
+      "sellUnit": "RL",
+      "confirm": null
+    },
+    "FT4-75": {
+      "sku": "WTH-FLASH-4",
+      "sellUnit": "RL",
+      "confirm": null
+    },
+    "CN1-1M": {
+      "sku": "WTH-CAP-1",
+      "sellUnit": "BX",
+      "confirm": null
+    },
+    "POLY6-10": {
+      "sku": "WTH-POLY-6",
+      "sellUnit": "RL",
+      "confirm": null
+    },
+    "PTD546-08": {
+      "sku": "DCK-54-8-PT",
+      "sellUnit": "PC",
+      "confirm": "Priced per lineal foot but sold by the piece: confirm the length used to convert."
+    },
+    "PTD546-12": {
+      "sku": "DCK-54-12-PT",
+      "sellUnit": "PC",
+      "confirm": "Priced per lineal foot but sold by the piece: confirm the length used to convert."
+    },
+    "PTD546-16": {
+      "sku": "DCK-54-16-PT",
+      "sellUnit": "PC",
+      "confirm": "Priced per lineal foot but sold by the piece: confirm the length used to convert."
+    },
+    "PVC1X4-12": {
+      "sku": "TRM-1X4-12-PVC",
+      "sellUnit": "PC",
+      "confirm": null
+    },
+    "PVC1X4-16": {
+      "sku": "TRM-1X4-16-PVC",
+      "sellUnit": "PC",
+      "confirm": null
+    },
+    "BSE314-8": {
+      "sku": "TRM-BASE-314",
+      "sellUnit": "PC",
+      "confirm": null
+    },
+    "CSG214-7": {
+      "sku": "TRM-CASE-225",
+      "sellUnit": "PC",
+      "confirm": null
+    },
+    "FCL8-12": {
+      "sku": "TRM-LAP-8",
+      "sellUnit": "PC",
+      "confirm": null
+    },
+    "ADH-HD295": {
+      "sku": "SUP-ADH-CONST-10",
+      "sellUnit": "TB",
+      "confirm": null
+    },
+    "ADH-SF828": {
+      "sku": "SUP-ADH-SUBFL-28",
+      "sellUnit": "TB",
+      "confirm": null
+    },
+    "SIL-CLR300": {
+      "sku": "SUP-CAULK-SIL-CLR",
+      "sellUnit": "TB",
+      "confirm": null
+    },
+    "CLK-AL-WH": {
+      "sku": "SUP-CAULK-LAT-WHT",
+      "sellUnit": "TB",
+      "confirm": null
+    },
+    "WG500": {
+      "sku": "SUP-GLUE-WOOD-16",
+      "sellUnit": "EA",
+      "confirm": null
+    },
+    "STN-EXT19": {
+      "sku": "SUP-SEAL-EXT-5G",
+      "sellUnit": "PL",
+      "confirm": null
+    },
+    "SHIM-C42": {
+      "sku": "SUP-SHIM-42",
+      "sellUnit": "BDL",
+      "confirm": null
+    },
+    "BLD714-24": {
+      "sku": "SUP-BLADE-712",
+      "sellUnit": "EA",
+      "confirm": null
+    },
+    "CHK-BL227": {
+      "sku": "SUP-LINE-CHALK-BL",
+      "sellUnit": "EA",
+      "confirm": null
+    },
+    "STK24-12": {
+      "sku": "SUP-STAKE-24",
+      "sellUnit": "BDL",
+      "confirm": null
+    },
+    "CDR-SHK18": {
+      "sku": null,
+      "sellUnit": "BDL",
+      "confirm": null
+    },
+    "PLY34MAR": {
+      "sku": null,
+      "sellUnit": "SHT",
+      "confirm": null
+    },
+    "PTG2X6-20": {
+      "sku": null,
+      "sellUnit": "PC",
+      "confirm": null
+    },
+    "LVL134-912-16": {
+      "sku": null,
+      "sellUnit": "PC",
+      "confirm": "Priced per lineal foot but sold by the piece: confirm the length used to convert."
+    }
+  }
+}
