@@ -8,6 +8,8 @@ import { CheckDot } from "@/components/order/CheckDot";
 import { CheckPhrase, useHighlightVariant } from "@/components/order/CheckPhrase";
 import { DeliveryDetails } from "@/components/order/DeliveryDetails";
 import { OrderProgress } from "@/components/order/OrderProgress";
+import { ActionSheet } from "@/components/ui/ActionSheet";
+import { SheetHeader } from "@/components/ui/Sheet";
 
 /**
  * The head of the order: who texted, their message, the delivery details and where the order is (the AI cost sits in
@@ -16,6 +18,7 @@ import { OrderProgress } from "@/components/order/OrderProgress";
  */
 export function OrderDetails({ result, phone, toCheck: unchecked, receivedAt, sentAt, approvedAt }: { result: OrderResult; phone: boolean; toCheck: string[]; receivedAt?: number; sentAt?: number; approvedAt?: number }) {
   const [textShown, setTextShown] = useState(false);
+  const [photoOpen, setPhotoOpen] = useState(false);
   const hl = useHighlightVariant();
   const who = result.from?.name ?? "the contractor";
   const photo = result.photo;
@@ -38,16 +41,15 @@ export function OrderDetails({ result, phone, toCheck: unchecked, receivedAt, se
       {(!phone || textShown) && (
         <figure className={`mt-4 ml-12 ${photo ? "flex flex-wrap items-start gap-3" : ""}`}>
           {photo && (
-            // the photo as sent; it opens full size, since the transcription is only a reading of it
-            <a href={photo.src} target="_blank" rel="noreferrer" className="shrink-0 overflow-hidden rounded-[18px] rounded-tl-none shadow-ring">
+            <button type="button" onClick={() => setPhotoOpen(true)} aria-label="Open original order photo for comparison" className="shrink-0 overflow-hidden rounded-[18px] rounded-tl-none shadow-ring">
               <Image src={photo.src} alt={`Photo of a handwritten order from ${who}`} width={480} height={640} className="h-auto w-36 sm:w-44" />
-              <span className="sr-only"> (opens full size)</span>
-            </a>
+              <span className="sr-only">Open full size to compare with the transcription</span>
+            </button>
           )}
           <figcaption className={photo ? "basis-full text-caption text-muted @min-[560px]:order-last" : "sr-only"}>
             {photo ? "What we read from the photo. Crossed-out text is struck through." : `Text message from ${who}`}
           </figcaption>
-          <blockquote id="incoming-message" className="w-fit max-w-prose whitespace-pre-wrap break-words rounded-[18px] rounded-tl-none bg-bg px-4 py-3 text-body leading-relaxed text-ink">
+          <blockquote id="incoming-message" className="max-h-64 w-fit max-w-prose overflow-y-auto overscroll-contain whitespace-pre-wrap break-words rounded-[18px] rounded-tl-none bg-bg px-4 py-3 text-body leading-relaxed text-ink sm:max-h-80">
             {/* indented under the name, as in a messages app; the phrases behind lines still to check get the same dot as their line */}
             {segmentText(result.text.trim(), result.parse.lines).map((seg, i) => seg.lineId && unchecked.includes(seg.lineId)
               ? <span key={i}>{hl === "dot" ? <><CheckDot />{struck(seg.text)}</> : <CheckPhrase variant={hl}>{struck(seg.text)}</CheckPhrase>}<span className="sr-only"> (to check)</span></span>
@@ -68,6 +70,13 @@ export function OrderDetails({ result, phone, toCheck: unchecked, receivedAt, se
           </TextButton>
         )}
       </div>
+      {photo && <ActionSheet open={photoOpen} onClose={() => setPhotoOpen(false)} labelledBy="original-photo-title" className="flex max-h-[calc(100dvh-2rem)] max-w-5xl flex-col">
+        <SheetHeader id="original-photo-title" eyebrow="Original order" title={`Photo from ${who}`} closeLabel="Close photo" onClose={() => setPhotoOpen(false)} />
+        <div className="mt-4 min-h-0 flex-1 overflow-auto rounded-lg bg-bg p-2 text-center">
+          <Image src={photo.src} alt={`Original handwritten order from ${who}`} width={1200} height={1600} className="mx-auto h-auto max-h-[calc(100dvh-9rem)] w-auto max-w-full object-contain" />
+        </div>
+        <p className="mt-3 text-caption text-muted">Compare the original handwriting with the transcription in the order details.</p>
+      </ActionSheet>}
     </div>
   );
 }

@@ -37,6 +37,8 @@ export function Review({ result, mode, T, unitMin, catalog, resolved, setResolve
   const pending = flagged.filter((l) => !resolved[l.id]);
   const validated = orderedLines.filter((l) => l.approved || (resolved[l.id] && resolved[l.id] !== NONE));
   const excluded = flagged.filter((l) => resolved[l.id] === NONE);
+  const categoryByLine = new Map(result.jev.lines.map((line) => [line.lineId, line.category.choice]));
+  const categoryName = (id: string) => id && id !== "unknown" ? id.replaceAll("_", " ").replace(/\b\w/g, (letter) => letter.toUpperCase()) : "Other items";
   const current = pending.find((l) => l.id === active)?.id ?? pending[0]?.id ?? null;
   // Once every line is checked, Send follows the rep down the page until the footer's own Send is in view.
   const showFloatingSend = !sentAt && !footerSendVisible && pending.length === 0;
@@ -155,12 +157,12 @@ export function Review({ result, mode, T, unitMin, catalog, resolved, setResolve
         </a>
       )}
       {/*
-        Two columns when there's room: the order header stays pinned on the left while the lines scroll on the right.
+        Two columns when there's room: the order lines sit on the left while the order details stay pinned on the right.
         "Room" is the space the review actually has (a container query), so opening the cost rail drops to one column.
       */}
       <div className="@container/review">
-      <div className="@min-[52rem]/review:grid @min-[52rem]/review:grid-cols-[minmax(0,23rem)_minmax(0,1fr)] @min-[52rem]/review:items-start @min-[52rem]/review:gap-6">
-      <div className="@min-[52rem]/review:sticky @min-[52rem]/review:top-5 @min-[52rem]/review:-m-1 @min-[52rem]/review:max-h-[calc(100dvh-2.5rem)] @min-[52rem]/review:overflow-y-auto @min-[52rem]/review:p-1">
+      <div className="@min-[52rem]/review:grid @min-[52rem]/review:grid-cols-[minmax(0,1fr)_minmax(0,23rem)] @min-[52rem]/review:items-start @min-[52rem]/review:gap-6">
+      <div className="@min-[52rem]/review:order-2 @min-[52rem]/review:sticky @min-[52rem]/review:top-5 @min-[52rem]/review:-m-1 @min-[52rem]/review:max-h-[calc(100dvh-2.5rem)] @min-[52rem]/review:overflow-hidden @min-[52rem]/review:p-1">
         <OrderDetails result={result} phone={phone} toCheck={pending.map((l) => l.id)} receivedAt={receivedAt} sentAt={sentAt} approvedAt={approvedAt} />
         {/* one 12px rhythm between the stacked cards on phones (order, AI cost, line counts, sheet) */}
         <div className="mb-3 @min-[52rem]/review:mb-0">
@@ -169,7 +171,7 @@ export function Review({ result, mode, T, unitMin, catalog, resolved, setResolve
       </div>
 
       {/* One sheet, like a pick ticket: the lines to check on top, then the confirmed lines, then the total and Send. */}
-      <section aria-label="Order" className={phone ? "pb-24" : ""}>
+      <section aria-label="Order" className={`@min-[52rem]/review:order-1 ${phone ? "pb-24" : ""}`}>
         <div id="order-counts" role="status" className="card mb-3 grid grid-cols-3 divide-x divide-line py-3 text-center text-small">
           {([
             { label: "Lines", value: lines.length, tone: "total" },
@@ -196,19 +198,32 @@ export function Review({ result, mode, T, unitMin, catalog, resolved, setResolve
                   <Pill tone={group.id === "needs-review" ? "warn" : "count"} className="ml-auto" aria-label={`${group.items.length} items`}>{group.items.length}</Pill>
                 </header>
                 {group.items.length ? (
-                  <ul>
-                    {group.items.map((l) => (
-                      <LineRow
-                        key={l.id} l={l} state={status(l)} pick={resolved[l.id]} quantity={quantities[l.id]} staged={staged[l.id]}
-                        active={current === l.id} catalog={catalog}
-                        onSelect={() => setActive(l.id)}
-                        onPick={(sku, editQuantity) => pickProduct(l, sku, editQuantity)}
-                        onConfirm={(sku, qty) => choose(l.id, sku, qty)}
-                        onUnstage={() => unstage(l.id)}
-                        onUndo={() => undo(l.id)}
-                      />
+                  <div>
+                    {Array.from(group.items.reduce((byCategory, line) => {
+                      const category = categoryByLine.get(line.id) ?? "unknown";
+                      const items = byCategory.get(category) ?? [];
+                      items.push(line);
+                      byCategory.set(category, items);
+                      return byCategory;
+                    }, new Map<string, typeof group.items>())).map(([category, items]) => (
+                      <section key={category} aria-label={categoryName(category)}>
+                        <h3 className="border-b border-line bg-bg px-4 py-2 text-caption font-semibold uppercase tracking-wide text-muted sm:px-6">{categoryName(category)}<span className="ml-2 font-normal normal-case tracking-normal">{items.length} {items.length === 1 ? "item" : "items"}</span></h3>
+                        <ul className="divide-y divide-line">
+                          {items.map((l) => (
+                            <LineRow
+                              key={l.id} l={l} state={status(l)} pick={resolved[l.id]} quantity={quantities[l.id]} staged={staged[l.id]}
+                              active={current === l.id} catalog={catalog}
+                              onSelect={() => setActive(l.id)}
+                              onPick={(sku, editQuantity) => pickProduct(l, sku, editQuantity)}
+                              onConfirm={(sku, qty) => choose(l.id, sku, qty)}
+                              onUnstage={() => unstage(l.id)}
+                              onUndo={() => undo(l.id)}
+                            />
+                          ))}
+                        </ul>
+                      </section>
                     ))}
-                  </ul>
+                  </div>
                 ) : <p className="px-4 py-5 text-small text-muted sm:px-6">{group.empty}</p>}
               </section>
             ))}
@@ -235,7 +250,7 @@ export function Review({ result, mode, T, unitMin, catalog, resolved, setResolve
             }}
             className="pointer-events-auto shadow-raise"
           >
-            <CheckIcon aria-hidden strokeWidth={2} className="h-4 w-4 shrink-0" /> Send for approval
+            <CheckIcon aria-hidden strokeWidth={2} className="h-4 w-4 shrink-0" /> Create quote
           </Button>
       </div>
     </>

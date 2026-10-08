@@ -48,7 +48,7 @@ export function OrderFooter({ result, subtotal, toCheck, sentAt, approvedAt, onS
           aria-describedby={sendAttempted && !ready && !sentAt ? "send-order-note send-order-guidance" : "send-order-note"}
           className="w-full shrink-0 whitespace-nowrap sm:w-auto"
         >
-          {sentAt ? "Reopen" : "Send for approval"}
+          {sentAt ? "Reopen" : "Create quote"}
         </Button>}
       </div>
       {sendAttempted && !ready && !sentAt && (
