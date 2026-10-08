@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Archivo } from "next/font/google";
+import { Anton, Archivo } from "next/font/google";
 import "./globals.css";
 import { THEME_SCRIPT } from "@/lib/theme";
 import { AccessProvider } from "@/components/AccessProvider";
@@ -9,6 +9,14 @@ const archivo = Archivo({
   variable: "--font-ui",
   subsets: ["latin"],
   axes: ["wdth"],
+});
+
+// The Faint Signal's wordmark face, used only by the portfolio credit; not preloaded, so it never delays the app.
+const anton = Anton({
+  variable: "--font-anton",
+  subsets: ["latin"],
+  weight: "400",
+  preload: false,
 });
 
 export const metadata: Metadata = {
@@ -50,7 +58,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       data-theme="light"
       suppressHydrationWarning
-      className={`${archivo.variable} h-full antialiased`}
+      className={`${archivo.variable} ${anton.variable} h-full antialiased`}
     >
       <head>
         <link rel="preload" as="image" href="/images/lock-bg.jpg" />

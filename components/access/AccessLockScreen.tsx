@@ -3,6 +3,7 @@ import { trackEvent } from "@/lib/analytics";
 import { Wordmark } from "@/components/AppNav";
 import { useAccess } from "@/components/AccessProvider";
 import { Button } from "@/components/ui/Button";
+import { FaintSignalCredit } from "@/components/FaintSignalCredit";
 
 // A welcome screen, not access control: the code is shared openly with visitors.
 const ACCESS_CODE = "007";
@@ -84,6 +85,7 @@ export function AccessLockScreen() {
           <Button type="submit" size="block" disabled={code.length !== 3 || unlocking} className="mt-3 min-h-12">
             Enter
           </Button>
+          <div className="mt-6 flex justify-center"><FaintSignalCredit from="lock_screen" /></div>
         </div>
       </form>
     </div>

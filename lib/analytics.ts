@@ -14,6 +14,7 @@ type AnalyticsEvents = {
   order_sent: { source: "sample" | "live"; mode: "jev" | "claude"; demo: true };
   order_approved: { demo: true };
   workspace_unlocked: undefined;
+  portfolio_link_clicked: { from: "about" | "lock_screen" };
 };
 
 // Keep event properties limited to workflow metadata, never order text or contact details.

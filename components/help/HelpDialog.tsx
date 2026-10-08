@@ -1,6 +1,7 @@
 import { ActionSheet } from "@/components/ui/ActionSheet";
 import { Button } from "@/components/ui/Button";
 import { SheetFooter, SheetHeader } from "@/components/ui/Sheet";
+import { FaintSignalCredit } from "@/components/FaintSignalCredit";
 
 const COLUMN_TITLE = "text-small font-semibold uppercase tracking-wider text-ink";
 
@@ -25,7 +26,8 @@ export function HelpDialog({ open, onClose, onResults }: { open: boolean; onClos
             </div>
           </div>
           <SheetFooter>
-            <button onClick={onResults} className="mr-auto h-9 rounded-lg px-1 text-small font-medium text-muted underline underline-offset-2 hover:text-ink">Sample results</button>
+            <button onClick={onResults} className="h-9 rounded-lg px-1 text-small font-medium text-muted underline underline-offset-2 hover:text-ink">Sample results</button>
+            <FaintSignalCredit from="about" className="mr-auto ml-4 self-center" />
             <Button onClick={onClose}>Got it</Button>
           </SheetFooter>
     </ActionSheet>

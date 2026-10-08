@@ -74,6 +74,7 @@
   --color-fillok: var(--fill-ok);
   --color-fillink: var(--fill-ink);
   --font-sans: var(--font-ui);
+  --font-wordmark: var(--font-anton), Impact, sans-serif;
   /* The type scale, by role. Use these (text-caption, text-body...) rather than pixel sizes, so the scale changes in one place. */
   --text-tiny: 12px;
   --text-caption: 12px;
