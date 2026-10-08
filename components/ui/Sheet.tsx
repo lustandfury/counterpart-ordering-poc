@@ -19,5 +19,5 @@ export function SheetHeader({ id, title, eyebrow, closeLabel, onClose }: { id?: 
 
 /** The foot of a dialog: actions on the right, the primary one last. */
 export function SheetFooter({ children }: { children: ReactNode }) {
-  return <div className="mt-6 flex justify-end">{children}</div>;
+  return <div className="mt-6 flex flex-wrap justify-end">{children}</div>;
 }

@@ -26,8 +26,8 @@ export function HelpDialog({ open, onClose, onResults }: { open: boolean; onClos
             </div>
           </div>
           <SheetFooter>
-            <button onClick={onResults} className="h-9 rounded-lg px-1 text-small font-medium text-muted underline underline-offset-2 hover:text-ink">Sample results</button>
-            <FaintSignalCredit from="about" className="mr-auto ml-4 self-center" />
+            <button onClick={onResults} className="mr-auto h-9 sm:mr-0 rounded-lg px-1 text-small font-medium text-muted underline underline-offset-2 hover:text-ink">Sample results</button>
+            <FaintSignalCredit from="about" className="order-last mt-4 w-full justify-center self-center sm:order-none sm:mt-0 sm:mr-auto sm:ml-4 sm:w-auto" />
             <Button onClick={onClose}>Got it</Button>
           </SheetFooter>
     </ActionSheet>
