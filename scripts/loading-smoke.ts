@@ -37,7 +37,7 @@ async function main() {
         (window as typeof window & { orderTest: { finish: () => void } }).orderTest.finish();
       });
       await page.goto(base);
-      await page.getByLabel("Access code", { exact: true }).fill("007");
+      await page.getByRole("button", { name: "Try the demo" }).click();
       await page.keyboard.press("Enter");
       await expect(page.locator(".lock-screen")).toHaveCount(0);
       const generate = async () => {

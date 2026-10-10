@@ -334,7 +334,7 @@ button { cursor: pointer; }
   animation: sheet-fade-out 260ms ease-in both;
 }
 
-/* Entry transition: the workspace stays hidden until the access code is accepted. */
+/* Entry transition: the workspace stays hidden until the visitor leaves the welcome screen. */
 .app-shell-locked {
   opacity: 0;
 }

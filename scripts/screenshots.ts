@@ -11,7 +11,7 @@ async function main() {
     // Generate order runs live: answer it with a saved result so screenshots never make paid API calls
     await page.route("**/api/run", (route) => route.fulfill({ json: JSON.parse(readFileSync("results/o13.json", "utf8")) }));
     await page.goto(base);
-    await page.getByLabel("Access code", { exact: true }).fill("007");
+    await page.getByRole("button", { name: "Try the demo" }).click();
     await page.keyboard.press("Enter");
     await page.locator(".lock-screen").waitFor({ state: "detached" });
     if (process.env.ORDER) {

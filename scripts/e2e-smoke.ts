@@ -5,7 +5,7 @@ import { readFileSync } from "node:fs";
 const base = `http://localhost:${process.env.PORT ?? 3100}`;
 
 async function unlock(page: Page) {
-  await page.getByLabel("Access code", { exact: true }).fill("007");
+  await page.getByRole("button", { name: "Try the demo" }).click();
   await page.getByRole("button", { name: "Enter", exact: true }).click();
   await expect(page.locator(".lock-screen")).toHaveCount(0);
 }
@@ -308,7 +308,7 @@ async function main() {
       await expect(page.locator("#review h1 + p")).toContainText("1007"); // sample o07, shown in the generated-order style
       await expect(page.locator(".lock-screen")).toHaveCount(0);
       await page.reload();
-      await expect(page.getByLabel("Access code", { exact: true })).toBeVisible();
+      await expect(page.getByRole("button", { name: "Try the demo" })).toBeVisible();
       await unlock(page);
 
       // Exercise signup and retry without spending API credits or writing to Postgres.

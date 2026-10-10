@@ -19,7 +19,7 @@ const SIZE = {
   sm: "h-9 rounded-lg px-5 text-small",
   /** the order's Send: taller on phones for the thumb */
   md: "h-11 rounded-lg px-4 text-body sm:h-10",
-  /** a full-width form submit (the access code) */
+  /** a full-width form submit (the welcome screen) */
   block: "h-10 w-full rounded-xl px-4 text-body",
   /** the floating Send, with an icon */
   lg: "flex min-h-12 items-center gap-2 rounded-xl px-6 text-body",

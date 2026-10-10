@@ -11,7 +11,7 @@ try {
     const errors: string[] = [];
     page.on("pageerror", (error) => errors.push(error.message));
     await page.goto(base);
-    await page.getByLabel("Access code", { exact: true }).fill("007");
+    await page.getByRole("button", { name: "Try the demo" }).click();
     await page.getByRole("button", { name: "Enter", exact: true }).click();
     await expect(page.locator(".lock-screen")).toHaveCount(0);
     await expect(page.locator(".tour-cost")).toContainText("× this order");
@@ -66,7 +66,7 @@ try {
     await expect(page).toHaveURL(`${base}/`);
     }
     await page.reload();
-    await expect(page.getByLabel("Access code", { exact: true })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Try the demo" })).toBeVisible();
     expect(errors).toEqual([]);
     await page.close();
     console.log(`Results, thresholds, gate, and themes passed at ${width}px`);

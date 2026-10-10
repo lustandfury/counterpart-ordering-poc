@@ -72,7 +72,7 @@ npm run dev                  # http://localhost:3000
 
 PostHog is optional. Set `NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN` to the project's public token in `.env.local` and your hosting environment. Set `NEXT_PUBLIC_POSTHOG_HOST` to the ingestion host for your project (`https://us.i.posthog.com` or `https://eu.i.posthog.com`). Rebuild/redeploy after changing these values because Next.js embeds public environment variables at build time. Leave the token empty to disable analytics, including for local development.
 
-Page views include initial loads and client-side navigation. Custom events cover workspace unlock, order selection, live-run start/completion/failure, the signup gate and completion, comparison mode changes, line review decisions, and mock order sends. Event properties contain workflow counts and categories; order text, sender details, emails, and access codes are not included. Autocapture, session replay, and surveys are disabled. Visitors use anonymous browser IDs; signup does not identify them by email.
+Page views include initial loads and client-side navigation. Custom events cover workspace unlock, order selection, live-run start/completion/failure, the signup gate and completion, comparison mode changes, line review decisions, and mock order sends. Event properties contain workflow counts and categories; order text, sender details, and emails are not included. Autocapture, session replay, and surveys are disabled. Visitors use anonymous browser IDs; signup does not identify them by email.
 
 To verify a configured deployment, open PostHog's live events view, visit Review and Sample results, and review a line. Look for `$pageview` and `order_line_reviewed`; sending a completed order emits `order_sent` with `demo: true`.
 
@@ -96,7 +96,7 @@ The five-order signup limit is stored in Postgres and counts attempted runs, inc
 
 ## Live runs: limits and safeguards
 
-Pasting your own order calls paid APIs, so live runs are limited: 5 free orders per visitor (an email unlocks more), 5 per hour per network and 40 per day overall. The per-network and daily limits are kept in Postgres, so they hold across servers and cannot be reset by clearing cookies; the visitor cookie is only an identity. Set spend limits with your Anthropic and TypeSafe accounts as the hard stop, and `LIVE_RUNS=off` switches live runs off. The opening screen's access code is a welcome screen checked in the browser, not access control. Emails are stored only to unlock more runs; set `NEXT_PUBLIC_PRIVACY_CONTACT` to show a deletion contact on the sign-up form.
+Pasting your own order calls paid APIs, so live runs are limited: 5 free orders per visitor (an email unlocks more), 5 per hour per network and 40 per day overall. The per-network and daily limits are kept in Postgres, so they hold across servers and cannot be reset by clearing cookies; the visitor cookie is only an identity. Set spend limits with your Anthropic and TypeSafe accounts as the hard stop, and `LIVE_RUNS=off` switches live runs off. The opening screen is a welcome screen with no access code. Emails are stored only to unlock more runs; set `NEXT_PUBLIC_PRIVACY_CONTACT` to show a deletion contact on the sign-up form.
 
 ## Repo layout
 

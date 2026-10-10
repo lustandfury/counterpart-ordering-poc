@@ -8,7 +8,7 @@ const AccessContext = createContext<{
 } | null>(null);
 
 // The root layout keeps this state across route changes. A full page reload
-// creates a new provider and requires the access code again.
+// creates a new provider and shows the welcome screen again.
 export function AccessProvider({ children }: { children: ReactNode }) {
   const [unlocked, setUnlocked] = useState(false);
 
